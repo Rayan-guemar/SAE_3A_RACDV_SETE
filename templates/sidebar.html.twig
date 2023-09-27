@@ -1,33 +1,36 @@
+{% block sidebar %}
+
 <div class="sidebar">
-	<div class="sidebar__header">
-		<div class="sidebar__title">
-			<h1>Festiflux</h1>
-			<h3>On the flux</h3>
+	<div class="sidebar__content">
+		<div class="sidebar__header">
+			<div class="sidebar__title">
+				<h1>Festiflux</h1>
+				<div>On the flux</div>
+			</div>
+		</div>
+
+		<div class="sidebar__actions">
+
+			<div class="sidebar__actions__menu">
+				<h3>MENU</h3>
+				<ul>
+					<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a>Accueil</a></li>
+					<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a>Mes festivals</a></li>
+					<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a>Demande caca</a></li>
+				</ul>
+			</div>
+
+			<div class="sidebar__actions__account">
+				<h3>COMPTE</h3>
+				<ul>
+					<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a>Profil</a></li>
+					<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a>Se déconnecter</a></li>
+				</ul>
+
+			</div>
+
 		</div>
 	</div>
-
-	<div class="sidebar__actions">
-
-		<div class="sidebar__actions__menu">
-			<h3>MENU</h3>
-			<ul>
-				<li><ahref="{{path('/')}}">Accueil</a></li>
-				<li><ahref="{{path('/')}}">Mes festivals</a></li>
-				<li><ahref="{{path('/')}}">Action 1</a></li>
-				<li><ahref="{{path('/')}}">Action 2</a></li>
-				<li><ahref="{{path('/')}}">Action 3</a></li>
-			</ul>
-		</div>
-
-		<div class="sidebar__actions__account">
-			<h3>COMPTE</h3>
-			<ul>
-				<li><ahref="{{path('/')}}">Profil</a></li>
-				<li><ahref="{{path('/')}}">Se déconnecter</a></li>
-			</ul>
-
-		</div>
-
-	</div>
-
 </div>
+
+{% endblock %}

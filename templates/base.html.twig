@@ -11,38 +11,7 @@
 
 	</head>
 	<body>
-		<div class="sidebar">
-			<div class="sidebar__header">
-				<div class="sidebar__title">
-					<h1>Festiflux</h1>
-					<div>On the flux</div>
-				</div>
-			</div>
-
-			<div class="sidebar__actions">
-
-				<div class="sidebar__actions__menu">
-					<h3>MENU</h3>
-					<ul>
-						<li><a>Accueil</a></li>
-						<li><a>Mes festivals</a></li>
-						<li><a>Action 1</a></li>
-						<li><a>Action 2</a></li>
-						<li><a>Action 3</a></li>
-					</ul>
-				</div>
-
-				<div class="sidebar__actions__account">
-					<h3>COMPTE</h3>
-					<ul>
-						<li><a>Profil</a></li>
-						<li><a>Se déconnecter</a></li>
-					</ul>
-
-				</div>
-
-			</div>
-		</div>
+		{% include 'sidebar.html.twig' %}
 		{% block body %}{% endblock %}
 	</body>
 </html>
