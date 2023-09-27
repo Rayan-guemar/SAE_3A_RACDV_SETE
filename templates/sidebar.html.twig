@@ -1,38 +1,33 @@
-{% block sidebar %}
+<div class="sidebar">
+	<div class="sidebar__header">
+		<div class="sidebar__title">
+			<h1>Festiflux</h1>
+			<h3>On the flux</h3>
+		</div>
+	</div>
 
-	<div class="sidebar">
-		<div class="sidebar__header">
-			<div class="sidebar__title">
-				<h1>Festiflux</h1>
-				<h3>On the flux</h3>
-			</div>
+	<div class="sidebar__actions">
+
+		<div class="sidebar__actions__menu">
+			<h3>MENU</h3>
+			<ul>
+				<li><ahref="{{path('/')}}">Accueil</a></li>
+				<li><ahref="{{path('/')}}">Mes festivals</a></li>
+				<li><ahref="{{path('/')}}">Action 1</a></li>
+				<li><ahref="{{path('/')}}">Action 2</a></li>
+				<li><ahref="{{path('/')}}">Action 3</a></li>
+			</ul>
 		</div>
 
-		<div class="sidebar__actions">
-
-			<div class="sidebar__actions__menu">
-				<h3>MENU</h3>
-				<ul>
-					<li><ahref="{{ path('/') }}">Accueil</a></li>
-					<li><ahref="{{ path('/') }}">Mes festivals</a></li>
-					<li><ahref="{{ path('/') }}">Action 1</a></li>
-					<li><ahref="{{ path('/') }}">Action 2</a></li>
-					<li><ahref="{{ path('/') }}">Action 3</a></li>
-				</ul>
-			</div>
-
-            <div class="sidebar__actions__account">
-                <h3>COMPTE</h3>
-                <ul>
-					<li><ahref="{{ path('/') }}">Profil</a></li>
-					<li><ahref="{{ path('/') }}">Se déconnecter</a></li>
-                </ul>
-
-            </div>
+		<div class="sidebar__actions__account">
+			<h3>COMPTE</h3>
+			<ul>
+				<li><ahref="{{path('/')}}">Profil</a></li>
+				<li><ahref="{{path('/')}}">Se déconnecter</a></li>
+			</ul>
 
 		</div>
-
 
 	</div>
 
-{% endblock %}
+</div>

@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% extends "sidebar.html.twig" %}
-        {% block body %}{% endblock %}
-    </body>
+	</head>
+	<body>
+		<div class="sidebar">
+			<div class="sidebar__header">
+				<div class="sidebar__title">
+					<h1>Festiflux</h1>
+					<div>On the flux</div>
+				</div>
+			</div>
+
+			<div class="sidebar__actions">
+
+				<div class="sidebar__actions__menu">
+					<h3>MENU</h3>
+					<ul>
+						<li><a>Accueil</a></li>
+						<li><a>Mes festivals</a></li>
+						<li><a>Action 1</a></li>
+						<li><a>Action 2</a></li>
+						<li><a>Action 3</a></li>
+					</ul>
+				</div>
+
+				<div class="sidebar__actions__account">
+					<h3>COMPTE</h3>
+					<ul>
+						<li><a>Profil</a></li>
+						<li><a>Se déconnecter</a></li>
+					</ul>
+
+				</div>
+
+			</div>
+		</div>
+		{% block body %}{% endblock %}
+	</body>
 </html>
