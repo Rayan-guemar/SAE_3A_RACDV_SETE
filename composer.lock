@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e077926b0d83c217ece524f4a3d61fa8",
+    "content-hash": "41fba845203b6e55cd07eb9f72354371",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -1487,6 +1487,64 @@
                 }
             ],
             "time": "2023-06-21T08:46:11+00:00"
+        },
+        {
+            "name": "opsway/doctrine-dbal-postgresql",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opsway/doctrine-dbal-postgresql.git",
+                "reference": "3ac7e3334df8550ad86cb43c4282ea58c843d890"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opsway/doctrine-dbal-postgresql/zipball/3ac7e3334df8550ad86cb43c4282ea58c843d890",
+                "reference": "3ac7e3334df8550ad86cb43c4282ea58c843d890",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^3.2",
+                "doctrine/orm": "^2.10",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1.13",
+                "lctrs/psalm-psr-container-plugin": "^1.6",
+                "opsway/psr12-strict-coding-standard": "^0.7.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "psalm/plugin-phpunit": "^0.16.1",
+                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+                "vimeo/psalm": "^4.22",
+                "weirdan/doctrine-psalm-plugin": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "OpsWay\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexandr Vronskiy",
+                    "email": "alvro@opsway.com"
+                }
+            ],
+            "description": "Extensions for support Postgres in Doctrine DBAL & DQL",
+            "support": {
+                "issues": "https://github.com/opsway/doctrine-dbal-postgresql/issues",
+                "source": "https://github.com/opsway/doctrine-dbal-postgresql/tree/v1.2.0"
+            },
+            "time": "2023-07-04T09:31:12+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -9495,5 +9553,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
