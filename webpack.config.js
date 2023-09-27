@@ -29,7 +29,6 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
     
-
     /*
      * FEATURE CONFIG
      *
@@ -69,7 +68,10 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+<<<<<<< HEAD
     .enableSassLoader()
+=======
+>>>>>>> 4ca71a9 (added webpack-encore and sidebar skeleton)
 ;
 
 module.exports = Encore.getWebpackConfig();
