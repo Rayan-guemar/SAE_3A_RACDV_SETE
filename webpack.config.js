@@ -29,10 +29,6 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
     
-<<<<<<< HEAD
-=======
-
->>>>>>> 7e25fa8 (setup sass and started nav style)
     /*
      * FEATURE CONFIG
      *
