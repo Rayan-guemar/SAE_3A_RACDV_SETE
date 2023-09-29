@@ -11,7 +11,33 @@
 
 	</head>
 	<body>
+		<div id="">
+			{% for success in app.flashes('success') %}
+				<!-- Pour chaque message du type "success" -->
+				<span class="flashes flashes-success">{{ success }}</span>
+			{% endfor %}
+			{% for error in app.flashes('error') %}
+				<!-- Pour chaque message du type "error" -->
+				<span class="flashes flashes-error">{{ error }}</span>
+			{% endfor %}
+		</div>
+		<div>
 		{% include 'sidebar.html.twig' %}
+		</div>
+		<div>
 		{% block body %}{% endblock %}
+		</div>
+		<div id="footer">
+			<div class="">
+				<div class="">
+					<div class="">
+						<h3>FestifluxOnTheFlux</h3>
+						<p>Praesent sed lobortis mi. Suspendisse vel placerat ligula. Vivamus ac sem lacus. Ut vehicula rhoncus elementum. Etiam quis tristique lectus. Aliquam in arcu eget velit pulvinar dictum vel in justo.</p>
+					</div>
+					<div class="col item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a></div>
+				</div>
+				<p class="copyright">FestifluxOnTheFlux © 2018</p>
+			</div>
+		</div>
 	</body>
 </html>

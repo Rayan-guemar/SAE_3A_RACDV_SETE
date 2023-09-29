@@ -1,0 +1,19 @@
+<div class="">
+    <div class="">
+        <a href="#">
+            <img class="affiche"
+                    {% if (festival.getAffiche()) != null %}
+                        src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}"
+                    {% else %}
+                        src="{{ asset("img/utilisateurs/afficheX.jpg") }}"
+                    {% endif %}
+                 alt="affiche du festival">
+        </a>
+        <div class="fest-info">
+            <span>{{ festival.getNom() }}</span>
+            <span> - </span>
+            <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+            <p>{{ festival.getLieuxVille() }}</p>
+        </div>
+    </div>
+</div>

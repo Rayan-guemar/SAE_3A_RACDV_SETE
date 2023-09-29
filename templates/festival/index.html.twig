@@ -1,20 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FestivalController!{% endblock %}
+{% block title %}events{% endblock %}
 
 {% block body %}
+
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Hello {% if is_granted('ROLE_USER') %}{# {% if user.getSexe()="M" %}M. {% else %}Mme. {% endif %}{{ user.getLogin() }} #}{% endif %}!</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/33785/Desktop/SAE_3A_RACDV_SETE/src/Controller/FestivalController.php'|file_link(0) }}">src/Controller/FestivalController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/33785/Desktop/SAE_3A_RACDV_SETE/templates/festival/index.html.twig'|file_link(0) }}">templates/festival/index.html.twig</a></code></li>
-    </ul>
+    Choisissez le festival auquel vous voulez participer :
+    <div class="box">
+        <input type="text" placeholder="Search...">
+            <a href="#">
+                <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
+            </a>
+    </div>
+    {#
+        {% for festival in festivals %}
+        {{ include('festival/fest.html.twig',{'festival':festival}) }}
+        {% endfor %}
+    #}
 </div>
 {% endblock %}

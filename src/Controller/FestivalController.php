@@ -11,7 +11,7 @@ class FestivalController extends AbstractController
     #[Route('/', name: 'app_festival')]
     public function index(): Response
     {
-        return $this->render('base.html.twig', [
+        return $this->render('festival/index.html.twig', [
             'controller_name' => 'FestivalController',
         ]);
     }
