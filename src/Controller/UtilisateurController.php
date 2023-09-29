@@ -9,10 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 
 class UtilisateurController extends AbstractController {
-    #[Route('/inscription', name: 'inscription')]
-    public function inscription(EntityManagerInterface $entityManagerInterface, RequestStack $requestStack): Response {
+
+
+    
+    #[Route('/inscription', name: 'inscription', methods: ['GET', 'POST'])]
+    public function inscription(EntityManagerInterface $entityManagerInterface, RequestStack $requestStack, Request $req): Response {
         $u = new Utilisateur();
 
         $f = $this->createForm(InscriptionType::class, $u, [
@@ -20,14 +24,9 @@ class UtilisateurController extends AbstractController {
             'method' => 'POST',
         ]);
 
-        if ($f->isSubmitted()) {
-            if (!$f->isValid()) {
-                $errors = $f->getErrors(true);
-                //$flashBag = $requestStack->getSession()->getFlashBag();
-                // foreach ($errors as $error) {
-                //     $flashBag->add("error", $error->getMessage());
-                // }
-            }
+        $f->handleRequest($req);
+        if ($f->isSubmitted() && $f->isValid()) {
+            
             $entityManagerInterface->persist($u);
             $entityManagerInterface->flush();
 
@@ -35,9 +34,10 @@ class UtilisateurController extends AbstractController {
         }
 
 
+
         return $this->render('utilisateur/inscription.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'form' => $f,
+            'form' => $f->createView(),
         ]);
     }
 }

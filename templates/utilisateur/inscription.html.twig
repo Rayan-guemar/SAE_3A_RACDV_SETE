@@ -1,46 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UtilisateurController!
-{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-<main>
-	{{ form_start(form , {'attr': {'class': ''}}) }}
-	<fieldset>
-		<legend>Inscription</legend>
-		<div
-			class="access-container">
-			<!-- Affichage du label "Email" -->
-			{{ form_label('Email') }}
-			<!-- Affichage de l'input de l'email -->
-			{{ form_widget(form.email) }}
-		</div>
-		<div
-			class="access-container">
-			<!-- Affichage du label "Nom" -->
-			{{ form_label('Nom') }}
-			{# <p class="help-input-form"></p> #}
-			<!-- Affichage de l'input du Nom -->
-		{{ form_widget(form.nom) }}
-		</div>
-			<div
-			class="access-container"> <!-- Affichage du label "Prénom" -->
-			{{ form_label('Prénom') }}
-			{# <p class="help-input-form"></p> #}
-			<!-- Affichage de l'input du Prénom -->
-		{{ form_widget(form.prenom) }}
-		</div>
-			<div
-			class="access-container"> <!-- Affichage du label "Mot de passe" -->
-			{{ form_label('Mot de passe') }}
-			{# <p class="help-input-form"></p> #}
-			<!-- Affichage de l'input du mot de passe -->
-		{{ form_widget(form.plain_mot_de_passe) }}
-		</div>
-		<!-- Affichage du bouton d'envoi, contenant le texte (label) "S'inscrire" -->
-		{{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': ''}}) }}
-	</fieldset>
-	{{ form_rest(form) }}
-	{{ form_end(form) }}
-</main>
+    <main>
+        {{ form_start(form, {'attr': {'class': ''}}) }}
+        <fieldset>
+            <legend>Inscription</legend>
+            
+            <div class="access-container">
+                {{ form_row(form.email, {'label': 'Email'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.nom, {'label': 'Nom'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.prenom, {'label': 'Prénom'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.plain_mot_de_passe, {'label': 'Mot de passe'}) }}
+            </div>
+
+            {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': ''}}) }}
+        </fieldset>
+        
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </main>
 {% endblock %}
