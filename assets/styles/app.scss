@@ -11,5 +11,17 @@
     background-color: #463BC3;
 }
 
+body {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
 @import 'sidebar';
 @import "searchbar";
