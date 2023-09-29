@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -12,9 +14,6 @@ class Utilisateur
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $id_utilisateur = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -26,26 +25,19 @@ class Utilisateur
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $mot_de_passe = null;
+    private ?string $motDePasse = null;
 
-    #[ORM\OneToOne(mappedBy: 'id_organisateur', cascade: ['persist', 'remove'])]
-    private ?Festival $festival = null;
+    #[ORM\OneToMany(mappedBy: 'idOrganisateur', targetEntity: Festival::class)]
+    private Collection $festivals;
+
+    public function __construct()
+    {
+        $this->festivals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdUtilisateur(): ?int
-    {
-        return $this->id_utilisateur;
-    }
-
-    public function setIdUtilisateur(int $id_utilisateur): static
-    {
-        $this->id_utilisateur = $id_utilisateur;
-
-        return $this;
     }
 
     public function getNom(): ?string
@@ -86,29 +78,42 @@ class Utilisateur
 
     public function getMotDePasse(): ?string
     {
-        return $this->mot_de_passe;
+        return $this->motDePasse;
     }
 
-    public function setMotDePasse(string $mot_de_passe): static
+    public function setMotDePasse(string $motDePasse): static
     {
-        $this->mot_de_passe = $mot_de_passe;
+        $this->motDePasse = $motDePasse;
 
         return $this;
     }
 
-    public function getFestival(): ?Festival
+    /**
+     * @return Collection<int, Festival>
+     */
+    public function getFestivals(): Collection
     {
-        return $this->festival;
+        return $this->festivals;
     }
 
-    public function setFestival(Festival $festival): static
+    public function addFestival(Festival $festival): static
     {
-        // set the owning side of the relation if necessary
-        if ($festival->getIdOrganisateur() !== $this) {
+        if (!$this->festivals->contains($festival)) {
+            $this->festivals->add($festival);
             $festival->setIdOrganisateur($this);
         }
 
-        $this->festival = $festival;
+        return $this;
+    }
+
+    public function removeFestival(Festival $festival): static
+    {
+        if ($this->festivals->removeElement($festival)) {
+            // set the owning side to null (unless already changed)
+            if ($festival->getIdOrganisateur() === $this) {
+                $festival->setIdOrganisateur(null);
+            }
+        }
 
         return $this;
     }
