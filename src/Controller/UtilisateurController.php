@@ -10,11 +10,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UtilisateurController extends AbstractController {
 
 
-    
+
     #[Route('/inscription', name: 'inscription', methods: ['GET', 'POST'])]
     public function inscription(EntityManagerInterface $entityManagerInterface, RequestStack $requestStack, Request $req): Response {
         $u = new Utilisateur();
@@ -25,8 +26,17 @@ class UtilisateurController extends AbstractController {
         ]);
 
         $f->handleRequest($req);
-        if ($f->isSubmitted() && $f->isValid()) {
-            
+        if ($f->isSubmitted()) {
+            if (!$f->isValid()) {
+                $errors = $f->getErrors(true);
+                $flashBag = $requestStack->getSession()->getFlashBag();
+                foreach ($errors as $error) {
+                    $flashBag->add("error", $error->getMessage());
+                }
+            }
+
+            $u->setMotDePasse($f->get('plain_mot_de_passe')->getData());
+
             $entityManagerInterface->persist($u);
             $entityManagerInterface->flush();
 
