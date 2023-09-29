@@ -6,9 +6,12 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,6 +25,11 @@ class Utilisateur
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Email]
+    #[UniqueEntity(
+        fields: ['email'],
+        message: 'Un compte avec cet email existe déjà.',
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -116,5 +124,23 @@ class Utilisateur
         }
 
         return $this;
+    }
+
+    public function getPassword() : ?string
+    {
+       return $this->getMotDePasse();
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function getSalt()
+    {
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 }

@@ -10,14 +10,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class UtilisateurController extends AbstractController {
 
 
 
     #[Route('/inscription', name: 'inscription', methods: ['GET', 'POST'])]
-    public function inscription(EntityManagerInterface $entityManagerInterface, RequestStack $requestStack, Request $req): Response {
+    public function inscription(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher ): Response {
         $u = new Utilisateur();
 
         $f = $this->createForm(InscriptionType::class, $u, [
@@ -26,7 +27,7 @@ class UtilisateurController extends AbstractController {
         ]);
 
         $f->handleRequest($req);
-        if ($f->isSubmitted()) {
+        if ($f->isSubmitted() && $f->isValid()) {
             if (!$f->isValid()) {
                 $errors = $f->getErrors(true);
                 $flashBag = $requestStack->getSession()->getFlashBag();
@@ -35,14 +36,15 @@ class UtilisateurController extends AbstractController {
                 }
             }
 
-            $u->setMotDePasse($f->get('plain_mot_de_passe')->getData());
+            $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
+            $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
+            $u->setMotDePasse($hashedPassword);
 
-            $entityManagerInterface->persist($u);
-            $entityManagerInterface->flush();
+            $em->persist($u);
+            $em->flush();
 
             return $this->redirectToRoute('app_festival');
         }
-
 
 
         return $this->render('utilisateur/inscription.html.twig', [
