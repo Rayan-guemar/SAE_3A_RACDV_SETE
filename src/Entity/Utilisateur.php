@@ -11,8 +11,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur implements PasswordAuthenticatedUserInterface
-{
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Un compte avec cet email existe déjà.',
+)]
+class Utilisateur implements PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,10 +29,7 @@ class Utilisateur implements PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\Email]
-    #[UniqueEntity(
-        fields: ['email'],
-        message: 'Un compte avec cet email existe déjà.',
-    )]
+
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -38,59 +38,49 @@ class Utilisateur implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'idOrganisateur', targetEntity: Festival::class)]
     private Collection $festivals;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->festivals = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
-    {
+    public function getPrenom(): ?string {
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): static
-    {
+    public function setPrenom(string $prenom): static {
         $this->prenom = $prenom;
 
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
+    public function getEmail(): ?string {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
-    {
+    public function setEmail(string $email): static {
         $this->email = $email;
 
         return $this;
     }
 
-    public function getMotDePasse(): ?string
-    {
+    public function getMotDePasse(): ?string {
         return $this->motDePasse;
     }
 
-    public function setMotDePasse(string $motDePasse): static
-    {
+    public function setMotDePasse(string $motDePasse): static {
         $this->motDePasse = $motDePasse;
 
         return $this;
@@ -99,13 +89,11 @@ class Utilisateur implements PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Festival>
      */
-    public function getFestivals(): Collection
-    {
+    public function getFestivals(): Collection {
         return $this->festivals;
     }
 
-    public function addFestival(Festival $festival): static
-    {
+    public function addFestival(Festival $festival): static {
         if (!$this->festivals->contains($festival)) {
             $this->festivals->add($festival);
             $festival->setIdOrganisateur($this);
@@ -114,8 +102,7 @@ class Utilisateur implements PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeFestival(Festival $festival): static
-    {
+    public function removeFestival(Festival $festival): static {
         if ($this->festivals->removeElement($festival)) {
             // set the owning side to null (unless already changed)
             if ($festival->getIdOrganisateur() === $this) {
@@ -126,21 +113,17 @@ class Utilisateur implements PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPassword() : ?string
-    {
-       return $this->getMotDePasse();
+    public function getPassword(): ?string {
+        return $this->getMotDePasse();
     }
 
-    public function getRoles(): array
-    {
+    public function getRoles(): array {
         return ['ROLE_USER'];
     }
 
-    public function getSalt()
-    {
+    public function getSalt() {
     }
 
-    public function eraseCredentials(): void
-    {
+    public function eraseCredentials(): void {
     }
 }

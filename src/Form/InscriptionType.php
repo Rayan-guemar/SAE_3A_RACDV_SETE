@@ -28,7 +28,7 @@ class InscriptionType extends AbstractType {
                     new NotBlank(),
                     new Length(min: 8, max: 30, minMessage: 'min 8', maxMessage: 'max 30'),
                     new NotNull(),
-                    new Regex("#^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,30}$# ", 'au moins une minuscule, une majuscule et un chiffre')
+                    new Regex("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,30}$# ", 'au moins une minuscule, une majuscule et un chiffre')
                 ],
             ])
             ->add('inscription', SubmitType::class);
