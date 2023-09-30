@@ -2,16 +2,16 @@
 
 {% block body %}
     <h1>Connexion</h1>  
-    <form action="">    
+    <form action="{{path('app_login')}}" method="post">    
         <div>
             <input placeholder='email' type="text" name='_username'>
         </div>
         <div>
-        <input placeholder='mot de passe' type="text" name='_password' >
+        <input placeholder='mot de passe' type="password" name='_password' >
         </div>
 
         <div>
-        <button type="submit">se connecter  </button>
+        <button type="submit"> Se connecter </button>
         </div>
     </form>
 {% endblock %}
