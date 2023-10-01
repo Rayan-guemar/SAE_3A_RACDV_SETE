@@ -14,98 +14,68 @@ class Festival
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $id_festival = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_debut = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_fin = null;
-
     #[ORM\Column(length: 255)]
-    private ?string $nom_festival = null;
+    private ?string $nom = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\OneToOne(inversedBy: 'festival', cascade: ['persist', 'remove'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateFin = null;
+
+    #[ORM\ManyToOne(inversedBy: 'festivals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_organisateur = null;
+    private ?Utilisateur $idOrganisateur = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdFestival(): ?int
+    public function getNom(): ?string
     {
-        return $this->id_festival;
+        return $this->nom;
     }
 
-    public function setIdFestival(int $id_festival): static
+    public function setNom(string $nom): static
     {
-        $this->id_festival = $id_festival;
+        $this->nom = $nom;
 
         return $this;
     }
 
     public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->date_debut;
+        return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $date_debut): static
+    public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
-        $this->date_debut = $date_debut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
     public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->date_fin;
+        return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeInterface $date_fin): static
+    public function setDateFin(\DateTimeInterface $dateFin): static
     {
-        $this->date_fin = $date_fin;
-
-        return $this;
-    }
-
-    public function getNomFestival(): ?string
-    {
-        return $this->nom_festival;
-    }
-
-    public function setNomFestival(string $nom_festival): static
-    {
-        $this->nom_festival = $nom_festival;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
+        $this->dateFin = $dateFin;
 
         return $this;
     }
 
     public function getIdOrganisateur(): ?Utilisateur
     {
-        return $this->id_organisateur;
+        return $this->idOrganisateur;
     }
 
-    public function setIdOrganisateur(Utilisateur $id_organisateur): static
+    public function setIdOrganisateur(?Utilisateur $idOrganisateur): static
     {
-        $this->id_organisateur = $id_organisateur;
+        $this->idOrganisateur = $idOrganisateur;
 
         return $this;
     }

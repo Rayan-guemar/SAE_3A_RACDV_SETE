@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <main>
+        {{ form_start(form, {'attr': {'class': ''}}) }}
+        <fieldset>
+            <legend>Inscription</legend>
+            
+            <div class="access-container">
+                {{ form_row(form.email, {'label': 'Email'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.nom, {'label': 'Nom'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.prenom, {'label': 'Prénom'}) }}
+            </div>
+            
+            <div class="access-container">
+                {{ form_row(form.plain_mot_de_passe, {'label': 'Mot de passe'}) }}
+            </div>
+
+            {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': ''}}) }}
+        </fieldset>
+        
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </main>
+{% endblock %}
