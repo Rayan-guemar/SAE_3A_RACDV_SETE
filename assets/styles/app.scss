@@ -10,6 +10,11 @@
 .footer{
     background-color: #463BC3;
 }
+.main{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
 
 body {
     display: flex;
@@ -26,3 +31,4 @@ main {
 
 @import 'sidebar';
 @import "searchbar";
+@import "festivals";

@@ -10,10 +10,13 @@
                  alt="affiche du festival">
         </a>
         <div class="fest-info">
+            <div class="fest-nom">
             <span>{{ festival.getNom() }}</span>
-            <span> - </span>
+            </div>
+            <div class="fest-description">
             <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
-            <p>{{ festival.getLieuxVille() }}</p>
+            <span>{{ festival.getLieuxVille() }}</span>
+            </div>
         </div>
     </div>
 </div>
