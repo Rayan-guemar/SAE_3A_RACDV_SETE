@@ -38,7 +38,7 @@ class UtilisateurController extends AbstractController {
 
             $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
             $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
-            $u->setMotDePasse($hashedPassword);
+            $u->setPassword($hashedPassword);
 
             $em->persist($u);
             $em->flush();
