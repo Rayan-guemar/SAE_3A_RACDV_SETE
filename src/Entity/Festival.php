@@ -23,7 +23,7 @@ class Festival
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'festivals')]
+    #[ORM\ManyToOne(inversedBy: 'festivals',cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $idOrganisateur = null;
 

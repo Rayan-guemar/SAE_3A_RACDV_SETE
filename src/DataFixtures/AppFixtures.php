@@ -14,23 +14,31 @@ class AppFixtures extends Fixture
     {
         // use the factory to create a Faker\Generator instance
         $faker = \Faker\Factory::create();
-        for($i=0;$i<=10;$i++){
-            $utilisateur = new Utilisateur();
-            $utilisateur->setNom($faker->name());
-            $utilisateur->setEmail($faker->email());
-            $utilisateur->setPrenom($faker->name());
-            $utilisateur->setMotDePasse("root");
-        }
-        /*
+
+//        for($i=0;$i<=10;$i++){
+//            $utilisateur = new Utilisateur();
+//            $utilisateur->setRoles(["bénévole"]);
+//            $utilisateur->setNom($faker->lastName());
+//            $utilisateur->setEmail($faker->email());
+//            $utilisateur->setPrenom($faker->firstName());
+//            $utilisateur->setPassword("root");
+//            $manager->persist($utilisateur);
+//        }
+
         for ($i=0;$i<=5;$i++){
             $festival = new Festival();
-            $festival->setNomFestival($faker->sentence());
-            $festival->setDescription($faker->text(500));
+            $festival->setNom($faker->sentence());
             $festival->setDateDebut($faker->dateTime());
-            $festival->setDateFin($faker->dateTime($festival->getDateDebut()+3));
-            $festival->setIdOrganisateur();
+            $festival->setDateFin($faker->dateTime());
+            $festival->setIdOrganisateur((new Utilisateur())
+                                        ->setRoles(["orga"])
+                                        ->setNom($faker->lastName())
+                                        ->setEmail($faker->email())
+                                        ->setPrenom($faker->firstName())
+                                        ->setPassword("root")
+        );
+            $manager->persist($festival);
         }
-        */
 
 
         // $product = new Product();
