@@ -2,6 +2,33 @@
 
 .sidebar {
     color : #000000;
+    height: 100vh;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .sidebar__content {
+        height: 80%;
+        width: 100%;
+        border-right: $grey-primary-2 solid 1px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 100px;
+
+        ul {
+            margin-top: 20px;
+            font-weight: 600;
+
+            li {
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+        }
+    }
 }
 
 .sidebar {
