@@ -68,14 +68,7 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     .enableSassLoader()
-=======
->>>>>>> 4ca71a9 (added webpack-encore and sidebar skeleton)
-=======
-    .enableSassLoader()
->>>>>>> 7e25fa8 (setup sass and started nav style)
-;
 
 module.exports = Encore.getWebpackConfig();
