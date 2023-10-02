@@ -27,7 +27,7 @@ final class Version20230927115059 extends AbstractMigration
         $this->addSql('DROP TABLE publication');
         $this->addSql('DROP INDEX UNIQ_1D1C63B3AA08CB10 ON utilisateur');
         $this->addSql('DROP INDEX UNIQ_1D1C63B388D20D42 ON utilisateur');
-        $this->addSql('ALTER TABLE utilisateur ADD id_utilisateur INT NOT NULL, ADD nom VARCHAR(255) NOT NULL, ADD prenom VARCHAR(255) NOT NULL, ADD email VARCHAR(255) NOT NULL, ADD mot_de_passe VARCHAR(255) NOT NULL, DROP login, DROP roles, DROP password, DROP adresse_email, DROP nom_photo_profil');
+        $this->addSql('ALTER TABLE utilisateur ADD id_utilisateur INT AUTO_INCREMENT NOT NULL, ADD nom VARCHAR(255) NOT NULL, ADD prenom VARCHAR(255) NOT NULL, ADD email VARCHAR(255) NOT NULL, ADD mot_de_passe VARCHAR(255) NOT NULL, DROP login, DROP roles, DROP password, DROP adresse_email, DROP nom_photo_profil');
     }
 
     public function down(Schema $schema): void
