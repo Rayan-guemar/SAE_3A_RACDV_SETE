@@ -39,9 +39,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Festival::class)]
     private Collection $festivals;
 
+    #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
+    private Collection $demandeFestivals;
+
     public function __construct()
     {
         $this->festivals = new ArrayCollection();
+        $this->demandeFestivals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +166,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($festival->getOrganisateur() === $this) {
                 $festival->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DemandeFestival>
+     */
+    public function getDemandeFestivals(): Collection
+    {
+        return $this->demandeFestivals;
+    }
+
+    public function addDemandeFestival(DemandeFestival $demandeFestival): static
+    {
+        if (!$this->demandeFestivals->contains($demandeFestival)) {
+            $this->demandeFestivals->add($demandeFestival);
+            $demandeFestival->setOrganisateurFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandeFestival(DemandeFestival $demandeFestival): static
+    {
+        if ($this->demandeFestivals->removeElement($demandeFestival)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeFestival->getOrganisateurFestival() === $this) {
+                $demandeFestival->setOrganisateurFestival(null);
             }
         }
 
