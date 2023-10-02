@@ -1,22 +1,20 @@
-<div class="">
-    <div class="">
-        <a href="#">
-            <img class="affiche"
-                    {% if (festival.getAffiche()) != null %}
+<a href="#">
+<div class="fest">
+        <img class="affiche"
+                {#  {% if (festival.getAffiche()) != null %}
                         src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}"
-                    {% else %}
-                        src="{{ asset("img/utilisateurs/afficheX.jpg") }}"
-                    {% endif %}
-                 alt="affiche du festival">
-        </a>
-        <div class="fest-info">
-            <div class="fest-nom">
+                    {% else %} #}
+             src="{{ asset("img/affiches/affiche-XX.jpg") }}"
+                {#  {% endif %} #}
+             alt="affiche du festival">
+    <div class="fest-info">
+        <div class="fest-nom">
             <span>{{ festival.getNom() }}</span>
-            </div>
-            <div class="fest-description">
+        </div>
+        <div class="fest-description">
             <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
-            <span>{{ festival.getLieuxVille() }}</span>
-            </div>
+            <span>{# {{ festival.getLieuxVille() }} #}</span>
         </div>
     </div>
 </div>
+</a>
