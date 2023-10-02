@@ -23,9 +23,21 @@ class Festival
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
+    // #[ORM\ManyToOne(inversedBy: 'festivals')]
+    // #[ORM\JoinColumn(nullable: false)]
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
     #[ORM\ManyToOne(inversedBy: 'festivals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $idOrganisateur = null;
+    private ?Utilisateur $organisateur = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lieu = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $affiche = null;
 
     public function getId(): ?int
     {
@@ -68,15 +80,54 @@ class Festival
         return $this;
     }
 
-    public function getIdOrganisateur(): ?Utilisateur
+
+    public function getDescription(): ?string
     {
-        return $this->idOrganisateur;
+        return $this->description;
     }
 
-    public function setIdOrganisateur(?Utilisateur $idOrganisateur): static
+    public function setDescription(string $description): static
     {
-        $this->idOrganisateur = $idOrganisateur;
+        $this->description = $description;
 
         return $this;
     }
+
+    public function getOrganisateur(): ?Utilisateur
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Utilisateur $organisateur): static
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getLieu(): ?string
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(string $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getAffiche(): ?string
+    {
+        return $this->affiche;
+    }
+
+    public function setAffiche(string $affiche): static
+    {
+        $this->affiche = $affiche;
+
+        return $this;
+    }
+
+   
 }
