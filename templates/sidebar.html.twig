@@ -27,10 +27,11 @@
 				<ul>
 					{# {% if is_granted('ROLE_USER')  %}  #}
 					<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a>Profil</a></li>
-					<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a>Se déconnecter</a></li>
-					{# {% else %}  #}
-					<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a>Se connecter</a></li>
-					{#  {% endif %}  #}
+					{% if is_granted("ROLE_USER")  %}
+						<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a href="{{ path("app_logout") }}" >Se déconnecter</a></li>
+					{% else %} 
+						<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href="{{ path("app_login") }}" >Se connecter</a></li>
+					{% endif %}
 				</ul>
 
 			</div>
