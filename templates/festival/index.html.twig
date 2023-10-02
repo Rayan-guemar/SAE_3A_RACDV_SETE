@@ -1,6 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FestivalController!
-{% endblock %}
+{% block title %}events{% endblock %}
 
-{% block body %}{% endblock %}
+{% block body %}
+
+    <div class="searchbar-wrapper">
+        <h1>
+            Hello {% if is_granted('ROLE_USER') %}{# {% if user.getSexe()="M" %}M. {% else %}Mme. {% endif %}{{ user.getLogin() }} #}{% endif %}
+            !</h1>
+
+        Choisissez le festival auquel vous voulez participer :
+        <div class="box">
+            <input type="text" placeholder="Search...">
+            <a href="#">
+                <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
+            </a>
+        </div>
+    </div>
+    <div class="fest-wrapper">
+    {% for festival in festivals %}
+    {{ include('festival/fest.html.twig',{'festival':festival}) }}
+    {% endfor %}
+    </div>
+{#    <div class="fest-wrapper">#}
+
+{#        <div class="fest">#}
+{#            <div class="fest-affiche">#}
+{#                <a href="#">#}
+{#                    <img class="affiche"#}
+{#                         src="{{ asset("img/affiches/affiche-X.jpg") }}"#}
+{#                         alt="affiche du festival">#}
+{#                </a>#}
+{#                <div class="fest-info">#}
+{#                    <div class="fest-nom">#}
+{#                        <span>caca fest</span>#}
+{#                    </div>#}
+{#                    <div class="fest-description">#}
+{#                        <span>23/08/2024-25/08/2024</span>#}
+{#                        <span>Djerba</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#        <div class="fest">#}
+{#            <a href="#">#}
+{#            <div class="fest-affiche">#}
+{#                    <img class="affiche"#}
+{#                         src="{{ asset("img/affiches/affiche-XX.jpg") }}"#}
+{#                         alt="affiche du festival">#}
+{#                <div class="fest-info">#}
+{#                    <div class="fest-nom">#}
+{#                    <span>caca fest2</span>#}
+{#                    </div>#}
+{#                    <div class="fest-description">#}
+{#                    <span>23/08/2025-25/08/2025</span>#}
+{#                    <span>Djerba</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            </a>#}
+
+{#        </div>#}
+
+{#        <div class="fest">#}
+{#            <div class="fest-affiche">#}
+{#                <a href="#">#}
+{#                    <img class="affiche"#}
+
+{#                         alt="affiche du festival">#}
+{#                </a>#}
+{#                <div class="fest-info">#}
+{#                    <span>caca fest3</span>#}
+{#                    <span> - </span>#}
+{#                    <span>23/08/2026-25/08/2026</span>#}
+{#                    <p>Djerba</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#        <div class="fest">#}
+{#            <div class="fest-affiche">#}
+{#                <a href="#">#}
+{#                    <img class="affiche"#}
+
+{#                         alt="affiche du festival">#}
+{#                </a>#}
+{#                <div class="fest-info">#}
+{#                    <span>caca fest4</span>#}
+{#                    <span> - </span>#}
+{#                    <span>23/08/2027-25/08/2027</span>#}
+{#                    <p>Djerba</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#    </div>#}
+{% endblock %}

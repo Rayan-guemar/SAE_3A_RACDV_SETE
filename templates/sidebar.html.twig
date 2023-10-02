@@ -1,47 +1,41 @@
 {% block sidebar %}
 
-	<div class="sidebar">
-		<div class="sidebar__content">
-			<div class="sidebar__header">
-				<div class="sidebar__title">
-					<h1>Festiflux</h1>
-					<div>On the flux</div>
-				</div>
-			</div>
-
-			<div class="sidebar__actions">
-
-				<div class="sidebar__actions__menu">
-					<h3>MENU</h3>
-					<ul>
-						<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a href="/">Accueil</a>
-						</li>
-						{#  {% if is_granted('ROLE_USER')  %} #}
-						<li><img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a href="">Mes festivals</a>
-						</li>
-						<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="">Ajouter un festival</a>
-						</li>
-						{# {% endif %} #}
-					</ul>
-				</div>
-
-				<div class="sidebar__actions__account">
-					<h3>COMPTE</h3>
-					<ul>
-						{# {% if is_granted('ROLE_USER')  %}  #}
-						<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href="">Profil</a>
-						</li>
-						<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a href="">Se déconnecter</a>
-						</li>
-						{# {% else %}  #}
-						<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_login")}}>Se connecter</a>
-						</li>
-						{#  {% endif %}  #}
-					</ul>
-
-				</div>
+<div class="sidebar">
+	<div class="sidebar__content">
+		<div class="sidebar__header">
+			<div class="sidebar__title">
+				<h1>Festiflux</h1>
+				<div>On the flux</div>
 			</div>
 		</div>
-	</div>
 
+		<div class="sidebar__actions">
+
+			<div class="sidebar__actions__menu">
+				<h3>MENU</h3>
+				<ul>
+					<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a href="{{ path("accueil") }}">Accueil</a></li>
+					{#  {% if is_granted('ROLE_USER')  %} #}
+					<li><img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a>Mes festivals</a></li>
+					<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a>Ajouter un festival</a></li>
+					{# {% endif %} #}
+				</ul>
+			</div>
+
+			<div class="sidebar__actions__account">
+				<h3>COMPTE</h3>
+				<ul>
+					{# {% if is_granted('ROLE_USER')  %}  #}
+					<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a>Profil</a></li>
+					<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a>Se déconnecter</a></li>
+					{# {% else %}  #}
+					<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a>Se connecter</a></li>
+					{#  {% endif %}  #}
+				</ul>
+
+			</div>
+
+		</div>
+	</div>
+</div>
 {% endblock %}

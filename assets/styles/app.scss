@@ -5,13 +5,30 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
-
     list-style-type: none;
+}
+.footer{
+    background-color: #463BC3;
+}
+.main{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 body {
     display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    width: 100%;
 }
 
 @import 'sidebar';
-
+@import "searchbar";
+@import "festivals";
