@@ -44,7 +44,7 @@ class UtilisateurController extends AbstractController
             $em->persist($u);
             $em->flush();
 
-            return $this->redirectToRoute('app_festival');
+            return $this->redirectToRoute('acceuil');
         }
 
 
@@ -58,5 +58,11 @@ class UtilisateurController extends AbstractController
     public function login(): Response
     {
         return $this->render('utilisateur/login.html.twig');
+    }
+
+    #[Route('/deconnexion', name: 'app_logout', methods: ['GET'])]
+    public function logout(): never
+    {
+        throw new \Exception('This should never be reached!');
     }
 }
