@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\DemandeFestival;
 use App\Form\DemandeFestivalType;
+use App\Repository\DemandeFestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,27 +31,6 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-    #[Route('/festival/add', name: 'app_festival_add')]
-    public function add(Request $req, EntityManagerInterface $em): Response {
-        $demandeFestival = new DemandeFestival();
-
-        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
-
-        $form->handleRequest($req);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $demandeFestival->setOrganisateurFestival($this->getUser());
-            $em->persist($demandeFestival);
-            $em->flush();
-            return $this->redirectToRoute('accueil');
-        }
-
-        return $this->render('festival/demandeFestival.html.twig', [
-            'controller_name' => 'FestivalController',
-            'form' => $form->createView()
-        ]);
-    }
-
     #[Route('/festival/{id}', name: 'app_festival_show')]
     public function show(FestivalRepository $repository, int $id): Response {
 
@@ -59,7 +39,7 @@ class FestivalController extends AbstractController {
         if (!$festival) {
             throw $this->createNotFoundException("Le festival n'existe pas");
         }
-        
+
         return $this->render('festival/detailfest.html.twig', [
             'controller_name' => 'FestivalController',
             'festival' => $festival
