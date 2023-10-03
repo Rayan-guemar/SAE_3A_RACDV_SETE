@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste des demandes
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des demandes</h1>
+	<br>
+	<table class="\" table\"">
+		<thead>
+			<tr>
+				<th>Nom Festival</th>
+				<th>Description</th>
+				<th>Organisateur</th>
+				<th>Date Début</th>
+				<th>Date Fin</th>
+				<th>Lieu</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for demande in demandes %}
+				<tr>
+
+					<td>{{ demande.nomFestival }}</td>
+					<td>{{ demande.descriptionFestival }}</td>
+					<td>{{ demande.organisateurFestival.nom }}</td>
+					<td>{{ demande.dateDebutFestival | date("D/M/Y") }}</td>
+					<td>{{ demande.dateFinFestival | date("D/M/Y") }}</td>
+					<td>{{ demande.lieuFestival }}</td>
+					<td>
+						<a href={{path("accept_festival_demande", {"id": demande.id} )}}>Accepter</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="\" 8\"">Aucune demande trouvée</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+
+	</table>
+	<br>
+	<br>
+{% endblock %}
