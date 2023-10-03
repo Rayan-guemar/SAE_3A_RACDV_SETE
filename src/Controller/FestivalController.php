@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Festival;
 use App\Repository\FestivalRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,19 @@ class FestivalController extends AbstractController
         return $this->render('festival/index.html.twig', [
             'controller_name' => 'FestivalController',
             'festivals' => $festivals
+        ]);
+    }
+
+    #[Route('/festival/{id}', name: 'detailfest', methods: ["GET"])]
+    public function detail(#[MapEntity] ?Festival $fest, FestivalRepository $repository ): Response
+    {
+        if($fest == null) {
+            $this->addFlash('error','festival inexistant');
+            return $this->redirectToRoute('accueil');
+        }
+
+        return $this->render('festival/detailfest.html.twig',[
+            'festival'=>$fest
         ]);
     }
 
