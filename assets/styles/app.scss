@@ -7,9 +7,12 @@
     font-family: 'Montserrat', sans-serif;
     list-style-type: none;
 }
-.footer{
-    background-color: #463BC3;
+
+a {
+    text-decoration: none;
+    color: #000;
 }
+
 .main{
     display: flex;
     justify-content: center;
@@ -27,8 +30,21 @@ main {
     flex-direction: column;
     overflow-y: scroll;
     width: 100%;
+    margin-bottom: 100px;
 }
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(57deg, rgba(19, 17, 40, 1) 0%, rgba(70, 59, 195, 1) 100%);
+    color: white;
+}
+
+
 
 @import 'sidebar';
 @import "searchbar";
 @import "festivals";
+@import "detailfest";

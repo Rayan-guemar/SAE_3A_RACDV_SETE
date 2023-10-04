@@ -3,31 +3,28 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <main>
-        {{ form_start(form, {'attr': {'class': ''}}) }}
-        <fieldset>
-            <legend>Inscription</legend>
-            
-            <div class="access-container">
-                {{ form_row(form.email, {'label': 'Email'}) }}
-            </div>
-            
-            <div class="access-container">
-                {{ form_row(form.nom, {'label': 'Nom'}) }}
-            </div>
-            
-            <div class="access-container">
-                {{ form_row(form.prenom, {'label': 'Prénom'}) }}
-            </div>
-            
-            <div class="access-container">
-                {{ form_row(form.plain_mot_de_passe, {'label': 'Mot de passe'}) }}
-            </div>
+  <main class="registration-form">
+    {{ form_start(form, {'attr': {'class': 'registration-form__form'}}) }}
 
-            {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': ''}}) }}
-        </fieldset>
-        
-        {{ form_rest(form) }}
-        {{ form_end(form) }}
-    </main>
+      <div class="registration-form__field">
+        {{ form_row(form.email, {'label': 'Email', 'attr': {'class': 'registration-form__input'}}) }}
+      </div>
+
+      <div class="registration-form__field">
+        {{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'registration-form__input'}}) }}
+      </div>
+
+      <div class="registration-form__field">
+        {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'class': 'registration-form__input'}}) }}
+      </div>
+
+      <div class="registration-form__field">
+        {{ form_row(form.plain_mot_de_passe, {'label': 'Mot de passe', 'attr': {'class': 'registration-form__input'}}) }}
+      </div>
+
+      {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': 'registration-form__submit'}}) }}
+      
+      {{ form_rest(form) }}
+    {{ form_end(form) }}
+  </main>
 {% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -33,6 +35,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
+
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Festival::class)]
+    private Collection $festivals;
+
+    #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
+    private Collection $demandeFestivals;
+
+    public function __construct()
+    {
+        $this->festivals = new ArrayCollection();
+        $this->demandeFestivals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -124,6 +138,66 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Festival>
+     */
+    public function getFestivals(): Collection
+    {
+        return $this->festivals;
+    }
+
+    public function addFestival(Festival $festival): static
+    {
+        if (!$this->festivals->contains($festival)) {
+            $this->festivals->add($festival);
+            $festival->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFestival(Festival $festival): static
+    {
+        if ($this->festivals->removeElement($festival)) {
+            // set the owning side to null (unless already changed)
+            if ($festival->getOrganisateur() === $this) {
+                $festival->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DemandeFestival>
+     */
+    public function getDemandeFestivals(): Collection
+    {
+        return $this->demandeFestivals;
+    }
+
+    public function addDemandeFestival(DemandeFestival $demandeFestival): static
+    {
+        if (!$this->demandeFestivals->contains($demandeFestival)) {
+            $this->demandeFestivals->add($demandeFestival);
+            $demandeFestival->setOrganisateurFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandeFestival(DemandeFestival $demandeFestival): static
+    {
+        if ($this->demandeFestivals->removeElement($demandeFestival)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeFestival->getOrganisateurFestival() === $this) {
+                $demandeFestival->setOrganisateurFestival(null);
+            }
+        }
 
         return $this;
     }

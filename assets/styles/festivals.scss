@@ -1,45 +1,57 @@
 @import "_variables";
 
-.fest-wrapper{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 10px;
+.fest-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  justify-items: center;
+  align-items: center;
+  grid-row-gap: 35px;
+  grid-column-gap: 20px;
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
 }
-.fest{
+
+.fest {
   align-items: flex-start;
   flex-basis: auto;
   width: 450px;
   height: 279px;
   flex-shrink: 0;
   border-radius: 30px;
-  border: 0.1rem solid #000000;}
-.affiche{
+  box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.75);
+
+  &:hover {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  }
+}
+
+.affiche {
   border-radius: 30px 30px 0 0;
   width: 100%;
   height: 220px;
   object-position: top;
   object-fit: cover;
 }
-.fest-info{
+
+.fest-info {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
-.fest-nom{
+
+.fest-nom {
   font-weight: bold;
   font-size: large;
 }
-.fest-description{
+
+.fest-dateEtLieux {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
-}
-.fest-wrapper a{
-  text-decoration: none;
-  color: black;
 }

@@ -1,4 +1,4 @@
-<a href="#">
+<a href="{{ path('detailfest', {'id' : festival.getId()}) }}">
 <div class="fest">
         <img class="affiche"
                 {#  {% if (festival.getAffiche()) != null %}
@@ -11,7 +11,7 @@
         <div class="fest-nom">
             <span>{{ festival.getNom() }}</span>
         </div>
-        <div class="fest-description">
+        <div class="fest-dateEtLieux">
             <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
             <span>{# {{ festival.getLieuxVille() }} #}</span>
         </div>
