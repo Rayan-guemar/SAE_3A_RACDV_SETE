@@ -11,12 +11,12 @@
 
         Choisissez le festival auquel vous voulez participer :
         {{ form_start(form) }}
-        <button class="box">
-            <input type="text" placeholder={{ form_widget(form.q) }}>
-            <a href="#">
-                <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
-            </a>
-        </button>
+        <div class="box">
+           {{ form_widget(form.q) }}
+            <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
+            <button>
+            </button>
+        </div>
         {{ form_end(form) }}
     </div>
     <div class="fest-wrapper">

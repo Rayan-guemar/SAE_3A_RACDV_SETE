@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\DemandeFestival;
 use App\Form\DemandeFestivalType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class FestivalController extends AbstractController
 {
@@ -26,15 +25,12 @@ class FestivalController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($searchData);
-//            $searchData->page = $request->query->getInt('page', 1);
-//            $festivals = $repository->findBy(['nom' => ('%' . $searchData->q . '%')]);
-//
-//
-//            return $this->render('festival/index.html.twig', [
-//                'form' => $form->createView(),
-//                'festivals' => $festivals
-//            ]);
+            $festivals = $repository->findBySearch($searchData);
+
+            return $this->render('festival/index.html.twig', [
+                'form' => $form->createView(),
+                'festivals' => $festivals
+            ]);
         }
         $festivals=$repository->findAll();
         return $this->render('festival/index.html.twig', [
