@@ -11,8 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
-{
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -42,24 +41,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
     private Collection $demandeFestivals;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getEmail(): ?string
-    {
+    public function getEmail(): ?string {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
-    {
+    public function setEmail(string $email): static {
         $this->email = $email;
 
         return $this;
@@ -70,16 +65,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
-    {
+    public function getUserIdentifier(): string {
         return (string) $this->email;
     }
 
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
-    {
+    public function getRoles(): array {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
@@ -87,8 +80,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
+    public function setRoles(array $roles): static {
         $this->roles = $roles;
 
         return $this;
@@ -97,13 +89,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
-    {
+    public function getPassword(): string {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
-    {
+    public function setPassword(string $password): static {
         $this->password = $password;
 
         return $this;
@@ -112,31 +102,26 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials(): void
-    {
+    public function eraseCredentials(): void {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
-    {
+    public function getPrenom(): ?string {
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): static
-    {
+    public function setPrenom(string $prenom): static {
         $this->prenom = $prenom;
 
         return $this;
@@ -145,13 +130,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Festival>
      */
-    public function getFestivals(): Collection
-    {
+    public function getFestivals(): Collection {
         return $this->festivals;
     }
 
-    public function addFestival(Festival $festival): static
-    {
+    public function addFestival(Festival $festival): static {
         if (!$this->festivals->contains($festival)) {
             $this->festivals->add($festival);
             $festival->setOrganisateur($this);
@@ -160,8 +143,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeFestival(Festival $festival): static
-    {
+    public function removeFestival(Festival $festival): static {
         if ($this->festivals->removeElement($festival)) {
             // set the owning side to null (unless already changed)
             if ($festival->getOrganisateur() === $this) {
@@ -175,13 +157,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, DemandeFestival>
      */
-    public function getDemandeFestivals(): Collection
-    {
+    public function getDemandeFestivals(): Collection {
         return $this->demandeFestivals;
     }
 
-    public function addDemandeFestival(DemandeFestival $demandeFestival): static
-    {
+    public function addDemandeFestival(DemandeFestival $demandeFestival): static {
         if (!$this->demandeFestivals->contains($demandeFestival)) {
             $this->demandeFestivals->add($demandeFestival);
             $demandeFestival->setOrganisateurFestival($this);
@@ -190,8 +170,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeDemandeFestival(DemandeFestival $demandeFestival): static
-    {
+    public function removeDemandeFestival(DemandeFestival $demandeFestival): static {
         if ($this->demandeFestivals->removeElement($demandeFestival)) {
             // set the owning side to null (unless already changed)
             if ($demandeFestival->getOrganisateurFestival() === $this) {

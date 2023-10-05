@@ -4,65 +4,33 @@ namespace App\Controller;
 
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+class UtilisateurController extends AbstractController {
 
-class UtilisateurController extends AbstractController
-{
+    #[Route('/user/profile/{id}', name: 'app_user_profile')]
+    public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
 
+        $u = $utilisateurRepository->find($id);
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
 
-    #[Route('/inscription', name: 'inscription', methods: ['GET', 'POST'])]
-    public function inscription(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $u = new Utilisateur();
+        $loggedInUser = $this->getUser();
 
-        $f = $this->createForm(InscriptionType::class, $u, [
-            'action' => $this->generateUrl('inscription'),
-            'method' => 'POST',
-        ]);
+        $isCurrentUser = $loggedInUser && $loggedInUser->getUserIdentifier() != $u->getUserIdentifier();
 
-        $f->handleRequest($req);
-        if ($f->isSubmitted() && $f->isValid()) {
-            if (!$f->isValid()) {
-                $errors = $f->getErrors(true);
-                $flashBag = $requestStack->getSession()->getFlashBag();
-                foreach ($errors as $error) {
-                    $flashBag->add("error", $error->getMessage());
-                }
-            }
-
-            $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
-            $u->setPassword($hashedPassword);
-
-            $em->persist($u);
-            $em->flush();
-
-            return $this->redirectToRoute('acceuil');
-        }
-
-
-        return $this->render('utilisateur/inscription.html.twig', [
+        return $this->render('utilisateur/profile.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'form' => $f->createView(),
+            'utilisateur' => $u,
+            'isCurrentUser' => $isCurrentUser,
         ]);
-    }
-
-    #[Route('/connexion', name: 'app_login', methods: ['GET', 'POST'])]
-    public function login(): Response
-    {
-        return $this->render('utilisateur/login.html.twig');
-    }
-
-    #[Route('/deconnexion', name: 'app_logout', methods: ['GET'])]
-    public function logout(): never
-    {
-        throw new \Exception('This should never be reached!');
     }
 }

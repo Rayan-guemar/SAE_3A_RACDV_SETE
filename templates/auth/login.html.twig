@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+	<h1 class="login-form__title">Connexion</h1>
+
+	<form action="{{ path('app_auth_login') }}" method="post" class="login-form">
+		<div class="login-form__field">
+			<input placeholder="email" type="text" name="_username" class="login-form__input">
+		</div>
+
+		<div class="login-form__field">
+			<input placeholder="mot de passe" type="password" name="_password" class="login-form__input">
+		</div>
+
+		<div class="login-form__actions">
+			<button type="submit" class="login-form__submit">Se connecter</button>
+			<div class="login-form__link">
+				Vous n'avez pas de compte ?
+				<a href="{{ path("app_auth_register") }}" class="login-form__link--register">S'inscrire</a>
+			</div>
+		</div>
+	</form>
+{% endblock %}

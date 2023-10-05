@@ -11,28 +11,33 @@ use App\Form\DemandeFestivalType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class FestivalController extends AbstractController
-{
-    #[Route('/', name: 'accueil')]
-    public function index(FestivalRepository $repository): Response
-    {
-        $festivals=$repository->findAll();
+class FestivalController extends AbstractController {
+
+
+    #[Route('/', name: 'home')]
+    public function index(): Response {
+        return $this->redirectToRoute('app_festivall_all');
+    }
+
+
+    #[Route('/festival/all', name: 'app_festivall_all')]
+    public function all(FestivalRepository $repository): Response {
+        $festivals = $repository->findAll();
         return $this->render('festival/index.html.twig', [
             'controller_name' => 'FestivalController',
             'festivals' => $festivals
         ]);
     }
 
-    #[Route('/festival/ask', name: 'festival_ask')]
-    public function ask(Request $req, EntityManagerInterface $em ): Response
-    {
+    #[Route('/festival/add', name: 'app_festival_add')]
+    public function add(Request $req, EntityManagerInterface $em): Response {
         $demandeFestival = new DemandeFestival();
 
         $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
 
         $form->handleRequest($req);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $demandeFestival->setOrganisateurFestival($this->getUser());
             $em->persist($demandeFestival);
             $em->flush();
