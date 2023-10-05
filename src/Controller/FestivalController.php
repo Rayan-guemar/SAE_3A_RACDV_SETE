@@ -50,4 +50,19 @@ class FestivalController extends AbstractController {
             'form' => $form->createView()
         ]);
     }
+
+    #[Route('/festival/{id}', name: 'app_festival_show')]
+    public function show(FestivalRepository $repository, int $id): Response {
+
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+        
+        return $this->render('festival/detailfest.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival
+        ]);
+    }
 }

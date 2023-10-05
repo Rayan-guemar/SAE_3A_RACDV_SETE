@@ -1,4 +1,4 @@
-<a href="{{ path('detailfest', {'id' : festival.getId()}) }}">
+<a href="{{ path('app_festival_show', {'id' : festival.getId()}) }}">
 	<div class="fest">
 		<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
 		<div class="fest-info">
