@@ -3,7 +3,8 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-  <h1 class="registration-form__title">Créer un compte</h1>
+  <div class="form-wrapper">
+    <h1 class="registration-form__title">Créer un compte</h1>
 
     {{ form_start(form, {'attr': {'class': 'registration-form__form'}}) }}
 
@@ -27,4 +28,5 @@
       
       {{ form_rest(form) }}
     {{ form_end(form) }}
+  </div>
 {% endblock %}
