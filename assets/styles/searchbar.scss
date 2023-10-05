@@ -1,30 +1,63 @@
 .box {
-  height: 30px;
-  display: flex;
-  cursor: pointer;
-  padding: 10px 20px;
-  background: white;
-  border-radius: 30px;
-  align-items: center;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.75);
+  position: relative;
+  width: 70%;
+  margin: 0 auto 50px;
+  height: fit-content;
 
-  &:hover input {
-    width: 1000px;
-    transition: all 0.5s linear;
-    background: transparent;
+  &:hover a,
+  input:focus~a {
+    width: 58px;
+
+    span {
+      opacity: 0;
+    }
+  }
+
+  input:focus {
+    outline: none;
   }
 
   input {
-    width: 0;
-    outline: none;
-    border: none;
-    font-weight: 1000;
+    width: 100%;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.75);
+    border-width: 0;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 17px;
+    padding: 10px 20px;
+  }
+
+  a {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0px;
+    padding: 10px 20px;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 30px;
+    transition: .5s linear;
+    overflow: hidden;
+
+    span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      font-weight: 500;
+      font-size: 20px;
+      display: grid;
+      place-items: center;
+      text-wrap: nowrap;
+      
+      transition: .5s linear;
+    }
   }
 }
 
-img#saf {
-  margin-top: 7px;
-}
+img#saf {}
 
 .searchbar-wrapper {
   margin: 1em auto;

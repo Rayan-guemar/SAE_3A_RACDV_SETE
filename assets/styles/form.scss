@@ -31,7 +31,7 @@ form {
         font-weight: 700;
     }
 
-    & > div {
+    &>div {
         width: 100%;
         position: relative;
 
@@ -42,7 +42,8 @@ form {
         //     font-size: large;
         // }
 
-        input, textarea {
+        input,
+        textarea {
             border: 3px solid $grey-primary;
             width: 100%;
             height: 100%;
@@ -68,16 +69,16 @@ form {
         }
     }
 
-    & > button {
+    &>button {
         border: none;
         border-radius: 20px;
         background-color: black;
         color: white;
-        font-size:larger;
+        font-size: larger;
         font-weight: bolder;
         width: 100%;
         height: 70px;
-    }   
+    }
 }
 
 .form-center {
