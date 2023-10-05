@@ -21,19 +21,19 @@
         </div>
         <div class="fest-description">
             <div class="title">
-                EDITO
+                Description :
             </div>
             <div class="main-desc">
                 {{ festival.description() }}
             </div>
             <div class="title">
-                LOCALISATION
+                Localisation :
             </div>
             <div id="mapid"></div>
         </div>
         <div class="button-benevole">
             <a {% if is_granted('ROLE_USER') %} href="{{ path("#") }}" {% else %}
-               href="{{ path("app_login") }}" {% endif %}>Devenez bénévole</a>
+               href="{{ path("app_auth_login") }}" {% endif %}>Devenez bénévole</a>
         </div>
         <div class="space"></div>
     </div>
