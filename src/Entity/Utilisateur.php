@@ -46,6 +46,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
+        $this->creneaux = new ArrayCollection();
+        $this->creneauxAffectes = new ArrayCollection();
     }
 
     public function getId(): ?int
