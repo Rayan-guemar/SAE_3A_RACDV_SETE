@@ -1,0 +1,85 @@
+@import "_variables.scss";
+
+$input-padding: 20px;
+
+h1 {
+    font-weight: 900;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 50px;
+    width: 45%;
+
+    a {
+        color: black;
+        font-size: large;
+        font-weight: 700;
+    }
+
+    & > div {
+        width: 100%;
+        position: relative;
+
+        // label {
+        //     position: absolute;
+        //     top: $input-padding;
+        //     left: calc($input-padding + 20px);
+        //     font-size: large;
+        // }
+
+        input {
+            border: 3px solid $grey-primary;
+            width: 100%;
+            height: 100%;
+            padding: $input-padding;
+            border-radius: 20px;
+            font-size: large;
+            font-weight: 700;
+
+            &:focus {
+                outline: none;
+                border: 3px solid black;
+            }
+        }
+    }
+
+    & > button {
+        border: none;
+        border-radius: 20px;
+        background-color: black;
+        color: white;
+        font-size:larger;
+        font-weight: bolder;
+        width: 100%;
+        height: 70px;
+    }   
+}
+
+.form-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+}
+
+input[type='password'] {
+    font-family: Verdana;
+    letter-spacing: 0.125em;
+
+    &::placeholder {
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: normal;
+    }
+}

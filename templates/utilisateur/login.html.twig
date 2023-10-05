@@ -5,18 +5,20 @@
 
   <form action="{{ path('app_login') }}" method="post" class="login-form">
     <div class="login-form__field">
-      <input placeholder="email" type="text" name="_username" class="login-form__input">
+      <input placeholder="Email" type="text" name="_username" class="login-form__input">
     </div>
 
     <div class="login-form__field">
-      <input placeholder="mot de passe" type="password" name="_password" class="login-form__input">
+      <input placeholder="Mot de passe" type="password" name="_password" class="login-form__input">
     </div>
 
-    <div class="login-form__actions">
+    <a href="" style="position: relative; top: -15px">Mot de passe oublié</a>
+
+    <div class="login-form__actions form-center">
       <button type="submit" class="login-form__submit">Se connecter</button>
-      <div class="login-form__link">
-        Vous n'avez pas de compte ? <a href="{{ path("inscription") }}" class="login-form__link--register">S'inscrire</a>
-      </div>
+    </div>
+    <div class="login-form__link form-center">
+      Vous n'avez pas de compte ? <a style="margin-left: 5px;" href="{{ path("inscription") }}" class="login-form__link--register">S'inscrire</a>
     </div>
   </form>
 {% endblock %}
