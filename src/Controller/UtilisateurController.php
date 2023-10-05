@@ -4,16 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UtilisateurController extends AbstractController {
 
@@ -31,6 +26,25 @@ class UtilisateurController extends AbstractController {
             'controller_name' => 'UtilisateurController',
             'utilisateur' => $u,
             'isCurrentUser' => $isCurrentUser,
+        ]);
+    }
+
+    #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
+    public function user_festivals(FestivalRepository $festivalRepository): Response {
+        $u = $this->getUser();
+
+        if (!$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $fs = $festivalRepository->findBy([
+            'organisateur' => $u->getId()
+        ]);
+
+        return $this->render('utilisateur/user_festivals.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'festivals' => $fs,
         ]);
     }
 }
