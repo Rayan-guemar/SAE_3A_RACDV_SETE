@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\DemandeFestival;
 use App\Entity\Festival;
+use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,14 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DemandeFestivalController extends AbstractController {
-    #[Route('/demandefestival', name: 'app_demandefesitval_all')]
+    #[Route('/demandefestival', name: 'app_demandefestival_all')]
     public function all(DemandeFestivalRepository $demandeFestivalRepository): Response {
 
 
         // TODO : vérifier que l'utilisateur est bien un admin
         $demandesFestivals = $demandeFestivalRepository->findAll();
 
-        return $this->render('demandefestival/index.html.twig', [
+        return $this->render('demande_festival/index.html.twig', [
             'controller_name' => 'FestivalController',
             'demandes' => $demandesFestivals
         ]);
@@ -37,10 +38,10 @@ class DemandeFestivalController extends AbstractController {
             $demandeFestival->setOrganisateurFestival($this->getUser());
             $em->persist($demandeFestival);
             $em->flush();
-            return $this->redirectToRoute('accueil');
+            return $this->redirectToRoute('app_demandefestival_all');
         }
 
-        return $this->render('demandefestival/demandeFestival.html.twig', [
+        return $this->render('demande_festival/add.html.twig', [
             'controller_name' => 'FestivalController',
             'form' => $form->createView()
         ]);
@@ -68,6 +69,6 @@ class DemandeFestivalController extends AbstractController {
         $em->flush();
 
 
-        return $this->redirectToRoute('app_demandefestival_all');
+        return $this->redirectToRoute('home');
     }
 }

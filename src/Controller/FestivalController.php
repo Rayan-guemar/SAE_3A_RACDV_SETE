@@ -18,11 +18,11 @@ class FestivalController extends AbstractController {
 
     #[Route('/', name: 'home')]
     public function index(): Response {
-        return $this->redirectToRoute('app_festivall_all');
+        return $this->redirectToRoute('app_festival_all');
     }
 
 
-    #[Route('/festival/all', name: 'app_festivall_all')]
+    #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository): Response {
         $festivals = $repository->findAll();
         return $this->render('festival/index.html.twig', [

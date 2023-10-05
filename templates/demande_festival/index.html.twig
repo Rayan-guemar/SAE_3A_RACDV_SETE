@@ -28,7 +28,7 @@
 					<td>{{ demande.dateFinFestival | date("D/M/Y") }}</td>
 					<td>{{ demande.lieuFestival }}</td>
 					<td>
-						<a href={{path("accept_demandefestival_accept", {"id": demande.id} )}}>Accepter</a>
+						<a href={{path("app_demandefestival_accept", {"id": demande.id} )}}>Accepter</a>
 					</td>
 				</tr>
 			{% else %}
