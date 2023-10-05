@@ -11,13 +11,13 @@
 		<div class="login-form__field">
 			<input placeholder="mot de passe" type="password" name="_password" class="login-form__input">
 		</div>
+		<a href="" style="position: relative; top: -15px;">Mot de passe oublié</a>
 
-		<div class="login-form__actions">
-			<button type="submit" class="login-form__submit">Se connecter</button>
-			<div class="login-form__link">
-				Vous n'avez pas de compte ?
-				<a href="{{ path("app_auth_register") }}" class="login-form__link--register">S'inscrire</a>
-			</div>
+		<button type="submit" class="login-form__submit">Se connecter</button>
+
+		<div class="form-center">
+			Vous n'avez pas de compte ?
+			<a href="{{ path("app_auth_register") }}" style="margin-left: 5px;" class="login-form__link--register">S'inscrire</a>
 		</div>
 	</form>
 {% endblock %}
