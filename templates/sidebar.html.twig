@@ -17,7 +17,7 @@
 						<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a href="{{ path("home") }}">Accueil</a>
 						</li>
 						{% if is_granted('ROLE_USER')  %}
-							<li><img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a>Mes festivals</a>
+							<li><img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a href={{path("app_user_festivals")}}>Mes festivals</a>
 							</li>
 							<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_demandefestival_add") }}">Ajouter un festival</a>
 							</li>

@@ -31,7 +31,7 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-    #[Route('/festival/{id}', name: 'app_festival_show')]
+    #[Route('/festival/{id}', name: 'app_festival_detail')]
     public function show(FestivalRepository $repository, int $id): Response {
 
         $festival = $repository->find($id);
