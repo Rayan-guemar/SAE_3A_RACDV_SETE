@@ -5,17 +5,31 @@
 {% block body %}
 
     <div class="searchbar-wrapper">
-        <h1>
-            Hello {% if is_granted('ROLE_USER') %}{# {% if user.getSexe()="M" %}M. {% else %}Mme. {% endif %}{{ user.getLogin() }} #}{% endif %}
-            !</h1>
 
+
+        Choisissez le festival auquel vous voulez participer :
+        {{ form_start(form) }}
         <div class="box">
-            <input type="text" placeholder="Search...">
-            <a href="#">
-                <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
-                <span>Rechercher un festival</span>
-            </a>
+           {{ form_widget(form.q) }}
+            <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
+            <button>
+            </button>
+
+
+{#        <div class="box">#}
+  
+{#          <input type="text" placeholder="Search...">#}
+  
+{#          <a href="#">#}
+  
+{#              <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">#}
+  
+{#              <span>Rechercher un festival</span>#}
+  
+{#          </a>#}
+
         </div>
+        {{ form_end(form) }}
     </div>
     <div class="fest-wrapper">
     {% for festival in festivals %}

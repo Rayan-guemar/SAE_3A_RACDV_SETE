@@ -1,36 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}festivals
-{% endblock %}
 
+{% block title %}festivals{% endblock %}
+{% block overhead %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="{{ asset('js/map.js') }}" defer></script>
+{% endblock %}
 {% block body %}
-	<div class="detailFesival">
-		<img class="affiche" id="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
-		<div class="fest-info" id="fest-info">
-			<div class="fest-nom">
-				<span>{{ festival.getNom() }}</span>
-			</div>
-			<div class="fest-dateEtLieux">
-				<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
-			</div>
-		</div>
-		<div class="fest-description">
-			<div class="title">
-				Description :
-			</div>
-			<div class="main-desc">
-				{{ festival.description() }}
-			</div>
-			<div class="title">
-				Localisation :
-			</div>
-			<div id="mapid"></div>
-		</div>
-
-		{% if is_granted('ROLE_USER') %}
-			<div class="button-benevole">
-				<a href="{{ path("app_auth_login") }}">Devenez bénévole</a>
-			</div>
-		{% endif %}
-	</div>
+    <div class="detailFesival">
+        <img class="affiche" id="affiche"
+                {#  {% if (festival.getAffiche()) != null %}
+                        src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}"
+                    {% else %} #}
+             src="{{ asset("img/affiches/affiche-XX.jpg") }}"
+                {#  {% endif %} #}
+             alt="affiche du festival">
+        <div class="fest-info" id="fest-info">
+            <div class="fest-nom">
+                <span>{{ festival.getNom() }}</span>
+            </div>
+            <div class="fest-dateEtLieux">
+                <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+            </div>
+        </div>
+        <div class="fest-description">
+            <div class="title">
+                EDITO
+            </div>
+            <div class="main-desc">
+                {{ festival.description() }}
+            </div>
+            <div class="title">
+                LOCALISATION
+            </div>
+            <div id="mapid"></div>
+        </div>
+        <div class="button-benevole">
+            <a {% if is_granted('ROLE_USER') %} href="{{ path("#") }}" {% else %}
+               href="{{ path("app_login") }}" {% endif %}>Devenez bénévole</a>
+        </div>
+    </div>
 {% endblock %}
+

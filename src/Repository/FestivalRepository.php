@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Festival;
+use App\Model\SearchData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,29 @@ class FestivalRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * Get published fests thanks to Search Data value
+     *
+     * @param SearchData $searchData
+     * @return array
+     */
+    public function findBySearch(SearchData $searchData): array
+    {
+        $data = $this->createQueryBuilder('p');
+
+        if (!empty($searchData->q)) {
+            $data = $data
+                ->Where('p.nom LIKE :q')
+                ->setParameter('q', "%{$searchData->q}%");
+        }
+
+
+        $data = $data
+            ->getQuery()
+            ->getResult();
+
+
+        return $data;
+    }
+
 }
