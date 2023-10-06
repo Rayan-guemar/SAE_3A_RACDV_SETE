@@ -35,13 +35,6 @@ form {
         width: 100%;
         position: relative;
 
-        // label {
-        //     position: absolute;
-        //     top: $input-padding;
-        //     left: calc($input-padding + 20px);
-        //     font-size: large;
-        // }
-
         input,
         textarea {
             border: 3px solid $grey-primary;
@@ -66,6 +59,11 @@ form {
             &::-webkit-scrollbar-track {
                 width: 20px;
             }
+        }
+
+        select {
+            border-width: 0 2px 0;
+            padding: 5px;
         }
     }
 
@@ -103,4 +101,36 @@ input[type='password'] {
         font-family: 'Montserrat', sans-serif;
         letter-spacing: normal;
     }
+}
+
+input[type='date'] {
+    color: #757575;
+}
+
+input[type='file'] {
+    position: relative;
+    font-size: 15px;
+
+    &::-webkit-file-upload-button {
+        display: none;
+    }
+}
+
+input[type='file']:invalid {
+    color: #0000;
+}
+
+label:has(~input[type='file']:invalid) {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+label:has(~input[type='file']) {
+    display: none;
+    font-size: 18px;
+    font-weight: 700;
+    color: #757575;
 }

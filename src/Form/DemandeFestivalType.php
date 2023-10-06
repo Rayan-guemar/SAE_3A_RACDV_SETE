@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\DemandeFestival;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\AbstractType;
@@ -24,6 +25,7 @@ class DemandeFestivalType extends AbstractType
             ])
             ->add('dateDebutFestival' , DateType::class, [
                 'label' => 'Date de début du festival',
+                'widget' => 'single_text',
                 'attr' => [
                     'placeholder' => 'Date de début du festival'
                 ],
@@ -31,6 +33,7 @@ class DemandeFestivalType extends AbstractType
             ])
             ->add('dateFinFestival' , DateType::class, [
                 'label' => 'Date de fin du festival',
+                'widget' => 'single_text',
                 'attr' => [
                     'placeholder' => 'Date de fin du festival'
                 ],
@@ -48,8 +51,7 @@ class DemandeFestivalType extends AbstractType
                     'placeholder' => 'Lieu du festival'
                 ]
             ])
-            ->add('afficheFestival' , TextType::class, [
-                'label' => 'Lien de l\'affiche du festival',
+            ->add('afficheFestival' , FileType::class, [
                 'attr' => [
                     'placeholder' => 'Affiche du festival'
                 ]
