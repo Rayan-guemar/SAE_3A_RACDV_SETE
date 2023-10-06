@@ -13,11 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\DemandeFestival;
 use App\Form\DemandeFestivalType;
+use App\Repository\DemandeFestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
+
 
 class FestivalController extends AbstractController
 {
-    #[Route('/', name: 'accueil')]
+    #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository, Request $request): Response
     {
         $searchData = new SearchData();
@@ -39,38 +41,28 @@ class FestivalController extends AbstractController
         ]);
     }
 
-    #[Route('/festival/{id}', name: 'detailfest', methods: ["GET"])]
-    public function detail(#[MapEntity] ?Festival $fest, FestivalRepository $repository ): Response
-    {
-        if($fest == null) {
-            $this->addFlash('error','festival inexistant');
-            return $this->redirectToRoute('accueil');
-        }
 
-        return $this->render('festival/detailfest.html.twig',[
-            'festival'=>$fest
+    #[Route('/festival/all', name: 'app_festival_all')]
+    public function all(FestivalRepository $repository): Response {
+        $festivals = $repository->findAll();
+        return $this->render('festival/index.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festivals' => $festivals
         ]);
     }
 
-    #[Route('/festival/ask', name: 'festival_ask')]
-    public function ask(Request $req, EntityManagerInterface $em ): Response
-    {
-        $demandeFestival = new DemandeFestival();
+    #[Route('/festival/{id}', name: 'app_festival_detail')]
+    public function show(FestivalRepository $repository, int $id): Response {
 
-        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
+        $festival = $repository->find($id);
 
-        $form->handleRequest($req);
-
-        if($form->isSubmitted() && $form->isValid()){
-            $demandeFestival->setOrganisateurFestival($this->getUser());
-            $em->persist($demandeFestival);
-            $em->flush();
-            return $this->redirectToRoute('accueil');
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
         }
 
-        return $this->render('festival/demandeFestival.html.twig', [
+        return $this->render('festival/detailfest.html.twig', [
             'controller_name' => 'FestivalController',
-            'form' => $form->createView()
+            'festival' => $festival
         ]);
     }
 }

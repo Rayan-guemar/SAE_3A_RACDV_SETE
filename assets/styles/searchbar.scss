@@ -1,27 +1,22 @@
 .box {
-  height: 30px;
-  display: flex;
-  cursor: pointer;
-  padding: 10px 20px;
-  background: white;
-  border-radius: 30px;
-  align-items: center;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.75);
+  position: relative;
+  width: 70%;
+  margin: 0 auto 50px;
+  height: fit-content;
 
-  &:hover input {
-    width: 1000px;
-    transition: all 0.5s linear;
-    background: transparent;
+  &:hover a,
+  input:focus~a {
+    width: 58px;
+
+    span {
+      opacity: 0;
+    }
   }
 
-  input {
-    width: 0;
+  input:focus {
     outline: none;
-    border: none;
-    font-weight: 1000;
   }
-}
-
+  
 .searchbar-wrapper {
   margin: 1em auto;
   max-width: 800px;

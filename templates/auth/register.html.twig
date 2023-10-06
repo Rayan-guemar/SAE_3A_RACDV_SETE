@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+  <div class="form-wrapper">
+    <h1 class="registration-form__title">Créer un compte</h1>
+
+    {{ form_start(form, {'attr': {'class': 'registration-form__form'}}) }}
+
+      {{ form_row(form.email, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Email'}}) }}
+
+      <div class="form-row">
+        {{ form_row(form.nom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Nom'}}) }}
+
+        {{ form_row(form.prenom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Prénom'}}) }}
+      </div>
+
+      {{ form_row(form.plain_mot_de_passe, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Mot de passe'}}) }}
+
+      {{ form_row(form.confirmation_mdp, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Confirmation mot de passe'}}) }}
+
+      {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': 'registration-form__submit'}}) }}
+
+      <div class="form-center">
+        Vous avez déjà un compte ? <a style="margin-left: 5px;" href="{{ path("app_auth_login") }}" class="login-form__link--register">Se connecter</a>
+      </div>
+      
+      {{ form_rest(form) }}
+    {{ form_end(form) }}
+  </div>
+{% endblock %}

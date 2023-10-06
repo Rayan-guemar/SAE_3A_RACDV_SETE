@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+
+{% block title %}Mes Festivals
+{% endblock %}
+
+
+{% block body %}
+	<h1 class="login-form__title">Mes Festival</h1>
+
+
+	{% for festival in festivals %}
+		<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+			<div class="fest">
+				<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
+				<div class="fest-info">
+					<div class="fest-nom">
+						<span>{{ festival.getNom() }}</span>
+					</div>
+					<div class="fest-dateEtLieux">
+						<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+						<span>{# {{ festival.getLieuxVille() }} #}</span>
+					</div>
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+
+{% endblock %}

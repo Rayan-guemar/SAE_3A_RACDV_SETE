@@ -28,9 +28,11 @@ body {
 main {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
+    align-items: center;
+    overflow-y: auto;
     width: 100%;
     margin-bottom: 100px;
+    height: 100vh;
 }
 
 footer {
@@ -48,3 +50,4 @@ footer {
 @import "searchbar";
 @import "festivals";
 @import "detailfest";
+@import "form";
