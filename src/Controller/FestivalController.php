@@ -20,8 +20,14 @@ use Doctrine\ORM\EntityManagerInterface;
 class FestivalController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(FestivalRepository $repository, Request $request): Response
+    public function index(FestivalRepository $repository): Response
     {
+        return $this->redirectToRoute('app_festival_all');
+    }
+
+
+    #[Route('/festival/all', name: 'app_festival_all')]
+    public function all(FestivalRepository $repository, Request $request): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
 
@@ -37,16 +43,6 @@ class FestivalController extends AbstractController
         $festivals=$repository->findAll();
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
-            'festivals' => $festivals
-        ]);
-    }
-
-
-    #[Route('/festival/all', name: 'app_festival_all')]
-    public function all(FestivalRepository $repository): Response {
-        $festivals = $repository->findAll();
-        return $this->render('festival/index.html.twig', [
-            'controller_name' => 'FestivalController',
             'festivals' => $festivals
         ]);
     }
