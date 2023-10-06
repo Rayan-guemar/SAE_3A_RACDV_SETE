@@ -31,6 +31,9 @@ class InscriptionType extends AbstractType {
                     new Regex("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,30}$# ", 'au moins une minuscule, une majuscule et un chiffre')
                 ],
             ])
+            ->add('confirmation_mdp', PasswordType::class, [
+                "mapped" => false
+            ])
             ->add('inscription', SubmitType::class);
     }
 

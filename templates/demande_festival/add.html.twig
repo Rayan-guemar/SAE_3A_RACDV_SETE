@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+	<div class="form-wrapper">
+		<h1>Demande de création de festival</h1>
+
+		{{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
+
+		{{ form_row(form.nomFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Nom du Festival'}}) }}
+		{{ form_row(form.descriptionFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Description du Festival'}}) }}
+		
+		<div class="form-row">
+			{{ form_widget(form.dateDebutFestival, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'}}) }}
+			{{ form_widget(form.dateFinFestival, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
+		</div>
+
+		{{ form_row(form.lieuFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Lieu du Festival'}}) }}
+		{{ form_row(form.afficheFestival, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
+		{{ form_widget(form.demanderCreationFestival, {'label': 'Demander création', 'attr': {'class': 'festival-form__checkbox'}}) }}
+
+		{{ form_end(form) }}
+	</div>
+
+{% endblock %}

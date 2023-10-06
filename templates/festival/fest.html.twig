@@ -1,20 +1,14 @@
-<a href="{{ path('detailfest', {'id' : festival.getId()}) }}">
-<div class="fest">
-        <img class="affiche"
-                {#  {% if (festival.getAffiche()) != null %}
-                        src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}"
-                    {% else %} #}
-             src="{{ asset("img/affiches/affiche-XX.jpg") }}"
-                {#  {% endif %} #}
-             alt="affiche du festival">
-    <div class="fest-info">
-        <div class="fest-nom">
-            <span>{{ festival.getNom() }}</span>
-        </div>
-        <div class="fest-dateEtLieux">
-            <span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
-            <span>{# {{ festival.getLieuxVille() }} #}</span>
-        </div>
-    </div>
-</div>
+<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+	<div class="fest">
+		<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
+		<div class="fest-info">
+			<div class="fest-nom">
+				<span>{{ festival.getNom() }}</span>
+			</div>
+			<div class="fest-dateEtLieux">
+				<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+				<span>{# {{ festival.getLieuxVille() }} #}</span>
+			</div>
+		</div>
+	</div>
 </a>

@@ -4,65 +4,47 @@ namespace App\Controller;
 
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Repository\FestivalRepository;
+use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+class UtilisateurController extends AbstractController {
 
-class UtilisateurController extends AbstractController
-{
+    #[Route('/user/profile/{id}', name: 'app_user_profile')]
+    public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
 
+        $u = $utilisateurRepository->find($id);
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
 
-    #[Route('/inscription', name: 'inscription', methods: ['GET', 'POST'])]
-    public function inscription(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $u = new Utilisateur();
+        $loggedInUser = $this->getUser();
 
-        $f = $this->createForm(InscriptionType::class, $u, [
-            'action' => $this->generateUrl('inscription'),
-            'method' => 'POST',
+        $isCurrentUser = $loggedInUser && $loggedInUser->getUserIdentifier() != $u->getUserIdentifier();
+
+        return $this->render('utilisateur/profile.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'utilisateur' => $u,
+            'isCurrentUser' => $isCurrentUser,
         ]);
+    }
 
-        $f->handleRequest($req);
-        if ($f->isSubmitted() && $f->isValid()) {
-            if (!$f->isValid()) {
-                $errors = $f->getErrors(true);
-                $flashBag = $requestStack->getSession()->getFlashBag();
-                foreach ($errors as $error) {
-                    $flashBag->add("error", $error->getMessage());
-                }
-            }
+    #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
+    public function user_festivals(FestivalRepository $festivalRepository): Response {
+        $u = $this->getUser();
 
-            $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
-            $u->setPassword($hashedPassword);
-
-            $em->persist($u);
-            $em->flush();
-
-            return $this->redirectToRoute('acceuil');
+        if (!$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
         }
 
-
-        return $this->render('utilisateur/inscription.html.twig', [
-            'controller_name' => 'UtilisateurController',
-            'form' => $f->createView(),
+        $fs = $festivalRepository->findBy([
+            'organisateur' => $u->getId()
         ]);
-    }
 
-    #[Route('/connexion', name: 'app_login', methods: ['GET', 'POST'])]
-    public function login(): Response
-    {
-        return $this->render('utilisateur/login.html.twig');
-    }
-
-    #[Route('/deconnexion', name: 'app_logout', methods: ['GET'])]
-    public function logout(): never
-    {
-        throw new \Exception('This should never be reached!');
+        return $this->render('utilisateur/user_festivals.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'festivals' => $fs,
+        ]);
     }
 }

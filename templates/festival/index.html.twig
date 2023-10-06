@@ -9,11 +9,11 @@
             Hello {% if is_granted('ROLE_USER') %}{# {% if user.getSexe()="M" %}M. {% else %}Mme. {% endif %}{{ user.getLogin() }} #}{% endif %}
             !</h1>
 
-        Choisissez le festival auquel vous voulez participer :
         <div class="box">
             <input type="text" placeholder="Search...">
             <a href="#">
                 <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
+                <span>Rechercher un festival</span>
             </a>
         </div>
     </div>
