@@ -9,6 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
+use Doctrine\ORM\Mapping\ManyToMany;
+
+
+
+
+
+
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
@@ -41,11 +51,32 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
     private Collection $demandeFestivals;
 
+    #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'benevoles')]
+    #[JoinTable(name: 'est_benevole')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
+    private Collection $estBenevole;
+
+    #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'responsables')]
+    #[JoinTable(name: 'est_responsable')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
+    private Collection $estResponsable;
+
+    #[ORM\OneToMany(mappedBy: 'utilisateurDisponible', targetEntity: Creneaux::class)]
+    private Collection $disponibilites;
+
+    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
+    private Collection $creneauxAffectes;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
         $this->creneaux = new ArrayCollection();
         $this->creneauxAffectes = new ArrayCollection();
+        $this->estBenevole = new ArrayCollection();
+        $this->estResponsable = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -179,6 +210,108 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
                 $demandeFestival->setOrganisateurFestival(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Festival>
+     */
+    public function getEstBenevole(): Collection
+    {
+        return $this->estBenevole;
+    }
+
+    public function addEstBenevole(Festival $estBenevole): static
+    {
+        if (!$this->estBenevole->contains($estBenevole)) {
+            $this->estBenevole->add($estBenevole);
+        }
+
+        return $this;
+    }
+
+    public function removeEstBenevole(Festival $estBenevole): static
+    {
+        $this->estBenevole->removeElement($estBenevole);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Festival>
+     */
+    public function getEstResponsable(): Collection
+    {
+        return $this->estResponsable;
+    }
+
+    public function addEstResponsable(Festival $estResponsable): static
+    {
+        if (!$this->estResponsable->contains($estResponsable)) {
+            $this->estResponsable->add($estResponsable);
+        }
+
+        return $this;
+    }
+
+    public function removeEstResponsable(Festival $estResponsable): static
+    {
+        $this->estResponsable->removeElement($estResponsable);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Creneaux>
+     */
+    public function getDisponibilites(): Collection
+    {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Creneaux $disponibilite): static
+    {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setUtilisateurDisponible($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Creneaux $disponibilite): static
+    {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getUtilisateurDisponible() === $this) {
+                $disponibilite->setUtilisateurDisponible(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Creneaux>
+     */
+    public function getCreneauxAffectes(): Collection
+    {
+        return $this->creneauxAffectes;
+    }
+
+    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static
+    {
+        if (!$this->creneauxAffectes->contains($creneauxAffecte)) {
+            $this->creneauxAffectes->add($creneauxAffecte);
+        }
+
+        return $this;
+    }
+
+    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static
+    {
+        $this->creneauxAffectes->removeElement($creneauxAffecte);
 
         return $this;
     }

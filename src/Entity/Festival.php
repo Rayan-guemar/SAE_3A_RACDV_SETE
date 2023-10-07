@@ -50,11 +50,19 @@ class Festival
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Lieu::class, orphanRemoval: true)]
     private Collection $lieux;
 
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estBenevole')]
+    private Collection $benevoles;
+
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estResponsable')]
+    private Collection $responsables;
+
     public function __construct()
     {
         $this->creneaux = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->lieux = new ArrayCollection();
+        $this->benevoles = new ArrayCollection();
+        $this->responsables = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -232,6 +240,60 @@ class Festival
             if ($lieux->getFestival() === $this) {
                 $lieux->setFestival(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getBenevoles(): Collection
+    {
+        return $this->benevoles;
+    }
+
+    public function addBenevole(Utilisateur $benevole): static
+    {
+        if (!$this->benevoles->contains($benevole)) {
+            $this->benevoles->add($benevole);
+            $benevole->addEstBenevole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBenevole(Utilisateur $benevole): static
+    {
+        if ($this->benevoles->removeElement($benevole)) {
+            $benevole->removeEstBenevole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getResponsables(): Collection
+    {
+        return $this->responsables;
+    }
+
+    public function addResponsable(Utilisateur $responsable): static
+    {
+        if (!$this->responsables->contains($responsable)) {
+            $this->responsables->add($responsable);
+            $responsable->addEstResponsable($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponsable(Utilisateur $responsable): static
+    {
+        if ($this->responsables->removeElement($responsable)) {
+            $responsable->removeEstResponsable($this);
         }
 
         return $this;

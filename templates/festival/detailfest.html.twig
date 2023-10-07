@@ -37,7 +37,7 @@
             <div id="mapid"></div>
         </div>
         <div class="button-benevole">
-            <a {% if is_granted('ROLE_USER') %} href="{{ path("#") }}" {% else %}
+            <a {% if is_granted('ROLE_USER') %}" {% else %}
                href="{{ path("app_login") }}" {% endif %}>Devenez bénévole</a>
         </div>
     </div>
