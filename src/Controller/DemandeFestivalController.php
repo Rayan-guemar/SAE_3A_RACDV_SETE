@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class DemandeFestivalController extends AbstractController {
     #[Route('/demandefestival', name: 'app_demandefestival_all')]
@@ -27,7 +29,7 @@ class DemandeFestivalController extends AbstractController {
     }
 
     #[Route('/demandefestival/add', name: 'app_demandefestival_add')]
-    public function add(Request $req, EntityManagerInterface $em): Response {
+    public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger): Response {
         $demandeFestival = new DemandeFestival();
 
         $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
@@ -35,6 +37,27 @@ class DemandeFestivalController extends AbstractController {
         $form->handleRequest($req);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $affiche = $form->get('afficheFestival')->getData();
+
+            if ($affiche) {
+                $originalFilename = pathinfo("", PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$affiche->guessExtension();
+
+                try {
+                    $affiche->move(
+                        $this->getParameter('poster_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('Erreur lors de l\'upload de l\'affiche');
+                }
+
+                $demandeFestival->setAfficheFestival($newFilename);
+            }
+
+
             $demandeFestival->setOrganisateurFestival($this->getUser());
             $em->persist($demandeFestival);
             $em->flush();
