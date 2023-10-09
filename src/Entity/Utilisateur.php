@@ -69,6 +69,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
     private Collection $creneauxAffectes;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur_id', targetEntity: DemandeBenevole::class)]
+    private Collection $mesDemandes;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -77,6 +80,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
+        $this->mesDemandes = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -312,6 +316,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static
     {
         $this->creneauxAffectes->removeElement($creneauxAffecte);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DemandeBenevole>
+     */
+    public function getMesDemandes(): Collection
+    {
+        return $this->mesDemandes;
+    }
+
+    public function addMesDemande(DemandeBenevole $mesDemande): static
+    {
+        if (!$this->mesDemandes->contains($mesDemande)) {
+            $this->mesDemandes->add($mesDemande);
+            $mesDemande->setUtilisateurId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMesDemande(DemandeBenevole $mesDemande): static
+    {
+        if ($this->mesDemandes->removeElement($mesDemande)) {
+            // set the owning side to null (unless already changed)
+            if ($mesDemande->getUtilisateurId() === $this) {
+                $mesDemande->setUtilisateurId(null);
+            }
+        }
 
         return $this;
     }

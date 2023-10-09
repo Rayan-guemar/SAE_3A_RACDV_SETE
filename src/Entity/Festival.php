@@ -56,6 +56,9 @@ class Festival
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estResponsable')]
     private Collection $responsables;
 
+    #[ORM\OneToMany(mappedBy: 'festival_id', targetEntity: DemandeBenevole::class, orphanRemoval: true)]
+    private Collection $liste_demande_benevoles;
+
     public function __construct()
     {
         $this->creneaux = new ArrayCollection();
@@ -63,6 +66,7 @@ class Festival
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
+        $this->liste_demande_benevoles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -299,5 +303,34 @@ class Festival
         return $this;
     }
 
+    /**
+     * @return Collection<int, DemandeBenevole>
+     */
+    public function getListeDemandeBenevoles(): Collection
+    {
+        return $this->liste_demande_benevoles;
+    }
+
+    public function addListeDemandeBenevole(DemandeBenevole $listeDemandeBenevole): static
+    {
+        if (!$this->liste_demande_benevoles->contains($listeDemandeBenevole)) {
+            $this->liste_demande_benevoles->add($listeDemandeBenevole);
+            $listeDemandeBenevole->setFestivalId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeDemandeBenevole(DemandeBenevole $listeDemandeBenevole): static
+    {
+        if ($this->liste_demande_benevoles->removeElement($listeDemandeBenevole)) {
+            // set the owning side to null (unless already changed)
+            if ($listeDemandeBenevole->getFestivalId() === $this) {
+                $listeDemandeBenevole->setFestivalId(null);
+            }
+        }
+
+        return $this;
+    }
    
 }
