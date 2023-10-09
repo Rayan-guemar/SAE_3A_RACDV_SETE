@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 class Festival
@@ -56,6 +59,12 @@ class Festival
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estResponsable')]
     private Collection $responsables;
 
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'demandesBenevolat')]
+    #[JoinTable(name: 'demandes_benevole')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
+    private Collection $demandesBenevole;
+
     public function __construct()
     {
         $this->creneaux = new ArrayCollection();
@@ -63,6 +72,7 @@ class Festival
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
+        $this->demandesBenevole = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -295,6 +305,30 @@ class Festival
         if ($this->responsables->removeElement($responsable)) {
             $responsable->removeEstResponsable($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getDemandesBenevole(): Collection
+    {
+        return $this->demandesBenevole;
+    }
+
+    public function addDemandesBenevole(Utilisateur $demandesBenevole): static
+    {
+        if (!$this->demandesBenevole->contains($demandesBenevole)) {
+            $this->demandesBenevole->add($demandesBenevole);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandesBenevole(Utilisateur $demandesBenevole): static
+    {
+        $this->demandesBenevole->removeElement($demandesBenevole);
 
         return $this;
     }

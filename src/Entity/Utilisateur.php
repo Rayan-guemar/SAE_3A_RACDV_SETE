@@ -69,14 +69,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
     private Collection $creneauxAffectes;
 
+    #[ORM\ManyToMany(targetEntity: Festival::class, mappedBy: 'demandesBenevole')]
+    private Collection $demandesBenevolat;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
-        $this->creneaux = new ArrayCollection();
         $this->creneauxAffectes = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
+        $this->demandesBenevolat = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -312,6 +315,33 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static
     {
         $this->creneauxAffectes->removeElement($creneauxAffecte);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Festival>
+     */
+    public function getDemandesBenevolat(): Collection
+    {
+        return $this->demandesBenevolat;
+    }
+
+    public function addDemandesBenevolat(Festival $demandesBenevolat): static
+    {
+        if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
+            $this->demandesBenevolat->add($demandesBenevolat);
+            $demandesBenevolat->addDemandesBenevole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandesBenevolat(Festival $demandesBenevolat): static
+    {
+        if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
+            $demandesBenevolat->removeDemandesBenevole($this);
+        }
 
         return $this;
     }

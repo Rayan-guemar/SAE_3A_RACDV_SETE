@@ -56,9 +56,29 @@ class FestivalController extends AbstractController
             throw $this->createNotFoundException("Le festival n'existe pas");
         }
 
+        $isOrganisateur = $this->getUser() == $festival->getOrganisateur();
+        
         return $this->render('festival/detailfest.html.twig', [
             'controller_name' => 'FestivalController',
-            'festival' => $festival
+            'festival' => $festival,
+            'isOrganisateur' => $isOrganisateur
         ]);
     }
+
+    #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
+    public function showDemandes(FestivalRepository $repository, int $id): Response {
+
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+        
+        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
+            'controller_name' => 'FestivalController',
+            'demandes' => $festival->getDemandesBenevole(),
+        ]);
+    }
+
+
 }
