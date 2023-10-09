@@ -221,13 +221,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getEstBenevole(): Collection
-    {
+    public function getEstBenevole(): Collection {
         return $this->estBenevole;
     }
 
-    public function addEstBenevole(Festival $estBenevole): static
-    {
+    public function addEstBenevole(Festival $estBenevole): static {
         if (!$this->estBenevole->contains($estBenevole)) {
             $this->estBenevole->add($estBenevole);
         }
@@ -235,8 +233,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeEstBenevole(Festival $estBenevole): static
-    {
+    public function removeEstBenevole(Festival $estBenevole): static {
         $this->estBenevole->removeElement($estBenevole);
 
         return $this;
@@ -245,13 +242,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getEstResponsable(): Collection
-    {
+    public function getEstResponsable(): Collection {
         return $this->estResponsable;
     }
 
-    public function addEstResponsable(Festival $estResponsable): static
-    {
+    public function addEstResponsable(Festival $estResponsable): static {
         if (!$this->estResponsable->contains($estResponsable)) {
             $this->estResponsable->add($estResponsable);
         }
@@ -259,8 +254,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeEstResponsable(Festival $estResponsable): static
-    {
+    public function removeEstResponsable(Festival $estResponsable): static {
         $this->estResponsable->removeElement($estResponsable);
 
         return $this;
@@ -269,13 +263,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getDisponibilites(): Collection
-    {
+    public function getDisponibilites(): Collection {
         return $this->disponibilites;
     }
 
-    public function addDisponibilite(Creneaux $disponibilite): static
-    {
+    public function addDisponibilite(Creneaux $disponibilite): static {
         if (!$this->disponibilites->contains($disponibilite)) {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateurDisponible($this);
@@ -284,8 +276,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeDisponibilite(Creneaux $disponibilite): static
-    {
+    public function removeDisponibilite(Creneaux $disponibilite): static {
         if ($this->disponibilites->removeElement($disponibilite)) {
             // set the owning side to null (unless already changed)
             if ($disponibilite->getUtilisateurDisponible() === $this) {
@@ -299,13 +290,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getCreneauxAffectes(): Collection
-    {
+    public function getCreneauxAffectes(): Collection {
         return $this->creneauxAffectes;
     }
 
-    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static
-    {
+    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static {
         if (!$this->creneauxAffectes->contains($creneauxAffecte)) {
             $this->creneauxAffectes->add($creneauxAffecte);
         }
@@ -313,8 +302,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static
-    {
+    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static {
         $this->creneauxAffectes->removeElement($creneauxAffecte);
 
         return $this;
