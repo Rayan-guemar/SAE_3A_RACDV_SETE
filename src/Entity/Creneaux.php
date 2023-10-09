@@ -34,15 +34,15 @@ class Creneaux
     private ?Utilisateur $utilisateurDisponible = null;
 
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'creneauxAffectes')]
-    #[JoinTable(name: 'affectations')]
-    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'creneaux_id', referencedColumnName: 'id')]
     private Collection $utilisateursAffectes;
+
+    #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
+    private ?Tache $tache = null;
 
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
         $this->utilisateursAffectes = new ArrayCollection();
+        $this->utilisateurDisponible = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,6 +121,23 @@ class Creneaux
         if ($this->utilisateursAffectes->removeElement($utilisateursAffecte)) {
             $utilisateursAffecte->removeCreneauxAffecte($this);
         }
+
+        return $this;
+    }
+
+    public function getTache(): ?Tache
+    {
+        return $this->tache;
+    }
+
+    public function setTache(Tache $tache): static
+    {
+        // set the owning side of the relation if necessary
+        if ($tache->getCrenaux() !== $this) {
+            $tache->setCrenaux($this);
+        }
+
+        $this->tache = $tache;
 
         return $this;
     }

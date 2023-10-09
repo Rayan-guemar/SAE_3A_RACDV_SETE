@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\TacheRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
 
 #[ORM\Entity(repositoryClass: TacheRepository::class)]
 class Tache
@@ -19,6 +22,12 @@ class Tache
 
     #[ORM\ManyToOne(inversedBy: 'taches')]
     private ?Lieu $lieu = null;
+
+    #[ORM\OneToOne(inversedBy: 'tache', cascade: ['persist', 'remove'])]
+    #[JoinTable(name: 'affectation')]
+    #[JoinColumn(name: 'tache_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
+    private ?Creneaux $crenaux = null;
 
     public function getId(): ?int
     {
@@ -45,6 +54,18 @@ class Tache
     public function setLieu(?Lieu $lieu): static
     {
         $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getCrenaux(): ?Creneaux
+    {
+        return $this->crenaux;
+    }
+
+    public function setCrenaux(Creneaux $crenaux): static
+    {
+        $this->crenaux = $crenaux;
 
         return $this;
     }

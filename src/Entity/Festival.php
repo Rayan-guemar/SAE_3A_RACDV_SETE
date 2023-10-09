@@ -59,10 +59,7 @@ class Festival {
     private Collection $responsables;
 
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'demandesBenevolat')]
-    #[JoinTable(name: 'demandes_benevole')]
-    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'demandesBenevolat')]    
     private Collection $demandesBenevole;
 
     public function __construct() {
