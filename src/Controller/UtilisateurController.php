@@ -63,7 +63,7 @@ class UtilisateurController extends AbstractController {
             return $this->render('utilisateur/user_festivals_liste_benevoles.html.twig', [
                 'controller_name' => 'UtilisateurController',
                 'festivals' => $fs,
-                'liste_benevoles' => $fs->getListeDemandeBenevoles()
+                'liste_benevoles' => $fs->getDemandesBenevole()
             ]);
         }else{
             $this->addFlash('error', "Vous n'etez pas autoriser à acceder a cette page");

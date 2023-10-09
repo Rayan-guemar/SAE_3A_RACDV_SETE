@@ -26,19 +26,19 @@
 			<div class="fest-button">
 
 				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-				<div class="button-shortcut">
-					<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
-				</div>
+					<div class="button-shortcut">
+						<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
+					</div>
 				</a>
-				<a href="{{ path('app_user_liste_benevoles', {'id' : festival.getId()}) }}">
-				<div class="button-shortcut">
-					<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
-				</div>
+				<a href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
+					<div class="button-shortcut">
+						<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
+					</div>
 				</a>
 				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-				<div class="button-shortcut">
+					<div class="button-shortcut">
 						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
-				</div>
+					</div>
 				</a>
 			</div>
 		</div>
