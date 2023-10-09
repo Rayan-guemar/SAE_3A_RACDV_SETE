@@ -11,124 +11,124 @@ h1 {
     justify-content: center;
     width: 100%;
     height: 100%;
-}
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 50px;
-    width: 45%;
-    max-width: 500px;
-
-    a {
-        color: black;
-        font-size: large;
-        font-weight: 700;
-    }
-
-    &>div {
-        width: 100%;
-        position: relative;
-
-        input,
-        textarea {
-            border: 3px solid $grey-primary;
-            width: 100%;
-            height: 100%;
-            padding: $input-padding;
-            border-radius: 20px;
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+        width: 45%;
+        max-width: 500px;
+    
+        a {
+            color: black;
             font-size: large;
             font-weight: 700;
-
-            &:focus {
-                outline: none;
-                border: 3px solid $blue-primary;
+        }
+    
+        &>div {
+            width: 100%;
+            position: relative;
+    
+            input,
+            textarea {
+                border: 3px solid $grey-primary;
+                width: 100%;
+                height: 100%;
+                padding: $input-padding;
+                border-radius: 20px;
+                font-size: large;
+                font-weight: 700;
+    
+                &:focus {
+                    outline: none;
+                    border: 3px solid $blue-primary;
+                }
+            }
+    
+            textarea {
+                height: 150px;
+                resize: none;
+                overflow-y: auto;
+    
+                &::-webkit-scrollbar-track {
+                    width: 20px;
+                }
+            }
+    
+            select {
+                border-width: 0 2px 0;
+                padding: 5px;
             }
         }
-
-        textarea {
-            height: 150px;
-            resize: none;
-            overflow-y: auto;
-
-            &::-webkit-scrollbar-track {
-                width: 20px;
-            }
-        }
-
-        select {
-            border-width: 0 2px 0;
-            padding: 5px;
+    
+        &>button {
+            border: none;
+            border-radius: 20px;
+            background-color: black;
+            color: white;
+            font-size: larger;
+            font-weight: bolder;
+            width: 100%;
+            height: 70px;
         }
     }
-
-    &>button {
-        border: none;
-        border-radius: 20px;
-        background-color: black;
-        color: white;
-        font-size: larger;
-        font-weight: bolder;
+    
+    .form-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
         width: 100%;
-        height: 70px;
     }
-}
-
-.form-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.form-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 30px;
-    width: 100%;
-}
-
-input[type='password'] {
-    font-family: Verdana;
-    letter-spacing: 0.125em;
-
-    &::placeholder {
-        font-family: 'Montserrat', sans-serif;
-        letter-spacing: normal;
+    
+    input[type='password'] {
+        font-family: Verdana;
+        letter-spacing: 0.125em;
+    
+        &::placeholder {
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: normal;
+        }
     }
-}
-
-input[type='date'] {
-    color: #757575;
-}
-
-input[type='file'] {
-    position: relative;
-    font-size: 15px;
-
-    &::-webkit-file-upload-button {
+    
+    input[type='date'] {
+        color: #757575;
+    }
+    
+    input[type='file'] {
+        position: relative;
+        font-size: 15px;
+    
+        &::-webkit-file-upload-button {
+            display: none;
+        }
+    }
+    
+    input[type='file']:invalid {
+        color: #0000;
+    }
+    
+    label:has(~input[type='file']:invalid) {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    label:has(~input[type='file']) {
         display: none;
+        font-size: 18px;
+        font-weight: 700;
+        color: #757575;
     }
-}
-
-input[type='file']:invalid {
-    color: #0000;
-}
-
-label:has(~input[type='file']:invalid) {
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-label:has(~input[type='file']) {
-    display: none;
-    font-size: 18px;
-    font-weight: 700;
-    color: #757575;
 }
