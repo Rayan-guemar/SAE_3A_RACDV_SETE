@@ -7,28 +7,11 @@
 
 	<div class="searchbar-wrapper">
 
-
-		{{ form_start(form) }}
-		<div class="box">
-			{{ form_widget(form.q) }}
-			<img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">
-
-
-			{#        <div class="box">#}
-
-		{#          <input type="text" placeholder="Search...">#}
-
-			{#          <a href="#">#}
-
-			{#              <img id="saf" src="{{ asset("icons/search.svg") }}" alt="Search icon">#}
-
-			{#              <span>Rechercher un festival</span>#}
-
-			{#          </a>#}
-
-		</div>
+		{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
+			{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
+			<input type="submit" id="saf" value="">
 		{{ form_end(form) }}
-	</div>
+	</div>	
 	<div class="fest-wrapper">
 		{% for festival in festivals %}
 			{{ include('festival/fest.html.twig',{'festival':festival}) }}
