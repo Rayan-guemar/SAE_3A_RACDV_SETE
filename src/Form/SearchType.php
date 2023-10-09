@@ -20,7 +20,7 @@ class SearchType extends AbstractType
                     'placeholder' => 'Recherche...'
                 ],
                 'empty_data' => '',
-                'required' => false
+                'required' => true
             ]);
     }
 

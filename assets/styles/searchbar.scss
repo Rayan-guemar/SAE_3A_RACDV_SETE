@@ -1,70 +1,42 @@
-.box {
-  position: relative;
-  width: 70%;
-  margin: 0 auto 50px;
-  height: fit-content;
+.searchbar {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+	margin: 30px 0;
 
-  &:hover a,
-  input:focus ~ a {
-    width: 58px;
+	position: relative;
 
-    span {
-      opacity: 0;
-    }
-  }
+	input {
+		padding: 15px 50px 15px 15px;
+		border-radius: 20px;
+		width: 500px;
+		font-size: large;
+		font-weight: bold;
+		border: 3px solid $grey-primary;
 
-  input:focus {
-    outline: none;
-  }
+		&:focus {
+			outline: none;
+			border: 3px solid $blue-primary;
+		}
+	}
 
-  input {
-    width: 100%;
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.75);
-    border-width: 0;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 17px;
-    padding: 10px 20px;
-  }
+	input[type="submit"] {
+		position: absolute;
+		position: absolute;
+		right: 15px;
+		width: 25px;
+		height: 25px;
+		padding: 0;
+		background-color: transparent;
+		border: 0;
+		cursor: pointer;
+		border-radius: 0;
+		background-image: url("/public/icons/search.svg");
+		background-size: 25px;
+		background-repeat: no-repeat;
+	}
 
-  a {
-    position: absolute;
-    height: 100%;
-    top: 0;
-    right: 0px;
-    padding: 10px 20px;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    border-radius: 30px;
-    transition: 0.5s linear;
-    overflow: hidden;
-
-    span {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      font-weight: 500;
-      font-size: 20px;
-      display: grid;
-      place-items: center;
-      text-wrap: nowrap;
-
-      transition: 0.5s linear;
-    }
-  }
-
-  .searchbar-wrapper {
-    margin: 1em auto;
-    max-width: 800px;
-    width: 95%;
-    font: 18px/1.5 sans-serif;
-    min-height: 13vh;
-    code {
-      background: #f5f5f5;
-      padding: 2px 6px;
-    }
-  }
+	input:valid ~ input[type="submit"] {
+		background-image: url("/public/icons/search_blue.svg");
+	}
 }

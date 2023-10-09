@@ -1,0 +1,35 @@
+{% block demandesBenevolat %}
+	<h1>Liste des demandes</h1>
+	<br>
+	<table class="\" table\"">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Prenom</th>
+				<th>Mail</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{% for demande in demandes %}
+				<tr>
+					<td>{{ demande.nom }}</td>
+					<td>{{ demande.prenom }}</td>
+					<td>{{ demande.mail }}</td>
+					<td>
+						<a href="{{ path('demandeBenevolat', {'id': demande.id}) }}">Accepter</a>
+					</td>
+					<td>
+						<a href="{{ path('supprimerDemandeBenevolat', {'id': demande.id}) }}">Refuser</a>
+					</td>
+				{% else %}
+					<tr>
+						<td colspan="\" 8\"">Aucune demande trouvée</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</tbody>
+	</table>
+	<br>
+	<br>
+{% endblock %}

@@ -33,9 +33,17 @@
 			</div>
 			<div id="mapid"></div>
 		</div>
-		<div class="button-benevole">
-			<a {% if is_granted('ROLE_USER') %} {% else %} href="{{ path("app_auth_login") }}" {% endif %} data-festivalid="{{ festival.getId() }}" class="btn btn-primary"> Devenir bénévole </a>
-		</div>
+		{% if isOrganisateur == true  %}
 
+			<div class="button-benevole">
+				<a href="{{ path("app_festival_demandesBenevolat", {'id' : festival.getId()}) }}" class="btn btn-primary">Demandes de bénévolat</a>
+			</div>
+      
+		{% else %}
+    
+			<div class="button-benevole">
+				<a {% if is_granted('ROLE_USER') %} {% else %} href=" {{ path(" app_auth_login") }} " {% endif %} class="btn btn-primary">Devenir bénévole</a>
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}

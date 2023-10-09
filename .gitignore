@@ -28,3 +28,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 symfony.exe
+public/build/app.css
+public/build/app.js
+

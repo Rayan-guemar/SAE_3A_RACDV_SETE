@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 class Festival
@@ -56,8 +59,12 @@ class Festival
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estResponsable')]
     private Collection $responsables;
 
-    #[ORM\OneToMany(mappedBy: 'festival_id', targetEntity: DemandeBenevole::class, orphanRemoval: true)]
-    private Collection $liste_demande_benevoles;
+
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'demandesBenevolat')]
+    #[JoinTable(name: 'demandes_benevole')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
+    private Collection $demandesBenevole;
 
     public function __construct()
     {
@@ -66,7 +73,8 @@ class Festival
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
-        $this->liste_demande_benevoles = new ArrayCollection();
+        $this->demandesBenevole = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -304,31 +312,26 @@ class Festival
     }
 
     /**
-     * @return Collection<int, DemandeBenevole>
+
+     * @return Collection<int, Utilisateur>
      */
-    public function getListeDemandeBenevoles(): Collection
+    public function getDemandesBenevole(): Collection
     {
-        return $this->liste_demande_benevoles;
+        return $this->demandesBenevole;
     }
 
-    public function addListeDemandeBenevole(DemandeBenevole $listeDemandeBenevole): static
+    public function addDemandesBenevole(Utilisateur $demandesBenevole): static
     {
-        if (!$this->liste_demande_benevoles->contains($listeDemandeBenevole)) {
-            $this->liste_demande_benevoles->add($listeDemandeBenevole);
-            $listeDemandeBenevole->setFestivalId($this);
+        if (!$this->demandesBenevole->contains($demandesBenevole)) {
+            $this->demandesBenevole->add($demandesBenevole);
         }
 
         return $this;
     }
 
-    public function removeListeDemandeBenevole(DemandeBenevole $listeDemandeBenevole): static
+    public function removeDemandesBenevole(Utilisateur $demandesBenevole): static
     {
-        if ($this->liste_demande_benevoles->removeElement($listeDemandeBenevole)) {
-            // set the owning side to null (unless already changed)
-            if ($listeDemandeBenevole->getFestivalId() === $this) {
-                $listeDemandeBenevole->setFestivalId(null);
-            }
-        }
+        $this->demandesBenevole->removeElement($demandesBenevole);
 
         return $this;
     }
