@@ -2,6 +2,10 @@
   "build/app.css": "/build/app.css",
   "build/app.js": "/build/app.js",
   "build/runtime.js": "/build/runtime.js",
+
+  "build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js": "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-c5c500.js"
+
   "build/images/search.svg": "/build/images/search.a888c2ed.svg",
   "build/images/search_blue.svg": "/build/images/search_blue.4415216e.svg"
+
 }

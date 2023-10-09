@@ -4,9 +4,11 @@
 {% block title %}festivals
 {% endblock %}
 {% block overhead %}
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""
+		  xmlns="http://www.w3.org/1999/html"/>
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-	<script src="{{ asset('js/map.js') }}" defer></script>
+	<script type="module" src="{{ asset('js/demandeBenevole.js') }}" defer></script>
 {% endblock %}
 {% block body %}
 	<div class="detailFesival">
@@ -36,8 +38,9 @@
 			<div class="button-benevole">
 				<a href="{{ path("app_festival_demandesBenevolat", {'id' : festival.getId()}) }}" class="btn btn-primary">Demandes de bénévolat</a>
 			</div>
-
+      
 		{% else %}
+    
 			<div class="button-benevole">
 				<a {% if is_granted('ROLE_USER') %} {% else %} href=" {{ path(" app_auth_login") }} " {% endif %} class="btn btn-primary">Devenir bénévole</a>
 			</div>

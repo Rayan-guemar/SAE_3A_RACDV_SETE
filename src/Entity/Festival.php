@@ -59,6 +59,7 @@ class Festival
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'estResponsable')]
     private Collection $responsables;
 
+
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'demandesBenevolat')]
     #[JoinTable(name: 'demandes_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
@@ -73,6 +74,7 @@ class Festival
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
         $this->demandesBenevole = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -310,6 +312,7 @@ class Festival
     }
 
     /**
+
      * @return Collection<int, Utilisateur>
      */
     public function getDemandesBenevole(): Collection
@@ -332,6 +335,5 @@ class Festival
 
         return $this;
     }
-
    
 }

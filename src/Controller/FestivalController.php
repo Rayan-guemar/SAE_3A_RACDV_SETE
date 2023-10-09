@@ -80,5 +80,4 @@ class FestivalController extends AbstractController
         ]);
     }
 
-
 }

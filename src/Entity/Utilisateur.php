@@ -80,6 +80,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
+
     }
 
     public function getId(): ?int {
@@ -336,7 +337,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
-
     public function removeDemandesBenevolat(Festival $demandesBenevolat): static
     {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
