@@ -12,8 +12,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
-class Festival
-{
+class Festival {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -66,102 +65,85 @@ class Festival
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $demandesBenevole;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->creneaux = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
         $this->demandesBenevole = new ArrayCollection();
-
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
-    {
+    public function getDateDebut(): ?\DateTimeInterface {
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $dateDebut): static
-    {
+    public function setDateDebut(\DateTimeInterface $dateDebut): static {
         $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getDateFin(): ?\DateTimeInterface
-    {
+    public function getDateFin(): ?\DateTimeInterface {
         return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeInterface $dateFin): static
-    {
+    public function setDateFin(\DateTimeInterface $dateFin): static {
         $this->dateFin = $dateFin;
 
         return $this;
     }
 
 
-    public function getDescription(): ?string
-    {
+    public function getDescription(): ?string {
         return $this->description;
     }
 
-    public function setDescription(string $description): static
-    {
+    public function setDescription(string $description): static {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getOrganisateur(): ?Utilisateur
-    {
+    public function getOrganisateur(): ?Utilisateur {
         return $this->organisateur;
     }
 
-    public function setOrganisateur(?Utilisateur $organisateur): static
-    {
+    public function setOrganisateur(?Utilisateur $organisateur): static {
         $this->organisateur = $organisateur;
 
         return $this;
     }
 
-    public function getLieu(): ?string
-    {
+    public function getLieu(): ?string {
         return $this->lieu;
     }
 
-    public function setLieu(string $lieu): static
-    {
+    public function setLieu(string $lieu): static {
         $this->lieu = $lieu;
 
         return $this;
     }
 
-    public function getAffiche(): ?string
-    {
+    public function getAffiche(): ?string {
         return $this->affiche;
     }
 
-    public function setAffiche(string $affiche): static
-    {
+    public function setAffiche(string $affiche): static {
         $this->affiche = $affiche;
 
         return $this;
@@ -170,13 +152,11 @@ class Festival
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getCreneaux(): Collection
-    {
+    public function getCreneaux(): Collection {
         return $this->creneaux;
     }
 
-    public function addCreneaux(Creneaux $creneaux): static
-    {
+    public function addCreneaux(Creneaux $creneaux): static {
         if (!$this->creneaux->contains($creneaux)) {
             $this->creneaux->add($creneaux);
             $creneaux->setFestival($this);
@@ -185,8 +165,7 @@ class Festival
         return $this;
     }
 
-    public function removeCreneaux(Creneaux $creneaux): static
-    {
+    public function removeCreneaux(Creneaux $creneaux): static {
         if ($this->creneaux->removeElement($creneaux)) {
             // set the owning side to null (unless already changed)
             if ($creneaux->getFestival() === $this) {
@@ -200,13 +179,11 @@ class Festival
     /**
      * @return Collection<int, Tache>
      */
-    public function getTaches(): Collection
-    {
+    public function getTaches(): Collection {
         return $this->taches;
     }
 
-    public function addTach(Tache $tach): static
-    {
+    public function addTach(Tache $tach): static {
         if (!$this->taches->contains($tach)) {
             $this->taches->add($tach);
             $tach->setFestival($this);
@@ -215,8 +192,7 @@ class Festival
         return $this;
     }
 
-    public function removeTach(Tache $tach): static
-    {
+    public function removeTach(Tache $tach): static {
         if ($this->taches->removeElement($tach)) {
             // set the owning side to null (unless already changed)
             if ($tach->getFestival() === $this) {
@@ -230,13 +206,11 @@ class Festival
     /**
      * @return Collection<int, Lieu>
      */
-    public function getLieux(): Collection
-    {
+    public function getLieux(): Collection {
         return $this->lieux;
     }
 
-    public function addLieux(Lieu $lieux): static
-    {
+    public function addLieux(Lieu $lieux): static {
         if (!$this->lieux->contains($lieux)) {
             $this->lieux->add($lieux);
             $lieux->setFestival($this);
@@ -245,8 +219,7 @@ class Festival
         return $this;
     }
 
-    public function removeLieux(Lieu $lieux): static
-    {
+    public function removeLieux(Lieu $lieux): static {
         if ($this->lieux->removeElement($lieux)) {
             // set the owning side to null (unless already changed)
             if ($lieux->getFestival() === $this) {
@@ -260,13 +233,11 @@ class Festival
     /**
      * @return Collection<int, Utilisateur>
      */
-    public function getBenevoles(): Collection
-    {
+    public function getBenevoles(): Collection {
         return $this->benevoles;
     }
 
-    public function addBenevole(Utilisateur $benevole): static
-    {
+    public function addBenevole(Utilisateur $benevole): static {
         if (!$this->benevoles->contains($benevole)) {
             $this->benevoles->add($benevole);
             $benevole->addEstBenevole($this);
@@ -275,8 +246,7 @@ class Festival
         return $this;
     }
 
-    public function removeBenevole(Utilisateur $benevole): static
-    {
+    public function removeBenevole(Utilisateur $benevole): static {
         if ($this->benevoles->removeElement($benevole)) {
             $benevole->removeEstBenevole($this);
         }
@@ -287,13 +257,11 @@ class Festival
     /**
      * @return Collection<int, Utilisateur>
      */
-    public function getResponsables(): Collection
-    {
+    public function getResponsables(): Collection {
         return $this->responsables;
     }
 
-    public function addResponsable(Utilisateur $responsable): static
-    {
+    public function addResponsable(Utilisateur $responsable): static {
         if (!$this->responsables->contains($responsable)) {
             $this->responsables->add($responsable);
             $responsable->addEstResponsable($this);
@@ -302,8 +270,7 @@ class Festival
         return $this;
     }
 
-    public function removeResponsable(Utilisateur $responsable): static
-    {
+    public function removeResponsable(Utilisateur $responsable): static {
         if ($this->responsables->removeElement($responsable)) {
             $responsable->removeEstResponsable($this);
         }
@@ -315,13 +282,11 @@ class Festival
 
      * @return Collection<int, Utilisateur>
      */
-    public function getDemandesBenevole(): Collection
-    {
+    public function getDemandesBenevole(): Collection {
         return $this->demandesBenevole;
     }
 
-    public function addDemandesBenevole(Utilisateur $demandesBenevole): static
-    {
+    public function addDemandesBenevole(Utilisateur $demandesBenevole): static {
         if (!$this->demandesBenevole->contains($demandesBenevole)) {
             $this->demandesBenevole->add($demandesBenevole);
         }
@@ -329,11 +294,9 @@ class Festival
         return $this;
     }
 
-    public function removeDemandesBenevole(Utilisateur $demandesBenevole): static
-    {
+    public function removeDemandesBenevole(Utilisateur $demandesBenevole): static {
         $this->demandesBenevole->removeElement($demandesBenevole);
 
         return $this;
     }
-   
 }

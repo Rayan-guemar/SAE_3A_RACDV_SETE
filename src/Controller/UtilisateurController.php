@@ -47,27 +47,4 @@ class UtilisateurController extends AbstractController {
             'festivals' => $fs,
         ]);
     }
-
-    #[Route('/user/festivals/{id}/listebenevole', name: 'app_user_liste_benevoles', methods: ['GET'])]
-    public function benevole_demande(int $id,FestivalRepository $festivalRepository): Response {
-        $u = $this->getUser();
-
-        if (!$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $fs = $festivalRepository->find($id);
-
-        if ($fs->getOrganisateur() === $u) {
-            return $this->render('utilisateur/user_festivals_liste_benevoles.html.twig', [
-                'controller_name' => 'UtilisateurController',
-                'festivals' => $fs,
-                'liste_benevoles' => $fs->getDemandesBenevole()
-            ]);
-        }else{
-            $this->addFlash('error', "Vous n'etez pas autoriser à acceder a cette page");
-            return $this->redirectToRoute('home');
-        }
-    }
 }
