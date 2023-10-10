@@ -19,15 +19,15 @@ class IcalBuilder {
 
     public function build() {
         $file = fopen('icals/' . $this->filename . '.ics', 'w');
-        fwrite($file, "\rBEGIN:VCALENDAR\r\n");
-        fwrite($file, "VERSION:2.0\n");
-        fwrite($file, "CALSCALE:GREGORIAN\n");
-        fwrite($file, "PRODID:" . $this->provid . "\n"); 
+        fwrite($file, "BEGIN:VCALENDAR\r\n");
+        fwrite($file, "VERSION:2.0\r\n");
+        fwrite($file, "CALSCALE:GREGORIAN\r\n");
+        fwrite($file, "PRODID:" . $this->provid . "\r\n"); 
 
         foreach ($this->events as $event) {
-            fwrite($file, $event->toVEvent() . "\n");
+            fwrite($file, $event->toVEvent() . "\r\n");
         }
 
-        fwrite($file, "END:VCALENDAR\n");
+        fwrite($file, "END:VCALENDAR\r\n");
     }
 }
