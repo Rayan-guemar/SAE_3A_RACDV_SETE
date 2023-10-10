@@ -56,7 +56,7 @@ class FestivalController extends AbstractController {
 
         $festival = $repository->find($id);
         if (!$festival) {
-            return $errorService->MustBeConnectedError();
+            return $errorService->MustBeLoggedError();
         }
 
         $u = $this->getUser();
@@ -84,7 +84,8 @@ class FestivalController extends AbstractController {
         $festival = $repository->find($id);
 
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
         }
 
         $isBenevole = false;

@@ -43,7 +43,7 @@ class DemandeFestivalController extends AbstractController {
             if ($affiche) {
                 $originalFilename = pathinfo("", PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$affiche->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $affiche->guessExtension();
 
                 try {
                     $affiche->move(
@@ -63,6 +63,7 @@ class DemandeFestivalController extends AbstractController {
             $demandeFestival->setLon($form->get('lon')->getData());
             $em->persist($demandeFestival);
             $em->flush();
+            $this->addFlash('success', 'Demande de festival envoyée');
             return $this->redirectToRoute('app_demandefestival_all');
         }
 
@@ -93,7 +94,7 @@ class DemandeFestivalController extends AbstractController {
         $em->remove($demandeFestival);
         $em->flush();
 
-
-        return $this->redirectToRoute('home');
+        $this->addFlash('success', 'Demande de festival acceptée');
+        return $this->redirectToRoute('app_demandefestival_all');
     }
 }
