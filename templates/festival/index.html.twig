@@ -4,14 +4,10 @@
 {% endblock %}
 
 {% block body %}
-
-	<div class="searchbar-wrapper">
-
-		{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
-			{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
-			<input type="submit" id="saf" value="">
-		{{ form_end(form) }}
-	</div>	
+	{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
+		{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
+		<input type="submit" id="saf" value="">
+	{{ form_end(form) }}
 	<div class="fest-wrapper">
 		{% for festival in festivals %}
 			{{ include('festival/fest.html.twig',{'festival':festival}) }}

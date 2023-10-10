@@ -6,6 +6,8 @@ use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
 use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
+use App\Service\Ical\IcalBuilder;
+use App\Service\Ical\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,5 +48,22 @@ class UtilisateurController extends AbstractController {
             'controller_name' => 'UtilisateurController',
             'festivals' => $fs,
         ]);
+    }
+
+    #[Route('/testical', name: 'app_testical', methods: ['GET'])]
+    public function testical() : Response {
+        $ical = new IcalBuilder('test');
+
+        $ical->add(new Event(
+            'Test4',
+            'Super event',
+            'Salut à tous c\'est l\'événement test',
+            new \DateTime('2023-10-20 12:00:00'),
+            new \DateTime('2023-10-20 13:00:00'),
+            'Chez ta daronne sah'
+        ));
+
+        $ical->build();
+        return $this->redirectToRoute('app_festival_all');
     }
 }
