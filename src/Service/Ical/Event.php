@@ -46,19 +46,19 @@ class Event {
 
     public function toVEvent() : string {
 
-        $str = "BEGIN:VEVENT\n";
-        $str .= "UID:" . $this->uid . "\n";
-        $str .= "DTSTAMP:" . $this->start->format('Ymd\THis\Z') . "\n";
-        $str .= "DTSTART:" . $this->start->format('Ymd\THis\Z') . "\n";
-        $str .= "DTEND:" . $this->end->format('Ymd\THis\Z') . "\n";
+        $str = "BEGIN:VEVENT\r\n";
+        $str .= "UID:" . $this->uid . "\r\n";
+        $str .= "DTSTAMP:" . $this->start->format('Ymd\THis\Z') . "\r\n";
+        $str .= "DTSTART:" . $this->start->format('Ymd\THis\Z') . "\r\n";
+        $str .= "DTEND:" . $this->end->format('Ymd\THis\Z') . "\r\n";
         $str .= "SUMMARY:" . $this->title . "\n";
         if ($this->description) {
-            $str .= "DESCRIPTION:" . $this->description . "\n";
+            $str .= "DESCRIPTION:" . $this->description . "\r\n";
         }
         if ($this->location) {
-            $str .= "LOCATION:" . $this->location . "\n";
+            $str .= "LOCATION:" . $this->location . "\r\n";
         }
-        $str .= "END:VEVENT\n";
+        $str .= "END:VEVENT\r\n";
         return $str;
     }
 }

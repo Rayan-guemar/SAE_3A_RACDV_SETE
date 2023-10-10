@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
-use App\Entity\Festival;
-use App\Entity\Utilisateur;
+use \Psr\Container\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 class FlashMessageService {
 
@@ -13,7 +14,11 @@ class FlashMessageService {
     }
 
     public function getFlashbag(): mixed {
-        return $this->requestStack->getSession()->getFlashBag();
+        $session = $this->requestStack->getSession();
+        if (!$session instanceof FlashBagAwareSessionInterface) {
+            throw new SessionNotFoundException();
+        }
+        return $session->getFlashBag();
     }
 
     public function addErrorsForm(FormInterface $form) {
