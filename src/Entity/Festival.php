@@ -62,6 +62,12 @@ class Festival {
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'demandesBenevolat')]    
     private Collection $demandesBenevole;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $lat = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $lon = null;
+
     public function __construct() {
         $this->creneaux = new ArrayCollection();
         $this->taches = new ArrayCollection();
@@ -294,6 +300,30 @@ class Festival {
 
     public function removeDemandesBenevole(Utilisateur $demandesBenevole): static {
         $this->demandesBenevole->removeElement($demandesBenevole);
+
+        return $this;
+    }
+
+    public function getLat(): ?float
+    {
+        return $this->lat;
+    }
+
+    public function setLat(?float $lat): static
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    public function getLon(): ?float
+    {
+        return $this->lon;
+    }
+
+    public function setLon(?float $lon): static
+    {
+        $this->lon = $lon;
 
         return $this;
     }

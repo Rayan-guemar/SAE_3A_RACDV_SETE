@@ -1,36 +1,42 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	profile de
+	Profil de
 	{{utilisateur.nom}}
 	{{utilisateur.prenom}}
 {% endblock %}
 
 {% block body %}
 	<main>
-		<h1>
-			profile de
-			{{utilisateur.nom}}
-			{{utilisateur.prenom}}
-		</h1>
+		<div class="profil-box">
+			<h1>
+				Profil de
+				{{ utilisateur.nom }}
+				{{ utilisateur.prenom }}
+			</h1>
+			<div class="info-box">
+				<div class="info-row">
+					<div class="info-border">
+						<strong>Nom</strong>
+						:
+						{{ utilisateur.nom }}
+					</div>
 
-		<p>
-			<strong>nom</strong>
-			:
-			{{utilisateur.nom}}
-		</p>
-		<p>
-			<strong>prenom</strong>
-			:
-			{{utilisateur.prenom}}
-		</p>
+					<div class="info-border">
+						<strong>Prénom</strong>
+						:
+						{{ utilisateur.prenom }}
+					</div>
+				</div>
 
-		<p>
-			<strong>email</strong>
-			:
-			{{utilisateur.email}}
+				<div class="info-border">
+					<strong>Email</strong>
+					:
+					{{ utilisateur.email }}
 
-		</p>
+				</div>
+			</div>
+		</div>
 
 
 	</main>
