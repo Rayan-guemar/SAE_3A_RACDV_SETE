@@ -72,7 +72,7 @@ class FestivalController extends AbstractController {
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         };
 
-        $festival->addBenevole($u); 
+        $festival->addDemandesBenevole($u); 
         $em->persist($festival);
         $em->flush();
 
@@ -95,6 +95,7 @@ class FestivalController extends AbstractController {
             $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
             $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
             $isOrganisateur = $utilisateurUtils->isOrganisateur($u, $festival);
+            $hasApplied = $utilisateurUtils->hasApplied($u, $festival);
         };
 
 
@@ -103,7 +104,8 @@ class FestivalController extends AbstractController {
             'festival' => $festival,
             'isBenevole' => $isBenevole,
             'isResponsable' => $isResponsable,
-            'isOrganisateur' => $isOrganisateur
+            'isOrganisateur' => $isOrganisateur,
+            'hasApplied' => $hasApplied,
         ]);
     }
 
