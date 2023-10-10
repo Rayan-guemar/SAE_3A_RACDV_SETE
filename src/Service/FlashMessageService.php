@@ -7,13 +7,6 @@ use App\Entity\Utilisateur;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-enum FlashMessageType: string {
-    case SUCCESS = 'success';
-    case ERROR = 'error';
-    case WARNING = 'warning';
-    case INFO = 'info';
-}
-
 class FlashMessageService {
 
     public function __construct(private RequestStack $requestStack) {
