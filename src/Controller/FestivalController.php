@@ -149,8 +149,7 @@ class FestivalController extends AbstractController {
 
         $festival->addBenevole($demande);
         $festival->removeDemandesBenevole($demande);
-        $em->persist($festival);
-        
+        $em->persist($festival);        
         $em->flush();
         
         $this->addFlash('success', 'La demande a bien été acceptée');
@@ -173,8 +172,6 @@ class FestivalController extends AbstractController {
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
-
-        dd($demande);
 
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
