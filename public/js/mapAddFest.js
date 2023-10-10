@@ -61,13 +61,8 @@ function addressAutocomplete(containerElement) {
                     adresse.value = currentItems[index].properties.formatted;
                     /* Close the list of autocompleted values: */
                     closeDropDownList();
-                    document.getElementsByName("lat")[0].value = currentItems[index].geometry.coordinates[1];
-                    document.getElementsByName("lon")[0].value = currentItems[index].geometry.coordinates[0];
-
-                //     //Set a marker on the map
-                //     marker = L.marker([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]]).addTo(mymap);
-                //     //Sets the view of the map (geographical center and zoom) with the given animation options.
-                //     mymap.setView([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]], 10);
+                    document.getElementById("demande_festival_lat").value = currentItems[index].geometry.coordinates[1];
+                    document.getElementById("demande_festival_lon").value = currentItems[index].geometry.coordinates[0];
                 });
 
                 autocompleteItemsElement.appendChild(itemElement);

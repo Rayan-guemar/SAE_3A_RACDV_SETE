@@ -88,6 +88,8 @@ class DemandeFestivalController extends AbstractController {
         $festivals->setDescription($demandeFestival->getDescriptionFestival());
         $festivals->setOrganisateur($demandeFestival->getOrganisateurFestival());
         $festivals->setLieu($demandeFestival->getLieuFestival());
+        $festivals->setLat($demandeFestival->getLat());
+        $festivals->setLon($demandeFestival->getLon());
         $festivals->setAffiche($demandeFestival->getAfficheFestival());
 
         $em->persist($festivals);
