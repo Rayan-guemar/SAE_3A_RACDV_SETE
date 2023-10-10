@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\DemandeFestival;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -56,6 +57,8 @@ class DemandeFestivalType extends AbstractType
                     'placeholder' => 'Affiche du festival'
                 ]
             ])
+            ->add('lat' , HiddenType::class)
+            ->add('lon' , HiddenType::class)
             ->add('demanderCreationFestival' , SubmitType::class, [
                 'label' => 'Demander la création'
             ])
