@@ -299,7 +299,9 @@ class Festival {
     }
 
     public function removeDemandesBenevole(Utilisateur $demandesBenevole): static {
-        $this->demandesBenevole->removeElement($demandesBenevole);
+        if ($this->responsables->removeElement($demandesBenevole)) {
+            $demandesBenevole->removeDemandesBenevolat($this);
+        }
 
         return $this;
     }

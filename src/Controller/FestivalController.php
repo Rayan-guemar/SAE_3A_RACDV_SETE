@@ -20,7 +20,9 @@ use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
+use App\Entity\Festival;
 use App\Entity\Lieu;
+use App\Repository\DemandeBenevoleRepository;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -122,13 +124,69 @@ class FestivalController extends AbstractController {
 
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
 
-
-
         return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
+            'idFest' => $id,
         ]);
     }
+
+    #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
+    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em ) {
+
+        $festival = $repo->find($id);
+        $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
+            return $u->getId() == $idUser;
+        });
+
+        if (!$demande) {
+            $this->addFlash('error', 'La demande n\'existe pas');
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
+            
+        }
+
+        $festival->addBenevole($demande);
+        $festival->removeDemandesBenevole($demande);
+        $em->persist($festival);
+        
+        $em->flush();
+        
+        $this->addFlash('success', 'La demande a bien été acceptée');
+        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
+            'controller_name' => 'FestivalController',
+            'demandes' => $festival->getDemandesBenevole(),
+            'idFest' => $id,
+        ]);
+    }
+
+    #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo ) {
+
+        $festival = $repo->find($id);
+        $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
+            return $u->getId() == $idUser;
+        });
+
+        if (!$demande) {
+            $this->addFlash('error', 'La demande n\'existe pas');
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
+        }
+
+        dd($demande);
+
+        $festival->removeDemandesBenevole($demande);
+        $em->persist($festival);
+        $em->flush();
+        
+
+        $this->addFlash('success', 'La demande a bien été rejetée');
+        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
+            'controller_name' => 'FestivalController',
+            'demandes' => $festival->getDemandesBenevole(),
+            'idFest' => $id,
+        ]);
+    }
+
 
     #[Route('/festival/{id}/tache/create', name: 'app_festival_tache_create')]
     public function createTask(FestivalRepository $fr, Request $request, EntityManagerInterface $em, int $id): Response {

@@ -71,14 +71,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[JoinTable(name: 'demandes_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
-    private Collection $creneauxAffectes;
+    private Collection $demandesBenevolat;
 
    
     #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
     #[JoinTable(name: 'affectation')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
     #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
-    private Collection $demandesBenevolat;
+    private Collection $creneauxAffectes;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
