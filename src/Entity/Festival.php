@@ -286,6 +286,7 @@ class Festival {
     public function addDemandesBenevole(Utilisateur $demandesBenevole): static {
         if (!$this->demandesBenevole->contains($demandesBenevole)) {
             $this->demandesBenevole->add($demandesBenevole);
+            $demandesBenevole->addDemandesBenevolat($this);
         }
 
         return $this;
