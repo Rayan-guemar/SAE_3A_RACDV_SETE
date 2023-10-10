@@ -24,7 +24,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('SAE 3A RACDV SETE');
+            ->setTitle('FestiFlux');
     }
 
     public function configureMenuItems(): iterable
