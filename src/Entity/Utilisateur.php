@@ -67,14 +67,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateurDisponible', targetEntity: Creneaux::class)]
     private Collection $disponibilites;
 
-    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'demandesBenevole')]
+    #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
     #[JoinTable(name: 'demandes_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $demandesBenevolat;
 
-   
-    #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
+
+    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
     #[JoinTable(name: 'affectation')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
     #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
