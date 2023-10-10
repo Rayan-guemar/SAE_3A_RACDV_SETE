@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Creneaux;
 use App\Entity\Tache;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +16,13 @@ class TacheType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('nom', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Nom de la tache...'
+                ],
+                'required' => true,
+                'mapped' => false
+                ])
             ->add('lieu', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Lieu de la tache...'
@@ -23,19 +30,21 @@ class TacheType extends AbstractType
                 'required' => true,
                 'mapped' => false
             ])
-            ->add('heureDebut', TimeType::class, [
+            ->add('heureDebut', DateTimeType::class, [
                 'attr' => [
                     'label' => 'Heure de début de la tache',
                     'placeholder' => 'Heure de début de la tache...'
                 ],
+                'widget' => 'single_text',
                 'required' => true,
                 'mapped' => false
             ])
-            ->add('heureFin', TimeType::class, [
+            ->add('heureFin', DateTimeType::class, [
                 'attr' => [
                     'label' => 'Heure de fin de la tache',
                     'placeholder' => 'Heure de fin de la tache...'
                 ],
+                'widget' => 'single_text',
                 'required' => true,
                 'mapped' => false
             ])

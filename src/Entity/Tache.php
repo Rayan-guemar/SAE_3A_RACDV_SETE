@@ -29,6 +29,9 @@ class Tache
     #[InverseJoinColumn(name: 'tache_id', referencedColumnName: 'id')]
     private ?Creneaux $crenaux = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +69,18 @@ class Tache
     public function setCrenaux(Creneaux $crenaux): static
     {
         $this->crenaux = $crenaux;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
 
         return $this;
     }

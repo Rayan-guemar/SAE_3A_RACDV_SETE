@@ -27,7 +27,7 @@ class IcalBuilder {
         foreach ($this->events as $event) {
             fwrite($file, $event->toVEvent() . "\n");
         }
-        
+
         fwrite($file, "END:VCALENDAR\n");
     }
 }
