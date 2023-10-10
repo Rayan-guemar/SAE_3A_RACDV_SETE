@@ -94,6 +94,7 @@ class FestivalController extends AbstractController {
         $isBenevole = false;
         $isResponsable = false;
         $isOrganisateur = false;
+        $hasApplied = false;
         $u = $this->getUser();
         if ($u && $u instanceof Utilisateur) {
             $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
