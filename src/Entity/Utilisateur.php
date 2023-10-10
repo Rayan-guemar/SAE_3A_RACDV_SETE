@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping\ManyToMany;
 
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -66,10 +67,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateurDisponible', targetEntity: Creneaux::class)]
     private Collection $disponibilites;
 
-    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
+    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'demandesBenevole')]
+    #[JoinTable(name: 'demandes_benevole')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $creneauxAffectes;
 
-    #[ORM\ManyToMany(targetEntity: Festival::class, mappedBy: 'demandesBenevole')]
+   
+    #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
+    #[JoinTable(name: 'affectation')]
+    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
     private Collection $demandesBenevolat;
 
     public function __construct() {
@@ -220,13 +228,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getEstBenevole(): Collection
-    {
+    public function getEstBenevole(): Collection {
         return $this->estBenevole;
     }
 
-    public function addEstBenevole(Festival $estBenevole): static
-    {
+    public function addEstBenevole(Festival $estBenevole): static {
         if (!$this->estBenevole->contains($estBenevole)) {
             $this->estBenevole->add($estBenevole);
         }
@@ -234,8 +240,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeEstBenevole(Festival $estBenevole): static
-    {
+    public function removeEstBenevole(Festival $estBenevole): static {
         $this->estBenevole->removeElement($estBenevole);
 
         return $this;
@@ -244,13 +249,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getEstResponsable(): Collection
-    {
+    public function getEstResponsable(): Collection {
         return $this->estResponsable;
     }
 
-    public function addEstResponsable(Festival $estResponsable): static
-    {
+    public function addEstResponsable(Festival $estResponsable): static {
         if (!$this->estResponsable->contains($estResponsable)) {
             $this->estResponsable->add($estResponsable);
         }
@@ -258,8 +261,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeEstResponsable(Festival $estResponsable): static
-    {
+    public function removeEstResponsable(Festival $estResponsable): static {
         $this->estResponsable->removeElement($estResponsable);
 
         return $this;
@@ -268,13 +270,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getDisponibilites(): Collection
-    {
+    public function getDisponibilites(): Collection {
         return $this->disponibilites;
     }
 
-    public function addDisponibilite(Creneaux $disponibilite): static
-    {
+    public function addDisponibilite(Creneaux $disponibilite): static {
         if (!$this->disponibilites->contains($disponibilite)) {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateurDisponible($this);
@@ -283,8 +283,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeDisponibilite(Creneaux $disponibilite): static
-    {
+    public function removeDisponibilite(Creneaux $disponibilite): static {
         if ($this->disponibilites->removeElement($disponibilite)) {
             // set the owning side to null (unless already changed)
             if ($disponibilite->getUtilisateurDisponible() === $this) {
@@ -298,13 +297,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getCreneauxAffectes(): Collection
-    {
+    public function getCreneauxAffectes(): Collection {
         return $this->creneauxAffectes;
     }
 
-    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static
-    {
+    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static {
         if (!$this->creneauxAffectes->contains($creneauxAffecte)) {
             $this->creneauxAffectes->add($creneauxAffecte);
         }
@@ -312,8 +309,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static
-    {
+    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static {
         $this->creneauxAffectes->removeElement($creneauxAffecte);
 
         return $this;
@@ -322,13 +318,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getDemandesBenevolat(): Collection
-    {
+    public function getDemandesBenevolat(): Collection {
         return $this->demandesBenevolat;
     }
 
-    public function addDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function addDemandesBenevolat(Festival $demandesBenevolat): static {
         if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
             $this->demandesBenevolat->add($demandesBenevolat);
             $demandesBenevolat->addDemandesBenevole($this);
@@ -336,9 +330,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
-
-    public function removeDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
         }

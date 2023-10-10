@@ -23,8 +23,10 @@
 							</li>
 							<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_demandefestival_add") }}">Ajouter un festival</a>
 							</li>
-							<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_demandefestival_all") }}">Toute les demandes</a>
-							</li>
+							{% if is_granted('ROLE_ADMIN')  %}
+								<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_demandefestival_all") }}">Toute les demandes</a>
+								</li>
+							{% endif %}
 						{% endif %}
 					</ul>
 				</div>

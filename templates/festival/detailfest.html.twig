@@ -3,11 +3,14 @@
 
 {% block title %}festivals
 {% endblock %}
-{% block overhead %}
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-	<script src="{{ asset('js/map.js') }}" defer></script>
-{% endblock %}
+{# {% block overhead %}
+	<linkrel="stylesheet"href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""xmlns="http://www.w3.org/1999/html"/>
+	<scriptsrc="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="crossorigin=""></script>
+	<scripttype="module"src="{{asset('js/demandeBenevole.js')}}"defer></script>
+	<linkrel="stylesheet"href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""/>
+	<scriptsrc="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="crossorigin=""></script>
+	<scriptsrc="{{asset('js/map.js')}}"defer></script>
+{% endblock %} #}
 {% block body %}
 	<div class="detailFesival">
 		<img class="affiche" id="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
@@ -31,16 +34,21 @@
 			</div>
 			<div id="mapid"></div>
 		</div>
-		{% if isOrganisateur == true  %}
+		{% if isBenevole %}
 
-			<div class="button-benevole">
-				<a href="{{ path("app_festival_demandesBenevolat", {'id' : festival.getId()}) }}" class="btn btn-primary">Demandes de bénévolat</a>
-			</div>
+			{% elseif isResponsable %}
 
-		{% else %}
-			<div class="button-benevole">
-				<a {% if is_granted('ROLE_USER') %} {% else %} href=" {{ path(" app_auth_login") }} " {% endif %} class="btn btn-primary">Devenir bénévole</a>
-			</div>
+			{% elseif isOrganisateur %}
+				<div class="button-benevole">
+					<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
+				</div>
+			{% else  %}
+				<div class="button-benevole">
+					<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Devenir bénévole</a>
+				</div>
+
 		{% endif %}
+
+
 	</div>
 {% endblock %}

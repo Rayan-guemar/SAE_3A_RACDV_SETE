@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    demande bénévole
+{% endblock %}
+
+{% block body %}
+    <h1>Liste des demandes</h1>
+    <br>
+    <table class="\" table\"">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prenom</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for benevole in liste_benevoles %}
+        <tr>
+
+            <td>{{ benvole.nom }}</td>
+            <td>{{ benevole.prenom }}</td>
+            <td>
+{#                <a href={{path("app_demandebenevole_accept", {"id": benevole.id} )}}>Accepter</a>#}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="\" 8\"">Aucune demande trouvée</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+    </table>
+    <br>
+    <br>
+{% endblock %}
