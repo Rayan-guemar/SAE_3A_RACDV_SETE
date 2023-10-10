@@ -1,17 +1,3 @@
-// Initialisation de la carte
-var mymap = L.map('mapid').setView([46.485935, 2.553603], 6);
-
-
-
-
-// Ajout de la carte OpenStreetMap
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-}).addTo(mymap);
-
-
-
 let containerElement = document.getElementById("box-adresses");
 let adresse = document.getElementById('demande_festival_lieuFestival');
 var currentItems;
@@ -75,10 +61,13 @@ function addressAutocomplete(containerElement) {
                     adresse.value = currentItems[index].properties.formatted;
                     /* Close the list of autocompleted values: */
                     closeDropDownList();
-                    //Set a marker on the map
-                    marker = L.marker([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]]).addTo(mymap);
-                    //Sets the view of the map (geographical center and zoom) with the given animation options.
-                    mymap.setView([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]], 10);
+                    document.getElementsByName("lat")[0].value = currentItems[index].geometry.coordinates[1];
+                    document.getElementsByName("lon")[0].value = currentItems[index].geometry.coordinates[0];
+
+                //     //Set a marker on the map
+                //     marker = L.marker([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]]).addTo(mymap);
+                //     //Sets the view of the map (geographical center and zoom) with the given animation options.
+                //     mymap.setView([currentItems[index].geometry.coordinates[1], currentItems[index].geometry.coordinates[0]], 10);
                 });
 
                 autocompleteItemsElement.appendChild(itemElement);

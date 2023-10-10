@@ -1,11 +1,10 @@
 {% extends "base.html.twig" %}
-{% block title %}ajouter votre festival
-{% endblock %}
+{% block title %}ajouter votre festival{% endblock %}
 {% block overhead %}
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 	<script src="{{ asset('js/mapAddFest.js') }}" defer></script>
-	<link rel="stylesheet" href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"/>
+	<link rel="stylesheet" href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css" />
 	<script src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js" defer></script>
 {% endblock %}
 {% block body %}
@@ -23,8 +22,9 @@
 			{{ form_widget(form.dateFinFestival, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
 		</div>
 		<div id="box-adresses">
-			{{ form_row(form.lieuFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Lieu du Festival'}}) }}
-			<div id="mapid"></div>
+		{{ form_row(form.lieuFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Lieu du Festival'}}) }}
+		<input type="hidden" name="lat">
+		<input type="hidden" name="lon">
 		</div>
 		{{ form_row(form.afficheFestival, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
 
