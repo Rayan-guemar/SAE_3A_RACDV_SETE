@@ -7,7 +7,7 @@
 			{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
@@ -17,11 +17,11 @@
 		<div id="">
 			{% for success in app.flashes('success') %}
 				<!-- Pour chaque message du type "success" -->
-				<span class="flashes flashes-success">{{ success }}</span>
+				<div class="flashes flashes-success">{{ success }}</div>
 			{% endfor %}
 			{% for error in app.flashes('error') %}
 				<!-- Pour chaque message du type "error" -->
-				<span class="flashes flashes-error">{{ error }}</span>
+				<div class="flashes flashes-error">{{ error }}</div>
 			{% endfor %}
 		</div>
 		{% include 'sidebar.html.twig' %}
@@ -35,7 +35,20 @@
 					<h3>FestifluxOnTheFlux</h3>
 					<p>Praesent sed lobortis mi. Suspendisse vel placerat ligula. Vivamus ac sem lacus. Ut vehicula rhoncus elementum. Etiam quis tristique lectus. Aliquam in arcu eget velit pulvinar dictum vel in justo.</p>
 				</div>
-				<div class="col item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a></div>
+				<div class="col item social">
+					<a href="#">
+						<i class="icon ion-social-facebook"></i>
+					</a>
+					<a href="#">
+						<i class="icon ion-social-twitter"></i>
+					</a>
+					<a href="#">
+						<i class="icon ion-social-snapchat"></i>
+					</a>
+					<a href="#">
+						<i class="icon ion-social-instagram"></i>
+					</a>
+				</div>
 			</div>
 			<p class="copyright">FestifluxOnTheFlux © 2023</p>
 		</footer>

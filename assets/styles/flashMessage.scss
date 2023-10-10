@@ -1,0 +1,44 @@
+@import "_variables.scss";
+
+.flashes {
+    position: fixed;
+    height: 120px;
+    width: 400px;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    animation: slide 2.5s ease-in-out forwards;
+
+}
+
+.flashes-success {
+    background-color: rgb(0, 255, 145);
+}
+
+.flashes-error {
+    background-color: rgb(233, 26, 26);
+    color: white;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(400px);
+    }
+
+    10% {
+        transform: translateX(0px);
+    }
+
+    90% {
+        transform: translateX(0px);
+    }
+
+    100% {
+        transform: translateX(500px);
+        display: none;
+    }
+}

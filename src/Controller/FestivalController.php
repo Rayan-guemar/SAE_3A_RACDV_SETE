@@ -12,6 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
 use App\Form\TacheType;
 use App\Entity\Utilisateur;
+use App\Form\DemandeFestivalType;
+use App\Repository\DemandeFestivalRepository;
+use App\Service\ErrorService;
+use App\Service\FlashMessageService;
+use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
@@ -25,7 +30,7 @@ class FestivalController extends AbstractController {
 
 
     #[Route('/festival/all', name: 'app_festival_all')]
-    public function all(FestivalRepository $repository, Request $request): Response {
+    public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
 
@@ -38,6 +43,7 @@ class FestivalController extends AbstractController {
                 'festivals' => $festivals
             ]);
         }
+
         $festivals = $repository->findAll();
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
@@ -46,17 +52,15 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/apply', name: 'app_festival_apply_volunteer')]
-    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em): Response {
+    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService): Response {
 
         $festival = $repository->find($id);
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            return $errorService->MustBeConnectedError();
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);

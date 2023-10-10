@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Service\FlashMessageService;
+use App\Service\FlashMessageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +25,7 @@ class AuthController extends AbstractController {
     }
 
     #[Route('/auth/register', name: 'app_auth_register')]
-    public function register(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher): Response {
+    public function register(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher, FlashMessageService $flashMessageService): Response {
         $u = new Utilisateur();
 
         $f = $this->createForm(InscriptionType::class, $u, [
@@ -33,12 +35,10 @@ class AuthController extends AbstractController {
 
         $f->handleRequest($req);
         if ($f->isSubmitted() && $f->isValid()) {
+
             if (!$f->isValid()) {
-                $errors = $f->getErrors(true);
-                $flashBag = $requestStack->getSession()->getFlashBag();
-                foreach ($errors as $error) {
-                    $flashBag->add("error", $error->getMessage());
-                }
+                $flashMessageService->addErrorsForm($f);
+                return $this->redirectToRoute('app_auth_register');
             }
 
             $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
@@ -48,6 +48,7 @@ class AuthController extends AbstractController {
             $em->persist($u);
             $em->flush();
 
+            $flashMessageService->add(FlashMessageType::SUCCESS, 'Votre compte a bien été créé');
             return $this->redirectToRoute('home');
         }
 
