@@ -59,6 +59,8 @@ class DemandeFestivalController extends AbstractController {
 
 
             $demandeFestival->setOrganisateurFestival($this->getUser());
+            $demandeFestival->setLat($form->get('lat')->getData());
+            $demandeFestival->setLon($form->get('lon')->getData());
             $em->persist($demandeFestival);
             $em->flush();
             return $this->redirectToRoute('app_demandefestival_all');
