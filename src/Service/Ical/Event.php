@@ -2,6 +2,8 @@
 
 namespace App\Service\Ical;
 
+use App\Entity\Tache;
+
 class Event {
     private string $uid;
     private string $title;
@@ -44,7 +46,7 @@ class Event {
         return $this->location;
     }
 
-    public function toVEvent() : string {
+    public function toVEvent(): string {
 
         $str = "BEGIN:VEVENT\r\n";
         $str .= "UID:" . $this->uid . "\r\n";
@@ -60,5 +62,15 @@ class Event {
         }
         $str .= "END:VEVENT\r\n";
         return $str;
+    }
+
+    public static function fromTache(Tache $tache) {
+        $uid = $tache->getId();
+        $title = $tache->getNom();
+        $description = $tache->getDescription();
+        $start = $tache->getCrenaux()->getDateDebut();
+        $end = $tache->getCrenaux()->getDateDebut();
+        $location = $tache->getLieu();
+        return new Event($uid, $title, $description, $start, $end, $location);
     }
 }
