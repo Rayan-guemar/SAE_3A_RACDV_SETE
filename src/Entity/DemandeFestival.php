@@ -36,6 +36,12 @@ class DemandeFestival
     #[ORM\Column(length: 255)]
     private ?string $afficheFestival = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $lat = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $lon = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +127,30 @@ class DemandeFestival
     public function setAfficheFestival(string $afficheFestival): static
     {
         $this->afficheFestival = $afficheFestival;
+
+        return $this;
+    }
+
+    public function getLat(): ?float
+    {
+        return $this->lat;
+    }
+
+    public function setLat(?float $lat): static
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    public function getLon(): ?float
+    {
+        return $this->lon;
+    }
+
+    public function setLon(?float $lon): static
+    {
+        $this->lon = $lon;
 
         return $this;
     }
