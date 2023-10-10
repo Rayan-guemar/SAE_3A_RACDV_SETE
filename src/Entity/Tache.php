@@ -25,8 +25,8 @@ class Tache
 
     #[ORM\OneToOne(inversedBy: 'tache', cascade: ['persist', 'remove'])]
     #[JoinTable(name: 'affectation')]
-    #[JoinColumn(name: 'tache_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
+    #[JoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'tache_id', referencedColumnName: 'id')]
     private ?Creneaux $crenaux = null;
 
     public function getId(): ?int

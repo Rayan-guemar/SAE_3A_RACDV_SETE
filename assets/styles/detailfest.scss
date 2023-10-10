@@ -27,21 +27,27 @@
   font-weight: bold;
   line-height: normal;
 }
+.btn-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
 
 .button-benevole {
-  border-radius: 30px;
+  border-radius: 10px;
   background-color: black;
   align-self: center;
   display: flex;
-  width: 80%;
-  height: 73px;
-  padding: 28px 46px;
+  width: 200px;
+  height: 50px;
+  padding: 20px;
+  margin: 10px;
   justify-content: center;
   align-items: center;
+  text-align: center;
 
   a {
     color: white;
-    font-size: x-large;
   }
 }
 

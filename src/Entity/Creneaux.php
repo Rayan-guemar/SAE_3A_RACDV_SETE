@@ -42,7 +42,7 @@ class Creneaux
     public function __construct()
     {
         $this->utilisateursAffectes = new ArrayCollection();
-        $this->utilisateurDisponible = new ArrayCollection();
+        $this->utilisateurDisponible;
     }
 
     public function getId(): ?int

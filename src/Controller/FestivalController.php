@@ -2,24 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Festival;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\DemandeFestival;
+use App\Entity\Tache;
+use App\Form\TacheType;
 use App\Entity\Utilisateur;
-use App\Form\DemandeFestivalType;
-use App\Repository\DemandeFestivalRepository;
 use App\Service\UtilisateurUtils;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
-use Symfony\Component\Validator\Constraints\Collection;
+use App\Entity\Creneaux;
+use App\Entity\Lieu;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -127,4 +123,46 @@ class FestivalController extends AbstractController {
             'demandes' => $festival->getDemandesBenevole(),
         ]);
     }
+
+    #[Route('/festival/{id}/tache/create', name: 'app_festival_tache_create')]
+    public function createTask(FestivalRepository $fr, Request $request, EntityManagerInterface $em, int $id): Response {
+
+        $tache = new Tache();
+        $festival = $fr->find($id);
+
+        $form = $this->createForm(TacheType::class, $tache);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $tache->setFestival($festival);
+
+            $creneau = new Creneaux();
+            $creneau->setDateDebut($form->get('heureDebut')->getData());
+            $creneau->setDateFin($form->get('heureFin')->getData());
+            $creneau->setFestival($festival);
+
+            $lieu = new Lieu();
+            $lieu->setNomLieu($form->get('lieu')->getData());
+            $lieu->setFestival($festival);
+            $tache->setLieu($lieu);
+            
+
+
+            $em->persist($creneau);
+            $em->persist($lieu);
+            $em->persist($tache);
+
+            $em->flush();
+            $this->addFlash('success', 'La tâche a bien été créée');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
+        }
+        
+        return $this->render('festival/createTask.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

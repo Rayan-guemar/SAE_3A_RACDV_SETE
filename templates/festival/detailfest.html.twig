@@ -34,20 +34,27 @@
 			</div>
 			<div id="mapid"></div>
 		</div>
-		{% if isBenevole %}
 
-			{% elseif isResponsable %}
+		<div class="btn-container">
+			{% if isBenevole %}
 
-			{% elseif isOrganisateur %}
-				<div class="button-benevole">
-					<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
-				</div>
-			{% else  %}
-				<div class="button-benevole">
-					<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Devenir bénévole</a>
-				</div>
+				{% elseif isResponsable %}
 
-		{% endif %}
+				{% elseif isOrganisateur %}
+					<div class="button-benevole">
+						<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
+					</div>
+					<div class="button-benevole">
+						<a href={{ path("app_festival_tache_create", {'id' : festival.getId()} ) }} class="btn btn-primary">Ajouter une tache</a>
+					</div>
+
+				{% else  %}
+					<div class="button-benevole">
+						<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Devenir bénévole</a>
+					</div>
+
+			{% endif %}
+		</div>
 
 
 	</div>
