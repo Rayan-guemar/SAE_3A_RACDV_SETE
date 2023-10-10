@@ -72,7 +72,7 @@ class FestivalController extends AbstractController {
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         };
 
-        $festival->addBenevole($u);
+        $festival->addBenevole($u); 
         $em->persist($festival);
         $em->flush();
 

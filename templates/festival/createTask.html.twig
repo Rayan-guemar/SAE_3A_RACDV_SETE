@@ -11,9 +11,12 @@
 	<div class="form-wrapper">
 		{{ form_start(form) }}
 
+		{{ form_row(form.nom, { 'label': false }) }}
 		{{ form_row(form.lieu, { 'label': false }) }}
-		{{ form_widget(form.heureDebut) }}
-		{{ form_widget(form.heureFin) }}
+		<div class="form-row">
+			{{ form_widget(form.heureDebut, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'} }) }}
+			{{ form_widget(form.heureFin, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
+		</div>
 		{{ form_widget(form.creerTache) }}
 
 		{{ form_end(form) }}

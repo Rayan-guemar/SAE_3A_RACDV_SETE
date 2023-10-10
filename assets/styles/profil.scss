@@ -1,0 +1,34 @@
+h1 {
+  font-weight: 900;
+}
+
+.profil-box{
+  color: black;
+  font-size: large;
+  font-weight: 700;
+}
+
+.info-box{
+margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+
+}
+
+.info-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+
+}
+
+.info-border{
+  border-radius: 20px;
+  border: 2px solid $grey-primary;
+  padding: 20px;
+
+}
