@@ -76,6 +76,7 @@ class FestivalController extends AbstractController {
         $em->persist($festival);
         $em->flush();
 
+        $this->addFlash('success', 'Demande de bénévolat envoyée');
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
 
@@ -154,7 +155,7 @@ class FestivalController extends AbstractController {
             $lieu->setNomLieu($form->get('lieu')->getData());
             $lieu->setFestival($festival);
             $tache->setLieu($lieu);
-            
+
 
 
             $em->persist($creneau);
@@ -165,11 +166,10 @@ class FestivalController extends AbstractController {
             $this->addFlash('success', 'La tâche a bien été créée');
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         }
-        
+
         return $this->render('festival/createTask.html.twig', [
             'controller_name' => 'FestivalController',
             'form' => $form->createView(),
         ]);
     }
-
 }
