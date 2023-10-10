@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping\ManyToMany;
 
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -87,7 +88,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
-
     }
 
     public function getId(): ?int {
@@ -318,13 +318,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Festival>
      */
-    public function getDemandesBenevolat(): Collection
-    {
+    public function getDemandesBenevolat(): Collection {
         return $this->demandesBenevolat;
     }
 
-    public function addDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function addDemandesBenevolat(Festival $demandesBenevolat): static {
         if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
             $this->demandesBenevolat->add($demandesBenevolat);
             $demandesBenevolat->addDemandesBenevole($this);
@@ -332,8 +330,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
-    public function removeDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
         }
