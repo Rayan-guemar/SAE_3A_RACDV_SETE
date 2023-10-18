@@ -4,10 +4,19 @@
 
 ### Lancer le projet
 
-Tout le projet est dockerisé, il suffit donc de lancer la commande suivante à la racine du projet après l'avoir cloné :
+Tout le projet est dockerisé :
+Pour le lancer la première chose à faire est l'installation de Docker sur votre ordinateur
+Nous avons besoin de :
+  -Docker
+  -Docker compose
+Si vous êtes sur un système basé sur Ubuntu, vous aurez juste besoin de faire :
+```bash
+apt-get install docker docker-compose
+```
+Sinon voir la documentation officiel de docker <a href="https://docs.docker.com/engine/install/"> ici </a>
 
+Et voila ! il suffit maintenant de lancer la commande suivante à la racine du projet :
 ```bash
 docker-compose up [-d]
 ```
-
-Il faut pour cela avoir installé docker et docker-compose sur sa machine.
+Le lancement du service peut prendre quelques minutes merci pour votre patience ;)
