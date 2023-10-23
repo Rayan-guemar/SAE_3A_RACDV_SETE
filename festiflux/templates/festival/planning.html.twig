@@ -1,47 +1,71 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			Planning
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
+		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
+		{% block overhead %}{% endblock %}
+	</head>
+	<body>
+		<div class="planning-wrapper">
 
-{% block title %}Planning
-{% endblock %}
-
-{% block body %}
-
-	<div class="planning-wrapper">
-
-		<h1>Planning</h1>
-
-		<div class="planning">
-			{% for i in 1..11 %}
-				<div class="hour" id="hour-{{ i * 2 }}">
-					{% if i * 2 < 10 %}
-						0{{ i * 2 }}h00
-					{% else %}
-						{{ i * 2 }}h00
-					{% endif %}
-				</div>
-			{% endfor %}
-			<div class="day">
+			<!-- <h1>Planning</h1> -->
+	
+			<div class="planning">
 				{% for i in 1..11 %}
-					<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+					<div class="hour" id="hour-{{ i * 2 }}">
+						{% if i * 2 < 10 %}
+							0{{ i * 2 }}h00
+						{% else %}
+							{{ i * 2 }}h00
+						{% endif %}
+					</div>
 				{% endfor %}
-
-				<div class="task">
-					<div class="name"></div>
-					<div class="créneau">15h - 17h</div>
+				<div class="day" style="border-left: none;">
+					{% for i in 1..11 %}
+						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+					{% endfor %}
+	
+					<div class="task">
+						<div class="name">Cuisine</div>
+						<div class="creneau">15h - 17h</div>
+					</div>
+				</div>
+				<div class="day">
+					{% for i in 1..11 %}
+						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+					{% endfor %}
+					<div class="task">
+						<div class="name">Accueil artiste</div>
+						<div class="creneau">15h - 17h</div>
+					</div>
+				</div>
+				<div class="day">
+					{% for i in 1..11 %}
+						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+					{% endfor %}
+					<div class="task">
+						<div class="name">Accueil artiste</div>
+						<div class="creneau">15h - 17h</div>
+					</div>
+				</div>
+				<div class="day">
+					{% for i in 1..11 %}
+						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+					{% endfor %}
+					<div class="task">
+						<div class="name">Accueil artiste</div>
+						<div class="creneau">15h - 17h</div>
+					</div>
 				</div>
 			</div>
-			<div class="day">
-				{% for i in 1..11 %}
-					<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-				{% endfor %}
-				<div class="task">
-					<div class="name"></div>
-					<div class="créneau">15h - 17h</div>
-				</div>
-			</div>
+	
 		</div>
-
-	</div>
-
-
-{% endblock %}
+	</body>
+</html>
