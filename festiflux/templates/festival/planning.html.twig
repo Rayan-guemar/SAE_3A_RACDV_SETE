@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Planning
+{% endblock %}
+
+{% block body %}
+
+	<div class="planning-wrapper">
+
+		<h1>Planning</h1>
+
+		<div class="planning">
+			{% for i in 1..11 %}
+				<div class="hour" id="hour-{{ i * 2 }}">
+					{% if i * 2 < 10 %}
+						0{{ i * 2 }}h00
+					{% else %}
+						{{ i * 2 }}h00
+					{% endif %}
+				</div>
+			{% endfor %}
+			<div class="day">
+				{% for i in 1..11 %}
+					<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+				{% endfor %}
+
+				<div class="task">
+					<div class="name"></div>
+					<div class="créneau">15h - 17h</div>
+				</div>
+			</div>
+			<div class="day">
+				{% for i in 1..11 %}
+					<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+				{% endfor %}
+				<div class="task">
+					<div class="name"></div>
+					<div class="créneau">15h - 17h</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+{% endblock %}

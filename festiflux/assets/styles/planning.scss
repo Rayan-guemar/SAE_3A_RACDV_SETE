@@ -1,0 +1,70 @@
+@import "_variables.scss";
+
+.planning-wrapper {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.planning {
+    border: solid 1px;
+    height: 85%;
+
+    position: relative;
+    display: flex;
+
+    &>.day {
+        height: 100%;
+        width: 300px;
+        border-left: solid 1px;
+        position: relative;
+
+        .day-date {
+            background-color: aqua;
+            height: 50px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .line-break {
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            background-color: black;
+            left: 0;
+        }
+
+        @for $i from 1 through 11 {
+            #line-break-#{$i * 2} {
+                top: #{($i * 2 * 100 / 24) + "%"};
+            }
+        }
+
+        .task {
+            position: absolute;
+            top: calc(15/24*100%);
+            height: calc(2/24*100%);
+            width: 100%;
+            // background-color: greenyellow;
+            z-index: -1;
+        }
+    }
+
+    .hour {
+        position: absolute;
+        left: -100px;
+        transform: translate(0, -50%);
+    }
+
+    @for $i from 1 through 11 {
+        #hour-#{$i * 2} {
+            top: #{($i * 2 * 100 / 24) + "%"};
+        }
+    }
+}

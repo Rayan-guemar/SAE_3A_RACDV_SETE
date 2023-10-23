@@ -74,7 +74,7 @@ class FestivalController extends AbstractController {
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         };
 
-        $festival->addDemandesBenevole($u); 
+        $festival->addDemandesBenevole($u);
         $em->persist($festival);
         $em->flush();
 
@@ -134,8 +134,33 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    #[Route('/festival/{id}/planning', name: 'app_festival_demandesBenevolat')]
+    public function planning(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+        $festival = $repository->find($id);
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        // $u = $this->getUser();
+        // if (!$u || !$u instanceof Utilisateur) {
+        //     $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+        //     return $this->redirectToRoute('app_login');
+        // }
+
+        // if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
+        //     $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+        //     return $this->redirectToRoute('home');
+        // }
+
+
+        return $this->render('festival/planning.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival,
+        ]);
+    }
+
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
-    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em ) {
+    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em) {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
@@ -145,14 +170,13 @@ class FestivalController extends AbstractController {
         if (!$demande) {
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
-            
         }
 
         $festival->addBenevole($demande);
         $festival->removeDemandesBenevole($demande);
-        $em->persist($festival);        
+        $em->persist($festival);
         $em->flush();
-        
+
         $this->addFlash('success', 'La demande a bien été acceptée');
         return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
             'controller_name' => 'FestivalController',
@@ -162,7 +186,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo ) {
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo) {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
@@ -177,7 +201,7 @@ class FestivalController extends AbstractController {
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
         $em->flush();
-        
+
 
         $this->addFlash('success', 'La demande a bien été rejetée');
         return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
