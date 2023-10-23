@@ -23,6 +23,8 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -54,7 +56,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/apply', name: 'app_festival_apply_volunteer')]
-    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService): Response {
+    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService, MailerInterface $mailer): Response {
 
         $festival = $repository->find($id);
         if (!$festival) {
@@ -77,6 +79,16 @@ class FestivalController extends AbstractController {
         $festival->addDemandesBenevole($u); 
         $em->persist($festival);
         $em->flush();
+
+        $email = (new Email())
+            ->from('administration@festiflux.fr')
+            ->to($festival->getOrganisateur()->getEmail())
+            ->subject('Demande de bénévolat')
+            ->text('test')
+            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival '.$festival->getNom(). '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/all" > ici </a> pour accéder au site. </p>');
+
+        //dd($email);
+        $mailer->send($email);
 
         $this->addFlash('success', 'Demande de bénévolat envoyée');
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
