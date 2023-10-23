@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 class Festival {
@@ -68,6 +69,9 @@ class Festival {
     #[ORM\Column(nullable: true)]
     private ?float $lon = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $isArchive;
+
     public function __construct() {
         $this->creneaux = new ArrayCollection();
         $this->taches = new ArrayCollection();
@@ -75,6 +79,7 @@ class Festival {
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
         $this->demandesBenevole = new ArrayCollection();
+        $this->isArchive=0;
     }
 
     public function getId(): ?int {
@@ -329,4 +334,18 @@ class Festival {
 
         return $this;
     }
+
+    public function getIsArchive(): ?string
+    {
+
+        return $this->isArchive;
+    }
+
+    public function setIsArchive(): void
+    {
+
+        $this->isArchive = 1;
+    }
+
+
 }

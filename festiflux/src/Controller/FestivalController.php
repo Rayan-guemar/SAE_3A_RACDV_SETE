@@ -228,4 +228,36 @@ class FestivalController extends AbstractController {
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/festival/{id}/archiver', name: 'app_festival_archiver')]
+    public function demandeArchiverFestival(FestivalRepository $repository, int $id): Response {
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/archive.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival
+        ]);
+    }
+
+    #[Route('/festival/{id}/archiver/done', name: 'app_festival_archiver_done')]
+    public function archiverFestival(FestivalRepository $repository, int $id,EntityManagerInterface $em): Response {
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }
+
+        $festival->setIsArchive();
+
+        $em->persist($festival);
+        $em->flush();
+
+        return $this->redirectToRoute('app_user_festivals');
+    }
 }

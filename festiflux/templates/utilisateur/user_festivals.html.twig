@@ -10,6 +10,7 @@
 
 
 	{% for festival in festivals %}
+		{% if festival.getIsArchive() != 1 %}
 		<div class="fest">
 			<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
 				<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
@@ -42,7 +43,7 @@
 				</a>
 			</div>
 		</div>
-
+		{% endif %}
 	{% endfor %}
 
 {% endblock %}

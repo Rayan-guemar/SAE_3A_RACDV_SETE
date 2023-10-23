@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Archiver{{ festival.getNom() }}
+{% endblock %}
+
+{% block body %}
+    <h1>Archiver {{ festival.getNom() }}</h1>
+
+    <p>Attention, cette action sera irreversible. Si vous archivez {{ festival.getNom() }} vous et les autres utilisateurs ne pourrez plus le voir apparaitre mais les données seront conservées</p>
+
+    <div class="btn-container">
+        <div class="button-benevole">
+            <a href={{ path("app_user_festivals") }} class="btn btn-primary">Annuler</a>
+        </div>
+        <div class="button-archive">
+            <a href={{ path("app_festival_archiver_done", { 'id': festival.getId() }) }} class="btn btn-primary">Archiver</a>
+        </div>
+    </div>
+{% endblock %}
