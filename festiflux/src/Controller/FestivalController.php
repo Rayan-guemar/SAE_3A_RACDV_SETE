@@ -85,9 +85,8 @@ class FestivalController extends AbstractController {
             ->to($festival->getOrganisateur()->getEmail())
             ->subject('Demande de bénévolat')
             ->text('test')
-            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival '.$festival->getNom(). '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/all" > ici </a> pour accéder au site. </p>');
+            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival '.$festival->getNom(). '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/'. $festival->getId() . '/demandes"  > ici </a> pour accéder aux demandes. </p>');
 
-        //dd($email);
         $mailer->send($email);
 
         $this->addFlash('success', 'Demande de bénévolat envoyée');
