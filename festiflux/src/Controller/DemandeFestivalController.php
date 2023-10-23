@@ -28,45 +28,60 @@ class DemandeFestivalController extends AbstractController {
         ]);
     }
 
-    #[Route('/demandefestival/add', name: 'app_demandefestival_add')]
-    public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    #[Route('/demandefestival/add', name: 'app_demandefestival_add', methods: ['GET', 'POST'])]
+    public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger) {
         $demandeFestival = new DemandeFestival();
 
-        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
+        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival,
+                                        [
+                                        'method'=> "POST",
+                                        'action'=>$this->generateUrl('home')
+                                    ]);
 
         $form->handleRequest($req);
+        if($req->isMethod('POST')) {
+            $this->denyAccessUnlessGranted('ROLE_USER');
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('dateFinFestival')->getData() > $form->get('dateDebutFestival')->getData()) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
+                    $affiche = $form->get('afficheFestival')->getData();
 
-            $affiche = $form->get('afficheFestival')->getData();
+                    if ($affiche) {
+                        $originalFilename = pathinfo("", PATHINFO_FILENAME);
+                        $safeFilename = $slugger->slug($originalFilename);
+                        $newFilename = $safeFilename . '-' . uniqid() . '.' . $affiche->guessExtension();
 
-            if ($affiche) {
-                $originalFilename = pathinfo("", PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $affiche->guessExtension();
+                        try {
+                            $affiche->move(
+                                $this->getParameter('poster_directory'),
+                                $newFilename
+                            );
+                        } catch (FileException $e) {
+                            throw new \Exception('Erreur lors de l\'upload de l\'affiche');
+                        }
 
-                try {
-                    $affiche->move(
-                        $this->getParameter('poster_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new \Exception('Erreur lors de l\'upload de l\'affiche');
+                        $demandeFestival->setAfficheFestival($newFilename);
+                    }
+
+
+                    $demandeFestival->setOrganisateurFestival($this->getUser());
+                    $demandeFestival->setLat($form->get('lat')->getData());
+                    $demandeFestival->setLon($form->get('lon')->getData());
+                    $em->persist($demandeFestival);
+                    $em->flush();
+                    $this->addFlash('success', 'Demande de festival envoyée');
+                    return $this->redirectToRoute('demandefestival');
+                }
+                else {
+                $this->addFlash('error', 'Les dates de votre festival ne sont pas conforme !');
+                return $this->redirectToRoute('app_demandefestival_add');
                 }
 
-                $demandeFestival->setAfficheFestival($newFilename);
+            }else{
+                $this->addFlash('error', 'une erreur est survenue lors de la soumission du formulaire !');
+                return $this->redirectToRoute('app_demandefestival_add');
             }
-
-
-            $demandeFestival->setOrganisateurFestival($this->getUser());
-            $demandeFestival->setLat($form->get('lat')->getData());
-            $demandeFestival->setLon($form->get('lon')->getData());
-            $em->persist($demandeFestival);
-            $em->flush();
-            $this->addFlash('success', 'Demande de festival envoyée');
-            return $this->redirectToRoute('app_demandefestival_all');
         }
-
         return $this->render('demande_festival/add.html.twig', [
             'controller_name' => 'FestivalController',
             'form' => $form->createView()
