@@ -86,7 +86,7 @@ class FestivalController extends AbstractController {
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
 
-        if (!$festival) {
+        if (!$festival or $festival->getIsArchive()==1) {
             $this->addFlash('error', 'Le festival n\'existe pas');
             return $this->redirectToRoute('home');
         }
