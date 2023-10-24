@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Form\ModifierFestivalType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +25,7 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -228,4 +231,30 @@ class FestivalController extends AbstractController {
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
+    public function edit(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em): Response {
+
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        }
+
+        $form = $this->createForm(ModifierFestivalType::class, $festival);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+            $this->addFlash('success', 'Le festival a été modifié avec succès.');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
+
+        return $this->render('festival/modifier.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+            'festival' => $festival,
+        ]);
+    }
+
+
 }
