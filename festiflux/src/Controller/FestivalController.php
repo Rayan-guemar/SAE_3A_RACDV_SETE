@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,6 +65,9 @@ class FestivalController extends AbstractController {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', "Vous n'êtes pas inscrit");
+            return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
+
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
@@ -81,7 +86,103 @@ class FestivalController extends AbstractController {
         $this->addFlash('success', 'Demande de bénévolat envoyée');
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
+    #[Route('/festival/{festId}/verifResponsable/{userId}', name: 'app_festival_verif_responsable', options: ["expose" => true] )]
+    public function verifResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em,  ErrorService $errorService) {
 
+        $festival = $repository->find($festId);
+        $u = $userRepo->find($userId);
+
+        if (!$festival) {
+            return $errorService->MustBeLoggedError();
+        }
+
+
+        if (!$u || !$u instanceof Utilisateur) {
+            return $errorService->MustBeLoggedError();
+        }
+
+        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
+        $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
+
+        if (!$isBenevole) {
+            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
+            return $errorService->MustBeLoggedError();
+        };
+        return new JsonResponse($isResponsable);
+    }
+
+    #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true] )]
+    public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em,  ErrorService $errorService) {
+
+        $festival = $repository->find($festId);
+        $u = $userRepo->find($userId);
+
+        if (!$festival) {
+            return $errorService->MustBeLoggedError();
+        }
+
+
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', "cet utilisateur n'êtes pas inscrit");
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+
+        }
+
+        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
+        $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
+
+        if (!$isBenevole) {
+            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+        };
+        if (!$isResponsable) {
+            $festival->addResponsable($u);
+            $em->persist($festival);
+            $em->flush();
+            $this->addFlash('success', 'Cet utilisateur est maintenant responsable pour ce festival');
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+        }else{
+            $this->addFlash('erreur', '');
+            return $errorService->MustBeLoggedError();
+
+        }
+    }
+    #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true] )]
+    public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService) {
+
+        $festival = $repository->find($festId);
+        $u = $userRepo->find($userId);
+
+        if (!$festival) {
+            return $errorService->MustBeLoggedError();
+        }
+
+
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', "cet utilisateur n'êtes pas inscrit");
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+        }
+
+        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
+        $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
+
+        if (!$isBenevole) {
+            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+        };
+        if ($isResponsable) {
+            $festival->removeResponsable($u);
+            $em->persist($festival);
+            $em->flush();
+            $this->addFlash('success', "Cet utilisateur n'est maintenant plus responsable pour ce festival");
+            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
+        }else{
+            $this->addFlash('erreur', "");
+            return $errorService->MustBeLoggedError();
+        }
+
+    }
+    
     #[Route('/festival/{id}', name: 'app_festival_detail')]
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
@@ -126,11 +227,13 @@ class FestivalController extends AbstractController {
         }
 
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
+        $benevoles = $festival->getBenevoles();
 
         return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
             'idFest' => $id,
+            'benevoles'=>$benevoles
         ]);
     }
 
@@ -158,6 +261,7 @@ class FestivalController extends AbstractController {
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
             'idFest' => $id,
+            'benevoles' => $festival->getBenevoles()
         ]);
     }
 
@@ -184,6 +288,7 @@ class FestivalController extends AbstractController {
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
             'idFest' => $id,
+            'benevoles' => $festival->getBenevoles()
         ]);
     }
 
