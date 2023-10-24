@@ -8,6 +8,7 @@
 
 {% block body %}
 	<main>
+		{% if app.user.id == utilisateur.id %}
 		<div class="profil-box">
 			<h1>
 				Profil de
@@ -36,7 +37,17 @@
 
 				</div>
 			</div>
+		<div class="btn-container">
+			<div class="button-archive">
+				<a href={{ path("app_user_profile_archiver", {'id' : utilisateur.getId()} ) }} class="btn btn-primary">Archiver le compte</a>
+			</div>
 		</div>
+		</div>
+		{% else %}
+			<h1>
+				Oups, il semblerait que vous ne soyez pas sur la bonne page
+			</h1>
+		{% endif %}
 
 
 	</main>

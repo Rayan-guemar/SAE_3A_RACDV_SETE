@@ -80,6 +80,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
     private Collection $creneauxAffectes;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $isArchive;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -88,6 +91,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
+        $this->isArchive=0;
     }
 
     public function getId(): ?int {
@@ -336,5 +340,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         }
 
         return $this;
+    }
+
+    public function getIsArchive(): ?string
+    {
+
+        return $this->isArchive;
+    }
+
+    public function setIsArchive(): void
+    {
+
+        $this->isArchive = 1;
     }
 }

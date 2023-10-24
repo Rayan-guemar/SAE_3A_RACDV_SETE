@@ -11,11 +11,14 @@ use App\Service\Ical\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UtilisateurController extends AbstractController {
 
     #[Route('/user/profile/{id}', name: 'app_user_profile')]
     public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         $u = $utilisateurRepository->find($id);
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
@@ -65,5 +68,40 @@ class UtilisateurController extends AbstractController {
 
         $ical->build();
         return $this->redirectToRoute('app_festival_all');
+    }
+
+    #[Route('/user/profile/{id}/archiver', name: 'app_user_profile_archiver')]
+    public function demandeArchiverProfile(int $id, UtilisateurRepository $utilisateurRepository): Response {
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $u = $utilisateurRepository->find($id);
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+
+        $loggedInUser = $this->getUser();
+
+        $isCurrentUser = $loggedInUser && $loggedInUser->getUserIdentifier() != $u->getUserIdentifier();
+
+        return $this->render('utilisateur/user_archive.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'utilisateur' => $u,
+            'isCurrentUser' => $isCurrentUser,
+        ]);
+    }
+
+    #[Route('/fuser/profile/{id}/archiver', name: 'app_festival_archiver_done')]
+    public function archiverUser(UtilisateurRepository $utilisateurRepository, int $id,EntityManagerInterface $em): Response {
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $u = $utilisateurRepository->find($id);
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+
+        $u->setIsArchive();
+
+        $em->persist($u);
+        $em->flush();
+
+        return $this->redirectToRoute('app_auth_logout');
     }
 }
