@@ -10,6 +10,31 @@
     justify-content: center;
 }
 
+#back-button {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    height: 40px;
+    width: 40px;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    
+    display: grid;
+    place-items: center;
+
+    img {
+        height: 100%;
+        width: 100%;
+        transform: rotate(180deg);
+    }
+
+    &:hover {
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+    }
+}
+
 .planning {
     border: solid 1px;
     height: 85%;
