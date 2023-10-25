@@ -86,30 +86,6 @@ class FestivalController extends AbstractController {
         $this->addFlash('success', 'Demande de bénévolat envoyée');
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
-//    #[Route('/festival/{festId}/verifResponsable/{userId}', name: 'app_festival_verif_responsable', options: ["expose" => true] )]
-//    public function verifResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em,  ErrorService $errorService) {
-//
-//        $festival = $repository->find($festId);
-//        $u = $userRepo->find($userId);
-//
-//        if (!$festival) {
-//            return $errorService->MustBeLoggedError();
-//        }
-//
-//
-//        if (!$u || !$u instanceof Utilisateur) {
-//            return $errorService->MustBeLoggedError();
-//        }
-//
-//        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
-//        $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
-//
-//        if (!$isBenevole) {
-//            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
-//            return $errorService->MustBeLoggedError();
-//        };
-//        return new JsonResponse($isResponsable);
-//    }
 
     #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true] )]
     public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em,  ErrorService $errorService) {
