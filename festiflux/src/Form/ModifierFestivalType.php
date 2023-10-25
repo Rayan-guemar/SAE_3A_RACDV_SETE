@@ -52,11 +52,14 @@ class ModifierFestivalType extends AbstractType
                     'placeholder' => 'Lieu du festival'
                 ]
             ])
-//            ->add('affiche' , FileType::class, [
-//                'attr' => [
-//                    'placeholder' => 'Affiche du festival'
-//                ]
-//            ])
+            ->add('affiche', FileType::class, [
+                'label' => 'Affiche du festival',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Affiche du festival',
+                ],
+            ])
             ->add('lat' , HiddenType::class)
             ->add('lon' , HiddenType::class)
             ->add('demanderModificationFestival' , SubmitType::class, [

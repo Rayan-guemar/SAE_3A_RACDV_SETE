@@ -8,6 +8,7 @@ use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +26,7 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 class FestivalController extends AbstractController {
@@ -233,16 +235,33 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
-    public function edit(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em): Response {
+    public function edit(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
+        
 
         $form = $this->createForm(ModifierFestivalType::class, $festival);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $affiche = $form->get('affiche')->getData();
+
+            if ($affiche instanceof UploadedFile) {
+                $originalFilename = pathinfo("", PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $affiche->guessExtension();
+
+                $affiche->move(
+                    $this->getParameter('poster_directory'),
+                    $newFilename
+                );
+
+                $festival->setAffiche($newFilename);
+            }
+
 
             $em->flush();
             $this->addFlash('success', 'Le festival a été modifié avec succès.');
