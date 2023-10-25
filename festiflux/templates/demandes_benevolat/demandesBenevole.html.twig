@@ -61,7 +61,7 @@
             <td>{{ benevole.email }}</td>
             <td>
                 <div class="switch__container">
-                    <input id="{{ benevole.id }}" class="switch switch--shadow" type="checkbox">
+                    <input id="{{ benevole.id }}" class="switch switch--shadow" type="checkbox"{% if benevole in responsables %} checked {% endif %}>
                     <label for="{{ benevole.id }}"></label>
                 </div>
             </td>
