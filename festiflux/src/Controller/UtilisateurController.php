@@ -40,13 +40,16 @@ class UtilisateurController extends AbstractController {
             return $this->redirectToRoute('app_login');
         }
 
-        $fs = $festivalRepository->findBy([
+        $ofs = $festivalRepository->findBy([
             'organisateur' => $u->getId()
         ]);
 
+        $vfs = ($u->getEstBenevole())->getValues();
+
         return $this->render('utilisateur/user_festivals.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'festivals' => $fs,
+            'festivals' => $ofs,
+            'volenteerFestivals' => $vfs,
         ]);
     }
 
