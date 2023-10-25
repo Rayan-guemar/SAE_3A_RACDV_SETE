@@ -37,7 +37,7 @@
 				</div>
 				<div class="days">
 					<div class="day" style="border-left: none;">
-						<div class="heading">11/09</div>
+						<div class="heading">11 / 09</div>
 						{% for i in 1..11 %}
 							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
 						{% endfor %}
@@ -48,7 +48,7 @@
 						</div>
 					</div>
 					<div class="day">
-						<div class="heading">11/09</div>
+						<div class="heading">11 / 09</div>
 						{% for i in 1..11 %}
 							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
 						{% endfor %}
@@ -58,7 +58,7 @@
 						</div>
 					</div>
 					<div class="day">
-						<div class="heading">11/09</div>
+						<div class="heading">11 / 09</div>
 						{% for i in 1..11 %}
 							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
 						{% endfor %}
@@ -68,7 +68,7 @@
 						</div>
 					</div>
 					<div class="day">
-						<div class="heading">11/09</div>
+						<div class="heading">11 / 09</div>
 						{% for i in 1..11 %}
 							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
 						{% endfor %}
@@ -79,7 +79,7 @@
 					</div>
 				</div>
 				<div class="manage-interface">
-					<div id="add-poste-btn" class="btn">Postes</div>
+					<div id="poste-btn" class="btn">Postes</div>
 					<div id="add-creneaux-btn" class="btn">Ajouter un créneaux</div>
 				</div>
 			</div>
@@ -88,7 +88,7 @@
 				<div id="scroll-btn-left">
 					<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Gauche">
 				</div>
-				<div id="scroll-btn-left">
+				<div id="scroll-btn-right">
 					<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Droite">
 				</div>
 			</div>
@@ -100,17 +100,17 @@
 				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
 			</div>
 			<h2>Création d'un créneaux</h2>
-			<div>
+			<div class="flex-column flex-align-center">
 				<label for="start-creneaux">Debut du créneaux</label>
 				<input id="start-creneaux" type="datetime-local">
 			</div>
-			<div>
+			<div class="flex-column flex-align-center">
 				<label for="end-creneaux">Fin du créneaux</label>
 				<input id="end-creneaux" type="datetime-local">
 			</div>
 		</div>
 
-		<div id="postes">
+		<div id="postes" class="planning-form">
 			<div class="close-btn">
 				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
 			</div>
@@ -125,10 +125,11 @@
 				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
 			</div>
 			<h2>Création d'un poste</h2>
-			<div>
-				<label for="poste-title">Intitulé</label>	
+			<div class="flex-column flex-align-center">
+				<label for="poste-title">Intitulé</label>
 				<input id="poste-title" type="text">
 			</div>
+			<div id="create-poste-btn" class="btn">Créer</div>
 		</div>
 	</body>
 </html>

@@ -44,6 +44,32 @@ footer {
     color: white;
 }
 
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex-justify-center {
+    display: flex;
+    justify-content: center;
+}
+
 
 
 @import 'sidebar';
