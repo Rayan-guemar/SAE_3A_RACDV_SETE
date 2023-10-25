@@ -103,4 +103,26 @@ class DemandeFestivalController extends AbstractController {
         $this->addFlash('success', 'Demande de festival acceptée');
         return $this->redirectToRoute('app_demandefestival_all');
     }
+
+    #[Route('/demandefestival/reject/{id}', name: 'app_demandefestival_reject')]
+    public function reject(DemandeFestivalRepository $demandeFestivalRepository, EntityManagerInterface $em, int $id ): Response {
+
+        $demandeFestival = $demandeFestivalRepository->find($id);
+
+
+        if ($demandeFestival === null) {
+            throw $this->createNotFoundException('Demande de festival non trouvée');
+        }
+
+        $em->remove($demandeFestival);
+        $em->flush();
+
+
+        $this->addFlash('success', 'La demande a bien été rejetée');
+        return $this->render('demande_festival/index.html.twig', [
+            'controller_name' => 'DemandeFestivalController',
+            'demandes'=>$demandeFestival
+        ]);
+    }
+
 }
