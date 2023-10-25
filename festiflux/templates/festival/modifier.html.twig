@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+{% block title %}modifier votre festival{% endblock %}
+
+{% block body %}
+
+    <div class="form-wrapper">
+        <h1>Modifier le festival</h1>
+
+        {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
+
+        {{ form_row(form.nom, {'label': 'Nom du festival', 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.description, {'label': 'Description du festival', 'attr': {'class': 'festival-form__input'}}) }}
+
+        <div class="form-row">
+            {{ form_widget(form.dateDebut, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'}}) }}
+            {{ form_widget(form.dateFin, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
+        </div>
+        <div id="box-adresses">
+        {{ form_row(form.lieu, {'label': false, 'attr': {'class': 'festival-form__input'}}) }}
+            {{ form_row(form.lat,{'attr':{'id':'lat'}}) }}
+            {{ form_row(form.lon,{'attr':{'id':'lon'}}) }}
+        </div>
+        {{ form_row(form.affiche, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
+
+        {{ form_widget(form.demanderModificationFestival, {'label': 'Modifier', 'attr': {'class': 'festival-form__checkbox'}}) }}
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
