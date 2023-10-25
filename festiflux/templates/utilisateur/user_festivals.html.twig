@@ -33,6 +33,7 @@
 				<a href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
 					<div class="button-shortcut">
 						<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
+						{{ component('Notification', {type : 'none', userId : app.user.id, festId : festival.getId()})}}
 					</div>
 				</a>
 				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
