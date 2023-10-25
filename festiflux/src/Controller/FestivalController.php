@@ -12,17 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
 use App\Form\TacheType;
 use App\Entity\Utilisateur;
-use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
 use App\Service\FlashMessageService;
-use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
-use App\Repository\DemandeBenevoleRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -47,9 +45,10 @@ class FestivalController extends AbstractController {
         }
 
         $festivals = $repository->findAll();
+
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
-            'festivals' => $festivals
+            'festivals' => $festivals,
         ]);
     }
 
@@ -134,6 +133,31 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    #[Route('/festival/{id}/demandes/size', name: 'app_festival_demandesBenevolat_size')]
+    public function demandeBenevoleSize(#[MapEntity] ?Festival $fest): Response {
+        
+        if (!$fest) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 404);
+        }
+
+        if(!$this->getUser()){
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 401);
+        }
+
+        return new JsonResponse($fest->getDemandesBenevole()->count());
+    }
+
+    #[Route('/festival/all/id', name: 'app_festival_all_id')]
+    public function allId(FestivalRepository $repository): Response {
+        $festivals = $repository->findAll();
+        $festivalsId = [];
+        foreach ($festivals as $festival) {
+            $festivalsId[] = $festival->getId();
+        }
+        return new JsonResponse($festivalsId);
+    }
+
+
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
     public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em ) {
 
@@ -162,7 +186,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo ) {
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em) {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {

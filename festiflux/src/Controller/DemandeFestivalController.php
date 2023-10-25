@@ -7,25 +7,44 @@ use App\Entity\Festival;
 use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DemandeFestivalController extends AbstractController {
-    #[Route('/demandefestival', name: 'app_demandefestival_all')]
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/demandefestival', name: 'app_demandefestival_all', options: ["expose" => true], methods: ['GET'])]
     public function all(DemandeFestivalRepository $demandeFestivalRepository): Response {
 
 
-        // TODO : vérifier que l'utilisateur est bien un admin
         $demandesFestivals = $demandeFestivalRepository->findAll();
 
         return $this->render('demande_festival/index.html.twig', [
             'controller_name' => 'FestivalController',
             'demandes' => $demandesFestivals
         ]);
+    }
+
+    
+    
+    #[Route('/demandefestival/size', name: 'app_demandefestival_size', options: ["expose" => true], methods: ['GET'])]
+    public function size(DemandeFestivalRepository $demandeFestivalRepository): Response {
+
+        
+        if( array_filter($this->getUser()->getRoles(), function($role) {
+            return $role === 'ROLE_ADMIN';
+        })) {
+            $demandesFestivals = $demandeFestivalRepository->findAll();
+            return new JsonResponse(count($demandesFestivals));
+        } else 
+            return new JsonResponse("caca");
     }
 
     #[Route('/demandefestival/add', name: 'app_demandefestival_add')]
