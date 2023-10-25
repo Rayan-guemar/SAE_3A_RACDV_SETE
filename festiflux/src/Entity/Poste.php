@@ -8,8 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PosteRepository::class)]
-class Poste
-{
+class Poste {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,35 +24,29 @@ class Poste
     #[ORM\OneToMany(mappedBy: 'poste', targetEntity: Tache::class, orphanRemoval: true)]
     private Collection $taches;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->taches = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getFestival(): ?Festival
-    {
+    public function getFestival(): ?Festival {
         return $this->festival;
     }
 
-    public function setFestival(?Festival $festival): static
-    {
+    public function setFestival(?Festival $festival): static {
         $this->festival = $festival;
 
         return $this;
@@ -62,13 +55,11 @@ class Poste
     /**
      * @return Collection<int, Tache>
      */
-    public function getTaches(): Collection
-    {
+    public function getTaches(): Collection {
         return $this->taches;
     }
 
-    public function addTach(Tache $tach): static
-    {
+    public function addTach(Tache $tach): static {
         if (!$this->taches->contains($tach)) {
             $this->taches->add($tach);
             $tach->setPoste($this);
@@ -77,8 +68,7 @@ class Poste
         return $this;
     }
 
-    public function removeTach(Tache $tach): static
-    {
+    public function removeTach(Tache $tach): static {
         if ($this->taches->removeElement($tach)) {
             // set the owning side to null (unless already changed)
             if ($tach->getPoste() === $this) {

@@ -25,21 +25,11 @@ class Creneaux {
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'creneaux')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Festival $festival = null;
-
-    #[ORM\ManyToOne(inversedBy: 'disponibilites')]
-    private ?Utilisateur $utilisateurDisponible = null;
-
-    #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
-    private ?Tache $tache = null;
 
     #[ORM\OneToMany(mappedBy: 'creneau', targetEntity: Disponibilite::class, orphanRemoval: true)]
     private Collection $disponibilites;
 
     public function __construct() {
-        $this->utilisateurDisponible;
         $this->disponibilites = new ArrayCollection();
     }
 
@@ -63,41 +53,6 @@ class Creneaux {
 
     public function setDateFin(\DateTimeInterface $dateFin): static {
         $this->dateFin = $dateFin;
-
-        return $this;
-    }
-
-    public function getFestival(): ?Festival {
-        return $this->festival;
-    }
-
-    public function setFestival(?Festival $festival): static {
-        $this->festival = $festival;
-
-        return $this;
-    }
-
-    public function getUtilisateurDisponible(): ?Utilisateur {
-        return $this->utilisateurDisponible;
-    }
-
-    public function setUtilisateurDisponible(?Utilisateur $utilisateurDisponible): static {
-        $this->utilisateurDisponible = $utilisateurDisponible;
-
-        return $this;
-    }
-
-    public function getTache(): ?Tache {
-        return $this->tache;
-    }
-
-    public function setTache(Tache $tache): static {
-        // set the owning side of the relation if necessary
-        if ($tache->getCrenaux() !== $this) {
-            $tache->setCrenaux($this);
-        }
-
-        $this->tache = $tache;
 
         return $this;
     }
