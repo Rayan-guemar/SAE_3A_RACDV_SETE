@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 }
 
 #back-button {
@@ -35,19 +35,44 @@
     }
 }
 
-.planning {
-    border: solid 1px;
-    height: 85%;
+#planning {
+    // border: solid 1px;
+    height: calc(80% + 50px);
     border-radius: 10px;
 
     position: relative;
     display: flex;
+    align-items: center;
 
-    &>.day {
+    transition: filter 0.5s;
+
+    &>div {
+        height: calc(100% - 50px);
+        padding-top: 50px;
+    }
+
+    &.blurred {
+        filter: blur(5px);
+    }
+
+    .day {
         height: 100%;
-        width: 300px;
+        width: 250px;
+        min-width: 250px;
         border-left: solid 1px;
+        background-color: rgb(250, 244, 234);
         position: relative;
+
+        .heading {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translate(-50%, 0);
+
+            font-weight: bold;
+
+            z-index: 3;
+        }
 
         .day-date {
             background-color: aqua;
@@ -90,15 +115,174 @@
         }
     }
 
-    .hour {
-        position: absolute;
-        left: -100px;
-        transform: translate(0, -50%);
+    .days {
+        display: flex;
+        max-width: 60vw;
+
+        overflow-x: auto;
+        overflow-y: visible;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
-    @for $i from 1 through 11 {
-        #hour-#{$i * 2} {
-            top: #{($i * 2 * 100 / 24) + "%"};
+    .hours {
+        width: 70px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        
+        padding: 60px 0 10px;
+    }
+
+    .manage-interface {
+        height: 50%;
+        width: 200px;
+
+        margin-left: 20px;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+
+        background-color: rgb(182, 195, 253);
+
+        border-radius: 10px;
+
+        font-weight: bold;
+
+        .btn {
+
+            &:hover {
+                cursor: pointer;    
+            }
         }
+    }
+}
+
+.scroll-btn {
+    display: flex;
+
+    border: solid 2px black;
+    border-radius: 10px;
+
+    height: 50px;
+
+    & > div:nth-child(2) {
+        border-left: solid 2px black;
+
+        img {
+            transform: rotate(180deg);
+        }
+    }
+
+    & > div {
+        height: 100%;
+        width: 70px;
+
+        display: grid;
+        place-items: center;
+
+        img {
+            width: 30%;
+            aspect-ratio: 1/1;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    height: 30px;
+    width: 30px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transform: translate(50%, -50%);
+
+    img {
+        height: 100%;
+        width: 100%;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.planning-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: white;
+    border-radius: 10px;
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    padding: 20px;
+
+    &.visible {
+        display: flex;
+    }
+
+    h2 {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    & > div {
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+#postes {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 30px;
+    background-color: white;
+
+    &.visible {
+        display: flex;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        margin-top: 20px;
+        border: solid 2px black;
+        border-radius: 10px;
+        padding: 10px;
+
+        font-weight: bold;
+        cursor: pointer;
     }
 }

@@ -9,6 +9,9 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+		<script defer src="{{ asset('js/planning/poste.js') }}"></script>
+		<script defer src="{{ asset('js/planning/creneaux.js') }}"></script>
+		<script defer src="{{ asset('js/planning/planning.js') }}"></script>
 
 		{% block overhead %}{% endblock %}
 	</head>
@@ -18,57 +21,114 @@
 		</a>
 		<div class="planning-wrapper">
 
-			<!-- <h1>Planning</h1> -->
+			<h2>Planning du {{ festival.nom }}</h2>
 	
-			<div class="planning">
-				{% for i in 1..11 %}
-					<div class="hour" id="hour-{{ i * 2 }}">
-						{% if i * 2 < 10 %}
-							0{{ i * 2 }}h00
-						{% else %}
-							{{ i * 2 }}h00
-						{% endif %}
-					</div>
-				{% endfor %}
-				<div class="day" style="border-left: none;">
+			<div id="planning">
+				<div class="hours">
 					{% for i in 1..11 %}
-						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+						<div class="hour" id="hour-{{ i * 2 }}">
+							{% if i * 2 < 10 %}
+								0{{ i * 2 }}h00
+							{% else %}
+								{{ i * 2 }}h00
+							{% endif %}
+						</div>
 					{% endfor %}
-	
-					<div class="task">
-						<div class="name">Cuisine</div>
-						<div class="creneau">15h - 17h</div>
+				</div>
+				<div class="days">
+					<div class="day" style="border-left: none;">
+						<div class="heading">11/09</div>
+						{% for i in 1..11 %}
+							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+						{% endfor %}
+		
+						<div class="task">
+							<div class="name">Cuisine</div>
+							<div class="creneau">15h - 17h</div>
+						</div>
+					</div>
+					<div class="day">
+						<div class="heading">11/09</div>
+						{% for i in 1..11 %}
+							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+						{% endfor %}
+						<div class="task">
+							<div class="name">Accueil artiste</div>
+							<div class="creneau">15h - 17h</div>
+						</div>
+					</div>
+					<div class="day">
+						<div class="heading">11/09</div>
+						{% for i in 1..11 %}
+							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+						{% endfor %}
+						<div class="task">
+							<div class="name">Accueil artiste</div>
+							<div class="creneau">15h - 17h</div>
+						</div>
+					</div>
+					<div class="day">
+						<div class="heading">11/09</div>
+						{% for i in 1..11 %}
+							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
+						{% endfor %}
+						<div class="task">
+							<div class="name">Accueil artiste</div>
+							<div class="creneau">15h - 17h</div>
+						</div>
 					</div>
 				</div>
-				<div class="day">
-					{% for i in 1..11 %}
-						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-					{% endfor %}
-					<div class="task">
-						<div class="name">Accueil artiste</div>
-						<div class="creneau">15h - 17h</div>
-					</div>
+				<div class="manage-interface">
+					<div id="add-poste-btn" class="btn">Postes</div>
+					<div id="add-creneaux-btn" class="btn">Ajouter un créneaux</div>
 				</div>
-				<div class="day">
-					{% for i in 1..11 %}
-						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-					{% endfor %}
-					<div class="task">
-						<div class="name">Accueil artiste</div>
-						<div class="creneau">15h - 17h</div>
-					</div>
+			</div>
+
+			<div class="scroll-btn">
+				<div id="scroll-btn-left">
+					<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Gauche">
 				</div>
-				<div class="day">
-					{% for i in 1..11 %}
-						<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-					{% endfor %}
-					<div class="task">
-						<div class="name">Accueil artiste</div>
-						<div class="creneau">15h - 17h</div>
-					</div>
+				<div id="scroll-btn-left">
+					<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Droite">
 				</div>
 			</div>
 	
+		</div>
+
+		<div id="add-creneaux" class="planning-form">
+			<div class="close-btn">
+				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+			</div>
+			<h2>Création d'un créneaux</h2>
+			<div>
+				<label for="start-creneaux">Debut du créneaux</label>
+				<input id="start-creneaux" type="datetime-local">
+			</div>
+			<div>
+				<label for="end-creneaux">Fin du créneaux</label>
+				<input id="end-creneaux" type="datetime-local">
+			</div>
+		</div>
+
+		<div id="postes">
+			<div class="close-btn">
+				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+			</div>
+			<h2>Liste des postes</h2>
+			<div>Vous n'avez aucun poste pour le moment</div>
+			<div>Veuillez en créer un</div>
+			<div id="add-poste-btn" class="btn">Créer un poste</div>
+		</div>
+
+		<div id="add-poste" class="planning-form">
+			<div class="close-btn">
+				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+			</div>
+			<h2>Création d'un poste</h2>
+			<div>
+				<label for="poste-title">Intitulé</label>	
+				<input id="poste-title" type="text">
+			</div>
 		</div>
 	</body>
 </html>
