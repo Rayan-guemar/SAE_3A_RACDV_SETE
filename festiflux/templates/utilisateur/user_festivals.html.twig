@@ -13,7 +13,7 @@
 		{% if festival.getIsArchive() != 1 %}
 		<div class="fest">
 			<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-				<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
+				<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
 				<div class="fest-info">
 					<div class="fest-nom">
 						<span>{{ festival.getNom() }}</span>
@@ -34,6 +34,7 @@
 				<a href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
 					<div class="button-shortcut">
 						<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
+						{{ component('Notification', {type : 'none', userId : app.user.id, festId : festival.getId()})}}
 					</div>
 				</a>
 				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">

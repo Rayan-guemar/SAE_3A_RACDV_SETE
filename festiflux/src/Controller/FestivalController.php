@@ -12,16 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
 use App\Form\TacheType;
 use App\Entity\Utilisateur;
-use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
 use App\Service\FlashMessageService;
-use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\DemandeBenevoleRepository;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -31,7 +30,6 @@ class FestivalController extends AbstractController {
     public function index(FestivalRepository $repository): Response {
         return $this->redirectToRoute('app_festival_all');
     }
-
 
     #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response {
@@ -49,9 +47,10 @@ class FestivalController extends AbstractController {
         }
 
         $festivals = $repository->findAll();
+
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
-            'festivals' => $festivals
+            'festivals' => $festivals,
         ]);
     }
 
@@ -173,7 +172,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo ) {
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em) {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
