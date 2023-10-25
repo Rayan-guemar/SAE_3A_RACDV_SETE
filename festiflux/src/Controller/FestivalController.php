@@ -14,24 +14,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
 use App\Form\TacheType;
 use App\Entity\Utilisateur;
-use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
 use App\Service\FlashMessageService;
-use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\DemandeBenevoleRepository;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
         return $this->redirectToRoute('app_festival_all');
     }
-
 
     #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response {
@@ -49,14 +49,15 @@ class FestivalController extends AbstractController {
         }
 
         $festivals = $repository->findAll();
+
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
-            'festivals' => $festivals
+            'festivals' => $festivals,
         ]);
     }
 
     #[Route('/festival/{id}/apply', name: 'app_festival_apply_volunteer')]
-    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService): Response {
+    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService, MailerInterface $mailer): Response {
 
         $festival = $repository->find($id);
         if (!$festival) {
@@ -82,6 +83,15 @@ class FestivalController extends AbstractController {
         $festival->addDemandesBenevole($u); 
         $em->persist($festival);
         $em->flush();
+
+        $email = (new Email())
+            ->from('administration@festiflux.fr')
+            ->to($festival->getOrganisateur()->getEmail())
+            ->subject('Demande de bénévolat')
+            ->text('test')
+            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival '.$festival->getNom(). '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/'. $festival->getId() . '/demandes"  > ici </a> pour accéder aux demandes. </p>');
+
+        $mailer->send($email);
 
         $this->addFlash('success', 'Demande de bénévolat envoyée');
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
@@ -163,7 +173,7 @@ class FestivalController extends AbstractController {
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
 
-        if (!$festival) {
+        if (!$festival or $festival->getIsArchive()==1) {
             $this->addFlash('error', 'Le festival n\'existe pas');
             return $this->redirectToRoute('home');
         }
@@ -244,7 +254,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo ) {
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em) {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
@@ -310,5 +320,37 @@ class FestivalController extends AbstractController {
             'controller_name' => 'FestivalController',
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/festival/{id}/archiver', name: 'app_festival_archiver')]
+    public function demandeArchiverFestival(FestivalRepository $repository, int $id): Response {
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/archive.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival
+        ]);
+    }
+
+    #[Route('/festival/{id}/archiver/done', name: 'app_festival_archiver_done')]
+    public function archiverFestival(FestivalRepository $repository, int $id,EntityManagerInterface $em): Response {
+        $festival = $repository->find($id);
+
+        if (!$festival) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }
+
+        $festival->setIsArchive();
+
+        $em->persist($festival);
+        $em->flush();
+
+        return $this->redirectToRoute('app_user_festivals');
     }
 }
