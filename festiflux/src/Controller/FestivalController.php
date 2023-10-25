@@ -31,7 +31,6 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_festival_all');
     }
 
-
     #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response {
         $searchData = new SearchData();
@@ -144,31 +143,6 @@ class FestivalController extends AbstractController {
             'idFest' => $id,
         ]);
     }
-
-    #[Route('/festival/{id}/demandes/size', name: 'app_festival_demandesBenevolat_size')]
-    public function demandeBenevoleSize(#[MapEntity] ?Festival $fest): Response {
-        
-        if (!$fest) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 404);
-        }
-
-        if(!$this->getUser()){
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 401);
-        }
-
-        return new JsonResponse($fest->getDemandesBenevole()->count());
-    }
-
-    #[Route('/festival/all/id', name: 'app_festival_all_id')]
-    public function allId(FestivalRepository $repository): Response {
-        $festivals = $repository->findAll();
-        $festivalsId = [];
-        foreach ($festivals as $festival) {
-            $festivalsId[] = $festival->getId();
-        }
-        return new JsonResponse($festivalsId);
-    }
-
 
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
     public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em ) {

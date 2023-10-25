@@ -32,21 +32,6 @@ class DemandeFestivalController extends AbstractController {
         ]);
     }
 
-    
-    
-    #[Route('/demandefestival/size', name: 'app_demandefestival_size', options: ["expose" => true], methods: ['GET'])]
-    public function size(DemandeFestivalRepository $demandeFestivalRepository): Response {
-
-        
-        if( array_filter($this->getUser()->getRoles(), function($role) {
-            return $role === 'ROLE_ADMIN';
-        })) {
-            $demandesFestivals = $demandeFestivalRepository->findAll();
-            return new JsonResponse(count($demandesFestivals));
-        } else 
-            return new JsonResponse("caca");
-    }
-
     #[Route('/demandefestival/add', name: 'app_demandefestival_add')]
     public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger): Response {
         $demandeFestival = new DemandeFestival();
