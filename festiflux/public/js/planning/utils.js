@@ -14,6 +14,13 @@ export const getDateHours2Digits = d => {
 	return d.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
 };
 
+/**
+ * Pause l'exécution du code pendant un certain nombre de millisecondes.
+ * @param {number} ms - Le nombre de millisecondes à attendre.
+ * @returns {Promise} - Une promesse qui se résout après le délai spécifié.
+ */
+export const pause = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const dateDiff = (date1, date2) => {
 	var diff = {}; // Initialisation du retour
 	var tmp = date2 - date1;

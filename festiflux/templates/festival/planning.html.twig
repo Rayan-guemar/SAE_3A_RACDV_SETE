@@ -9,12 +9,22 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-		<script defer src="{{ asset('js/planning/planning.js') }}"></script>
-		<script defer src={{asset("js/main.js")}} type="module"></script>
+		<script defer type="module">
+			import { Planning } from "{{ asset('js/planning/Planning.js') }}";
+			import { pause } from "{{ asset('js/planning/utils.js') }}";
+
+			(async () => {
+				await pause(1000);
+				let planning = new Planning(Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
+			})()
+			// let planning = new Planning(Date.parse('2018-09-10'), Date.parse('2019-09-15'));
+		</script>
 
 		{% block overhead %}{% endblock %}
 	</head>
 	<body>
+		<div id="loader">
+		</div>
 		<a id="back-button" href="{{ path('app_festival_detail', { id: festival.id }) }}">
 			<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
 		</a>
@@ -23,7 +33,7 @@
 			<h2>Planning du
 				{{ festival.nom }}</h2>
 
-			<div id="planning">
+			<div id="planning" class="loading">
 				<div class="hours">
 					{% for i in 1..11 %}
 						<div class="hour" id="hour-{{ i * 2 }}">
@@ -36,47 +46,7 @@
 					{% endfor %}
 				</div>
 				<div class="days">
-					<div class="day" style="border-left: none;" data-date={{ "now"|date("m/d/Y") }}>
-						<div class="heading">11/09</div>
-						{% for i in 1..11 %}
-							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-						{% endfor %}
 
-						<div class="task">
-							<div class="name">Cuisine</div>
-							<div class="creneau">15h - 17h</div>
-						</div>
-					</div>
-					<div class="day">
-						<div class="heading">11 / 09</div>
-						{% for i in 1..11 %}
-							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-						{% endfor %}
-						<div class="task">
-							<div class="name">Accueil artiste</div>
-							<div class="creneau">15h - 17h</div>
-						</div>
-					</div>
-					<div class="day">
-						<div class="heading">11 / 09</div>
-						{% for i in 1..11 %}
-							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-						{% endfor %}
-						<div class="task">
-							<div class="name">Accueil artiste</div>
-							<div class="creneau">15h - 17h</div>
-						</div>
-					</div>
-					<div class="day">
-						<div class="heading">11 / 09</div>
-						{% for i in 1..11 %}
-							<div class="line-break" id="line-break-{{ i * 2 }}"></div>
-						{% endfor %}
-						<div class="task">
-							<div class="name">Accueil artiste</div>
-							<div class="creneau">15h - 17h</div>
-						</div>
-					</div>
 				</div>
 				<div class="manage-interface">
 					<div id="poste-btn" class="btn">Postes</div>
