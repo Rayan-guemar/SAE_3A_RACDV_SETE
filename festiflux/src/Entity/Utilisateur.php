@@ -65,6 +65,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     private Collection $demandesBenevolat;
 
     #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
+    #[JoinTable(name: 'affectation_tache')]
+    #[InverseJoinColumn(name:'tache_id', referencedColumnName:'id')]
+    #[JoinColumn(name:'utilisateur_id', referencedColumnName:'id')]
     private Collection $taches;
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Disponibilite::class, orphanRemoval: true)]

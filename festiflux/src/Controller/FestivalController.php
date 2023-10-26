@@ -29,6 +29,7 @@ use App\Repository\DemandeBenevoleRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
