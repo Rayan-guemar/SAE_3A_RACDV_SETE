@@ -86,5 +86,28 @@
         font-weight: bold;
     }
 
+    .sidebar__actions__menu {
+
+        li {
+            position: relative;
+        }
+    }
+
 }
+
+.notif {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    background-color: rgb(255, 85, 85);
+    border-radius: 50%;
+    font-size: 12px;
+    position: absolute;
+    top: -5px;
+    left: -10px;
+}
+
+
 

@@ -51,6 +51,24 @@
   }
 }
 
+.button-archive {
+  border-radius: 10px;
+  background-color: #ff0000;
+  align-self: center;
+  display: flex;
+  width: 200px;
+  height: 50px;
+  padding: 20px;
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  a {
+    color: #000000;
+  }
+}
+
 .title{
   margin: 5px;
 }
