@@ -329,4 +329,23 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
+
+    public function addTach(Tache $tach): static
+    {
+        if (!$this->taches->contains($tach)) {
+            $this->taches->add($tach);
+            $tach->addBenevoleAffecte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTach(Tache $tach): static
+    {
+        if ($this->taches->removeElement($tach)) {
+            $tach->removeBenevoleAffecte($this);
+        }
+
+        return $this;
+    }
 }
