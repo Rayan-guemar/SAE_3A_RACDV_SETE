@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block body %}
-	<main>
+
 		<div class="profil-box">
 			<h1>
 				Profil de
@@ -35,9 +35,15 @@
 					{{ utilisateur.email }}
 
 				</div>
+				<div class="fest-button">
+
+					<a href="{{ path('app_profil_modifier', {'id' : utilisateur.getId()}) }}">
+						<div class="button-shortcut">
+							<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
+						</div>
+					</a>
+				</div>
 			</div>
 		</div>
 
-
-	</main>
 {% endblock %}

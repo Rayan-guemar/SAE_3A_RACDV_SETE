@@ -2,15 +2,23 @@
 
 namespace App\Controller;
 
+use App\Entity\Festival;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Form\ModifierFestivalType;
+use App\Form\ModifierProfilType;
 use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
 use App\Service\Ical\Event;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UtilisateurController extends AbstractController {
 
@@ -65,5 +73,31 @@ class UtilisateurController extends AbstractController {
 
         $ical->build();
         return $this->redirectToRoute('app_festival_all');
+    }
+
+    #[Route('/user/profile/{id}/modifier', name: 'app_profil_modifier')]
+    public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, ): Response {
+
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+
+
+        $form = $this->createForm(ModifierProfilType::class, $utilisateur);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $em->flush();
+            $this->addFlash('success', 'Votre profil a été modifié avec succès.');
+            return $this->redirectToRoute('app_user_profile', ['id' => $utilisateur->getId()]);
+        }
+
+        return $this->render('utilisateur/modifierProfil.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'form' => $form->createView(),
+            'utilisateur' => $utilisateur,
+        ]);
     }
 }

@@ -25,7 +25,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\DemandeBenevoleRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
