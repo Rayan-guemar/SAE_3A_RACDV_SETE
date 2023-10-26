@@ -1,4 +1,5 @@
 import { dateDiff } from './utils.js';
+import { Poste } from './Poste.js';
 
 /**
  * Classe représentant un planning.
@@ -6,12 +7,15 @@ import { dateDiff } from './utils.js';
 export class Planning {
     /**
      * Crée une instance de la classe Planning.
+     * @constructor
+     * @param {number} festId - L'ID du festival.
      * @param {Date} dateDebut - La date de début du planning.
      * @param {Date} dateFin - La date de fin du planning.
      * @param {Array} postes - Les postes associés au planning.
      * @param {Array} creneaux - Les créneaux du planning.
      */
-    constructor(dateDebut, dateFin, postes, creneaux) {
+    constructor(festId, dateDebut, dateFin, postes, creneaux) {
+        this.festId = festId;
         this.html = document.getElementById('planning');
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
@@ -21,11 +25,12 @@ export class Planning {
         this.addCreneauxBtn = document.getElementById('add-creneaux');
         this.addCreneauxForm = document.getElementById('add-creneaux');
 
-        this.postesBtn = document.getElementById('poste-btn');
-        this.postes = document.getElementById('postes');
-
         this.addPostebtn = document.getElementById('add-poste-btn');
         this.addPosteForm = document.getElementById('add-poste');
+        this.createPosteBtn = document.getElementById('create-poste-btn');
+        this.createPosteInput = document.getElementById('poste-name');
+
+        this.postesEl = document.querySelector('.postes');
 
         this.numberOfDays = dateDiff(this.dateDebut, this.dateFin).day + 1;
 
@@ -35,6 +40,7 @@ export class Planning {
         this.monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août','Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
         this.initDays();
+        this.initPostes();
         this.addListener();
 
         document.getElementById('loader').style.display = 'none';
@@ -42,7 +48,8 @@ export class Planning {
     }
 
     /**
-     * Ajoute des écouteurs d'événements aux éléments de la page.
+     * Ajoute les écouteurs d'événements pour les boutons et formulaires de la page de planification.
+     * @returns {void}
      */
     addListener() {
         // Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
@@ -57,28 +64,16 @@ export class Planning {
             this.html.classList.remove('blurred');
         });
 
-        // Lorsque l'on clique sur le bouton "Poste", on affiche les postes et on floute le reste de la page
-        this.postesBtn.addEventListener('click', () => {
-            this.postes.classList.add('visible');
+        // Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
+        this.addPostebtn.addEventListener('click', () => {
+            this.addPosteForm.classList.add('visible');
             this.html.classList.add('blurred');
         })
 
-        // Lorsque l'on clique sur le bouton "Fermer" des postes, on cache les postes et on enlève le flou de la page
-        this.postes.querySelector('.close-btn').addEventListener('click', () => {
-            this.postes.classList.remove('visible');
-            this.html.classList.remove('blurred');
-        })
-
-        // Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
-        this.addPostebtn.addEventListener('click', () => {
-            this.postes.classList.add('opacity-0');
-            this.addPosteForm.classList.add('visible');
-        })
-
-        // Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on affiche les postes
+        // Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on enlève le flou de la page
         this.addPosteForm.querySelector('.close-btn').addEventListener('click', () => {
             this.addPosteForm.classList.remove('visible');
-            this.postes.classList.remove('opacity-0');
+            this.html.classList.remove('blurred');
         })
 
         // Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
@@ -90,10 +85,24 @@ export class Planning {
         document.getElementById('scroll-btn-right').addEventListener('click', () => {
             this.scrollDaysRight();
         })
+
+        // Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
+        this.createPosteBtn.addEventListener('click', () => {
+            if (this.createPosteInput.value === '') {
+                return;
+            }
+            let poste = Poste.new(this.createPosteInput.value);
+            this.addPoste(poste);
+            this.addPosteForm.classList.remove('visible');
+            this.html.classList.remove('blurred');
+        })
     }
 
     /**
-     * Initialise les jours du planning.
+     * Initialise les jours du planning en générant le code HTML correspondant.
+     * @function
+     * @name Planning#initDays
+     * @returns {void}
      */
     initDays() {
         let html = '';
@@ -105,16 +114,55 @@ export class Planning {
         this.days.innerHTML = html;
     }
 
+    async initPostes() {
+        let response = await fetch(Routing.generate('app_festival_all_poste', { 'id': this.festId }));
+        let data = await response.json();
+
+        if (response.ok) {
+            if (data.postes.length === 0) {
+                this.postesEl.innerHTML = `
+                    <div class="no-poste">Aucun poste n'a été créé pour le moment</div>
+                    <div class="no-poste">Veuillez en créer un</div>
+                `;
+            } else {
+                this.postes = data.postes.map(poste => new Poste(poste.id, poste.nom));
+                console.log(this.postes);
+                this.postesEl.innerHTML = '';
+                for (let poste of this.postes) {
+                    this.postesEl.innerHTML += poste.html();
+                }
+            }
+        }
+    }
+
     /**
      * Ajoute un poste au planning.
      * @param {Poste} poste - Le poste à ajouter.
      */
-    addPoste(poste) {
-        this.postes.appendChild(poste.html);
+    async addPoste(poste) {
+        let response = await fetch(Routing.generate('app_festival_create_poste', { 'id': this.festId }), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(poste)
+        });
+        let data = await response.json();
+        if (data.success) {
+            console.log('Poste ajouté');
+            this.initPostes();
+        } else {
+            console.error(data.error);
+        }
     }
 
     /**
      * Fait défiler les jours vers la gauche.
+     * @function
+     * @name scrollDaysLeft
+     * @memberof Planning
+     * @instance
+     * @returns {void}
      */
     scrollDaysLeft() {
         let daysWidth = this.days.getBoundingClientRect().width;
@@ -153,6 +201,11 @@ export class Planning {
     
     /**
      * Fait défiler les jours vers la droite.
+     * @function
+     * @name scrollDaysRight
+     * @memberof Planning
+     * @instance
+     * @returns {void}
      */
     scrollDaysRight() {
         let daysWidth = this.days.getBoundingClientRect().width;
