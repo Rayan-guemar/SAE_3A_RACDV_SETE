@@ -44,14 +44,6 @@ class Tache {
         $this->benevoleAffecte = new ArrayCollection();
     }
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'taches')]
-    private Collection $benevoleAffecte;
-
-    public function __construct()
-    {
-        $this->benevoleAffecte = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -119,30 +111,6 @@ class Tache {
 
     public function setNombreBenevole(int $nombre_benevole): static {
         $this->nombre_benevole = $nombre_benevole;
-
-        return $this;
-    }
-
-    public function removeBenevoleAffecte(Utilisateur $benevoleAffecte): static
-    {
-        $this->benevoleAffecte->removeElement($benevoleAffecte);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getBenevoleAffecte(): Collection
-    {
-        return $this->benevoleAffecte;
-    }
-
-    public function addBenevoleAffecte(Utilisateur $benevoleAffecte): static
-    {
-        if (!$this->benevoleAffecte->contains($benevoleAffecte)) {
-            $this->benevoleAffecte->add($benevoleAffecte);
-        }
 
         return $this;
     }
