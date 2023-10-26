@@ -14,12 +14,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
 
-
-
-
-
-
-
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
@@ -64,9 +58,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $estResponsable;
 
-    #[ORM\OneToMany(mappedBy: 'utilisateurDisponible', targetEntity: Creneaux::class)]
-    private Collection $disponibilites;
-
     #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
     #[JoinTable(name: 'demandes_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
@@ -76,14 +67,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
     private Collection $taches;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Disponibilite::class, orphanRemoval: true)]
+    private Collection $disponibilites;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
-        $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
         $this->taches = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
     }
 
     public function getId(): ?int {

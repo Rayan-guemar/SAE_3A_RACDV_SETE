@@ -7,7 +7,6 @@ use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
