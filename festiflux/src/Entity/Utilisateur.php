@@ -14,12 +14,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
 
-
-
-
-
-
-
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
@@ -64,9 +58,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $estResponsable;
 
-    #[ORM\OneToMany(mappedBy: 'utilisateurDisponible', targetEntity: Creneaux::class)]
-    private Collection $disponibilites;
-
     #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'demandesBenevole')]
     #[JoinTable(name: 'demandes_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
@@ -74,20 +65,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     private Collection $demandesBenevolat;
 
 
-    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
-    #[JoinTable(name: 'affectation')]
-    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
-    private Collection $creneauxAffectes;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Disponibilite::class, orphanRemoval: true)]
+    private Collection $disponibilites;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
-        $this->creneauxAffectes = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
-        $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -268,54 +255,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     }
 
     /**
-     * @return Collection<int, Creneaux>
-     */
-    public function getDisponibilites(): Collection {
-        return $this->disponibilites;
-    }
-
-    public function addDisponibilite(Creneaux $disponibilite): static {
-        if (!$this->disponibilites->contains($disponibilite)) {
-            $this->disponibilites->add($disponibilite);
-            $disponibilite->setUtilisateurDisponible($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDisponibilite(Creneaux $disponibilite): static {
-        if ($this->disponibilites->removeElement($disponibilite)) {
-            // set the owning side to null (unless already changed)
-            if ($disponibilite->getUtilisateurDisponible() === $this) {
-                $disponibilite->setUtilisateurDisponible(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Creneaux>
-     */
-    public function getCreneauxAffectes(): Collection {
-        return $this->creneauxAffectes;
-    }
-
-    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static {
-        if (!$this->creneauxAffectes->contains($creneauxAffecte)) {
-            $this->creneauxAffectes->add($creneauxAffecte);
-        }
-
-        return $this;
-    }
-
-    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static {
-        $this->creneauxAffectes->removeElement($creneauxAffecte);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Festival>
      */
     public function getDemandesBenevolat(): Collection {
@@ -333,6 +272,33 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getUtilisateur() === $this) {
+                $disponibilite->setUtilisateur(null);
+            }
         }
 
         return $this;
