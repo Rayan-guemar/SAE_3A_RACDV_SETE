@@ -284,6 +284,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateur($this);
         }
+        return $this;
     }
 
      /* @return Collection<int, Tache>
@@ -293,11 +294,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->taches;
     }
 
-    public function addTach(Tache $tach): static
+    public function addTache(Tache $tache): static
     {
-        if (!$this->taches->contains($tach)) {
-            $this->taches->add($tach);
-            $tach->addBenevoleAffecte($this);
+        if (!$this->taches->contains($tache)) {
+            $this->taches->add($tache);
+            $tache->addBenevoleAffecte($this);
         }
 
         return $this;
