@@ -1,0 +1,13 @@
+.settings/
+bin/
+vendor/
+build/
+data/
+.idea/
+.buildpath
+.project
+composer.lock
+coverage.xml
+.phpcs-cache
+.phpunit.result.cache
+cs_log
