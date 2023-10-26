@@ -208,6 +208,6 @@ class UtilisateurController extends AbstractController {
         $fm->add(FlashMessageType::SUCCESS, 'Tâche ajoutée');
 
         return $this->redirectToRoute('home');
-        
     }
+
 }
