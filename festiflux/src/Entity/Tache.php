@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TacheRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -31,6 +33,14 @@ class Tache
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'taches')]
+    private Collection $benevoleAffecte;
+
+    public function __construct()
+    {
+        $this->benevoleAffecte = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -81,6 +91,30 @@ class Tache
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getBenevoleAffecte(): Collection
+    {
+        return $this->benevoleAffecte;
+    }
+
+    public function addBenevoleAffecte(Utilisateur $benevoleAffecte): static
+    {
+        if (!$this->benevoleAffecte->contains($benevoleAffecte)) {
+            $this->benevoleAffecte->add($benevoleAffecte);
+        }
+
+        return $this;
+    }
+
+    public function removeBenevoleAffecte(Utilisateur $benevoleAffecte): static
+    {
+        $this->benevoleAffecte->removeElement($benevoleAffecte);
 
         return $this;
     }

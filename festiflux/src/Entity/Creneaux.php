@@ -33,15 +33,11 @@ class Creneaux
     #[ORM\ManyToOne(inversedBy: 'disponibilites')]
     private ?Utilisateur $utilisateurDisponible = null;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'creneauxAffectes')]
-    private Collection $utilisateursAffectes;
-
     #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
     private ?Tache $tache = null;
 
     public function __construct()
     {
-        $this->utilisateursAffectes = new ArrayCollection();
         $this->utilisateurDisponible;
     }
 
@@ -94,33 +90,6 @@ class Creneaux
     public function setUtilisateurDisponible(?Utilisateur $utilisateurDisponible): static
     {
         $this->utilisateurDisponible = $utilisateurDisponible;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateursAffectes(): Collection
-    {
-        return $this->utilisateursAffectes;
-    }
-
-    public function addUtilisateursAffecte(Utilisateur $utilisateursAffecte): static
-    {
-        if (!$this->utilisateursAffectes->contains($utilisateursAffecte)) {
-            $this->utilisateursAffectes->add($utilisateursAffecte);
-            $utilisateursAffecte->addCreneauxAffecte($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateursAffecte(Utilisateur $utilisateursAffecte): static
-    {
-        if ($this->utilisateursAffectes->removeElement($utilisateursAffecte)) {
-            $utilisateursAffecte->removeCreneauxAffecte($this);
-        }
 
         return $this;
     }

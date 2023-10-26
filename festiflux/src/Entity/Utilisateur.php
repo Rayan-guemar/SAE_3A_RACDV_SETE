@@ -73,21 +73,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $demandesBenevolat;
 
-
-    #[ORM\ManyToMany(targetEntity: Creneaux::class, inversedBy: 'utilisateursAffectes')]
-    #[JoinTable(name: 'affectation')]
-    #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'crenaux_id', referencedColumnName: 'id')]
-    private Collection $creneauxAffectes;
+    #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
+    private Collection $taches;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
-        $this->creneauxAffectes = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
+        $this->taches = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -295,27 +291,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     }
 
     /**
-     * @return Collection<int, Creneaux>
-     */
-    public function getCreneauxAffectes(): Collection {
-        return $this->creneauxAffectes;
-    }
-
-    public function addCreneauxAffecte(Creneaux $creneauxAffecte): static {
-        if (!$this->creneauxAffectes->contains($creneauxAffecte)) {
-            $this->creneauxAffectes->add($creneauxAffecte);
-        }
-
-        return $this;
-    }
-
-    public function removeCreneauxAffecte(Creneaux $creneauxAffecte): static {
-        $this->creneauxAffectes->removeElement($creneauxAffecte);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Festival>
      */
     public function getDemandesBenevolat(): Collection {
@@ -333,6 +308,33 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tache>
+     */
+    public function getTaches(): Collection
+    {
+        return $this->taches;
+    }
+
+    public function addTach(Tache $tach): static
+    {
+        if (!$this->taches->contains($tach)) {
+            $this->taches->add($tach);
+            $tach->addBenevoleAffecte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTach(Tache $tach): static
+    {
+        if ($this->taches->removeElement($tach)) {
+            $tach->removeBenevoleAffecte($this);
         }
 
         return $this;
