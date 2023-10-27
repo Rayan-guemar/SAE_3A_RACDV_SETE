@@ -346,7 +346,7 @@ class FestivalController extends AbstractController {
         $postes = $festival->getPostes();
 
         $tab = [];
-        foreach ($postes as $poste) {   
+        foreach ($postes as $poste) {
             $tab[] = [
                 'id' => $poste->getId(),
                 'nom' => $poste->getNom(),
