@@ -48,7 +48,6 @@ class Poste {
 
     public function setFestival(?Festival $festival): static {
         $this->festival = $festival;
-
         return $this;
     }
 

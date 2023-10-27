@@ -15,7 +15,7 @@
 
 			(async () => {
 				await pause(1000);
-				let planning = new Planning(Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
+				let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
 			})()
 			// let planning = new Planning(Date.parse('2018-09-10'), Date.parse('2019-09-15'));
 		</script>
@@ -49,7 +49,9 @@
 
 				</div>
 				<div class="manage-interface">
-					<div id="poste-btn" class="btn">Postes</div>
+					<h4>Liste des postes</h4>
+					<div class="postes"></div>
+					<div id="add-poste-btn" class="btn">Créer un poste</div>
 					<div id="add-creneaux-btn" class="btn">Ajouter un créneaux</div>
 				</div>
 			</div>
@@ -80,24 +82,14 @@
 			</div>
 		</div>
 
-		<div id="postes" class="planning-form">
-			<div class="close-btn">
-				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
-			</div>
-			<h2>Liste des postes</h2>
-			<div>Vous n'avez aucun poste pour le moment</div>
-			<div>Veuillez en créer un</div>
-			<div id="add-poste-btn" class="btn">Créer un poste</div>
-		</div>
-
 		<div id="add-poste" class="planning-form">
 			<div class="close-btn">
 				<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
 			</div>
 			<h2>Création d'un poste</h2>
 			<div class="flex-column flex-align-center">
-				<label for="poste-title">Intitulé</label>
-				<input id="poste-title" type="text">
+				<label for="poste-name">Intitulé</label>
+				<input id="poste-name" type="text">
 			</div>
 			<div id="create-poste-btn" class="btn">Créer</div>
 		</div>

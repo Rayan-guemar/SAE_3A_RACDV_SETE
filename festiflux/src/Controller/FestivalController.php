@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Poste;
 use App\Form\ModifierFestivalType;
 use App\Form\SearchType;
 use App\Model\SearchData;
@@ -25,7 +26,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\DemandeBenevoleRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -194,6 +194,7 @@ class FestivalController extends AbstractController {
             $hasApplied = $utilisateurUtils->hasApplied($u, $festival);
         };
 
+        $postes = $festival->getPostes();
 
         return $this->render('festival/detailfest.html.twig', [
             'controller_name' => 'FestivalController',
@@ -307,6 +308,56 @@ class FestivalController extends AbstractController {
             'idFest' => $id,
             'benevoles' => $festival->getBenevoles()
         ]);
+    }
+
+    #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
+    public function createPoste(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $poste = new Poste();
+        $poste->setFestival($festival);
+        $poste->setNom($request->toArray()['nom']);
+
+        $em->persist($poste);
+        $em->flush();
+
+        return new JsonResponse([
+            'success' => 'Le poste a bien été créé',
+            'id' => $poste->getId(),
+        ], 200);
+    }
+
+    #[Route('/festival/{id}/poste/all', name: 'app_festival_all_poste', methods: ['GET'], options: ["expose" => true])]
+    public function allPoste(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $postes = $festival->getPostes();
+
+        $tab = [];
+        foreach ($postes as $poste) {   
+            $tab[] = [
+                'id' => $poste->getId(),
+                'nom' => $poste->getNom(),
+            ];
+        }
+
+        return new JsonResponse([
+            'postes' => $tab
+        ], 200);
     }
 
 
