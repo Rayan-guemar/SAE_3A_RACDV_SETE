@@ -60,7 +60,7 @@ class Creneaux {
 
         return $this;
     }
-
+  
     public function getFestival(): ?Festival
     {
         return $this->festival;
@@ -95,6 +95,17 @@ class Creneaux {
         // set the owning side of the relation if necessary
         if ($tache->getCrenaux() !== $this) {
             $tache->setCrenaux($this);
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setCreneau($this);
         }
 
         $this->tache = $tache;
@@ -112,11 +123,7 @@ class Creneaux {
         if (!$this->disponibilites->contains($disponibilite)) {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setCreneau($this);
-        }
-
-        return $this;
-    }
-
+          
     public function removeDisponibilite(Disponibilite $disponibilite): static {
         if ($this->disponibilites->removeElement($disponibilite)) {
             // set the owning side to null (unless already changed)

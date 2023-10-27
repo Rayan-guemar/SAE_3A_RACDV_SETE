@@ -63,8 +63,7 @@ class Festival {
     #[ORM\Column(nullable: true)]
     private ?float $lon = null;
 
-
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Poste::class, orphanRemoval: true, fetch: 'LAZY')]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Poste::class, orphanRemoval: true)]
     private Collection $postes;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Disponibilite::class, orphanRemoval: true)]

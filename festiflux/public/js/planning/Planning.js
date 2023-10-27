@@ -1,6 +1,7 @@
 import { dateDiff } from './utils.js';
 import { Poste } from './Poste.js';
 
+
 /**
  * Classe représentant un planning.
  */
@@ -21,7 +22,6 @@ export class Planning {
         this.dateFin = dateFin;
         this.postes = postes || [];
         this.creneaux = creneaux || [];
-
         this.addCreneauxBtn = document.getElementById('add-creneaux');
         this.addCreneauxForm = document.getElementById('add-creneaux');
 
@@ -134,7 +134,7 @@ export class Planning {
             }
         }
     }
-
+  
     /**
      * Ajoute un poste au planning.
      * @param {Poste} poste - Le poste à ajouter.

@@ -36,6 +36,7 @@ class Tache {
     {
         $this->benevoleAffecte = new ArrayCollection();
     }
+  
     #[ORM\ManyToOne(inversedBy: 'taches')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Poste $poste = null;
@@ -96,8 +97,7 @@ class Tache {
         
         return $this;
     }
-
-
+  
     public function getPoste(): ?Poste {
         return $this->poste;
     }

@@ -261,27 +261,23 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     }
 
     /**
-     * @return Collection<int, Creneaux>
+     * @return Collection<int, Festival>
      */
-    public function getDisponibilites(): Collection {
-        return $this->disponibilites;
+    public function getDemandesBenevolat(): Collection {
+        return $this->demandesBenevolat;
     }
 
-    public function addDisponibilite(Creneaux $disponibilite): static {
-        if (!$this->disponibilites->contains($disponibilite)) {
-            $this->disponibilites->add($disponibilite);
-            $disponibilite->setUtilisateurDisponible($this);
+    public function addDemandesBenevolat(Festival $demandesBenevolat): static {
+        if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
+            $this->demandesBenevolat->add($demandesBenevolat);
+            $demandesBenevolat->addDemandesBenevole($this);
         }
 
         return $this;
     }
-
-    public function removeDisponibilite(Creneaux $disponibilite): static {
-        if ($this->disponibilites->removeElement($disponibilite)) {
-            // set the owning side to null (unless already changed)
-            if ($disponibilite->getUtilisateurDisponible() === $this) {
-                $disponibilite->setUtilisateurDisponible(null);
-            }
+    public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
+        if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
+            $demandesBenevolat->removeDemandesBenevole($this);
         }
 
         return $this;
@@ -299,9 +295,25 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $this->demandesBenevolat->add($demandesBenevolat);
             $demandesBenevolat->addDemandesBenevole($this);
         }
+      return $this;
+    }
+  
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setUtilisateur($this);
+        }
 
         return $this;
     }
+
     public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
@@ -332,6 +344,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     {
         if ($this->taches->removeElement($tache)) {
             $tache->removeBenevoleAffecte($this);
+        }
+      return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getUtilisateur() === $this) {
+                $disponibilite->setUtilisateur(null);
+            }
         }
 
         return $this;

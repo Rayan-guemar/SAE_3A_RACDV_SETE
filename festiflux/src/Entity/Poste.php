@@ -17,7 +17,7 @@ class Poste {
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\ManyToOne(inversedBy: 'postes', targetEntity: Festival::class, fetch: 'LAZY')]
+    #[ORM\ManyToOne(inversedBy: 'postes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 

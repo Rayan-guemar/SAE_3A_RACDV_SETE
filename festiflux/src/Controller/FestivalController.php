@@ -8,6 +8,7 @@ use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,7 +30,6 @@ use App\Repository\DemandeBenevoleRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
