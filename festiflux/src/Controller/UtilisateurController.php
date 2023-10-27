@@ -75,7 +75,7 @@ class UtilisateurController extends AbstractController {
         return $this->redirectToRoute('app_festival_all');
     }
 
-    #[Route('/user/profile/{id}/modifier', name: 'app_profil_modifier')]
+    #[Route('/user/profile/{id}/edit', name: 'app_profile_edit')]
     public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, ): Response {
 
         if (!$utilisateur) {
