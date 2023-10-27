@@ -25,7 +25,7 @@ class FlashMessageService {
         $errors = $form->getErrors(true);
         $flashBag = $this->getFlashbag();
         foreach ($errors as $error) {
-            $flashBag->add(FlashMessageType::ERROR, $error->getMessage());
+            $flashBag->add(FlashMessageType::ERROR->value, $error->getMessage());
         }
     }
 
