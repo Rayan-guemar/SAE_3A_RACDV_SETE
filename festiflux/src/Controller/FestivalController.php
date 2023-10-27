@@ -328,7 +328,10 @@ class FestivalController extends AbstractController {
         $em->persist($poste);
         $em->flush();
 
-        return new JsonResponse(['success' => 'Le poste a bien été créé'], 200);
+        return new JsonResponse([
+            'success' => 'Le poste a bien été créé',
+            'id' => $poste->getId(),
+        ], 200);
     }
 
     #[Route('/festival/{id}/poste/all', name: 'app_festival_all_poste', methods: ['GET'], options: ["expose" => true])]

@@ -18,6 +18,16 @@ export class Poste {
         return new Poste(null, nom);
     }
 
+    htmlNode() {
+        let div = document.createElement('div');
+        div.classList.add('poste');
+        div.dataset.id = this.id;
+        div.innerHTML = `
+            <div class="poste-nom">${ this.nom }</div>
+        `;
+        return div;
+    }
+
     html() {
         let html = `
             <div class="poste" data-id="${ this.id }">

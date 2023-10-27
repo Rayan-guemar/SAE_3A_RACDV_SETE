@@ -191,7 +191,7 @@
 
     .manage-interface {
         height: 50%;
-        width: 150px;
+        width: 200px;
 
         margin-left: 50px;
 
@@ -233,6 +233,7 @@
             width: 100%;
             height: 20vh;
             overflow-y: auto;
+            overflow-x: hidden;
 
             .poste {
                 padding: 5px;
@@ -240,9 +241,23 @@
                 background-color: rgb(97, 26, 221, 0.1);
                 width: 95%;
                 font-weight: 500;
+                word-wrap: break-word;
 
-                display: grid;
-                place-items: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+
+                &:hover {
+                    cursor: pointer;
+                    border-width: 7px;
+                    box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.5);
+                }
+
+                .poste-nom {
+                    width: 100%;
+                    word-wrap: break-word;
+                }
             }
 
             .no-poste {

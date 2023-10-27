@@ -150,7 +150,9 @@ export class Planning {
         let data = await response.json();
         if (data.success) {
             console.log('Poste ajouté');
-            this.initPostes();
+            poste.id = data.id;
+            this.postes.push(poste);
+            this.postesEl.appendChild(poste.htmlNode());
         } else {
             console.error(data.error);
         }
