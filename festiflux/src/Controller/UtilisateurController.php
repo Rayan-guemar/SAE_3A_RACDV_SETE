@@ -8,6 +8,8 @@ use App\Repository\FestivalRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
 use App\Service\Ical\Event;
+use DateTime;
+use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,10 +59,18 @@ class UtilisateurController extends AbstractController {
         $ical->add(new Event(
             'Test4',
             'Super event',
-            'Salut à tous c\'est l\'événement test',
-            new \DateTime('2023-10-20 12:00:00'),
-            new \DateTime('2023-10-20 13:00:00'),
+            "Salut à tous c'est l'événement test",
+            new DateTime('2023-10-27 14:00:00'),
+            new DateTime('2023-10-27 16:00:00'),
             'Chez ta daronne sah'
+        ));
+        $ical->add(new Event(
+            'Test5',
+            'Super event 2',
+            "BLALLBLALAZ",
+            new \DateTime('2023-10-28 16:00:00'),
+            new \DateTime('2023-10-28 18:00:00'),
+            'dans le barillo'
         ));
 
         $ical->build();

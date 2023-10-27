@@ -3,6 +3,7 @@
 namespace App\Service\Ical;
 
 use App\Entity\Tache;
+use DateTimeZone;
 
 class Event {
     private string $uid;
@@ -12,14 +13,18 @@ class Event {
     private \DateTime $end;
     private array $duration; // array of the form [days, hours, minutes]
     private ?string $location;
+    const DT_FORMAT = 'Ymd\THis\Z';
 
     public function __construct(string $uid, string $title, ?string $description, \DateTime $start, \DateTime $end, ?string $location) {
-        $this->uid = $uid;
-        $this->title = $title;
-        $this->description = $description;
+        $this->uid = $this->escape_string($uid);
+        $this->title = $this->escape_string($title);
+        $this->description = $this->escape_string($description);
         $this->start = $start;
         $this->end = $end;
-        $this->location = $location;
+        $this->location = $this->escape_string($location);
+    }
+    private function escape_string($str) {
+        return preg_replace('/([\,;])/','\\\$1', $str);
     }
 
     public function getUid(): string {
@@ -47,22 +52,27 @@ class Event {
     }
 
     public function toVEvent(): string {
-
-        $str = "BEGIN:VEVENT\r\n";
-        $str .= "UID:" . $this->uid . "\r\n";
-        $str .= "DTSTAMP:" . $this->start->format('Ymd\THis\Z') . "\r\n";
-        $str .= "DTSTART:" . $this->start->format('Ymd\THis\Z') . "\r\n";
-        $str .= "DTEND:" . $this->end->format('Ymd\THis\Z') . "\r\n";
-        $str .= "SUMMARY:" . $this->title . "\n";
-        if ($this->description) {
-            $str .= "DESCRIPTION:" . $this->description . "\r\n";
-        }
+        $str = "\r\n".'BEGIN:VEVENT';
+        $str .= "\r\n".'DTSTAMP;TZID=Europe/Paris:' . $this->start->format(self::DT_FORMAT) ;
+        $str .= "\r\n".'DTSTART;TZID=Europe/Paris:' . $this->start->format(self::DT_FORMAT) ;
+        $str .= "\r\n".'DTEND;TZID=Europe/Paris:' . $this->end->format(self::DT_FORMAT) ;
+        $str .= "\r\n".'SUMMARY:' . $this->title ;
         if ($this->location) {
-            $str .= "LOCATION:" . $this->location . "\r\n";
+            $str .= "\r\n".'LOCATION:' . $this->location;
+        }else{
+            $str .= "\r\n".'LOCATION:';
         }
-        $str .= "END:VEVENT\r\n";
+        if ($this->description) {
+            $str .= "\r\n".'DESCRIPTION:' . $this->description;
+        }else{
+            $str .= "\r\n".'DESCRIPTION:';
+        }
+        $str .= "\r\n".'UID:' . $this->uid ;
+
+        $str .= "\r\n".'END:VEVENT';
         return $str;
     }
+
 
     public static function fromTache(Tache $tache) {
         $uid = $tache->getId();
