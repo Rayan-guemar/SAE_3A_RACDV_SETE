@@ -34,14 +34,15 @@ class AuthController extends AbstractController {
         ]);
 
         $f->handleRequest($req);
-        if ($f->isSubmitted() && $f->isValid()) {
+        if ($f->isSubmitted()) {
 
             if (!$f->isValid()) {
+                $f->getErrors();
                 $flashMessageService->addErrorsForm($f);
                 return $this->redirectToRoute('app_auth_register');
             }
 
-            $plainTextPassword = $f->get('plain_mot_de_passe')->getData();
+            $plainTextPassword = $f->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
             $u->setPassword($hashedPassword);
 
