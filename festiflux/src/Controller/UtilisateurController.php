@@ -56,7 +56,7 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/testical', name: 'app_testical', methods: ['GET'])]
-    public function testical() : Response {
+    public function testical(): Response {
         $ical = new IcalBuilder('test');
 
         $ical->add(new Event(
@@ -76,17 +76,17 @@ class UtilisateurController extends AbstractController {
     public function user_task_add(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
 
 
-           
+
 
         $u = $user->find($id);
         $t = $tache->find($idTask);
 
-        
-        if($this->getUser() != $t->getFestival()->getOrganisateur() && !$t->getFestival()->getResponsables()->contains($this->getUser())) {
+
+        if ($this->getUser() != $t->getPoste()->getFestival()->getOrganisateur() && !$t->getPoste()->getFestival()->getResponsables()->contains($this->getUser())) {
             throw $this->createNotFoundException("Vous n'avez pas les droits pour ajouter un bénévole à cette tache");
         }
 
-        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");    
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$t) throw $this->createNotFoundException("La tache n'existe pas");
 
         // TODO : faire une vérification sur les dispo / pref de l'utilisateur
@@ -99,5 +99,4 @@ class UtilisateurController extends AbstractController {
 
         return $this->redirectToRoute('home');
     }
-
 }
