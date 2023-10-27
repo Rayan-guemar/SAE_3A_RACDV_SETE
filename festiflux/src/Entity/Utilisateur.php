@@ -293,6 +293,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateur($this);
         }
+        return $this;
     }
 
      /* @return Collection<int, Tache>
@@ -309,6 +310,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $tache->addBenevoleAffecte($this);
         }
 
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getUtilisateur() === $this) {
+                $disponibilite->setUtilisateur(null);
+            }
+        }
         return $this;
     }
 
