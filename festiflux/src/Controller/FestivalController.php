@@ -28,6 +28,7 @@ use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
 use App\Repository\PosteRepository;
+use DateTime;
 use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -359,29 +360,36 @@ class FestivalController extends AbstractController {
     }
 
 
-    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['POST'])]
-    public function createTask(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id): Response {
+    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['POST'], options: ["expose" => true])]
+    public function createTask(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
 
 
         if ($f == null) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
-            return $this->redirectToRoute('home');
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
         }
 
         $body = json_decode($request->getContent(), true);
 
         try {
-            $description = $body['description'];
-            $nombreBenevole = $body['nombre_benevole'];
-            $poste_id = $body['poste_id'];
-            $dateDebut = $body['dateDebut'];
-            $dateFin = $body['dateFin'];
-            $lieu = $body['lieu'];
+            $description = (string)$body['description'];
+            $nombreBenevole = (int)$body['nombre_benevole'];
+            $poste_id = (string)$body['poste_id'];
+            $dateDebut = new DateTime($body['dateDebut']);
+            $dateFin = new DateTime($body['dateFin']);
+            // $lieu = $body['lieu'];
         } catch (\Throwable $th) {
-            if ($th instanceof \TypeError) {
+            if ($th instanceof \ErrorException) {
                 return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
             }
-
             throw $th;
         }
 
@@ -396,36 +404,33 @@ class FestivalController extends AbstractController {
         $t->setDescription($description);
         $t->setNombreBenevole($nombreBenevole);
 
-
-        if ($dateDebut == null || $dateFin == null) {
+        if ($dateDebut > $dateFin) {
             return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $dateDebut = new \DateTime($dateDebut);
-        $dateFin = new \DateTime($dateFin);
-        if ($dateDebut > $dateFin || $dateDebut < $f->getDateDebut() || $dateFin > $f->getDateFin()) {
-            return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+        } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+            return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+        } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+            return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
         }
 
         $c = new Creneaux();
         $c->setDateDebut($dateDebut);
         $c->setDateFin($dateFin);
 
-        $l = new Lieu();
-        $l->setNomLieu((string)$body['lieu']);
-        $l->setFestival($f);
+        //$l = new Lieu();
+        //$l->setNomLieu($lieu);
+        //$l->setFestival($f);
 
 
         $t->setCrenaux($c);
         $t->setPoste($p);
-        $t->setLieu($l);
+        //$t->setLieu($l);
 
-        $em->persist($l);
+        //$em->persist($l);
         $em->persist($c);
         $em->persist($t);
         $em->flush();
 
-        return new Response(status: Response::HTTP_CREATED);
+        return new Response("{}", Response::HTTP_CREATED);
     }
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]

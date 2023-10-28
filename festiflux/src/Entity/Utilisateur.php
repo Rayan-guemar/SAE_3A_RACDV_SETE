@@ -64,12 +64,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[InverseJoinColumn(name: 'festival_id', referencedColumnName: 'id')]
     private Collection $demandesBenevolat;
 
-    #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
-    #[JoinTable(name: 'affectation_tache')]
-    #[InverseJoinColumn(name:'tache_id', referencedColumnName:'id')]
-    #[JoinColumn(name:'utilisateur_id', referencedColumnName:'id')]
-    private Collection $taches;
-
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Disponibilite::class, orphanRemoval: true)]
     private Collection $disponibilites;
 
@@ -79,7 +73,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
-        $this->taches = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
     }
 
@@ -272,32 +265,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $this->demandesBenevolat->add($demandesBenevolat);
             $demandesBenevolat->addDemandesBenevole($this);
         }
-
-        return $this;
-    }
-    public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
-        if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
-            $demandesBenevolat->removeDemandesBenevole($this);
-        }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Festival>
-     */
-    public function getDemandesBenevolat(): Collection {
-        return $this->demandesBenevolat;
-    }
-
-    public function addDemandesBenevolat(Festival $demandesBenevolat): static {
-        if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
-            $this->demandesBenevolat->add($demandesBenevolat);
-            $demandesBenevolat->addDemandesBenevole($this);
-        }
-      return $this;
-    }
-  
     /**
      * @return Collection<int, Disponibilite>
      */
@@ -320,32 +290,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Tache>
-     */
-    public function getTaches(): Collection
-    {
-        return $this->taches;
-    }
-
-    public function addTache(Tache $tache): static
-    {
-        if (!$this->taches->contains($tache)) {
-            $this->taches->add($tache);
-            $tache->addBenevoleAffecte($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTache(Tache $tache): static
-    {
-        if ($this->taches->removeElement($tache)) {
-            $tache->removeBenevoleAffecte($this);
-        }
-      return $this;
     }
 
     public function removeDisponibilite(Disponibilite $disponibilite): static {
