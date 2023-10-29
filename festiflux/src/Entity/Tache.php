@@ -26,17 +26,6 @@ class Tache {
     #[InverseJoinColumn(name: 'tache_id', referencedColumnName: 'id')]
     private ?Creneaux $crenaux = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
-    
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'taches')]
-    private Collection $benevoleAffecte;
-
-    public function __construct()
-    {
-        $this->benevoleAffecte = new ArrayCollection();
-    }
-  
     #[ORM\ManyToOne(inversedBy: 'taches')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Poste $poste = null;
@@ -71,33 +60,6 @@ class Tache {
         return $this;
     }
 
-    public function getNom(): ?string {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): static {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getBenevoleAffecte(): Collection
-    {
-        return $this->benevoleAffecte;
-    }
-
-    public function addBenevoleAffecte(Utilisateur $benevoleAffecte): static
-    {
-        if (!$this->benevoleAffecte->contains($benevoleAffecte)) {
-            $this->benevoleAffecte->add($benevoleAffecte);
-        }
-        
-        return $this;
-    }
-  
     public function getPoste(): ?Poste {
         return $this->poste;
     }
@@ -108,11 +70,6 @@ class Tache {
         return $this;
     }
 
-    public function removeBenevoleAffecte(Utilisateur $benevoleAffecte): static
-    {
-        $this->benevoleAffecte->removeElement($benevoleAffecte);
-        return $this;
-    }
 
     public function getDescription(): ?string {
         return $this->description;

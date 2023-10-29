@@ -25,15 +25,13 @@ class Creneaux {
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-
     #[ORM\OneToMany(mappedBy: 'creneau', targetEntity: Disponibilite::class, orphanRemoval: true)]
     private Collection $disponibilites;
-    
+
     #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
     private ?Tache $tache = null;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->disponibilites = new ArrayCollection();
     }
 
@@ -60,41 +58,19 @@ class Creneaux {
 
         return $this;
     }
-  
-    public function getFestival(): ?Festival
-    {
-        return $this->festival;
-    }
 
-    public function setFestival(?Festival $festival): static
-    {
-        $this->festival = $festival;
-
-        return $this;
-    }
-
-    public function getUtilisateurDisponible(): ?Utilisateur
-    {
-        return $this->utilisateurDisponible;
-    }
-
-    public function setUtilisateurDisponible(?Utilisateur $utilisateurDisponible): static
-    {
-        $this->utilisateurDisponible = $utilisateurDisponible;
-
-        return $this;
-    }
-
-    public function getTache(): ?Tache
-    {
+    public function getTache(): ?Tache {
         return $this->tache;
     }
 
-    public function setTache(Tache $tache): static
-    {
+    public function setTache(Tache $tache): static {
         // set the owning side of the relation if necessary
         if ($tache->getCrenaux() !== $this) {
             $tache->setCrenaux($this);
+        }
+        return $this;
+    }
+
     /**
      * @return Collection<int, Disponibilite>
      */
@@ -108,22 +84,9 @@ class Creneaux {
             $disponibilite->setCreneau($this);
         }
 
-        $this->tache = $tache;
         return $this;
     }
 
-    /**
-     * @return Collection<int, Disponibilite>
-     */
-    public function getDisponibilites(): Collection {
-        return $this->disponibilites;
-    }
-
-    public function addDisponibilite(Disponibilite $disponibilite): static {
-        if (!$this->disponibilites->contains($disponibilite)) {
-            $this->disponibilites->add($disponibilite);
-            $disponibilite->setCreneau($this);
-          
     public function removeDisponibilite(Disponibilite $disponibilite): static {
         if ($this->disponibilites->removeElement($disponibilite)) {
             // set the owning side to null (unless already changed)

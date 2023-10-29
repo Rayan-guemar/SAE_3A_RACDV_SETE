@@ -27,6 +27,9 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use App\Repository\PosteRepository;
+use DateTime;
+use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -72,7 +75,6 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', "Vous n'êtes pas inscrit");
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
-
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
@@ -93,7 +95,7 @@ class FestivalController extends AbstractController {
             ->to($festival->getOrganisateur()->getEmail())
             ->subject('Demande de bénévolat')
             ->text('test')
-            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival '.$festival->getNom(). '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/'. $festival->getId() . '/demandes"  > ici </a> pour accéder aux demandes. </p>');
+            ->html('<p>Vous avez reçu une demande de bénévolat pour le festival ' . $festival->getNom() . '.' . ' <br><br> Cliquez <a href="http://127.0.0.1:8000/festival/' . $festival->getId() . '/demandes"  > ici </a> pour accéder aux demandes. </p>');
 
         $mailer->send($email);
 
@@ -101,7 +103,7 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
 
-    #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true] )]
+    #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true])]
     public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em,  ErrorService $errorService) {
 
         $festival = $repository->find($festId);
@@ -115,7 +117,6 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', "cet utilisateur n'êtes pas inscrit");
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
-
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
@@ -131,13 +132,12 @@ class FestivalController extends AbstractController {
             $em->flush();
             $this->addFlash('success', 'Cet utilisateur est maintenant responsable pour ce festival');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
-        }else{
+        } else {
             $this->addFlash('erreur', '');
             return $errorService->MustBeLoggedError();
-
         }
     }
-    #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true] )]
+    #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true])]
     public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService) {
 
         $festival = $repository->find($festId);
@@ -166,18 +166,17 @@ class FestivalController extends AbstractController {
             $em->flush();
             $this->addFlash('success', "Cet utilisateur n'est maintenant plus responsable pour ce festival");
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
-        }else{
+        } else {
             $this->addFlash('erreur', "");
             return $errorService->MustBeLoggedError();
         }
-
     }
-    
+
     #[Route('/festival/{id}', name: 'app_festival_detail')]
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
 
-        if (!$festival or $festival->getIsArchive()==1) {
+        if (!$festival or $festival->getIsArchive() == 1) {
             $this->addFlash('error', 'Le festival n\'existe pas');
             return $this->redirectToRoute('home');
         }
@@ -225,8 +224,8 @@ class FestivalController extends AbstractController {
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
             'idFest' => $id,
-            'benevoles'=>$benevoles,
-            'responsables'=>$responsables,
+            'benevoles' => $benevoles,
+            'responsables' => $responsables,
         ]);
     }
 
@@ -348,7 +347,7 @@ class FestivalController extends AbstractController {
         $postes = $festival->getPostes();
 
         $tab = [];
-        foreach ($postes as $poste) {   
+        foreach ($postes as $poste) {
             $tab[] = [
                 'id' => $poste->getId(),
                 'nom' => $poste->getNom(),
@@ -361,54 +360,86 @@ class FestivalController extends AbstractController {
     }
 
 
-    #[Route('/festival/{id}/tache/create', name: 'app_festival_tache_create')]
-    public function createTask(FestivalRepository $fr, Request $request, EntityManagerInterface $em, int $id): Response {
-
-        $tache = new Tache();
-        $festival = $fr->find($id);
-
-        $form = $this->createForm(TacheType::class, $tache);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $tache->setFestival($festival);
-
-            $creneau = new Creneaux();
-            $creneau->setDateDebut($form->get('heureDebut')->getData());
-            $creneau->setDateFin($form->get('heureFin')->getData());
-            $creneau->setFestival($festival);
-
-            $lieu = new Lieu();
-            $lieu->setNomLieu($form->get('lieu')->getData());
-            $lieu->setFestival($festival);
-            $tache->setLieu($lieu);
+    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['POST'], options: ["expose" => true])]
+    public function createTask(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
 
 
-
-            $em->persist($creneau);
-            $em->persist($lieu);
-            $em->persist($tache);
-
-            $em->flush();
-            $this->addFlash('success', 'La tâche a bien été créée');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->render('festival/createTask.html.twig', [
-            'controller_name' => 'FestivalController',
-            'form' => $form->createView(),
-        ]);
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        }
+
+        $body = json_decode($request->getContent(), true);
+
+        try {
+            $description = (string)$body['description'];
+            $nombreBenevole = (int)$body['nombre_benevole'];
+            $poste_id = (string)$body['poste_id'];
+            $dateDebut = new DateTime($body['dateDebut']);
+            $dateFin = new DateTime($body['dateFin']);
+            // $lieu = $body['lieu'];
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            }
+            throw $th;
+        }
+
+        $p = $posteRepository->find($poste_id);
+
+
+        if (!$p || $p->getFestival()->getId() != $id) {
+            return new JsonResponse(['error' => 'Le poste n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        $t = new Tache();
+        $t->setDescription($description);
+        $t->setNombreBenevole($nombreBenevole);
+
+        if ($dateDebut > $dateFin) {
+            return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+        } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+            return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+        } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+            return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $c = new Creneaux();
+        $c->setDateDebut($dateDebut);
+        $c->setDateFin($dateFin);
+
+        //$l = new Lieu();
+        //$l->setNomLieu($lieu);
+        //$l->setFestival($f);
+
+
+        $t->setCrenaux($c);
+        $t->setPoste($p);
+        //$t->setLieu($l);
+
+        //$em->persist($l);
+        $em->persist($c);
+        $em->persist($t);
+        $em->flush();
+
+        return new Response("{}", Response::HTTP_CREATED);
     }
-  
+
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
-    public function edit(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
-        
+
 
         $form = $this->createForm(ModifierFestivalType::class, $festival);
         $form->handleRequest($request);
@@ -458,7 +489,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/archiver/done', name: 'app_festival_archiver_done')]
-    public function archiverFestival(FestivalRepository $repository, int $id,EntityManagerInterface $em): Response {
+    public function archiverFestival(FestivalRepository $repository, int $id, EntityManagerInterface $em): Response {
         $festival = $repository->find($id);
 
         if (!$festival) {
