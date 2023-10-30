@@ -1,0 +1,33 @@
+
+/* Style de base pour le tableau */
+table {
+  width: 100%; /* Largeur du tableau */
+  margin: 10px;
+  border-collapse: separate;
+  border-radius: 10px;
+  border: 1px solid black;}
+
+/* Style des cellules du tableau */
+td, th {
+  padding: 8px; /* Espace intérieur autour du contenu de la cellule */
+  text-align: center; /* Alignement du texte au centre */
+}
+
+/* Style de la première ligne (en-tête) du tableau */
+th {
+  background: linear-gradient(57deg, rgba(19, 17, 40, 1) 0%, rgba(70, 59, 195, 1) 100%);
+  font-weight: bold; /* Texte en gras */
+  color: white;
+}
+
+/* Style pour les cellules impaires (ligne de couleur différente) */
+tr:nth-child(odd) {
+  background-color: #363636; /* Couleur de fond différente */
+  color: white;
+}
+
+/* Style pour les cellules impaires (ligne de couleur différente) */
+tr:nth-child(even) {
+  background-color: #000000; /* Couleur de fond différente */
+  color: white;
+}

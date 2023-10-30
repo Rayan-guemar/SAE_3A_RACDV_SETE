@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 class Festival {
@@ -43,12 +44,6 @@ class Festival {
     #[ORM\Column(length: 255)]
     private ?string $affiche = null;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Creneaux::class, orphanRemoval: true)]
-    private Collection $creneaux;
-
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Tache::class, orphanRemoval: true)]
-    private Collection $taches;
-
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Lieu::class, orphanRemoval: true)]
     private Collection $lieux;
 
@@ -59,7 +54,7 @@ class Festival {
     private Collection $responsables;
 
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'demandesBenevolat')]    
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'demandesBenevolat')]
     private Collection $demandesBenevole;
 
     #[ORM\Column(nullable: true)]
@@ -68,13 +63,25 @@ class Festival {
     #[ORM\Column(nullable: true)]
     private ?float $lon = null;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Poste::class, orphanRemoval: true)]
+    private Collection $postes;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Disponibilite::class, orphanRemoval: true)]
+    private Collection $disponibilites;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $isArchive;
+
+
     public function __construct() {
-        $this->creneaux = new ArrayCollection();
-        $this->taches = new ArrayCollection();
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
         $this->responsables = new ArrayCollection();
         $this->demandesBenevole = new ArrayCollection();
+        $this->postes = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
+        $this->isArchive=0;
+
     }
 
     public function getId(): ?int {
@@ -151,61 +158,6 @@ class Festival {
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Creneaux>
-     */
-    public function getCreneaux(): Collection {
-        return $this->creneaux;
-    }
-
-    public function addCreneaux(Creneaux $creneaux): static {
-        if (!$this->creneaux->contains($creneaux)) {
-            $this->creneaux->add($creneaux);
-            $creneaux->setFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCreneaux(Creneaux $creneaux): static {
-        if ($this->creneaux->removeElement($creneaux)) {
-            // set the owning side to null (unless already changed)
-            if ($creneaux->getFestival() === $this) {
-                $creneaux->setFestival(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Tache>
-     */
-    public function getTaches(): Collection {
-        return $this->taches;
-    }
-
-    public function addTach(Tache $tach): static {
-        if (!$this->taches->contains($tach)) {
-            $this->taches->add($tach);
-            $tach->setFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTach(Tache $tach): static {
-        if ($this->taches->removeElement($tach)) {
-            // set the owning side to null (unless already changed)
-            if ($tach->getFestival() === $this) {
-                $tach->setFestival(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Lieu>
      */
@@ -306,27 +258,93 @@ class Festival {
         return $this;
     }
 
-    public function getLat(): ?float
-    {
+    public function getLat(): ?float {
         return $this->lat;
     }
 
-    public function setLat(?float $lat): static
-    {
+    public function setLat(?float $lat): static {
         $this->lat = $lat;
 
         return $this;
     }
 
-    public function getLon(): ?float
-    {
+    public function getLon(): ?float {
         return $this->lon;
     }
 
-    public function setLon(?float $lon): static
-    {
+    public function setLon(?float $lon): static {
         $this->lon = $lon;
 
         return $this;
     }
+
+
+    /**
+     * @return Collection<int, Poste>
+     */
+    public function getPostes(): Collection {
+        return $this->postes;
+    }
+
+    public function addPoste(Poste $poste): static {
+        if (!$this->postes->contains($poste)) {
+            $this->postes->add($poste);
+            $poste->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removePoste(Poste $poste): static {
+        if ($this->postes->removeElement($poste)) {
+            // set the owning side to null (unless already changed)
+            if ($poste->getFestival() === $this) {
+                $poste->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getFestival() === $this) {
+                $disponibilite->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIsArchive(): ?string
+    {
+
+        return $this->isArchive;
+    }
+
+    public function setIsArchive(): void
+    {
+
+        $this->isArchive = 1;
+    }
+
+
+
 }

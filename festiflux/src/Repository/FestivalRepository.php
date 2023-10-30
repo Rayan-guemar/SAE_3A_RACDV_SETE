@@ -58,15 +58,13 @@ class FestivalRepository extends ServiceEntityRepository
 
         if (!empty($searchData->q)) {
             $data = $data
-                ->Where('p.nom LIKE :q')
-                ->setParameter('q', "%{$searchData->q}%");
+                ->Where('p.nom LIKE :searchTerm OR p.lieu LIKE :searchTerm')
+                ->setParameter('searchTerm', "%{$searchData->q}%");
         }
-
 
         $data = $data
             ->getQuery()
             ->getResult();
-
 
         return $data;
     }
