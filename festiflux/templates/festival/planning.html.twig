@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+		<script type="text/javascript" src="{{ asset('js/DatePickerCreneau.js') }}"></script>
 		<script defer type="module">
 			import {Planning} from "{{ asset('js/planning/Planning.js') }}";
 import {pause} from "{{ asset('js/planning/utils.js') }}";
@@ -84,11 +85,11 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="start-creneau">Debut du créneaux</label>
-					<input name="start" id="start-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+					<input name="start" id="start-creneau" onchange="changeHandlerDebut()" type="datetime-local" value={{festival.dateDebut | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="end-creneau">Fin du créneaux</label>
-					<input name="end" id="end-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+						<input name="end" id="end-creneau" onchange="changeHandlerFin()" type="datetime-local" value={{festival.dateFin | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="poste">Choisissez un poste</label>
