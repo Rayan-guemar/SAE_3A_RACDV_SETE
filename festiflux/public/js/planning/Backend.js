@@ -70,7 +70,7 @@ export class Backend {
 	 */
 	static addPoste(festivalId, poste) {
 		const URL = Routing.generate('app_festival_create_poste', { id: festivalId });
-		return Backend.post(URL, poste);
+		return Backend.#post(URL, poste);
 	}
 
 	/**
