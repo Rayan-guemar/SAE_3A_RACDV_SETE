@@ -66,6 +66,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Disponibilite::class, orphanRemoval: true)]
     private Collection $disponibilites;
+    
+    #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
+    private Collection $taches;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
@@ -74,6 +77,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->estResponsable = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
+        $this->taches = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -280,6 +284,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateur($this);
         }
+        return $this;
+    }
+
+     /* @return Collection<int, Tache>
+     */
+    public function getTaches(): Collection
+    {
+        return $this->taches;
+    }
+
+    public function addTache(Tache $tache): static
+    {
+        if (!$this->taches->contains($tache)) {
+            $this->taches->add($tache);
+            $tache->addBenevoleAffecte($this);
+        }
 
         return $this;
     }
@@ -298,6 +318,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             if ($disponibilite->getUtilisateur() === $this) {
                 $disponibilite->setUtilisateur(null);
             }
+        }
+        return $this;
+    }
+
+    public function removeTache(Tache $tache): static
+    {
+        if ($this->taches->removeElement($tache)) {
+            $tache->removeBenevoleAffecte($this);
         }
 
         return $this;
