@@ -43,15 +43,17 @@
 		<div class="btn-container">
 			{% if isBenevole %}
 
+					<div class="button-benevole">
+						<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">Planning du festival</a>
+					</div>
+
 				{% elseif isResponsable %}
 
 				{% elseif isOrganisateur %}
 					<div class="button-benevole">
 						<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
 					</div>
-					<div class="button-benevole">
-						<a href={{ path("app_festival_tache_create", {'id' : festival.getId()} ) }} class="btn btn-primary">Ajouter une tache</a>
-					</div>
+					
 					<div class="button-archive">
 						<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
 					</div>
