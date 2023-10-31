@@ -11,7 +11,8 @@ export const encodedStr = s => (s + '').replace(/[\u00A0-\u9999<>\&]/g, i => '&#
  * @returns {string} La date en format "xx h x".
  */
 export const getDateHours2Digits = d => {
-	return d.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+	d = new Date(d);
+	return d.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ' h ' + d.getMinutes().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
 };
 
 /**
@@ -19,7 +20,7 @@ export const getDateHours2Digits = d => {
  * @param {number} ms - Le nombre de millisecondes à attendre.
  * @returns {Promise} - Une promesse qui se résout après le délai spécifié.
  */
-export const pause = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+export const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export const dateDiff = (date1, date2) => {
 	var diff = {}; // Initialisation du retour

@@ -360,8 +360,8 @@ class FestivalController extends AbstractController {
     }
 
 
-    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['POST'], options: ["expose" => true])]
-    public function createTask(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
+    public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
 
 
         if ($f == null) {
@@ -430,7 +430,46 @@ class FestivalController extends AbstractController {
         $em->persist($t);
         $em->flush();
 
-        return new Response("{}", Response::HTTP_CREATED);
+        return new JsonResponse(status: Response::HTTP_CREATED);
+    }
+
+    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['GET'], options: ["expose" => true])]
+    public function getTaches(#[MapEntity] Festival $f): JsonResponse {
+
+
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        // $u = $this->getUser();
+        // if (!$u || !$u instanceof Utilisateur) {
+        //     return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        // }
+
+        // if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+        //     return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        // }
+
+        $taches = $f->getPostes()->reduce(function ($acc, Poste $p) {
+            return array_merge($acc, array_map(function (Tache $el) use ($p) {
+                return [
+                    'date_debut' => $el->getCrenaux()->getDateDebut(),
+                    'date_fin' => $el->getCrenaux()->getDateFin(),
+                    'poste_id' => $p->getId(),
+                    'poste_nom' => $p->getNom(),
+                    'lieu' => 'un truc au pif',
+                    'description' => $el->getDescription(),
+                    'nombre_benevole' => $el->getNombreBenevole(),
+                    'id' => $el->getId(),
+
+                ];
+            }, $p->getTaches()->toArray()));
+        }, []);
+
+
+
+        //dd($taches);
+        return new JsonResponse($taches, Response::HTTP_OK);
     }
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]

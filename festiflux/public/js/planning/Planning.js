@@ -1,4 +1,4 @@
-import { dateDiff } from './utils.js';
+import { dateDiff, encodedStr, getDateHours2Digits } from './utils.js';
 import { Poste } from './Poste.js';
 import { Backend } from './Backend.js';
 import { Creneau } from './Creneau.js';
@@ -15,16 +15,26 @@ export class Planning {
 	 * @param {Date} dateDebut - La date de début du planning.
 	 * @param {Date} dateFin - La date de fin du planning.
 	 * @param {Poste[]} postes - Les postes associés au planning.
-	 * @param {Creneau[]} creneaux - Les créneaux du planning.
+	 * @param {Tache[]} taches - Les créneaux du planning.
 	 */
-	constructor(festId, dateDebut, dateFin) {
+	constructor(festId, dateDebut, dateFin, isResponsable, isOrganisateur) {
 		this.festId = festId;
 		this.html = document.getElementById('planning');
 		this.dateDebut = new Date(dateDebut);
 		this.dateFin = new Date(dateFin);
 		this.dateFin.setHours(23, 59, 59, 999);
+
+		/**
+		 * Les postes associés au planning.
+		 * @type {Poste[]}
+		 */
 		this.postes = [];
-		this.creneaux = [];
+
+		/**
+		 * Les tâches associées au planning.
+		 * @type {Tache[]}
+		 */
+		this.taches = [];
 
 		this.addCreneauxBtn = document.getElementById('add-creneau-btn');
 		this.addCreneauxForm = document.getElementById('add-creneau');
@@ -60,7 +70,9 @@ export class Planning {
 	async init() {
 		this.initDays();
 		this.addListener();
-		await this.refreshPostesList();
+		const promises = [this.refreshPostesList(), this.refeshTachesList()];
+
+		await Promise.all(promises);
 
 		document.getElementById('loader').style.display = 'none';
 		this.html.classList.remove('loading');
@@ -130,15 +142,12 @@ export class Planning {
 			const p = this.postes.find(poste => poste.id === posteId);
 			if (!p) return console.error('Poste introuvable');
 
-			const c = new Creneau(null, this.startCreneauxInput.value, this.endCreneauxInput.value);
+			const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
 			const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
 
-			//TODO: ajouter créneau sur l'edt
-
+			this.addTache(t);
 			this.addCreneauxForm.classList.remove('visible');
 			this.html.classList.remove('blurred');
-
-			await Backend.addTache(this.festId, t);
 		});
 	}
 
@@ -259,5 +268,80 @@ export class Planning {
 			left: scroll,
 			behavior: 'smooth'
 		});
+	}
+
+	/**
+	 * Récupère la correspondance entre les dates et les divs de chaque jour.
+	 * @returns {Map<string, HTMLElement>} Un objet contenant la correspondance entre les dates et les divs de chaque jour.
+	 */
+	getDateToDayMapping = () => {
+		/**
+		 * Mappe chaque date avec son div de jour correspondant.
+		 * @type {Map<string, HTMLElement>}
+		 */
+		const dateToDayMap = new Map();
+
+		const dayDivs = document.querySelectorAll('.day');
+		const dayDivsArray = [...dayDivs];
+
+		for (const dayDiv of dayDivsArray) {
+			const date = new Date(dayDiv.getAttribute('data-date'));
+			dateToDayMap.set(date.toDateString(), dayDiv);
+		}
+
+		return dateToDayMap;
+	};
+
+	renderTaches = () => {
+		const dateToDayMap = this.getDateToDayMapping();
+
+		for (const d of dateToDayMap.values()) {
+			[...d.getElementsByClassName('task')].forEach(t => t.remove());
+		}
+
+		for (const t of this.taches) {
+			const date = new Date(t.creneau.debut);
+			const dayDiv = dateToDayMap.get(date.toDateString());
+			if (!dayDiv) {
+				console.error(`Aucun div de jour trouvé pour la date ${date}`);
+				continue;
+			}
+
+			const taskDiv = document.createElement('div');
+			taskDiv.classList.add('task');
+			taskDiv.innerHTML = `
+            <div class="name">${encodedStr(t.poste.nom)}</div>
+            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+        `;
+
+			taskDiv.style.top = `${((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) / (24 * 60)) * 100}%`;
+			taskDiv.style.height = `${(((t.creneau.fin.getHours() * 60 + t.creneau.fin.getMinutes()) - (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) / (24 * 60)) * 100}%`;
+			dayDiv.appendChild(taskDiv);
+		}
+	};
+
+	/**
+	 * Affiche toutes les tâches dans le planning.
+	 */
+	refeshTachesList = async () => {
+		this.taches = await Backend.getTaches(this.festId);
+		this.renderTaches();
+	};
+
+	/**
+	 * Ajoute une tache au planning.
+	 * @param {Tache} tache
+	 */
+	async addTache(tache) {
+		this.taches.push(tache);
+		this.renderTaches();
+		try {
+			await Backend.addTache(this.festId, tache);
+		} catch (error) {
+			alert('Une erreur est survenue lors de la création de la tâche');
+			this.taches = this.taches.filter(t => t.id !== tache.id);
+			this.renderTaches();
+		}
+		this.refeshTachesList();
 	}
 }
