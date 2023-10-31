@@ -87,7 +87,7 @@ class UtilisateurController extends AbstractController {
         return $this->redirectToRoute('app_festival_all');
     }
 
-    #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'])]
+    #[Route('/icalLink/{idFest}', name: 'app_send_icsFile', options: ["expose" => true], methods: ['GET'])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
         $currentUser = $this->getUser();
         $fest = $festivalRepository->find($idFest);
@@ -124,6 +124,8 @@ class UtilisateurController extends AbstractController {
                 ->html('<p>Voici votre fichier ics des taches qui vous sont assignées en tant que bénévole pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
 
             $mailer->send($email);
+            $this->addFlash('success', 'Votre allez recevoir un mail avec en pj le fichier ics.');
+
 
         }
         if ($utilisateurUtils->isResponsable($currentUser,$fest) || $utilisateurUtils->isOrganisateur($currentUser,$fest) ){
@@ -155,6 +157,8 @@ class UtilisateurController extends AbstractController {
                 ->html('<p>Voici votre fichier ics des taches pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
 
             $mailer->send($email);
+            $this->addFlash('success', 'Votre allez recevoir un mail avec en pj le fichier ics.');
+
         }
 
 
