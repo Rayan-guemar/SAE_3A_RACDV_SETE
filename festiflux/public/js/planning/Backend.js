@@ -1,3 +1,4 @@
+import { Creneau } from './Creneau.js';
 import { Poste } from './Poste.js';
 import { Tache } from './Tache.js';
 
@@ -79,16 +80,29 @@ export class Backend {
 	 * @param {Tache} tache - Les informations de la tâche à ajouter.
 	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
 	 */
-	static addTache(festivalId, tache) {
+	static async addTache(festivalId, tache) {
 		const body = {
-			dateDebut: tache.creneau.debut,
-			dateFin: tache.creneau.fin,
+			dateDebut: tache.creneau.debut.toISOString(),
+			dateFin: tache.creneau.fin.toISOString(),
 			poste_id: tache.poste.id,
 			lieu: tache.lieu,
 			description: tache.description,
 			nombre_benevole: tache.nbBenevole
 		};
+		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
+		const res = await Backend.#post(URL, body);
+		console.log('response', res);
+	}
+
+	/**
+	 *
+	 * @param {string} festivalId
+	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
+	 */
+	static async getTaches(festivalId) {
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
-		return Backend.#post(URL, body);
+		const data = await Backend.#get(URL);
+		const res = data.map(o => new Tache(o.id, o.description, o.nombre_benevole, new Poste(o.poste_id, o.poste_nom), new Creneau(null, new Date(o.date_debut?.date), new Date(o.date_fin?.date))));
+		return res;
 	}
 }
