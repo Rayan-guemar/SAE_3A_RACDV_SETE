@@ -12,14 +12,16 @@ class Event {
     private \DateTime $end;
     private array $duration; // array of the form [days, hours, minutes]
     private ?string $location;
+    private ?int $nbrBenevoles;
 
-    public function __construct(string $uid, string $title, ?string $description, \DateTime $start, \DateTime $end, ?string $location) {
+    public function __construct(string $uid, string $title, ?string $description, \DateTime $start, \DateTime $end, ?string $location, ?int $nbrBenevoles) {
         $this->uid = $uid;
         $this->title = $title;
         $this->description = $description;
         $this->start = $start;
         $this->end = $end;
         $this->location = $location;
+        $this->nbrBenevoles = $nbrBenevoles;
     }
 
     public function getUid(): string {
@@ -46,20 +48,35 @@ class Event {
         return $this->location;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getNbrBenevoles(): ?int
+    {
+        return $this->nbrBenevoles;
+    }
+
+
     public function toVEvent(): string {
 
         $str = "BEGIN:VEVENT\r\n";
         $str .= "UID:" . $this->uid . "\r\n";
         $str .= "DTSTAMP:" . $this->start->format('Ymd\THis\Z') . "\r\n";
-        $str .= "DTSTART:" . $this->start->format('Ymd\THis\Z') . "\r\n";
-        $str .= "DTEND:" . $this->end->format('Ymd\THis\Z') . "\r\n";
+        $str .= "DTSTART;TZID=Europe/Paris:" . $this->start->format('Ymd\THis\Z') . "\r\n";
+        $str .= "DTEND;TZID=Europe/Paris:" . $this->end->format('Ymd\THis\Z') . "\r\n";
         $str .= "SUMMARY:" . $this->title . "\n";
         if ($this->description) {
-            $str .= "DESCRIPTION:" . $this->description . "\r\n";
+            $str .= "DESCRIPTION:" . $this->description ;
+            if ($this->nbrBenevoles){
+                $str .= "NOMBRE BENEVOLES:" . $this->nbrBenevoles . "\r\n";
+            }else{
+                $str.="\r\n";
+            }
         }
         if ($this->location) {
             $str .= "LOCATION:" . $this->location . "\r\n";
         }
+
         $str .= "END:VEVENT\r\n";
         return $str;
     }
@@ -71,6 +88,7 @@ class Event {
         $start = $tache->getCrenaux()->getDateDebut();
         $end = $tache->getCrenaux()->getDateDebut();
         $location = $tache->getLieu();
-        return new Event($uid, $title, $description, $start, $end, $location);
+        $nbrBenevoles = $tache->getNombreBenevole();
+        return new Event($uid, $title, $description, $start, $end, $location, $nbrBenevoles);
     }
 }

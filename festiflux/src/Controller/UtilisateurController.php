@@ -8,20 +8,25 @@ use App\Form\InscriptionType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierProfilType;
 use App\Repository\FestivalRepository;
+use App\Repository\PosteRepository;
 use App\Repository\TacheRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
 use App\Service\Ical\Event;
+use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
+use Symfony\Component\Validator\Constraints\Date;
 
 class UtilisateurController extends AbstractController {
 
@@ -75,6 +80,81 @@ class UtilisateurController extends AbstractController {
         ));
 
         $ical->build();
+        return $this->redirectToRoute('app_festival_all');
+    }
+
+    #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'])]
+    public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
+        $currentUser = $this->getUser();
+        $fest = $festivalRepository->find($idFest);
+        if (!$currentUser instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+        if (!$fest instanceof Festival) {
+            $this->addFlash('error', 'Ce festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }
+        if ($utilisateurUtils->isBenevole($currentUser,$fest)){
+            $taches = $currentUser->getTaches();
+            $ical = new IcalBuilder('benevoleCalendar');
+            foreach ($taches as $t){
+                $ical->add(new Event(
+                    "Event".$t->getId(),
+                    $t->getPoste()->getNom(),
+                    $t->getDescription(),
+                    $t->getCrenaux()->getDateDebut(),
+                    $t->getCrenaux()->getDateFin(),
+                    $t->getLieu()->getNomLieu(),
+                    null
+                ));
+            }
+            $ical->build();
+
+            /*faut le lui envoyer par mail*/
+            $email = (new Email())
+                ->from('administration@festiflux.fr')
+                ->to($currentUser->getEmail())
+                ->subject('Votre fichier ICS Bénévole')
+                ->attach(fopen('icals/'.$ical->getFilename().'.ics', 'r'),$ical->getFilename().'.ics')
+                ->html('<p>Voici votre fichier ics des taches qui vous sont assignées en tant que bénévole pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
+
+            $mailer->send($email);
+
+        }
+        if ($utilisateurUtils->isResponsable($currentUser,$fest) || $utilisateurUtils->isOrganisateur($currentUser,$fest) ){
+            $posts=$posteRepository->findBy(["festival"=>$fest]);
+            $ical = new IcalBuilder('ResponsableCaledar');
+            foreach ($posts as $p){
+                $taches = $p->getTaches();
+                foreach ($taches as $t){
+                    if($t->getPoste()->getFestival()===$fest) {
+                        $ical->add(new Event(
+                            "Event" . $t->getId(),
+                            $t->getPoste()->getNom(),
+                            $t->getDescription(),
+                            $t->getCrenaux()->getDateDebut(),
+                            $t->getCrenaux()->getDateFin(),
+                            $t->getLieu()->getNomLieu(),
+                            $t->getNombreBenevole()
+                        ));
+                    }
+                }
+            }
+            $ical->build();
+            /*faut le lui envoyer par mail*/
+            $email = (new Email())
+                ->from('administration@festiflux.fr')
+                ->to($currentUser->getEmail())
+                ->subject('Votre fichier ICS Responsible')
+                ->attach(fopen('icals/'.$ical->getFilename().'.ics', 'r'),$ical->getFilename().'.ics')
+                ->html('<p>Voici votre fichier ics des taches pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
+
+            $mailer->send($email);
+        }
+
+
+
         return $this->redirectToRoute('app_festival_all');
     }
   
