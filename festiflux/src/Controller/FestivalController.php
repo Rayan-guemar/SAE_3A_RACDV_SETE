@@ -229,7 +229,7 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-    #[Route('/festival/{id}/planning', name: 'app_festival_planning')]
+    #[Route('/festival/{id}/planning', name: 'app_festival_demandesBenevolat')]
     public function planning(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
         if (!$festival) {
