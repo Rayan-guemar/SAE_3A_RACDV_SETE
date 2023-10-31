@@ -184,9 +184,8 @@ class UtilisateurController extends AbstractController {
         ]);
     }
                          
-    #[Route('/user/{id}/task/{idTask}/add', name: 'app_user_task_add', methods: ['GET'])]
+    #[Route('/user/{id}/task/{idTask}/add', name: 'app_user_task_add', options: ['expose' => true])]
     public function user_task_add(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
-
 
         $u = $user->find($id);
         $t = $tache->find($idTask);
@@ -206,6 +205,28 @@ class UtilisateurController extends AbstractController {
         $em->flush();
 
         $fm->add(FlashMessageType::SUCCESS, 'Tâche ajoutée');
+
+        return $this->redirectToRoute('home');
+    }
+
+    #[Route('/user/{id}/task/{idTask}/remove', name: 'app_user_task_remove', options: ['expose' => true])]
+    public function user_task_remove(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
+
+        $u = $user->find($id);
+        $t = $tache->find($idTask);
+
+        if ($this->getUser() != $t->getPoste()->getFestival()->getOrganisateur() && !$t->getPoste()->getFestival()->getResponsables()->contains($this->getUser())) {
+            throw $this->createNotFoundException("Vous n'avez pas les droits pour supprimer un bénévole à cette tache");
+        }
+
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+        if (!$t) throw $this->createNotFoundException("La tache n'existe pas");
+
+        $u->removeTache($t);
+        $em->persist($u);
+        $em->flush();
+
+        $fm->add(FlashMessageType::SUCCESS, 'Tâche supprimée');
 
         return $this->redirectToRoute('home');
     }
