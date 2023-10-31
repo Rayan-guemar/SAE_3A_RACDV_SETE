@@ -314,8 +314,8 @@ export class Planning {
             <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
         `;
 
-			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
-			taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+			taskDiv.style.top = `${((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) / (24 * 60)) * 100}%`;
+			taskDiv.style.height = `${(((t.creneau.fin.getHours() * 60 + t.creneau.fin.getMinutes()) - (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) / (24 * 60)) * 100}%`;
 			dayDiv.appendChild(taskDiv);
 		}
 	};
