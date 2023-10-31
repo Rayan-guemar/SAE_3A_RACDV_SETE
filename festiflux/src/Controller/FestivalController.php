@@ -432,7 +432,6 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         $res = [$dateDebut, $body['dateDebut']];
-
         return new Response(json_encode($res), Response::HTTP_CREATED);
     }
 

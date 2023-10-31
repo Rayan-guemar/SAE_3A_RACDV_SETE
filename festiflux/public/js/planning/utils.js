@@ -12,7 +12,7 @@ export const encodedStr = s => (s + '').replace(/[\u00A0-\u9999<>\&]/g, i => '&#
  */
 export const getDateHours2Digits = d => {
 	d = new Date(d);
-	return d.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+	return d.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false }) + ' h ' + d.getMinutes().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
 };
 
 /**

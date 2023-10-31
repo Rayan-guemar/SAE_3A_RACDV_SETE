@@ -297,6 +297,10 @@ export class Planning {
 		console.log('Rendering taches', this.taches);
 		const dateToDayMap = this.getDateToDayMapping();
 
+		for (const d of dateToDayMap.values()) {
+			[...d.getElementsByClassName('task')].forEach(t => t.remove());
+		}
+
 		for (const t of this.taches) {
 			const date = new Date(t.creneau.debut);
 			const dayDiv = dateToDayMap.get(date.toDateString());
@@ -311,7 +315,7 @@ export class Planning {
 			taskDiv.classList.add('task');
 			taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)}h - ${getDateHours2Digits(t.creneau.fin)}h`)}</div>
+            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
         `;
 
 			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;

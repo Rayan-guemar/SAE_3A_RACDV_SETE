@@ -82,8 +82,8 @@ export class Backend {
 	 */
 	static async addTache(festivalId, tache) {
 		const body = {
-			dateDebut: tache.creneau.debut.toISOString(),
-			dateFin: tache.creneau.fin.toISOString(),
+			dateDebut: tache.creneau.debut.toLocaleString(),
+			dateFin: tache.creneau.fin.toLocaleString(),
 			poste_id: tache.poste.id,
 			lieu: tache.lieu,
 			description: tache.description,
@@ -91,7 +91,7 @@ export class Backend {
 		};
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
 		const res = await Backend.#post(URL, body);
-		console.log('response', res);
+		console.log('response', res, body);
 	}
 
 	/**
