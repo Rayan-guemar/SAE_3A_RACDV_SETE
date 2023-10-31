@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			Planning
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
+		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+		<script defer type="module">
+			import {Planning} from "{{ asset('js/planning/Planning.js') }}";
+import {pause} from "{{ asset('js/planning/utils.js') }}";
+
+(async () => {
+await pause(1000);
+let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
+})()
+// let planning = new Planning(Date.parse('2018-09-10'), Date.parse('2019-09-15'));
+		</script>
+
+		{% block overhead %}{% endblock %}
+	</head>
+	<body>
+		<main>
+			<div id="loader"></div>
+			<a id="back-button" href="{{ path('app_festival_detail', { id: festival.id }) }}">
+				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+			</a>
+			<div class="planning-wrapper">
+
+				<h2>Planning du
+					{{ festival.nom }}</h2>
+
+				<div id="planning" class="loading">
+					<div class="hours">
+						{% for i in 1..11 %}
+							<div class="hour" id="hour-{{ i * 2 }}">
+								{% if i * 2 < 10 %}
+									0{{ i * 2 }}h00
+								{% else %}
+									{{ i * 2 }}h00
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+					<div class="days"></div>
+					<div class="manage-interface">
+						<h4>Liste des postes</h4>
+						<div class="postes"></div>
+						<div id="add-poste-btn" class="btn">Créer un poste</div>
+						<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+					</div>
+				</div>
+
+				<div class="scroll-btn">
+					<div id="scroll-btn-left">
+						<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Gauche">
+					</div>
+					<div id="scroll-btn-right">
+						<img src="{{ asset('icons/fleche-gauche.png') }}" alt="Droite">
+					</div>
+				</div>
+
+			</div>
+
+
+		</main>
+		<div id="modal-wrapper">
+			<div id="add-creneau" class="planning-form">
+				<div class="close-btn">
+					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+				</div>
+				<h2>Création d'un créneaux</h2>
+				<div class="flex-column flex-align-center">
+					<label for="description">Description</label>
+					<input name="description" id="creneau-description" type="text">
+				</div>
+				<div class="flex-column flex-align-center">
+					<label for="nombre_benevole">Nombre de benevole nécessaire
+					</label>
+					<input name="nombre_benevole" id="creneau-nombre-benevole" type="text">
+				</div>
+				<div class="flex-column flex-align-center">
+					<label for="start-creneau">Debut du créneaux</label>
+					<input name="start" id="start-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+				</div>
+				<div class="flex-column flex-align-center">
+					<label for="end-creneau">Fin du créneaux</label>
+					<input name="end" id="end-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+				</div>
+				<div class="flex-column flex-align-center">
+					<label for="poste">Choisissez un poste</label>
+					<select name="poste" id="creneau-poste-select"></select>
+				</div>
+				<div id="create-creneau-btn" class="btn">Créer</div>
+			</div>
+
+			<div id="add-poste" class="planning-form">
+				<div class="close-btn">
+					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+				</div>
+				<h2>Création d'un poste</h2>
+				<div class="flex-column flex-align-center">
+					<label for="poste-name">Intitulé</label>
+					<input id="poste-name" type="text">
+				</div>
+				<div id="create-poste-btn" class="btn">Créer</div>
+			</div>
+		</div>
+	</body>
+</html>

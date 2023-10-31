@@ -28,6 +28,7 @@
 					<td>{{ demande.lieuFestival }}</td>
 					<td>
 						<a href={{path("app_demandefestival_accept", {"id": demande.id} )}}>Accepter</a>
+						<a href={{path("app_demandefestival_reject", {"id": demande.id} )}}>Rejeter</a>
 					</td>
 				</tr>
 			{% else %}

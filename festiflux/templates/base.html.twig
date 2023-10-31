@@ -10,7 +10,6 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-
 		{% block overhead %}{% endblock %}
 	</head>
 	<body>
@@ -24,10 +23,31 @@
 				<div class="flashes flashes-error">{{ error }}</div>
 			{% endfor %}
 		</div>
+		{# en cas de desktop#}
+		<div class="sidebar_desktop">
 		{% include 'sidebar.html.twig' %}
+		</div>
+		{# en cas de mobile#}
+		<div class="header_menu">
+			<div id="menuToggle">
+				<input type="checkbox" />
+				<span></span>
+				<span></span>
+				<span></span>
+				<div class="sidebar_mobile">
+					{% include 'sidebar.html.twig' %}
+				</div>
+			</div>
+				<div class="sidebar__title">
+					<a href="{{path('home')}}">
+					<h1>Festiflux</h1>
+					<div>On the flux</div>
+					</a>
+				</div>
+		</div>
+
 		<main>
 			{% block body %}{% endblock %}
-
 		</main>
 		<footer style="display: none;">
 			<div class="">

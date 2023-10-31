@@ -10,7 +10,9 @@
 	{{ form_end(form) }}
 	<div class="fest-wrapper">
 		{% for festival in festivals %}
-			{{ include('festival/fest.html.twig',{'festival':festival}) }}
+			{% if festival.getIsArchive() != 1 %}
+				{{ include('festival/fest.html.twig',{'festival':festival}) }}
+			{% endif %}
 		{% endfor %}
 	</div>
 

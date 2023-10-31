@@ -13,6 +13,15 @@ class IcalBuilder {
         $this->provid = '-//Festiflux.org/NONSGML Festiflux Calendar V1.1//EN';
     }
 
+    /**
+     * @return string
+     */
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
+
+
     public function add(Event $event) {
         $this->events[] = $event;
     }
