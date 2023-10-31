@@ -85,7 +85,6 @@ export class Planning {
 	addListener() {
 		// Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
 		this.addCreneauxBtn.addEventListener('click', () => {
-			console.log(this.postes);
 			this.creneauPosteSelect.innerHTML = '<option value="">Choisissez une option <option/>' + this.postes.map(poste => `<option value="${poste.id}">${poste.nom}</option>`).join('');
 			this.addCreneauxForm.classList.add('visible');
 			this.html.classList.add('blurred');
@@ -294,7 +293,6 @@ export class Planning {
 	};
 
 	renderTaches = () => {
-		console.log('Rendering taches', this.taches);
 		const dateToDayMap = this.getDateToDayMapping();
 
 		for (const d of dateToDayMap.values()) {
@@ -308,8 +306,6 @@ export class Planning {
 				console.error(`Aucun div de jour trouvé pour la date ${date}`);
 				continue;
 			}
-
-			console.log('Rendering tache in loop', t);
 
 			const taskDiv = document.createElement('div');
 			taskDiv.classList.add('task');
@@ -328,7 +324,6 @@ export class Planning {
 	 * Affiche toutes les tâches dans le planning.
 	 */
 	refeshTachesList = async () => {
-		console.log('Refreshing taches list');
 		this.taches = await Backend.getTaches(this.festId);
 		this.renderTaches();
 	};
@@ -338,7 +333,6 @@ export class Planning {
 	 * @param {Tache} tache
 	 */
 	async addTache(tache) {
-		console.log('Adding tache', tache);
 		this.taches.push(tache);
 		this.renderTaches();
 		try {
@@ -348,7 +342,6 @@ export class Planning {
 			this.taches = this.taches.filter(t => t.id !== tache.id);
 			this.renderTaches();
 		}
-		console.log('ZIZI');
 		this.refeshTachesList();
 	}
 }

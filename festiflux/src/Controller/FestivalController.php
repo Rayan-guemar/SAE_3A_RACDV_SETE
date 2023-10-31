@@ -33,7 +33,6 @@ use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Doctrine\Common\Collections\Collection;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -431,8 +430,7 @@ class FestivalController extends AbstractController {
         $em->persist($t);
         $em->flush();
 
-        $res = [$dateDebut, $body['dateDebut']];
-        return new Response(json_encode($res), Response::HTTP_CREATED);
+        return new JsonResponse(status: Response::HTTP_CREATED);
     }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['GET'], options: ["expose" => true])]

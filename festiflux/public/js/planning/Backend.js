@@ -90,8 +90,7 @@ export class Backend {
 			nombre_benevole: tache.nbBenevole
 		};
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
-		const res = await Backend.#post(URL, body);
-		console.log('response', res, body);
+		await Backend.#post(URL, body);
 	}
 
 	/**
