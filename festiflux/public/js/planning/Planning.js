@@ -17,12 +17,13 @@ export class Planning {
 	 * @param {Poste[]} postes - Les postes associés au planning.
 	 * @param {Tache[]} taches - Les créneaux du planning.
 	 */
-	constructor(festId, dateDebut, dateFin, isResponsable, isOrganisateur) {
+	constructor(festId, dateDebut, dateFin, isResponsableOrOrganisateur) {
 		this.festId = festId;
 		this.html = document.getElementById('planning');
 		this.dateDebut = new Date(dateDebut);
 		this.dateFin = new Date(dateFin);
 		this.dateFin.setHours(23, 59, 59, 999);
+		this.isResponsableOrOrganisateur = isResponsableOrOrganisateur;
 
 		/**
 		 * Les postes associés au planning.
@@ -36,19 +37,21 @@ export class Planning {
 		 */
 		this.taches = [];
 
-		this.addCreneauxBtn = document.getElementById('add-creneau-btn');
-		this.addCreneauxForm = document.getElementById('add-creneau');
-		this.creneauDescription = document.getElementById('creneau-description');
-		this.creneauNombreBenevole = document.getElementById('creneau-nombre-benevole');
-		this.startCreneauxInput = document.getElementById('start-creneau');
-		this.endCreneauxInput = document.getElementById('end-creneau');
-		this.creneauPosteSelect = document.getElementById('creneau-poste-select');
-		this.createCreneauxBtn = document.getElementById('create-creneau-btn');
+		if (this.isResponsableOrOrganisateur) {
+			this.addCreneauxBtn = document.getElementById('add-creneau-btn');
+			this.addCreneauxForm = document.getElementById('add-creneau');
+			this.creneauDescription = document.getElementById('creneau-description');
+			this.creneauNombreBenevole = document.getElementById('creneau-nombre-benevole');
+			this.startCreneauxInput = document.getElementById('start-creneau');
+			this.endCreneauxInput = document.getElementById('end-creneau');
+			this.creneauPosteSelect = document.getElementById('creneau-poste-select');
+			this.createCreneauxBtn = document.getElementById('create-creneau-btn');
 
-		this.addPostebtn = document.getElementById('add-poste-btn');
-		this.addPosteForm = document.getElementById('add-poste');
-		this.createPosteBtn = document.getElementById('create-poste-btn');
-		this.createPosteInput = document.getElementById('poste-name');
+			this.addPostebtn = document.getElementById('add-poste-btn');
+			this.addPosteForm = document.getElementById('add-poste');
+			this.createPosteBtn = document.getElementById('create-poste-btn');
+			this.createPosteInput = document.getElementById('poste-name');
+		}
 
 		this.postesEl = document.querySelector('.postes');
 
@@ -292,31 +295,63 @@ export class Planning {
 		return dateToDayMap;
 	};
 
-	renderTaches = () => {
-		const dateToDayMap = this.getDateToDayMapping();
+	/**
+	 *
+	 * @param {Tache} tache
+	 * @param {HTMLDivElement} dayDiv
+	 */
+	renderOneTache = (t, dayDiv) => {
+		const taskDiv = document.createElement('div');
+		taskDiv.classList.add('task');
+		taskDiv.innerHTML = `
+            <div class="name">${encodedStr(t.poste.nom)}</div>
+            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+        `;
 
-		for (const d of dateToDayMap.values()) {
-			[...d.getElementsByClassName('task')].forEach(t => t.remove());
-		}
+		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
+		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+		dayDiv.appendChild(taskDiv);
+	};
 
-		for (const t of this.taches) {
-			const date = new Date(t.creneau.debut);
-			const dayDiv = dateToDayMap.get(date.toDateString());
-			if (!dayDiv) {
-				console.error(`Aucun div de jour trouvé pour la date ${date}`);
-				continue;
-			}
-
+	/**
+	 *
+	 * @param {Tache[]} taches
+	 * @param {HTMLDivElement} dayDiv
+	 */
+	renderMultipleTaches = (taches, dayDiv) => {
+		for (let i = 0; i < taches.length; i++) {
+			const t = taches[i];
 			const taskDiv = document.createElement('div');
 			taskDiv.classList.add('task');
 			taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
             <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
         `;
-
-			taskDiv.style.top = `${((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) / (24 * 60)) * 100}%`;
-			taskDiv.style.height = `${(((t.creneau.fin.getHours() * 60 + t.creneau.fin.getMinutes()) - (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) / (24 * 60)) * 100}%`;
+			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
+			taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+			taskDiv.style.width = `${100 / taches.length}%`;
+			taskDiv.style.left = `${(100 / taches.length) * i}%`;
+			taskDiv.style.transform = `translateX(0%)`;
 			dayDiv.appendChild(taskDiv);
+		}
+	};
+
+	renderTaches = () => {
+		const sortedTaches = this.sortTachesByOverriding();
+		const dateToDayMap = this.getDateToDayMapping();
+
+		for (const d of dateToDayMap.values()) {
+			[...d.getElementsByClassName('task')].forEach(t => t.remove());
+		}
+
+		for (const taches of sortedTaches) {
+			const date = new Date(taches[0].creneau.debut);
+			const dayDiv = dateToDayMap.get(date.toDateString());
+			if (!dayDiv) {
+				console.error(`Aucun div de jour trouvé pour la date ${date}`);
+				continue;
+			}
+			this.renderMultipleTaches(taches, dayDiv);
 		}
 	};
 
@@ -344,4 +379,37 @@ export class Planning {
 		}
 		this.refeshTachesList();
 	}
+
+	sortTachesByOverriding = () => {
+		/**
+		 * @type {Tache[][]}
+		 */
+		const overridingTaches = [];
+
+		for (const t of this.taches) {
+			const a = overridingTaches.find(ts => {
+				return ts.some(_t => _t.overrides(t));
+			});
+			if (a) {
+				a.push(t);
+			} else {
+				overridingTaches.push([t]);
+			}
+		}
+		return overridingTaches;
+	};
+	/**
+	 *
+	 * @param {Tache[]} currOverrideTab
+	 * @param {Tache} currTache
+	 * @param {Tache[]} nonVerifiedTaches
+	 * @param {Tache[]} verifiedTaches
+	 */
+	a = (currOverrideTab, currTache, nonVerifiedTaches, verifiedTaches) => {
+		currOverrideTab.push(currTache);
+		verifiedTaches.push(currTache);
+		nonVerifiedTaches = nonVerifiedTaches.filter(t => t !== currTache);
+
+		const overridingTaches = nonVerifiedTaches.filter(t => t.overrides(currTache));
+	};
 }
