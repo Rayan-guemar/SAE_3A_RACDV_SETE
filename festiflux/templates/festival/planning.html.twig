@@ -49,8 +49,10 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 					<div class="manage-interface">
 						<h4>Liste des postes</h4>
 						<div class="postes"></div>
-						<div id="add-poste-btn" class="btn">Créer un poste</div>
-						<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+						{% if isOrgaOrResp %}
+							<div id="add-poste-btn" class="btn">Créer un poste</div>
+							<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+						{% endif %}
 					</div>
 				</div>
 
