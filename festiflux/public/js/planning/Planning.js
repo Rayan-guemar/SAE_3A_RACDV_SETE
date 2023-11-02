@@ -56,13 +56,14 @@ export class Planning {
 			this.createPosteInput = document.getElementById('poste-name');
 		}
 
-    this.addPostebtn = document.getElementById("add-poste-btn");
-    this.addPosteForm = document.getElementById("add-poste");
-    this.createPosteBtn = document.getElementById("create-poste-btn");
-    this.createPosteInput = document.getElementById("poste-name");
+		this.addPostebtn = document.getElementById("add-poste-btn");
+		this.addPosteForm = document.getElementById("add-poste");
+		this.createPosteBtn = document.getElementById("create-poste-btn");
+		this.createPosteInput = document.getElementById("poste-name");
 
-    this.benevoleForm = document.getElementById("add-benevole");
-    this.benevoleList = document.getElementById("benevoles-list");
+		this.benevoleForm = document.getElementById("add-benevole");
+		this.benevoleList = document.getElementById("benevoles-list");
+	
 
     this.postesEl = document.querySelector(".postes");
 

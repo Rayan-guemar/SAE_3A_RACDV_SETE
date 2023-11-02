@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Disponibilite;
 use App\Entity\Poste;
 use App\Form\ModifierFestivalType;
 use App\Form\SearchType;
@@ -459,6 +460,37 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         return new JsonResponse(status: Response::HTTP_CREATED);
+    }
+
+    #[Route('/festival/{id}/dispo', name: 'app_festival_add_dispo', methods: ['POST'], options: ["expose" => true])]
+    public function addDispo(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $uu): JsonResponse {
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (!($uu->isBenevole($u, $f))) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        }
+
+        $creneau = new Creneaux();
+        $creneau->setDateDebut(new DateTime($request->toArray()['date_debut']));
+        $creneau->setDateFin(new DateTime($request->toArray()['date_fin']));
+
+        $dispo = new Disponibilite();
+        $dispo->setUtilisateur($u);
+        $dispo->setFestival($f);
+        $dispo->setCreneau($creneau);
+
+        $em->persist($creneau);
+        $em->persist($dispo);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'La disponibilité a bien été ajoutée'], Response::HTTP_CREATED);
     }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['GET'], options: ["expose" => true])]
