@@ -17,9 +17,9 @@
 		{{ form_row(form.nomFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Nom du Festival'}}) }}
 		{{ form_row(form.descriptionFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Description du Festival'}}) }}
 
-		<div class="form-row">
-			{{ form_widget(form.dateDebutFestival, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'}}) }}
-			{{ form_widget(form.dateFinFestival, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
+		<div class="form-row" >
+			{{ form_widget(form.dateDebutFestival, {'label': 'Date de début'}) }}
+			{{ form_widget(form.dateFinFestival, {'label': 'Date de fin'}) }}
 		</div>
 		<div id="box-adresses">
 		{{ form_row(form.lieuFestival, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Lieu du Festival'}}) }}
@@ -32,5 +32,6 @@
 
 		{{ form_end(form) }}
 	</div>
+	<script type="text/javascript" src="{{ asset('js/Datepickers.js') }}"></script>
 
 {% endblock %}
