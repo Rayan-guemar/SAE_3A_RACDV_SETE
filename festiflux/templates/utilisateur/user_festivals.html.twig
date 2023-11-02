@@ -37,7 +37,7 @@
 						{{ component('Notification', {type : 'none', userId : app.user.id, festId : festival.getId()})}}
 					</div>
 				</a>
-				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+				<a href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
 					<div class="button-shortcut">
 						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
 					</div>

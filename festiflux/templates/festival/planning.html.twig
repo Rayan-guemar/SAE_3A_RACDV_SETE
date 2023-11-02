@@ -110,6 +110,18 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 				</div>
 				<div id="create-poste-btn" class="btn">Créer</div>
 			</div>
+
+			<div id="add-benevole" class="planning-form">
+				<div class="close-btn">
+					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+				</div>
+				<div class="flex-column flex-align-center">
+					<input type="hidden" id="tache-id" name='idTache' value="">
+					<label for="benevole-name">Bénévoles</label>
+					<div id="benevoles-list">
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
