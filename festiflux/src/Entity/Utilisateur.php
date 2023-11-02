@@ -70,6 +70,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
     private Collection $taches;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -327,6 +330,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
                 $disponibilite->setUtilisateur(null);
             }
         }
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
         return $this;
     }
 
