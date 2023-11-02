@@ -359,6 +359,32 @@ class FestivalController extends AbstractController {
         ], 200);
     }
 
+    #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
+    public function allBenevoles(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $benevoles = $festival->getBenevoles();
+
+        $tab = [];
+        foreach ($benevoles as $benevole) {
+            $tab[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+
+        return new JsonResponse([
+            'benevoles' => $tab
+        ], 200);
+    }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {

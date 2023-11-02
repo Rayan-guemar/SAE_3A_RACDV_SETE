@@ -304,11 +304,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
+    public function removeTache(Tache $tache): static
+    {
+        if ($this->taches->removeElement($tache)) {
+            $tache->removeBenevoleAffecte($this);
+        }
+
+        return $this;
+    }
+
     public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
         }
-
         return $this;
     }
 
@@ -322,12 +330,5 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeTache(Tache $tache): static
-    {
-        if ($this->taches->removeElement($tache)) {
-            $tache->removeBenevoleAffecte($this);
-        }
-
-        return $this;
-    }
+ 
 }
