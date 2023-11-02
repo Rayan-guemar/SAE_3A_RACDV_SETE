@@ -15,8 +15,7 @@
 import {pause} from "{{ asset('js/planning/utils.js') }}";
 
 (async () => {
-await pause(1000);
-let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
+let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'), !!'{{ isOrgaOrResp }}');
 })()
 // let planning = new Planning(Date.parse('2018-09-10'), Date.parse('2019-09-15'));
 		</script>
