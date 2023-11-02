@@ -86,72 +86,74 @@ export class Planning {
 	 * @returns {void}
 	 */
 	addListener() {
-		// Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
-		this.addCreneauxBtn.addEventListener('click', () => {
-			this.creneauPosteSelect.innerHTML = '<option value="">Choisissez une option <option/>' + this.postes.map(poste => `<option value="${poste.id}">${poste.nom}</option>`).join('');
-			this.addCreneauxForm.classList.add('visible');
-			this.html.classList.add('blurred');
-		});
+		if (this.isResponsableOrOrganisateur) {
+			// Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
+			this.addCreneauxBtn.addEventListener('click', () => {
+				this.creneauPosteSelect.innerHTML = '<option value="">Choisissez une option <option/>' + this.postes.map(poste => `<option value="${poste.id}">${poste.nom}</option>`).join('');
+				this.addCreneauxForm.classList.add('visible');
+				this.html.classList.add('blurred');
+			});
 
-		// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de créneaux, on cache le formulaire et on enlève le flou de la page
-		this.addCreneauxForm.querySelector('.close-btn').addEventListener('click', () => {
-			this.addCreneauxForm.classList.remove('visible');
-			this.html.classList.remove('blurred');
-		});
+			// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de créneaux, on cache le formulaire et on enlève le flou de la page
+			this.addCreneauxForm.querySelector('.close-btn').addEventListener('click', () => {
+				this.addCreneauxForm.classList.remove('visible');
+				this.html.classList.remove('blurred');
+			});
 
-		// Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
-		this.addPostebtn.addEventListener('click', () => {
-			this.addPosteForm.classList.add('visible');
-			this.html.classList.add('blurred');
-		});
+			// Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
+			this.addPostebtn.addEventListener('click', () => {
+				this.addPosteForm.classList.add('visible');
+				this.html.classList.add('blurred');
+			});
 
-		// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on enlève le flou de la page
-		this.addPosteForm.querySelector('.close-btn').addEventListener('click', () => {
-			this.addPosteForm.classList.remove('visible');
-			this.html.classList.remove('blurred');
-		});
+			// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on enlève le flou de la page
+			this.addPosteForm.querySelector('.close-btn').addEventListener('click', () => {
+				this.addPosteForm.classList.remove('visible');
+				this.html.classList.remove('blurred');
+			});
 
-		// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
-		document.getElementById('scroll-btn-left').addEventListener('click', () => {
-			this.scrollDaysLeft();
-		});
+			// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
+			document.getElementById('scroll-btn-left').addEventListener('click', () => {
+				this.scrollDaysLeft();
+			});
 
-		// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
-		document.getElementById('scroll-btn-right').addEventListener('click', () => {
-			this.scrollDaysRight();
-		});
+			// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
+			document.getElementById('scroll-btn-right').addEventListener('click', () => {
+				this.scrollDaysRight();
+			});
 
-		// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
-		this.createPosteBtn.addEventListener('click', () => {
-			let poste = Poste.new(this.createPosteInput.value);
-			this.addPoste(poste);
-			this.addPosteForm.classList.remove('visible');
-			this.html.classList.remove('blurred');
-		});
+			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
+			this.createPosteBtn.addEventListener('click', () => {
+				let poste = Poste.new(this.createPosteInput.value);
+				this.addPoste(poste);
+				this.addPosteForm.classList.remove('visible');
+				this.html.classList.remove('blurred');
+			});
 
-		// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de créneaux, on crée le créneaux
-		this.createCreneauxBtn.addEventListener('click', async () => {
-			const debut = new Date(this.startCreneauxInput.value);
-			const fin = new Date(this.endCreneauxInput.value);
-			const description = this.creneauDescription.value;
-			const nbBenevole = +this.creneauNombreBenevole.value || 0;
-			const posteId = +this.creneauPosteSelect.value;
+			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de créneaux, on crée le créneaux
+			this.createCreneauxBtn.addEventListener('click', async () => {
+				const debut = new Date(this.startCreneauxInput.value);
+				const fin = new Date(this.endCreneauxInput.value);
+				const description = this.creneauDescription.value;
+				const nbBenevole = +this.creneauNombreBenevole.value || 0;
+				const posteId = +this.creneauPosteSelect.value;
 
-			if (debut > fin) return alert('La date de début doit être inférieure à la date de fin');
-			if (debut <= this.dateDebut || fin >= this.dateFin) return alert('Les créneaux doivent être compris dans la période du festival');
-			if (!posteId) return alert('Veuillez choisir un poste');
-			if (!nbBenevole) return alert('Veuillez choisir un nombre de bénévoles');
+				if (debut > fin) return alert('La date de début doit être inférieure à la date de fin');
+				if (debut <= this.dateDebut || fin >= this.dateFin) return alert('Les créneaux doivent être compris dans la période du festival');
+				if (!posteId) return alert('Veuillez choisir un poste');
+				if (!nbBenevole) return alert('Veuillez choisir un nombre de bénévoles');
 
-			const p = this.postes.find(poste => poste.id === posteId);
-			if (!p) return console.error('Poste introuvable');
+				const p = this.postes.find(poste => poste.id === posteId);
+				if (!p) return console.error('Poste introuvable');
 
-			const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
-			const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
+				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
+				const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
 
-			this.addTache(t);
-			this.addCreneauxForm.classList.remove('visible');
-			this.html.classList.remove('blurred');
-		});
+				this.addTache(t);
+				this.addCreneauxForm.classList.remove('visible');
+				this.html.classList.remove('blurred');
+			});
+		}
 	}
 
 	/**
@@ -339,6 +341,8 @@ export class Planning {
 	renderTaches = () => {
 		const sortedTaches = this.sortTachesByOverriding();
 		const dateToDayMap = this.getDateToDayMapping();
+
+		console.log(sortedTaches);
 
 		for (const d of dateToDayMap.values()) {
 			[...d.getElementsByClassName('task')].forEach(t => t.remove());

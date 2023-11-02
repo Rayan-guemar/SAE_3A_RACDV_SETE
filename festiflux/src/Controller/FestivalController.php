@@ -251,6 +251,7 @@ class FestivalController extends AbstractController {
         return $this->render('festival/planning.html.twig', [
             'controller_name' => 'FestivalController',
             'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($this->getUser(), $festival) || $utilisateurUtils->isResponsable($this->getUser(), $festival),
         ]);
     }
 
