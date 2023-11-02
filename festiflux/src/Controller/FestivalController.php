@@ -213,7 +213,7 @@ class FestivalController extends AbstractController {
         }
         if (!$this->getUser() instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_auth_login');
         }
 
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
@@ -239,7 +239,7 @@ class FestivalController extends AbstractController {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {

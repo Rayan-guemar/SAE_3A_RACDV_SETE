@@ -29,6 +29,6 @@ class ErrorService {
 
     public function MustBeLoggedError(): RedirectResponse {
         $this->flashMessageService->add(FlashMessageType::ERROR, "Vous devez être connecté pour accéder à cette page");
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_auth_login');
     }
 }

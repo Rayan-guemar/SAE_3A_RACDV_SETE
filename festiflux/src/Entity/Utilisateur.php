@@ -72,6 +72,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\ManyToMany(targetEntity: Poste::class, mappedBy: 'utilisateurs_aime')]
     private Collection $postes_aime;
+    
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
@@ -334,12 +337,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-
-    public function removeTache(Tache $tache): static
+    
+    public function isVerified(): bool
     {
-        if ($this->taches->removeElement($tache)) {
-            $tache->removeBenevoleAffecte($this);
-        }
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

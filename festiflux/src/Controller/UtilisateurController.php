@@ -54,7 +54,7 @@ class UtilisateurController extends AbstractController {
 
         if (!$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_auth_login');
         }
 
         $ofs = $festivalRepository->findBy([
