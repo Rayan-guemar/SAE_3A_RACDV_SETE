@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+		<script type="text/javascript" src="{{ asset('js/DatePickerCreneau.js') }}"></script>
 		<script defer type="module">
 			import {Planning} from "{{ asset('js/planning/Planning.js') }}";
 import {pause} from "{{ asset('js/planning/utils.js') }}";
@@ -49,8 +50,10 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 					<div class="manage-interface">
 						<h4>Liste des postes</h4>
 						<div class="postes"></div>
-						<div id="add-poste-btn" class="btn">Créer un poste</div>
-						<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+						{% if isOrgaOrResp %}
+							<div id="add-poste-btn" class="btn">Créer un poste</div>
+							<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+						{% endif %}
 					</div>
 				</div>
 
@@ -84,11 +87,11 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="start-creneau">Debut du créneaux</label>
-					<input name="start" id="start-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+					<input name="start" id="start-creneau" onchange="changeHandlerDebut()" type="datetime-local" value={{festival.dateDebut | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="end-creneau">Fin du créneaux</label>
-					<input name="end" id="end-creneau" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+						<input name="end" id="end-creneau" onchange="changeHandlerFin()" type="datetime-local" value={{festival.dateFin | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="poste">Choisissez un poste</label>
@@ -107,6 +110,18 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 					<input id="poste-name" type="text">
 				</div>
 				<div id="create-poste-btn" class="btn">Créer</div>
+			</div>
+
+			<div id="add-benevole" class="planning-form">
+				<div class="close-btn">
+					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+				</div>
+				<div class="flex-column flex-align-center">
+					<input type="hidden" id="tache-id" name='idTache' value="">
+					<label for="benevole-name">Bénévoles</label>
+					<div id="benevoles-list">
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>

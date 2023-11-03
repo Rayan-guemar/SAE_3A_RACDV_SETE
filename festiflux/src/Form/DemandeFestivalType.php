@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Date;
 
 class DemandeFestivalType extends AbstractType
 {
@@ -27,18 +28,19 @@ class DemandeFestivalType extends AbstractType
             ->add('dateDebutFestival' , DateType::class, [
                 'label' => 'Date de début du festival',
                 'widget' => 'single_text',
+                'data'   => new \DateTime(),
                 'attr' => [
-                    'placeholder' => 'Date de début du festival'
+                    'placeholder' => 'Date de début du festival',
+                    'min' => (new \DateTime())->format('Y-m-d')
                 ],
-                'input' => 'datetime_immutable',
             ])
             ->add('dateFinFestival' , DateType::class, [
                 'label' => 'Date de fin du festival',
                 'widget' => 'single_text',
                 'attr' => [
-                    'placeholder' => 'Date de fin du festival'
-                ],
-                'input' => 'datetime_immutable',
+                    'placeholder' => 'Date de fin du festival',
+                    'min' => (new \DateTime())->format('Y-m-d')
+                ]
             ])
             ->add('descriptionFestival' , TextareaType::class, [
                 'label' => 'Description du festival',

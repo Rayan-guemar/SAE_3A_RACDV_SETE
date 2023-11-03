@@ -236,21 +236,21 @@ class FestivalController extends AbstractController {
             throw $this->createNotFoundException("Le festival n'existe pas");
         }
 
-        // $u = $this->getUser();
-        // if (!$u || !$u instanceof Utilisateur) {
-        //     $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-        //     return $this->redirectToRoute('app_login');
-        // }
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
+        }
 
-        // if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-        //     $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
-        //     return $this->redirectToRoute('home');
-        // }
-
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
 
         return $this->render('festival/planning.html.twig', [
             'controller_name' => 'FestivalController',
             'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
         ]);
     }
 
@@ -310,13 +310,13 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
-    public function createPoste(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
-
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+        
+        if ( !($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) ) {
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
 
@@ -340,8 +340,10 @@ class FestivalController extends AbstractController {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
 
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole ) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403); 
         }
 
         $postes = $festival->getPostes();
@@ -359,9 +361,35 @@ class FestivalController extends AbstractController {
         ], 200);
     }
 
+    #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
+    public function allBenevoles(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
 
-    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['POST'], options: ["expose" => true])]
-    public function createTask(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $benevoles = $festival->getBenevoles();
+
+        $tab = [];
+        foreach ($benevoles as $benevole) {
+            $tab[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+
+        return new JsonResponse([
+            'benevoles' => $tab
+        ], 200);
+    }
+
+    #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
+    public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
 
 
         if ($f == null) {
@@ -430,7 +458,46 @@ class FestivalController extends AbstractController {
         $em->persist($t);
         $em->flush();
 
-        return new Response("{}", Response::HTTP_CREATED);
+        return new JsonResponse(status: Response::HTTP_CREATED);
+    }
+
+    #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['GET'], options: ["expose" => true])]
+    public function getTaches(#[MapEntity] Festival $f): JsonResponse {
+
+
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        // $u = $this->getUser();
+        // if (!$u || !$u instanceof Utilisateur) {
+        //     return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        // }
+
+        // if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+        //     return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        // }
+
+        $taches = $f->getPostes()->reduce(function ($acc, Poste $p) {
+            return array_merge($acc, array_map(function (Tache $el) use ($p) {
+                return [
+                    'date_debut' => $el->getCrenaux()->getDateDebut(),
+                    'date_fin' => $el->getCrenaux()->getDateFin(),
+                    'poste_id' => $p->getId(),
+                    'poste_nom' => $p->getNom(),
+                    'lieu' => 'un truc au pif',
+                    'description' => $el->getDescription(),
+                    'nombre_benevole' => $el->getNombreBenevole(),
+                    'id' => $el->getId(),
+
+                ];
+            }, $p->getTaches()->toArray()));
+        }, []);
+
+
+
+        //dd($taches);
+        return new JsonResponse($taches, Response::HTTP_OK);
     }
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]

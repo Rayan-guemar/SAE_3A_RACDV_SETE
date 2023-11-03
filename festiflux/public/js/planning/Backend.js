@@ -1,3 +1,4 @@
+import { Creneau } from './Creneau.js';
 import { Poste } from './Poste.js';
 import { Tache } from './Tache.js';
 
@@ -62,11 +63,41 @@ export class Backend {
 		const res = await Backend.#get(URL);
 		return res.postes?.map(poste => new Poste(poste.id, poste.nom)) || [];
 	}
+
+
 	/**
-	 * Récupère les tâches liées à un festival spécifique.
+	 * Récupère les benevoles liés à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
-	 * @param {Poste} poste - Le poste.
-	 * @returns {Promise<any>} - Une promesse qui résout avec les données des tâches.
+	 * @returns {Promise<Benevole[]>} - Une promesse qui résout avec les données des benevoles.
+	 */
+	static async fetchBenevoles(festivalId) {
+		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
+		const res = await Backend.#get(URL);
+		return res.benevoles?.map(benevole => ({
+			id: benevole.id,
+			nom: benevole.nom,
+			prenom: benevole.prenom,
+		})) || [];
+	}
+
+	/**
+	 * Ajoute un benevole à une tache spécifique.
+	 * @param {number} festivalId - L'identifiant du festival.
+	 * @param {Object} benevole - Les informations du benevole à ajouter.
+	 * @param {Tache} tache - Les informations de la tache.
+	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
+	 */
+	static async addBenevole(benevole, tache) {
+		const URL = Routing.generate('app_user_task_add', { id: benevole  , idTask : tache});
+		await Backend.#post(URL, '');
+	}
+
+
+	/**
+	 * Ajoute un poste à un festival spécifique.
+	 * @param {number} festivalId - L'identifiant du festival.
+	 * @param {Poste} poste - Les informations du poste à ajouter.
+	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
 	 */
 	static addPoste(festivalId, poste) {
 		const URL = Routing.generate('app_festival_create_poste', { id: festivalId });
@@ -79,16 +110,28 @@ export class Backend {
 	 * @param {Tache} tache - Les informations de la tâche à ajouter.
 	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
 	 */
-	static addTache(festivalId, tache) {
+	static async addTache(festivalId, tache) {
 		const body = {
-			dateDebut: tache.creneau.debut,
-			dateFin: tache.creneau.fin,
+			dateDebut: tache.creneau.debut.toLocaleString(),
+			dateFin: tache.creneau.fin.toLocaleString(),
 			poste_id: tache.poste.id,
 			lieu: tache.lieu,
 			description: tache.description,
 			nombre_benevole: tache.nbBenevole
 		};
+		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
+		await Backend.#post(URL, body);
+	}
+
+	/**
+	 *
+	 * @param {string} festivalId
+	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
+	 */
+	static async getTaches(festivalId) {
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
-		return Backend.#post(URL, body);
+		const data = await Backend.#get(URL);
+		const res = data.map(o => new Tache(o.id, o.description, o.nombre_benevole, new Poste(o.poste_id, o.poste_nom), new Creneau(null, new Date(o.date_debut?.date), new Date(o.date_fin?.date))));
+		return res;
 	}
 }
