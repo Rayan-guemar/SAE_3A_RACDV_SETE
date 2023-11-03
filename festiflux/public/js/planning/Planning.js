@@ -222,12 +222,21 @@ export class Planning {
                 <div class="no-poste">Aucun poste n'a été créé pour le moment</div>
                 <div class="no-poste">Veuillez en créer un</div>
             `;
-    } else {
-      this.postesEl.innerHTML = this.postes
-        .map((poste) => poste.html())
-        .join("");
-    }
-  }
+		} else {
+			this.postesEl.innerHTML = this.postes.map(poste => poste.html()).join('');
+
+			for (const poste of this.postes) {
+				const posteEl = document.querySelector(`[data-id="${poste.id}"]`);
+				if (!posteEl) {
+					console.error(`Aucun div de poste trouvé pour le poste ${poste}`);
+					continue;
+				}
+				const color = poste.toColor();
+				posteEl.style.backgroundColor = `rgb(${color.join(',')}, 0.1)`;
+				posteEl.style.borderColor = `rgb(${color.join(',')})`;
+			}
+		}
+	}
 
   /**
    * Rafraîchit la liste des postes en récupérant les données du backend.
@@ -366,6 +375,9 @@ export class Planning {
 
 		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
 		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
 		dayDiv.appendChild(taskDiv);
 	};
 
@@ -387,28 +399,33 @@ export class Planning {
               )}`
             )}</div>
         `;
-
-      taskDiv.style.top = `${
-        ((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
-          (24 * 60)) *
-        100
-      }%`;
-      taskDiv.style.height = `${
-        ((t.creneau.fin.getHours() * 60 +
-          t.creneau.fin.getMinutes() -
-          (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
-          (24 * 60)) *
-        100
-      }%`;
-
-      taskDiv.addEventListener("click", () => {
-		document.getElementById("tache-id").value = t.id;
-        this.benevoleForm.classList.add("visible");
-        this.html.classList.add("blurred");
-      });
-      dayDiv.appendChild(taskDiv);
-    }
-  };
+			taskDiv.style.top = `${
+				((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
+				(24 * 60)) *
+				100
+			}%`;
+			taskDiv.style.height = `${
+				((t.creneau.fin.getHours() * 60 +
+				t.creneau.fin.getMinutes() -
+				(t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
+				(24 * 60)) *
+				100
+			}%`;
+			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
+			taskDiv.style.margin = `0 2px`;
+			taskDiv.style.left = `${(100 / taches.length) * i}%`;
+			taskDiv.style.transform = `translateX(0%)`;
+			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
+			taskDiv.addEventListener("click", () => {
+				document.getElementById("tache-id").value = t.id;
+				this.benevoleForm.classList.add("visible");
+				this.html.classList.add("blurred");
+			});
+			dayDiv.appendChild(taskDiv);
+		}
+	};
 		
 
   /**
