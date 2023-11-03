@@ -9,6 +9,44 @@
 	<h1 class="login-form__title">Mes Festivals</h1>
 
 
+	<h2>les festivals auquel je participe</h2>
+	{% for festival in volenteerFestivals %}
+		<div class="fest">
+			<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+				<img class="affiche" {# {% if (festival.getAffiche()) != null %} src="{{ asset("img/festival/uploads/" ~ festival.getAffiche() ) }}" {% else %} #} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {# {% endif %} #} alt="affiche du festival">
+				<div class="fest-info">
+					<div class="fest-nom">
+						<span>{{ festival.getNom() }}</span>
+					</div>
+					<div class="fest-dateEtLieux">
+						<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+						<span>{# {{ festival.getLieuxVille() }} #}</span>
+					</div>
+				</div>
+			</a>
+			<div class="fest-button">
+
+				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+					<div class="button-shortcut">
+						<img src="{{ asset("icons/info.svg") }}" alt="more info icon">
+					</div>
+				</a>
+				<a href="{{ path('app_festival_display_postes', {'id' : festival.getId()}) }}">
+					<div class="button-shortcut">
+						<img src="{{ asset("icons/like.svg") }}" alt="manage liked job's icon">
+					</div>
+				</a>
+				<a href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
+					<div class="button-shortcut">
+						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
+					</div>
+				</a>
+			</div>
+		</div>
+	{% endfor %}
+	<h2>les festivals que j'organise</h2>
+
+
 	{% for festival in festivals %}
 		{% if festival.getIsArchive() != 1 %}
 		<div class="fest">

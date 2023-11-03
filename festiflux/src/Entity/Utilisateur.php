@@ -70,6 +70,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\ManyToMany(targetEntity: Tache::class, mappedBy: 'benevoleAffecte')]
     private Collection $taches;
 
+    #[ORM\ManyToMany(targetEntity: Poste::class, mappedBy: 'utilisateurs_aime')]
+    private Collection $postes_aime;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -78,6 +81,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->demandesBenevolat = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->taches = new ArrayCollection();
+        $this->postes_aime = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -330,5 +334,40 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
- 
+
+    public function removeTache(Tache $tache): static
+    {
+        if ($this->taches->removeElement($tache)) {
+            $tache->removeBenevoleAffecte($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Poste>
+     */
+    public function getPostesAime(): Collection
+    {
+        return $this->postes_aime;
+    }
+
+    public function addPostesAime(Poste $postesAime): static
+    {
+        if (!$this->postes_aime->contains($postesAime)) {
+            $this->postes_aime->add($postesAime);
+            $postesAime->addUtilisateursAime($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostesAime(Poste $postesAime): static
+    {
+        if ($this->postes_aime->removeElement($postesAime)) {
+            $postesAime->removeUtilisateursAime($this);
+        }
+
+        return $this;
+    }
 }

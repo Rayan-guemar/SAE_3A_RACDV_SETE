@@ -571,4 +571,19 @@ class FestivalController extends AbstractController {
 
         return $this->redirectToRoute('app_user_festivals');
     }
+
+    #[Route('/festival/{id}/postes', name: 'app_festival_display_postes')]
+    public function displayPostes(#[MapEntity] Festival $festival,PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        }
+        $postes = $posteRepository->findBy(["festival"=>$festival]);
+        $u = $this->getUser();
+
+        return $this->render('utilisateur/liked_postes.html.twig', [
+            'postes' => $postes,
+            'utilisateur' => $u
+        ]);
+    }
 }
