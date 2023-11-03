@@ -183,6 +183,17 @@ export class Planning {
             `;
 		} else {
 			this.postesEl.innerHTML = this.postes.map(poste => poste.html()).join('');
+
+			for (const poste of this.postes) {
+				const posteEl = document.querySelector(`[data-id="${poste.id}"]`);
+				if (!posteEl) {
+					console.error(`Aucun div de poste trouvé pour le poste ${poste}`);
+					continue;
+				}
+				const color = poste.toColor();
+				posteEl.style.backgroundColor = `rgb(${color.join(',')}, 0.1)`;
+				posteEl.style.borderColor = `rgb(${color.join(',')})`;
+			}
 		}
 	}
 
@@ -312,6 +323,9 @@ export class Planning {
 
 		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
 		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
 		dayDiv.appendChild(taskDiv);
 	};
 
@@ -331,9 +345,13 @@ export class Planning {
         `;
 			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
 			taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
-			taskDiv.style.width = `${100 / taches.length}%`;
+			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
+			taskDiv.style.margin = `0 2px`;
 			taskDiv.style.left = `${(100 / taches.length) * i}%`;
 			taskDiv.style.transform = `translateX(0%)`;
+			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
 			dayDiv.appendChild(taskDiv);
 		}
 	};
