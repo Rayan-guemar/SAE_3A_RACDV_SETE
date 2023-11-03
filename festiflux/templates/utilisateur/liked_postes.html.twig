@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste des demandes
+{% endblock %}
+{% block overhead %}
+    <script src="{{ asset('js/addLikePost.js') }}" defer></script>
+{% endblock %}
+{% block body %}
+<h1>Liste des Postes</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>j'aime</th>
+    </tr>
+    </thead>
+    {% if postes|length() > 0 %}
+    {% for poste in postes %}
+    <tbody>
+    <tr>
+        <td>{{ poste.nom }}</td>
+        <td>
+            <div class="switch__container">
+                <input id="{{ poste.id }}" class="switch switch--shadow" type="checkbox"{% if utilisateur in poste.getUtilisateursAime() %} checked {% endif %}>
+                <label for="{{ poste.id }}"></label>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    </tbody>
+</table>
+{% endblock %}

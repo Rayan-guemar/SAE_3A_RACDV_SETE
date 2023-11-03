@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -212,5 +213,56 @@ class UtilisateurController extends AbstractController {
 
         return $this->redirectToRoute('home');
         
+    }
+
+    #[Route('/user/poste/{idPoste}/liked', name: 'app_user_likedPoste_add', options: ["expose" => true], methods: ['GET'])]
+    public function user_likedPoste_add(int $idPoste, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response {
+
+        $u = $this->getUser();
+        if (!$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        $p = $posteRepository->find($idPoste);
+
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+        if (!$p) throw $this->createNotFoundException("La tache n'existe pas");
+
+        if (!$u->getEstBenevole()->contains($p->getFestival())){
+            return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
+        }
+        $p->addUtilisateursAime($u);
+
+        $em->persist($p);
+        $em->flush();
+
+        return new JsonResponse(['success' => "mention j'aime ajoutée"], Response::HTTP_ACCEPTED);
+
+
+    }
+
+    #[Route('/user/poste/{idPoste}/disliked', name: 'app_user_likedPoste_remove', options: ["expose" => true], methods: ['GET'])]
+    public function user_likedPoste_remove(int $idPoste, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response {
+
+        $u = $this->getUser();
+        if (!$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        $p = $posteRepository->find($idPoste);
+
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+        if (!$p) throw $this->createNotFoundException("La tache n'existe pas");
+
+        if (!$u->getEstBenevole()->contains($p->getFestival())){
+            return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
+        }
+
+        $p->removeUtilisateursAime($u);
+        $em->persist($p);
+        $em->flush();
+
+        return new JsonResponse(['success' => "mention j'aime annulée"], Response::HTTP_ACCEPTED);
+
     }
 }
