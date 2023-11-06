@@ -447,47 +447,20 @@ export class Planning {
 			taskDiv.classList.add('task');
 			taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(
-              `${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(
-                t.creneau.fin
-              )}`
-            )}</div>
-        `;
-			taskDiv.style.top = `${
-				((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
-				(24 * 60)) *
-				100
-			}%`;
-			taskDiv.style.height = `${
-				((t.creneau.fin.getHours() * 60 +
-				t.creneau.fin.getMinutes() -
-				(t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
-				(24 * 60)) *
-				100
-			}%`;
-
-		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
-		dayDiv.appendChild(taskDiv);
-	};
-
-	/**
-	 *
-	 * @param {Tache[]} taches
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	renderMultipleTaches = (taches, dayDiv) => {
-		for (let i = 0; i < taches.length; i++) {
-			const t = taches[i];
-			const taskDiv = document.createElement('div');
-			taskDiv.classList.add('task');
-			taskDiv.innerHTML = `
-            <div class="name">${encodedStr(t.poste.nom)}</div>
             <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
         `;
-			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
-			taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
+		taskDiv.style.top = `${
+			((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
+			(24 * 60)) *
+			100
+		}%`;
+		taskDiv.style.height = `${
+			((t.creneau.fin.getHours() * 60 +
+			t.creneau.fin.getMinutes() -
+			(t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
+			(24 * 60)) *
+			100
+		}%`;
 			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
 			taskDiv.style.margin = `0 2px`;
 			taskDiv.style.left = `${(100 / taches.length) * i}%`;
@@ -532,23 +505,6 @@ export class Planning {
 		this.taches = await Backend.getTaches(this.festId);
 		this.renderTaches();
 	};
-
-        console.log(sortedTaches);
-
-        for (const d of dateToDayMap.values()) {
-            [...d.getElementsByClassName('task')].forEach(t => t.remove());
-        }
-
-        for (const taches of sortedTaches) {
-            const date = new Date(taches[0].creneau.debut);
-            const dayDiv = dateToDayMap.get(date.toDateString());
-            if (!dayDiv) {
-                console.error(`Aucun div de jour trouvé pour la date ${date}`);
-                continue;
-            }
-            this.renderMultipleTaches(taches, dayDiv);
-        }
-    };
 		
 
   /**
@@ -556,8 +512,9 @@ export class Planning {
    */
   refeshTachesList = async () => {
     this.taches = await Backend.getTaches(this.festId);
+	console.log(this.renderTaches);
     this.renderTaches();
-  };
+  };	
 
   /**
    * Ajoute une tache au planning.
