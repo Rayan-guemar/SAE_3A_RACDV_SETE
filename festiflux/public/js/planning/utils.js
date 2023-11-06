@@ -40,3 +40,31 @@ export const dateDiff = (date1, date2) => {
 
 	return diff;
 };
+
+/**
+ * Compare deux dates. Renvoie 0 si elle sont égales, 1 si la première est plus grande que la seconde, -1 sinon.
+ * @param {Date} date1
+ * @param {Date} date2
+ * @returns
+ */
+export const compareDates = (date1, date2) => {
+	if (date1.getFullYear() > date2.getFullYear()) return 1;
+	else if (date1.getFullYear() < date2.getFullYear()) return -1;
+	else if (date1.getMonth() > date2.getMonth()) return 1;
+	else if (date1.getMonth() < date2.getMonth()) return -1;
+	else if (date1.getDate() > date2.getDate()) return 1;
+	else if (date1.getDate() < date2.getDate()) return -1;
+	else return 0;
+};
+
+String.prototype.hashCode = function() {
+	var hash = 0,
+		i, chr;
+	if (this.length === 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		chr = this.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0;
+	}
+	return hash;
+}
