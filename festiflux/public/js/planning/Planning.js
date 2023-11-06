@@ -503,7 +503,7 @@ export class Planning {
 
   handleCheckboxChange = async () => {
     const checkboxs = document.getElementsByClassName("benevole-checkbox");
-
+	
     [...checkboxs].forEach((checkbox) => {
       const userId = checkbox.id;
       checkbox.addEventListener("change", async function () {
@@ -521,4 +521,23 @@ export class Planning {
       });
     });
   };
+
+  sortTachesByOverriding = () => {
+	/**
+	 * @type {Tache[][]}
+	 */
+	const overridingTaches = [];
+
+	for (const t of this.taches) {
+		const a = overridingTaches.find(ts => {
+			return ts.some(_t => _t.overrides(t));
+		});
+		if (a) {
+			a.push(t);
+		} else {
+			overridingTaches.push([t]);
+		}
+	}
+	return overridingTaches;
+};
 }
