@@ -52,6 +52,8 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 						{% if isOrgaOrResp %}
 							<div id="add-poste-btn" class="btn">Créer un poste</div>
 							<div id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+						{% else %}
+							<div id="add-dispo-btn" class="btn">Ajouter une disponibilité</div>
 						{% endif %}
 						<div id="add-ics-btn" class="btn">Demander un fichier ics</div>
 					</div>
@@ -110,6 +112,22 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 					<input id="poste-name" type="text">
 				</div>
 				<div id="create-poste-btn" class="btn">Créer</div>
+			</div>
+
+			<div id="add-dispo" class="planning-form">
+				<div class="close-btn">
+					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
+				</div>
+				<h2>Création d'une disponibilté</h2>
+				<div class="flex-column flex-align-center">
+					<label for="start-dispo">Début</label>
+					<input name="start" id="start-dispo" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+				</div>
+				<div class="flex-column flex-align-center">
+					<label for="end-dispo">Fin</label>
+					<input name="end" id="end-dispo" type="datetime-local" min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+				</div>
+				<div id="create-dispo-btn" class="btn">Créer</div>
 			</div>
 
 			<div id="add-benevole" class="planning-form">
