@@ -550,7 +550,7 @@ export class Planning {
    */
   refeshTachesList = async () => {
     this.taches = await Backend.getTaches(this.festId);
-    console.log(this.renderTaches);
+    console.log("zizi", this.taches);
     this.renderTaches();
   };
 
