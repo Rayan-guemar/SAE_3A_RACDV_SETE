@@ -28,19 +28,23 @@ class DemandeFestivalType extends AbstractType
             ->add('dateDebutFestival' , DateType::class, [
                 'label' => 'Date de début du festival',
                 'widget' => 'single_text',
-                'data'   => new \DateTime(),
+                'data' => new \DateTimeImmutable(),
                 'attr' => [
                     'placeholder' => 'Date de début du festival',
-                    'min' => (new \DateTime())->format('Y-m-d')
+                    'min' => (new \DateTimeImmutable())->format('Y-m-d')
                 ],
+                'input' => 'datetime_immutable',
+                
             ])
             ->add('dateFinFestival' , DateType::class, [
                 'label' => 'Date de fin du festival',
                 'widget' => 'single_text',
                 'attr' => [
                     'placeholder' => 'Date de fin du festival',
-                    'min' => (new \DateTime())->format('Y-m-d')
-                ]
+                    'min' => (new \DateTimeImmutable())->format('Y-m-d')
+                ],
+                'input' => 'datetime_immutable',
+                
             ])
             ->add('descriptionFestival' , TextareaType::class, [
                 'label' => 'Description du festival',

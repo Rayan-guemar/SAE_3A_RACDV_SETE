@@ -120,21 +120,18 @@ export class Planning {
    * @returns {void}
    */
   addListener() {
-
     // Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
-    document
-    .getElementById("scroll-btn-left")
-    .addEventListener("click", () => {
+    document.getElementById("scroll-btn-left").addEventListener("click", () => {
       this.scrollDaysLeft();
     });
 
-  // Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
-  document
-    .getElementById("scroll-btn-right")
-    .addEventListener("click", () => {
-      this.scrollDaysRight();
-    });
-    
+    // Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
+    document
+      .getElementById("scroll-btn-right")
+      .addEventListener("click", () => {
+        this.scrollDaysRight();
+      });
+
     if (this.isResponsableOrOrganisateur) {
       // Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
       this.addCreneauxBtn.addEventListener("click", () => {
@@ -217,6 +214,14 @@ export class Planning {
         this.addCreneauxForm.classList.remove("visible");
         this.html.classList.remove("blurred");
       });
+
+      // Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
+      this.benevoleForm
+        .querySelector(".close-btn")
+        .addEventListener("click", () => {
+          this.benevoleForm.classList.remove("visible");
+          this.html.classList.remove("blurred");
+        });
     }
   }
 
@@ -232,14 +237,6 @@ export class Planning {
       date.setDate(date.getDate() + i);
       html += this.dayHTML(date);
     }
-
-    // Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
-    this.benevoleForm
-      .querySelector(".close-btn")
-      .addEventListener("click", () => {
-        this.benevoleForm.classList.remove("visible");
-        this.html.classList.remove("blurred");
-      });
   }
 
   /**
@@ -553,14 +550,6 @@ export class Planning {
    */
   refeshTachesList = async () => {
     this.taches = await Backend.getTaches(this.festId);
-    this.renderTaches();
-  };
-
-  /**
-   * Affiche toutes les tâches dans le planning.
-   */
-  refeshTachesList = async () => {
-    this.taches = await Backend.getTaches(this.festId);
     console.log(this.renderTaches);
     this.renderTaches();
   };
@@ -601,7 +590,7 @@ export class Planning {
           )}</div>
             	<input class='benevole-checkbox' type="checkbox" name="benevole" id="${
                 benevole.id
-              }" value="${benevole.id}">
+              }" ${this.taches} >
 			</div>
         `
         )

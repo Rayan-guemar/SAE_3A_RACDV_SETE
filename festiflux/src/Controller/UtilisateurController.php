@@ -70,23 +70,6 @@ class UtilisateurController extends AbstractController {
         ]);
     }
 
-    #[Route('/testical', name: 'app_testical', methods: ['GET'])]
-    public function testical(): Response {
-        $ical = new IcalBuilder('test');
-
-        $ical->add(new Event(
-            'Test4',
-            'Super event',
-            'Salut à tous c\'est l\'événement test',
-            new \DateTime('2023-10-20 12:00:00'),
-            new \DateTime('2023-10-20 13:00:00'),
-            'Chez ta daronne sah'
-        ));
-
-        $ical->build();
-        return $this->redirectToRoute('app_festival_all');
-    }
-
     #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
         $currentUser = $this->getUser();
