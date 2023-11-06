@@ -484,7 +484,13 @@ class FestivalController extends AbstractController {
                     'description' => $el->getDescription(),
                     'nombre_benevole' => $el->getNombreBenevole(),
                     'id' => $el->getId(),
-                    'benevoles' => $el->getBenevoleAffecte(),
+                    'benevoles' => $el->getBenevoleAffecte()->map(function (Utilisateur $u) {
+                        return [
+                            'id' => $u->getId(),
+                            'nom' => $u->getNom(),
+                            'prenom' => $u->getPrenom(),
+                        ];
+                    })->toArray()
                 ];
             }, $p->getTaches()->toArray()));
         }, []);
