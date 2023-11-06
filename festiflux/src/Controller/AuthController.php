@@ -24,40 +24,40 @@ class AuthController extends AbstractController {
         ]);
     }
 
-    #[Route('/auth/register', name: 'app_auth_register')]
-    public function register(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher, FlashMessageService $flashMessageService): Response {
-        $u = new Utilisateur();
+    // #[Route('/auth/register', name: 'app_auth_register')]
+    // public function register(EntityManagerInterface $em, RequestStack $requestStack, Request $req, UserPasswordHasherInterface $passwordHasher, FlashMessageService $flashMessageService): Response {
+    //     $u = new Utilisateur();
 
-        $f = $this->createForm(InscriptionType::class, $u, [
-            'action' => $this->generateUrl('app_auth_register'),
-            'method' => 'POST',
-        ]);
+    //     $f = $this->createForm(InscriptionType::class, $u, [
+    //         'action' => $this->generateUrl('app_auth_register'),
+    //         'method' => 'POST',
+    //     ]);
 
-        $f->handleRequest($req);
-        if ($f->isSubmitted()) {
+    //     $f->handleRequest($req);
+    //     if ($f->isSubmitted()) {
 
-            if (!$f->isValid()) {
-                $f->getErrors();
-                $flashMessageService->addErrorsForm($f);
-                return $this->redirectToRoute('app_auth_register');
-            }
+    //         if (!$f->isValid()) {
+    //             $f->getErrors();
+    //             $flashMessageService->addErrorsForm($f);
+    //             return $this->redirectToRoute('app_auth_register');
+    //         }
 
-            $plainTextPassword = $f->get('password')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
-            $u->setPassword($hashedPassword);
+    //         $plainTextPassword = $f->get('password')->getData();
+    //         $hashedPassword = $passwordHasher->hashPassword($u, $plainTextPassword);
+    //         $u->setPassword($hashedPassword);
 
-            $em->persist($u);
-            $em->flush();
+    //         $em->persist($u);
+    //         $em->flush();
 
-            $flashMessageService->add(FlashMessageType::SUCCESS, 'Votre compte a bien été créé');
-            return $this->redirectToRoute('home');
-        }
+    //         $flashMessageService->add(FlashMessageType::SUCCESS, 'Votre compte a bien été créé');
+    //         return $this->redirectToRoute('home');
+    //     }
 
-        return $this->render('auth/register.html.twig', [
-            'controller_name' => 'UtilisateurController',
-            'form' => $f->createView(),
-        ]);
-    }
+    //     return $this->render('auth/register.html.twig', [
+    //         'controller_name' => 'UtilisateurController',
+    //         'form' => $f->createView(),
+    //     ]);
+    // }
 
     #[Route('/logout', name: 'app_auth_logout', methods: ['GET'])]
     public function logout(): never {
