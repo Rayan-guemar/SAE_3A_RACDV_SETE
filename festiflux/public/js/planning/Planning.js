@@ -46,6 +46,9 @@ export class Planning {
 			this.endCreneauxInput = document.getElementById('end-creneau');
 			this.creneauPosteSelect = document.getElementById('creneau-poste-select');
 			this.createCreneauxBtn = document.getElementById('create-creneau-btn');
+		this.addIcsBtn = document.getElementById('add-ics-btn');
+
+		this.postesEl = document.querySelector('.postes');
 
 			this.addPostebtn = document.getElementById('add-poste-btn');
 			this.addPosteForm = document.getElementById('add-poste');
@@ -145,10 +148,11 @@ export class Planning {
 				this.html.classList.remove('blurred');
 			});
 
-			// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
-			document.getElementById('scroll-btn-left').addEventListener('click', () => {
-				this.scrollDaysLeft();
-			});
+
+		// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
+		document.getElementById('scroll-btn-left').addEventListener('click', () => {
+			this.scrollDaysLeft();
+		});
 
 			// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
 			document.getElementById('scroll-btn-right').addEventListener('click', () => {
@@ -182,12 +186,25 @@ export class Planning {
 				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
 				const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
 
-				this.addTache(t);
-				this.addCreneauxForm.classList.remove('visible');
-				this.html.classList.remove('blurred');
-			});
-		}
+			//TODO: ajouter créneau sur l'edt
+
+			this.addCreneauxForm.classList.remove('visible');
+			this.html.classList.remove('blurred');
+
+			await Backend.addTache(this.festId, t);
+		});
+
+		this.addIcsBtn.addEventListener('click',async () => {
+			const URL = Routing.generate('app_send_icsFile', {idFest: this.festId});
+			try {
+				await fetch(URL);
+				alert('Votre allez recevoir un mail avec en pj le fichier ics.');
+			} catch (error) {
+				console.log(error);
+			}
+		});
 	}
+}
 
 	/**
 	 * Initialise les jours du planning en générant le code HTML correspondant.
