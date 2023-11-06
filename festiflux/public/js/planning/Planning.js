@@ -420,18 +420,4 @@ export class Planning {
 		}
 		return overridingTaches;
 	};
-	/**
-	 *
-	 * @param {Tache[]} currOverrideTab
-	 * @param {Tache} currTache
-	 * @param {Tache[]} nonVerifiedTaches
-	 * @param {Tache[]} verifiedTaches
-	 */
-	a = (currOverrideTab, currTache, nonVerifiedTaches, verifiedTaches) => {
-		currOverrideTab.push(currTache);
-		verifiedTaches.push(currTache);
-		nonVerifiedTaches = nonVerifiedTaches.filter(t => t !== currTache);
-
-		const overridingTaches = nonVerifiedTaches.filter(t => t.overrides(currTache));
-	};
 }
