@@ -8,22 +8,22 @@ import { Tache } from "./Tache.js";
  * Classe représentant un planning.
  */
 export class Planning {
-	/**
-	 * Crée une instance de la classe Planning.
-	 * @constructor
-	 * @param {number} festId - L'ID du festival.
-	 * @param {Date} dateDebut - La date de début du planning.
-	 * @param {Date} dateFin - La date de fin du planning.
-	 * @param {Poste[]} postes - Les postes associés au planning.
-	 * @param {Tache[]} taches - Les créneaux du planning.
-	 */
-	constructor(festId, dateDebut, dateFin, isResponsableOrOrganisateur) {
-		this.festId = festId;
-		this.html = document.getElementById('planning');
-		this.dateDebut = new Date(dateDebut);
-		this.dateFin = new Date(dateFin);
-		this.dateFin.setHours(23, 59, 59, 999);
-		this.isResponsableOrOrganisateur = isResponsableOrOrganisateur;
+  /**
+   * Crée une instance de la classe Planning.
+   * @constructor
+   * @param {number} festId - L'ID du festival.
+   * @param {Date} dateDebut - La date de début du planning.
+   * @param {Date} dateFin - La date de fin du planning.
+   * @param {Poste[]} postes - Les postes associés au planning.
+   * @param {Tache[]} taches - Les créneaux du planning.
+   */
+  constructor(festId, dateDebut, dateFin, isResponsableOrOrganisateur) {
+    this.festId = festId;
+    this.html = document.getElementById("planning");
+    this.dateDebut = new Date(dateDebut);
+    this.dateFin = new Date(dateFin);
+    this.dateFin.setHours(23, 59, 59, 999);
+    this.isResponsableOrOrganisateur = isResponsableOrOrganisateur;
 
     /**
      * Les postes associés au planning.
@@ -37,21 +37,23 @@ export class Planning {
      */
     this.taches = [];
 
-		if (this.isResponsableOrOrganisateur) {
-			this.addCreneauxBtn = document.getElementById('add-creneau-btn');
-			this.addCreneauxForm = document.getElementById('add-creneau');
-			this.creneauDescription = document.getElementById('creneau-description');
-			this.creneauNombreBenevole = document.getElementById('creneau-nombre-benevole');
-			this.startCreneauxInput = document.getElementById('start-creneau');
-			this.endCreneauxInput = document.getElementById('end-creneau');
-			this.creneauPosteSelect = document.getElementById('creneau-poste-select');
-			this.createCreneauxBtn = document.getElementById('create-creneau-btn');
+    if (this.isResponsableOrOrganisateur) {
+      this.addCreneauxBtn = document.getElementById("add-creneau-btn");
+      this.addCreneauxForm = document.getElementById("add-creneau");
+      this.creneauDescription = document.getElementById("creneau-description");
+      this.creneauNombreBenevole = document.getElementById(
+        "creneau-nombre-benevole"
+      );
+      this.startCreneauxInput = document.getElementById("start-creneau");
+      this.endCreneauxInput = document.getElementById("end-creneau");
+      this.creneauPosteSelect = document.getElementById("creneau-poste-select");
+      this.createCreneauxBtn = document.getElementById("create-creneau-btn");
 
-			this.addPostebtn = document.getElementById('add-poste-btn');
-			this.addPosteForm = document.getElementById('add-poste');
-			this.createPosteBtn = document.getElementById('create-poste-btn');
-			this.createPosteInput = document.getElementById('poste-name');
-		}
+      this.addPostebtn = document.getElementById("add-poste-btn");
+      this.addPosteForm = document.getElementById("add-poste");
+      this.createPosteBtn = document.getElementById("create-poste-btn");
+      this.createPosteInput = document.getElementById("poste-name");
+    }
 
     this.addPostebtn = document.getElementById("add-poste-btn");
     this.addPosteForm = document.getElementById("add-poste");
@@ -105,7 +107,7 @@ export class Planning {
     const promises = [
       this.refreshPostesList(),
       this.refeshTachesList(),
-      this.refreshBenevolesList(),
+      this.isResponsableOrOrganisateur ? this.refreshBenevolesList() : null,
     ];
     await Promise.all(promises);
 
@@ -113,94 +115,123 @@ export class Planning {
     this.html.classList.remove("loading");
   }
 
-  
-	/**
-	 * Ajoute les écouteurs d'événements pour les boutons et formulaires de la page de planification.
-	 * @returns {void}
-	 */
-	addListener() {
-		if (this.isResponsableOrOrganisateur) {
-			// Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
-			this.addCreneauxBtn.addEventListener('click', () => {
-				this.creneauPosteSelect.innerHTML = '<option value="">Choisissez une option <option/>' + this.postes.map(poste => `<option value="${poste.id}">${poste.nom}</option>`).join('');
-				this.addCreneauxForm.classList.add('visible');
-				this.html.classList.add('blurred');
-			});
+  /**
+   * Ajoute les écouteurs d'événements pour les boutons et formulaires de la page de planification.
+   * @returns {void}
+   */
+  addListener() {
 
-			// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de créneaux, on cache le formulaire et on enlève le flou de la page
-			this.addCreneauxForm.querySelector('.close-btn').addEventListener('click', () => {
-				this.addCreneauxForm.classList.remove('visible');
-				this.html.classList.remove('blurred');
-			});
+    // Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
+    document
+    .getElementById("scroll-btn-left")
+    .addEventListener("click", () => {
+      this.scrollDaysLeft();
+    });
 
-			// Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
-			this.addPostebtn.addEventListener('click', () => {
-				this.addPosteForm.classList.add('visible');
-				this.html.classList.add('blurred');
-			});
+  // Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
+  document
+    .getElementById("scroll-btn-right")
+    .addEventListener("click", () => {
+      this.scrollDaysRight();
+    });
+    
+    if (this.isResponsableOrOrganisateur) {
+      // Lorsque l'on clique sur le bouton "Ajouter des créneaux", on affiche le formulaire de création et on floute le reste de la page
+      this.addCreneauxBtn.addEventListener("click", () => {
+        this.creneauPosteSelect.innerHTML =
+          '<option value="">Choisissez une option <option/>' +
+          this.postes
+            .map((poste) => `<option value="${poste.id}">${poste.nom}</option>`)
+            .join("");
+        this.addCreneauxForm.classList.add("visible");
+        this.html.classList.add("blurred");
+      });
 
-			// Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on enlève le flou de la page
-			this.addPosteForm.querySelector('.close-btn').addEventListener('click', () => {
-				this.addPosteForm.classList.remove('visible');
-				this.html.classList.remove('blurred');
-			});
+      // Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de créneaux, on cache le formulaire et on enlève le flou de la page
+      this.addCreneauxForm
+        .querySelector(".close-btn")
+        .addEventListener("click", () => {
+          this.addCreneauxForm.classList.remove("visible");
+          this.html.classList.remove("blurred");
+        });
 
-			// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
-			document.getElementById('scroll-btn-left').addEventListener('click', () => {
-				this.scrollDaysLeft();
-			});
+      // Lorsque l'on clique sur le bouton "Ajouter un poste", on affiche le formulaire de création de poste et on cache les postes
+      this.addPostebtn.addEventListener("click", () => {
+        this.addPosteForm.classList.add("visible");
+        this.html.classList.add("blurred");
+      });
 
-			// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
-			document.getElementById('scroll-btn-right').addEventListener('click', () => {
-				this.scrollDaysRight();
-			});
+      // Lorsque l'on clique sur le bouton "Fermer" du formulaire de création de poste, on cache le formulaire et on enlève le flou de la page
+      this.addPosteForm
+        .querySelector(".close-btn")
+        .addEventListener("click", () => {
+          this.addPosteForm.classList.remove("visible");
+          this.html.classList.remove("blurred");
+        });
 
-			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
-			this.createPosteBtn.addEventListener('click', () => {
-				let poste = Poste.new(this.createPosteInput.value);
-				this.addPoste(poste);
-				this.addPosteForm.classList.remove('visible');
-				this.html.classList.remove('blurred');
-			});
+      // Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
+      this.createPosteBtn.addEventListener("click", () => {
+        let poste = Poste.new(this.createPosteInput.value);
+        this.addPoste(poste);
+        this.addPosteForm.classList.remove("visible");
+        this.html.classList.remove("blurred");
+      });
 
-			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de créneaux, on crée le créneaux
-			this.createCreneauxBtn.addEventListener('click', async () => {
-				const debut = new Date(this.startCreneauxInput.value);
-				const fin = new Date(this.endCreneauxInput.value);
-				const description = this.creneauDescription.value;
-				const nbBenevole = +this.creneauNombreBenevole.value || 0;
-				const posteId = +this.creneauPosteSelect.value;
+      // Lorsque l'on clique sur le bouton "Créer" du formulaire de création de créneaux, on crée le créneaux
+      this.createCreneauxBtn.addEventListener("click", async () => {
+        const debut = new Date(this.startCreneauxInput.value);
+        const fin = new Date(this.endCreneauxInput.value);
+        const description = this.creneauDescription.value;
+        const nbBenevole = +this.creneauNombreBenevole.value || 0;
+        const posteId = +this.creneauPosteSelect.value;
 
-				if (debut > fin) return alert('La date de début doit être inférieure à la date de fin');
-				if (debut <= this.dateDebut || fin >= this.dateFin) return alert('Les créneaux doivent être compris dans la période du festival');
-				if (!posteId) return alert('Veuillez choisir un poste');
-				if (!nbBenevole) return alert('Veuillez choisir un nombre de bénévoles');
+        if (debut > fin)
+          return alert(
+            "La date de début doit être inférieure à la date de fin"
+          );
+        if (debut <= this.dateDebut || fin >= this.dateFin)
+          return alert(
+            "Les créneaux doivent être compris dans la période du festival"
+          );
+        if (!posteId) return alert("Veuillez choisir un poste");
+        if (!nbBenevole)
+          return alert("Veuillez choisir un nombre de bénévoles");
 
-				const p = this.postes.find(poste => poste.id === posteId);
-				if (!p) return console.error('Poste introuvable');
+        const p = this.postes.find((poste) => poste.id === posteId);
+        if (!p) return console.error("Poste introuvable");
 
-				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
-				const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
+        const c = new Creneau(
+          null,
+          new Date(this.startCreneauxInput.value),
+          new Date(this.endCreneauxInput.value)
+        );
+        const t = new Tache(
+          null,
+          this.creneauDescription.value,
+          nbBenevole,
+          p,
+          c
+        );
 
-				this.addTache(t);
-				this.addCreneauxForm.classList.remove('visible');
-				this.html.classList.remove('blurred');
-			});
-		}
-	}
+        this.addTache(t);
+        this.addCreneauxForm.classList.remove("visible");
+        this.html.classList.remove("blurred");
+      });
+    }
+  }
 
-	/**
-	 * Initialise les jours du planning en générant le code HTML correspondant.
-	 * @function
-	 * @returns {void}
-	 */
-	initDays() {
-		let html = '';
-		for (let i = 0; i < this.numberOfDays; i++) {
-			let date = new Date(this.dateDebut);
-			date.setDate(date.getDate() + i);
-			html += this.dayHTML(date);
-		}
+  /**
+   * Initialise les jours du planning en générant le code HTML correspondant.
+   * @function
+   * @returns {void}
+   */
+  initDays() {
+    let html = "";
+    for (let i = 0; i < this.numberOfDays; i++) {
+      let date = new Date(this.dateDebut);
+      date.setDate(date.getDate() + i);
+      html += this.dayHTML(date);
+    }
 
     // Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
     this.benevoleForm
@@ -236,21 +267,23 @@ export class Planning {
                 <div class="no-poste">Aucun poste n'a été créé pour le moment</div>
                 <div class="no-poste">Veuillez en créer un</div>
             `;
-		} else {
-			this.postesEl.innerHTML = this.postes.map(poste => poste.html()).join('');
+    } else {
+      this.postesEl.innerHTML = this.postes
+        .map((poste) => poste.html())
+        .join("");
 
-			for (const poste of this.postes) {
-				const posteEl = document.querySelector(`[data-id="${poste.id}"]`);
-				if (!posteEl) {
-					console.error(`Aucun div de poste trouvé pour le poste ${poste}`);
-					continue;
-				}
-				const color = poste.toColor();
-				posteEl.style.backgroundColor = `rgb(${color.join(',')}, 0.1)`;
-				posteEl.style.borderColor = `rgb(${color.join(',')})`;
-			}
-		}
-	}
+      for (const poste of this.postes) {
+        const posteEl = document.querySelector(`[data-id="${poste.id}"]`);
+        if (!posteEl) {
+          console.error(`Aucun div de poste trouvé pour le poste ${poste}`);
+          continue;
+        }
+        const color = poste.toColor();
+        posteEl.style.backgroundColor = `rgb(${color.join(",")}, 0.1)`;
+        posteEl.style.borderColor = `rgb(${color.join(",")})`;
+      }
+    }
+  }
 
   /**
    * Rafraîchit la liste des postes en récupérant les données du backend.
@@ -374,147 +407,163 @@ export class Planning {
     return dateToDayMap;
   };
 
-	/**
-	 *
-	 * @param {Tache} tache
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	scrollDaysRight() {
-		let daysWidth = this.days.getBoundingClientRect().width;
-		let dayWidth = this.days.querySelector('.day').getBoundingClientRect().width;
-		let scroll = this.days.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
-		if (scroll > this.days.scrollWidth) {
-			scroll = this.days.scrollWidth;
-		}
-		this.days.scrollTo({
-			left: scroll,
-			behavior: 'smooth'
-		});
-	}
+  /**
+   *
+   * @param {Tache} tache
+   * @param {HTMLDivElement} dayDiv
+   */
+  scrollDaysRight() {
+    let daysWidth = this.days.getBoundingClientRect().width;
+    let dayWidth = this.days
+      .querySelector(".day")
+      .getBoundingClientRect().width;
+    let scroll =
+      this.days.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
+    if (scroll > this.days.scrollWidth) {
+      scroll = this.days.scrollWidth;
+    }
+    this.days.scrollTo({
+      left: scroll,
+      behavior: "smooth",
+    });
+  }
 
-	/**
-	 * Récupère la correspondance entre les dates et les divs de chaque jour.
-	 * @returns {Map<string, HTMLElement>} Un objet contenant la correspondance entre les dates et les divs de chaque jour.
-	 */
-	getDateToDayMapping = () => {
-		/**
-		 * Mappe chaque date avec son div de jour correspondant.
-		 * @type {Map<string, HTMLElement>}
-		 */
-		const dateToDayMap = new Map();
+  /**
+   * Récupère la correspondance entre les dates et les divs de chaque jour.
+   * @returns {Map<string, HTMLElement>} Un objet contenant la correspondance entre les dates et les divs de chaque jour.
+   */
+  getDateToDayMapping = () => {
+    /**
+     * Mappe chaque date avec son div de jour correspondant.
+     * @type {Map<string, HTMLElement>}
+     */
+    const dateToDayMap = new Map();
 
-		const dayDivs = document.querySelectorAll('.day');
-		const dayDivsArray = [...dayDivs];
+    const dayDivs = document.querySelectorAll(".day");
+    const dayDivsArray = [...dayDivs];
 
-		for (const dayDiv of dayDivsArray) {
-			const date = new Date(dayDiv.getAttribute('data-date'));
-			dateToDayMap.set(date.toDateString(), dayDiv);
-		}
+    for (const dayDiv of dayDivsArray) {
+      const date = new Date(dayDiv.getAttribute("data-date"));
+      dateToDayMap.set(date.toDateString(), dayDiv);
+    }
 
-		return dateToDayMap;
-	};
+    return dateToDayMap;
+  };
 
-	/**
-	 *
-	 * @param {Tache} tache
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	renderOneTache = (t, dayDiv) => {
-		const taskDiv = document.createElement('div');
-		taskDiv.classList.add('task');
-		taskDiv.innerHTML = `
+  /**
+   *
+   * @param {Tache} tache
+   * @param {HTMLDivElement} dayDiv
+   */
+  renderOneTache = (t, dayDiv) => {
+    const taskDiv = document.createElement("div");
+    taskDiv.classList.add("task");
+    taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+            <div class="creneau">${encodedStr(
+              `${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(
+                t.creneau.fin
+              )}`
+            )}</div>
         `;
 
-		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
-		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
-		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
-		dayDiv.appendChild(taskDiv);
-	};
+    taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
+    taskDiv.style.height = `${
+      ((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100
+    }%`;
+    taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(",")})`;
+    taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(",")}, 0.1)`;
+    taskDiv.style.color = `rgb(${t.poste.toColor().join(",")})`;
+    dayDiv.appendChild(taskDiv);
+  };
 
-	/**
-	 *
-	 * @param {Tache[]} taches
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	renderMultipleTaches = (taches, dayDiv) => {
-		for (let i = 0; i < taches.length; i++) {
-			const t = taches[i];
-			const taskDiv = document.createElement('div');
-			taskDiv.classList.add('task');
-			taskDiv.innerHTML = `
+  /**
+   *
+   * @param {Tache[]} taches
+   * @param {HTMLDivElement} dayDiv
+   */
+  renderMultipleTaches = (taches, dayDiv) => {
+    for (let i = 0; i < taches.length; i++) {
+      const t = taches[i];
+      const taskDiv = document.createElement("div");
+      taskDiv.classList.add("task");
+      taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+            <div class="creneau">${encodedStr(
+              `${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(
+                t.creneau.fin
+              )}`
+            )}</div>
         `;
-		taskDiv.style.top = `${
-			((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
-			(24 * 60)) *
-			100
-		}%`;
-		taskDiv.style.height = `${
-			((t.creneau.fin.getHours() * 60 +
-			t.creneau.fin.getMinutes() -
-			(t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
-			(24 * 60)) *
-			100
-		}%`;
-			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
-			taskDiv.style.margin = `0 2px`;
-			taskDiv.style.left = `${(100 / taches.length) * i}%`;
-			taskDiv.style.transform = `translateX(0%)`;
-			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
-			taskDiv.addEventListener("click", () => {
-				document.getElementById("tache-id").value = t.id;
-				this.benevoleForm.classList.add("visible");
-				this.html.classList.add("blurred");
-			});
-			dayDiv.appendChild(taskDiv);
-		}
-	};
+      taskDiv.style.top = `${
+        ((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
+          (24 * 60)) *
+        100
+      }%`;
+      taskDiv.style.height = `${
+        ((t.creneau.fin.getHours() * 60 +
+          t.creneau.fin.getMinutes() -
+          (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
+          (24 * 60)) *
+        100
+      }%`;
+      taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
+      taskDiv.style.margin = `0 2px`;
+      taskDiv.style.left = `${(100 / taches.length) * i}%`;
+      taskDiv.style.transform = `translateX(0%)`;
+      taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(",")})`;
+      taskDiv.style.backgroundColor = `rgb(${t.poste
+        .toColor()
+        .join(",")}, 0.1)`;
+      taskDiv.style.color = `rgb(${t.poste.toColor().join(",")})`;
+      if (this.isResponsableOrOrganisateur) {
+        taskDiv.addEventListener("click", () => {
+          document.getElementById("tache-id").value = t.id;
+          this.benevoleForm.classList.add("visible");
+          this.html.classList.add("blurred");
+        });
+      }
+      dayDiv.appendChild(taskDiv);
+    }
+  };
 
-	renderTaches = () => {
-		const sortedTaches = this.sortTachesByOverriding();
-		const dateToDayMap = this.getDateToDayMapping();
+  renderTaches = () => {
+    const sortedTaches = this.sortTachesByOverriding();
+    const dateToDayMap = this.getDateToDayMapping();
 
-		console.log(sortedTaches);
+    console.log(sortedTaches);
 
-		for (const d of dateToDayMap.values()) {
-			[...d.getElementsByClassName('task')].forEach(t => t.remove());
-		}
+    for (const d of dateToDayMap.values()) {
+      [...d.getElementsByClassName("task")].forEach((t) => t.remove());
+    }
 
-		for (const taches of sortedTaches) {
-			const date = new Date(taches[0].creneau.debut);
-			const dayDiv = dateToDayMap.get(date.toDateString());
-			if (!dayDiv) {
-				console.error(`Aucun div de jour trouvé pour la date ${date}`);
-				continue;
-			}
-			this.renderMultipleTaches(taches, dayDiv);
-		}
-	};
-
-	/**
-	 * Affiche toutes les tâches dans le planning.
-	 */
-	refeshTachesList = async () => {
-		this.taches = await Backend.getTaches(this.festId);
-		this.renderTaches();
-	};
-		
+    for (const taches of sortedTaches) {
+      const date = new Date(taches[0].creneau.debut);
+      const dayDiv = dateToDayMap.get(date.toDateString());
+      if (!dayDiv) {
+        console.error(`Aucun div de jour trouvé pour la date ${date}`);
+        continue;
+      }
+      this.renderMultipleTaches(taches, dayDiv);
+    }
+  };
 
   /**
    * Affiche toutes les tâches dans le planning.
    */
   refeshTachesList = async () => {
     this.taches = await Backend.getTaches(this.festId);
-	console.log(this.renderTaches);
     this.renderTaches();
-  };	
+  };
+
+  /**
+   * Affiche toutes les tâches dans le planning.
+   */
+  refeshTachesList = async () => {
+    this.taches = await Backend.getTaches(this.festId);
+    console.log(this.renderTaches);
+    this.renderTaches();
+  };
 
   /**
    * Ajoute une tache au planning.
@@ -559,7 +608,7 @@ export class Planning {
         .join("");
     }
 
-	this.handleCheckboxChange();
+    this.handleCheckboxChange();
   }
 
   refreshBenevolesList = async () => {
@@ -603,21 +652,21 @@ export class Planning {
   };
 
   sortTachesByOverriding = () => {
-	/**
-	 * @type {Tache[][]}
-	 */
-	const overridingTaches = [];
+    /**
+     * @type {Tache[][]}
+     */
+    const overridingTaches = [];
 
-	for (const t of this.taches) {
-		const a = overridingTaches.find(ts => {
-			return ts.some(_t => _t.overrides(t));
-		});
-		if (a) {
-			a.push(t);
-		} else {
-			overridingTaches.push([t]);
-		}
-	}
-	return overridingTaches;
-};
+    for (const t of this.taches) {
+      const a = overridingTaches.find((ts) => {
+        return ts.some((_t) => _t.overrides(t));
+      });
+      if (a) {
+        a.push(t);
+      } else {
+        overridingTaches.push([t]);
+      }
+    }
+    return overridingTaches;
+  };
 }
