@@ -273,12 +273,7 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         $this->addFlash('success', 'La demande a bien été acceptée');
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
-            'controller_name' => 'FestivalController',
-            'demandes' => $festival->getDemandesBenevole(),
-            'idFest' => $id,
-            'benevoles' => $festival->getBenevoles()
-        ]);
+        $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
@@ -489,7 +484,7 @@ class FestivalController extends AbstractController {
                     'description' => $el->getDescription(),
                     'nombre_benevole' => $el->getNombreBenevole(),
                     'id' => $el->getId(),
-
+                    'benevoles' => $el->getBenevoleAffecte(),
                 ];
             }, $p->getTaches()->toArray()));
         }, []);

@@ -70,24 +70,7 @@ class UtilisateurController extends AbstractController {
         ]);
     }
 
-    #[Route('/testical', name: 'app_testical', methods: ['GET'])]
-    public function testical(): Response {
-        $ical = new IcalBuilder('test');
-
-        $ical->add(new Event(
-            'Test4',
-            'Super event',
-            'Salut à tous c\'est l\'événement test',
-            new \DateTime('2023-10-20 12:00:00'),
-            new \DateTime('2023-10-20 13:00:00'),
-            'Chez ta daronne sah'
-        ));
-
-        $ical->build();
-        return $this->redirectToRoute('app_festival_all');
-    }
-
-    #[Route('/icalLink/{idFest}', name: 'app_send_icsFile', options: ["expose" => true], methods: ['GET'])]
+    #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
         $currentUser = $this->getUser();
         $fest = $festivalRepository->find($idFest);
@@ -99,12 +82,12 @@ class UtilisateurController extends AbstractController {
             $this->addFlash('error', 'Ce festival n\'existe pas');
             return $this->redirectToRoute('home');
         }
-        if ($utilisateurUtils->isBenevole($currentUser,$fest)){
+        if ($utilisateurUtils->isBenevole($currentUser, $fest)) {
             $taches = $currentUser->getTaches();
             $ical = new IcalBuilder('benevoleCalendar');
-            foreach ($taches as $t){
+            foreach ($taches as $t) {
                 $ical->add(new Event(
-                    "Event".$t->getId(),
+                    "Event" . $t->getId(),
                     $t->getPoste()->getNom(),
                     $t->getDescription(),
                     $t->getCrenaux()->getDateDebut(),
@@ -120,21 +103,19 @@ class UtilisateurController extends AbstractController {
                 ->from('administration@festiflux.fr')
                 ->to($currentUser->getEmail())
                 ->subject('Votre fichier ICS Bénévole')
-                ->attach(fopen('icals/'.$ical->getFilename().'.ics', 'r'),$ical->getFilename().'.ics')
+                ->attach(fopen('icals/' . $ical->getFilename() . '.ics', 'r'), $ical->getFilename() . '.ics')
                 ->html('<p>Voici votre fichier ics des taches qui vous sont assignées en tant que bénévole pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
 
             $mailer->send($email);
             $this->addFlash('success', 'Votre allez recevoir un mail avec en pj le fichier ics.');
-
-
         }
-        if ($utilisateurUtils->isResponsable($currentUser,$fest) || $utilisateurUtils->isOrganisateur($currentUser,$fest) ){
-            $posts=$posteRepository->findBy(["festival"=>$fest]);
+        if ($utilisateurUtils->isResponsable($currentUser, $fest) || $utilisateurUtils->isOrganisateur($currentUser, $fest)) {
+            $posts = $posteRepository->findBy(["festival" => $fest]);
             $ical = new IcalBuilder('ResponsableCaledar');
-            foreach ($posts as $p){
+            foreach ($posts as $p) {
                 $taches = $p->getTaches();
-                foreach ($taches as $t){
-                    if($t->getPoste()->getFestival()===$fest) {
+                foreach ($taches as $t) {
+                    if ($t->getPoste()->getFestival() === $fest) {
                         $ical->add(new Event(
                             "Event" . $t->getId(),
                             $t->getPoste()->getNom(),
@@ -153,21 +134,20 @@ class UtilisateurController extends AbstractController {
                 ->from('administration@festiflux.fr')
                 ->to($currentUser->getEmail())
                 ->subject('Votre fichier ICS Responsible')
-                ->attach(fopen('icals/'.$ical->getFilename().'.ics', 'r'),$ical->getFilename().'.ics')
+                ->attach(fopen('icals/' . $ical->getFilename() . '.ics', 'r'), $ical->getFilename() . '.ics')
                 ->html('<p>Voici votre fichier ics des taches pour le festival ' . $fest->getNom() . '.' . ' <br><br> Cliquez <a href="https://www.frandroid.com/comment-faire/tutoriaux/tutoriels-pc/1558958_comment-ajouter-un-evenement-icalendar-ics-a-google-agenda"  > ici </a> pour avoir un tuto pas à pas sur "Comment ajouter un. ics à Google Agenda". </p>');
 
             $mailer->send($email);
             $this->addFlash('success', 'Votre allez recevoir un mail avec en pj le fichier ics.');
-
         }
 
 
 
         return $this->redirectToRoute('app_festival_all');
     }
-  
+
     #[Route('/user/profile/{id}/edit', name: 'app_profile_edit')]
-    public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, ): Response {
+    public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em,): Response {
 
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
@@ -191,7 +171,7 @@ class UtilisateurController extends AbstractController {
             'utilisateur' => $utilisateur,
         ]);
     }
-                         
+
     #[Route('/user/{id}/task/{idTask}/add', name: 'app_user_task_add', options: ['expose' => true])]
     public function user_task_add(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
 
@@ -231,7 +211,7 @@ class UtilisateurController extends AbstractController {
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$p) throw $this->createNotFoundException("La tache n'existe pas");
 
-        if (!$u->getEstBenevole()->contains($p->getFestival())){
+        if (!$u->getEstBenevole()->contains($p->getFestival())) {
             return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
         }
         $p->addUtilisateursAime($u);
@@ -240,8 +220,6 @@ class UtilisateurController extends AbstractController {
         $em->flush();
 
         return new JsonResponse(['success' => "mention j'aime ajoutée"], Response::HTTP_ACCEPTED);
-
-
     }
 
     #[Route('/user/poste/{idPoste}/disliked', name: 'app_user_likedPoste_remove', options: ["expose" => true], methods: ['GET'])]
@@ -257,7 +235,7 @@ class UtilisateurController extends AbstractController {
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$p) throw $this->createNotFoundException("La tache n'existe pas");
 
-        if (!$u->getEstBenevole()->contains($p->getFestival())){
+        if (!$u->getEstBenevole()->contains($p->getFestival())) {
             return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
         }
 
@@ -266,7 +244,6 @@ class UtilisateurController extends AbstractController {
         $em->flush();
 
         return new JsonResponse(['success' => "mention j'aime annulée"], Response::HTTP_ACCEPTED);
-
     }
 
     #[Route('/user/{id}/task/{idTask}/remove', name: 'app_user_task_remove', options: ['expose' => true])]

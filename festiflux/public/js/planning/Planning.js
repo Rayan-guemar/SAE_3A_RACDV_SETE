@@ -174,6 +174,12 @@ export class Planning {
 				this.html.classList.remove('blurred');
 			});
 
+			// Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
+			this.benevoleForm.querySelector('.close-btn').addEventListener('click', () => {
+				this.benevoleForm.classList.remove('visible');
+				this.html.classList.remove('blurred');
+			});
+
 			this.addIcsBtn.addEventListener('click', async () => {
 				const URL = Routing.generate('app_send_icsFile', { idFest: this.festId });
 				try {
