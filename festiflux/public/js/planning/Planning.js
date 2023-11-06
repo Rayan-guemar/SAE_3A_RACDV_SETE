@@ -54,16 +54,14 @@ export class Planning {
 			this.addPosteForm = document.getElementById('add-poste');
 			this.createPosteBtn = document.getElementById('create-poste-btn');
 			this.createPosteInput = document.getElementById('poste-name');
-		}
 
-		this.addPostebtn = document.getElementById("add-poste-btn");
-		this.addPosteForm = document.getElementById("add-poste");
-		this.createPosteBtn = document.getElementById("create-poste-btn");
-		this.createPosteInput = document.getElementById("poste-name");
-
-		this.benevoleForm = document.getElementById("add-benevole");
-		this.benevoleList = document.getElementById("benevoles-list");
-	
+      this.benevoleForm = document.getElementById("add-benevole");
+      this.benevoleList = document.getElementById("benevoles-list");
+    } else {
+      this.addDisposBtn = document.getElementById("add-dispo-btn");
+      this.addDisposForm = document.getElementById("add-dispo");
+      this.createDisposBtn = document.getElementById("create-dispo-btn");
+    }
 
     this.postesEl = document.querySelector(".postes");
 
@@ -334,9 +332,9 @@ export class Planning {
     let html = `
             <div class="day" data-date=${date.toISOString()}>
                 <div class="heading">${this.dayNames[date.getDay()].substring(
-                  0,
-                  3
-                )} ${date.getDate()} ${this.monthNames[
+      0,
+      3
+    )} ${date.getDate()} ${this.monthNames[
       date.getMonth()
     ].substring(0, 4)}.</div>
                 ${lineBreaker}
@@ -442,88 +440,31 @@ export class Planning {
 		taskDiv.classList.add('task');
 		taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+            <div class="creneau">${encodedStr(
+        `${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(
+          t.creneau.fin
+        )}`
+      )}</div>
         `;
 
-		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
-		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
-		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
-		dayDiv.appendChild(taskDiv);
-	};
+      taskDiv.style.top = `${((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
+          (24 * 60)) *
+        100
+        }%`;
+      taskDiv.style.height = `${((t.creneau.fin.getHours() * 60 +
+          t.creneau.fin.getMinutes() -
+          (t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
+          (24 * 60)) *
+        100
+        }%`;
 
-	/**
-	 *
-	 * @param {Tache[]} taches
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	renderMultipleTaches = (taches, dayDiv) => {
-		for (let i = 0; i < taches.length; i++) {
-			const t = taches[i];
-			const taskDiv = document.createElement('div');
-			taskDiv.classList.add('task');
-			taskDiv.innerHTML = `
-            <div class="name">${encodedStr(t.poste.nom)}</div>
-            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
-        `;
-		taskDiv.style.top = `${
-			((t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes()) /
-			(24 * 60)) *
-			100
-		}%`;
-		taskDiv.style.height = `${
-			((t.creneau.fin.getHours() * 60 +
-			t.creneau.fin.getMinutes() -
-			(t.creneau.debut.getHours() * 60 + t.creneau.debut.getMinutes())) /
-			(24 * 60)) *
-			100
-		}%`;
-			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
-			taskDiv.style.margin = `0 2px`;
-			taskDiv.style.left = `${(100 / taches.length) * i}%`;
-			taskDiv.style.transform = `translateX(0%)`;
-			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
-			taskDiv.addEventListener("click", () => {
-				document.getElementById("tache-id").value = t.id;
-				this.benevoleForm.classList.add("visible");
-				this.html.classList.add("blurred");
-			});
-			dayDiv.appendChild(taskDiv);
-		}
-	};
-
-	renderTaches = () => {
-		const sortedTaches = this.sortTachesByOverriding();
-		const dateToDayMap = this.getDateToDayMapping();
-
-		console.log(sortedTaches);
-
-		for (const d of dateToDayMap.values()) {
-			[...d.getElementsByClassName('task')].forEach(t => t.remove());
-		}
-
-		for (const taches of sortedTaches) {
-			const date = new Date(taches[0].creneau.debut);
-			const dayDiv = dateToDayMap.get(date.toDateString());
-			if (!dayDiv) {
-				console.error(`Aucun div de jour trouvé pour la date ${date}`);
-				continue;
-			}
-			this.renderMultipleTaches(taches, dayDiv);
-		}
-	};
-
-	/**
-	 * Affiche toutes les tâches dans le planning.
-	 */
-	refeshTachesList = async () => {
-		this.taches = await Backend.getTaches(this.festId);
-		this.renderTaches();
-	};
-		
+      taskDiv.addEventListener("click", () => {
+        document.getElementById("tache-id").value = t.id;
+        this.benevoleForm.classList.add("visible");
+        this.html.classList.add("blurred");
+      });
+      dayDiv.appendChild(taskDiv);
+    }
 
   /**
    * Affiche toutes les tâches dans le planning.
@@ -568,16 +509,15 @@ export class Planning {
             	<div class="name">${encodedStr(benevole.nom)} ${encodedStr(
             benevole.prenom
           )}</div>
-            	<input class='benevole-checkbox' type="checkbox" name="benevole" id="${
-                benevole.id
-              }" value="${benevole.id}">
+            	<input class='benevole-checkbox' type="checkbox" name="benevole" id="${benevole.id
+            }" value="${benevole.id}">
 			</div>
         `
         )
         .join("");
     }
 
-	this.handleCheckboxChange();
+    this.handleCheckboxChange();
   }
 
   refreshBenevolesList = async () => {
