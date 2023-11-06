@@ -520,6 +520,27 @@ export class Planning {
     this.handleCheckboxChange();
   }
 
+  renderTaches = () => {
+    const sortedTaches = this.sortTachesByOverriding();
+    const dateToDayMap = this.getDateToDayMapping();
+
+    console.log(sortedTaches);
+
+    for (const d of dateToDayMap.values()) {
+        [...d.getElementsByClassName('task')].forEach(t => t.remove());
+    }
+
+    for (const taches of sortedTaches) {
+        const date = new Date(taches[0].creneau.debut);
+        const dayDiv = dateToDayMap.get(date.toDateString());
+        if (!dayDiv) {
+            console.error(`Aucun div de jour trouvé pour la date ${date}`);
+            continue;
+        }
+        this.renderMultipleTaches(taches, dayDiv);
+    }
+};
+
   refreshBenevolesList = async () => {
     this.benevoles = await Backend.fetchBenevoles(this.festId);
     this.renderBenevole();
