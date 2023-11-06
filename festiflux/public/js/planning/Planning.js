@@ -187,6 +187,20 @@ export class Planning {
 				this.html.classList.remove('blurred');
 			});
 		}
+	}
+
+	/**
+	 * Initialise les jours du planning en générant le code HTML correspondant.
+	 * @function
+	 * @returns {void}
+	 */
+	initDays() {
+		let html = '';
+		for (let i = 0; i < this.numberOfDays; i++) {
+			let date = new Date(this.dateDebut);
+			date.setDate(date.getDate() + i);
+			html += this.dayHTML(date);
+		}
 
     // Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
     this.benevoleForm
@@ -365,6 +379,46 @@ export class Planning {
 	 * @param {Tache} tache
 	 * @param {HTMLDivElement} dayDiv
 	 */
+	scrollDaysRight() {
+		let daysWidth = this.days.getBoundingClientRect().width;
+		let dayWidth = this.days.querySelector('.day').getBoundingClientRect().width;
+		let scroll = this.days.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
+		if (scroll > this.days.scrollWidth) {
+			scroll = this.days.scrollWidth;
+		}
+		this.days.scrollTo({
+			left: scroll,
+			behavior: 'smooth'
+		});
+	}
+
+	/**
+	 * Récupère la correspondance entre les dates et les divs de chaque jour.
+	 * @returns {Map<string, HTMLElement>} Un objet contenant la correspondance entre les dates et les divs de chaque jour.
+	 */
+	getDateToDayMapping = () => {
+		/**
+		 * Mappe chaque date avec son div de jour correspondant.
+		 * @type {Map<string, HTMLElement>}
+		 */
+		const dateToDayMap = new Map();
+
+		const dayDivs = document.querySelectorAll('.day');
+		const dayDivsArray = [...dayDivs];
+
+		for (const dayDiv of dayDivsArray) {
+			const date = new Date(dayDiv.getAttribute('data-date'));
+			dateToDayMap.set(date.toDateString(), dayDiv);
+		}
+
+		return dateToDayMap;
+	};
+
+	/**
+	 *
+	 * @param {Tache} tache
+	 * @param {HTMLDivElement} dayDiv
+	 */
 	renderOneTache = (t, dayDiv) => {
 		const taskDiv = document.createElement('div');
 		taskDiv.classList.add('task');
@@ -411,6 +465,29 @@ export class Planning {
 				(24 * 60)) *
 				100
 			}%`;
+
+		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
+		dayDiv.appendChild(taskDiv);
+	};
+
+	/**
+	 *
+	 * @param {Tache[]} taches
+	 * @param {HTMLDivElement} dayDiv
+	 */
+	renderMultipleTaches = (taches, dayDiv) => {
+		for (let i = 0; i < taches.length; i++) {
+			const t = taches[i];
+			const taskDiv = document.createElement('div');
+			taskDiv.classList.add('task');
+			taskDiv.innerHTML = `
+            <div class="name">${encodedStr(t.poste.nom)}</div>
+            <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
+        `;
+			taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
+			taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
 			taskDiv.style.width = `calc(${100 / taches.length}% - 4px)`;
 			taskDiv.style.margin = `0 2px`;
 			taskDiv.style.left = `${(100 / taches.length) * i}%`;
@@ -428,8 +505,33 @@ export class Planning {
 	};
 
 	renderTaches = () => {
-        const sortedTaches = this.sortTachesByOverriding();
-        const dateToDayMap = this.getDateToDayMapping();
+		const sortedTaches = this.sortTachesByOverriding();
+		const dateToDayMap = this.getDateToDayMapping();
+
+		console.log(sortedTaches);
+
+		for (const d of dateToDayMap.values()) {
+			[...d.getElementsByClassName('task')].forEach(t => t.remove());
+		}
+
+		for (const taches of sortedTaches) {
+			const date = new Date(taches[0].creneau.debut);
+			const dayDiv = dateToDayMap.get(date.toDateString());
+			if (!dayDiv) {
+				console.error(`Aucun div de jour trouvé pour la date ${date}`);
+				continue;
+			}
+			this.renderMultipleTaches(taches, dayDiv);
+		}
+	};
+
+	/**
+	 * Affiche toutes les tâches dans le planning.
+	 */
+	refeshTachesList = async () => {
+		this.taches = await Backend.getTaches(this.festId);
+		this.renderTaches();
+	};
 
         console.log(sortedTaches);
 
