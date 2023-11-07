@@ -40,27 +40,27 @@
 		<div class="btn-container">
 			{% if isBenevole %}
 
-					<div class="button-benevole">
-						<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">Planning du festival</a>
-					</div>
+				<div class="button-benevole">
+					<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">Planning du festival</a>
+				</div>
 
-				{% elseif isResponsable %}
+			{% elseif isResponsable %}
 
-				{% elseif isOrganisateur %}
-					<div class="button-benevole">
-						<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
-					</div>
-          
-					<div class="button-archive">
-						<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
-					</div>
-				{% elseif hasApplied %}
+			{% elseif isOrganisateur %}
+				<div class="button-benevole">
+					<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
+				</div>
+
+				<div class="button-archive">
+					<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
+				</div>
+			{% elseif hasApplied %}
 
 
-				{% else  %}
-					<div class="button-benevole">
-						<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Devenir bénévole</a>
-					</div>
+			{% else  %}
+				<div class="button-benevole">
+					<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Postuler</a>
+				</div>
 			{% endif %}
 		</div>
 
