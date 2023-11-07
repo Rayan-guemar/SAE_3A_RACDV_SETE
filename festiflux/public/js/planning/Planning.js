@@ -199,6 +199,7 @@ export class Planning {
 			date.setDate(date.getDate() + i);
 			html += this.dayHTML(date);
 		}
+		this.days.innerHTML = html;
 
 		// Lorsque l'on clique sur le bouton fermé du formulaire de création de bénévole, on cache le formulaire et on enlève le flou de la page
 		this.benevoleForm.querySelector('.close-btn').addEventListener('click', () => {
