@@ -79,7 +79,7 @@ export class Planning {
 	async init() {
 		this.initDays();
 		this.addListener();
-		const promises = [this.refreshPostesList(), this.refeshTachesList(), this.isResponsableOrOrganisateur ? this.refreshBenevolesList() : null];
+		const promises = [this.refreshPostesList(), this.refeshTachesList()];
 		await Promise.all(promises);
 
 		document.getElementById('loader').style.display = 'none';
@@ -125,16 +125,6 @@ export class Planning {
 			this.addPosteForm.querySelector('.close-btn').addEventListener('click', () => {
 				this.addPosteForm.classList.remove('visible');
 				this.html.classList.remove('blurred');
-			});
-
-			// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
-			document.getElementById('scroll-btn-left').addEventListener('click', () => {
-				this.scrollDaysLeft();
-			});
-
-			// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
-			document.getElementById('scroll-btn-right').addEventListener('click', () => {
-				this.scrollDaysRight();
 			});
 
 			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
@@ -417,6 +407,7 @@ export class Planning {
 			const t = taches[i];
 			const taskDiv = document.createElement('div');
 			taskDiv.classList.add('task');
+			taskDiv.setAttribute('data-id', t.id);
 			taskDiv.innerHTML = `
             <div class="name">${encodedStr(t.poste.nom)}</div>
             <div class="creneau">${encodedStr(`${getDateHours2Digits(t.creneau.debut)} - ${getDateHours2Digits(t.creneau.fin)}`)}</div>
