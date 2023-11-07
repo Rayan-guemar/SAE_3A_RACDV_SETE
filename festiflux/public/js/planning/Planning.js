@@ -56,11 +56,6 @@ export class Planning {
 			this.createPosteInput = document.getElementById('poste-name');
 		}
 
-		this.addPostebtn = document.getElementById('add-poste-btn');
-		this.addPosteForm = document.getElementById('add-poste');
-		this.createPosteBtn = document.getElementById('create-poste-btn');
-		this.createPosteInput = document.getElementById('poste-name');
-
 		this.benevoleForm = document.getElementById('add-benevole');
 		this.benevoleList = document.getElementById('benevoles-list');
 
@@ -212,20 +207,6 @@ export class Planning {
 		});
 	}
 
-	/**
-	 * Initialise les jours du planning en générant le code HTML correspondant.
-	 * @function
-	 * @returns {void}
-	 */
-	initDays() {
-		let html = '';
-		for (let i = 0; i < this.numberOfDays; i++) {
-			let date = new Date(this.dateDebut);
-			date.setDate(date.getDate() + i);
-			html += this.dayHTML(date);
-		}
-		this.days.innerHTML = html;
-	}
 	/**
 	 * Génère le code HTML pour les postes.
 	 * @function
@@ -449,8 +430,10 @@ export class Planning {
 			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
 			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
 			if (this.isResponsableOrOrganisateur) {
-				taskDiv.addEventListener('click', () => {
+				taskDiv.addEventListener('click', async () => {
 					document.getElementById('tache-id').value = t.id;
+					console.log('test3');
+					await this.refreshBenevolesList();
 					this.benevoleForm.classList.add('visible');
 					this.html.classList.add('blurred');
 				});
@@ -485,15 +468,7 @@ export class Planning {
 	 */
 	refeshTachesList = async () => {
 		this.taches = await Backend.getTaches(this.festId);
-		this.renderTaches();
-	};
-
-	/**
-	 * Affiche toutes les tâches dans le planning.
-	 */
-	refeshTachesList = async () => {
-		this.taches = await Backend.getTaches(this.festId);
-		console.log(this.renderTaches);
+		console.log(this.taches);
 		this.renderTaches();
 	};
 
@@ -520,16 +495,19 @@ export class Planning {
 	 * @returns {void}
 	 */
 	renderBenevole() {
+		const tache = this.taches.find(t => t.id == document.getElementById('tache-id').value);
+		if (!tache) return alert('Tache introuvable ' + document.getElementById('tache-id').value);
 		if (this.benevoles.length === 0) {
 			this.benevoleList.innerHTML = `
 				<div class="no-benevole">Aucun bénévole trouvé pour ce festival</div>
 			`;
 		} else {
+			console.log('test', tache.benevoles);
 			this.benevoleList.innerHTML = this.benevoles
 				.map(
 					benevole => `<div class="benevole">
             	<div class="name">${encodedStr(benevole.nom)} ${encodedStr(benevole.prenom)}</div>
-            	<input class='benevole-checkbox' type="checkbox" name="benevole" id="${benevole.id}" value="${benevole.id}">
+            	<input class='benevole-checkbox' type="checkbox" name="benevole" id="${benevole.id}" ${tache.benevoles.some(b => b.id == benevole.id) ? 'checked' : ''}>
 			</div>
         `
 				)
@@ -546,16 +524,28 @@ export class Planning {
 
 	/**
 	 * Ajoute un Benevole à une tache.
-	 * @param {Benevole} benevole
+	 * @param {Object} benevole
 	 * @param {Tache} tache
 	 */
 	async addBenevole(benevole, tache) {
 		try {
-			await Backend.addBenevole(this.festId, benevole, tache);
+			await Backend.addBenevole(benevole, tache);
 		} catch (error) {
 			alert("Une erreur est survenue lors de l'ajout du bénévole");
 		}
-		this.refreshBenevolesList();
+		console.log('test');
+		await this.refeshTachesList();
+	}
+
+	async removeBenevole(benevole, tache) {
+		try {
+			await Backend.removeBenevole(benevole, tache);
+			console.log('aaaaaa');
+		} catch (error) {
+			alert("Une erreur est survenue lors de l'ajout du bénévole");
+		}
+		console.log('test2');
+		await this.refeshTachesList();
 	}
 
 	handleCheckboxChange = async () => {
@@ -563,14 +553,19 @@ export class Planning {
 
 		[...checkboxs].forEach(checkbox => {
 			const userId = checkbox.id;
+			const _this = this;
 			checkbox.addEventListener('change', async function () {
 				const isChecked = checkbox.checked;
-				const URL = Routing.generate(isChecked ? 'app_user_task_add' : 'app_user_task_remove', { id: userId, idTask: document.getElementById('tache-id').value });
-				try {
-					await fetch(URL);
-				} catch (error) {
-					console.log(error);
-					checkbox.checked = !isChecked;
+				if (isChecked) {
+					const tacheId = document.getElementById('tache-id').value;
+					const tache = _this.taches.find(t => t.id === +tacheId);
+					const benevole = _this.benevoles.find(b => b.id === +userId);
+					await _this.addBenevole(benevole, tache);
+				} else {
+					const tacheId = document.getElementById('tache-id').value;
+					const benevole = _this.benevoles.find(b => b.id === +userId);
+					const tache = _this.taches.find(t => t.id === +tacheId);
+					await _this.removeBenevole(benevole, tache);
 				}
 			});
 		});
