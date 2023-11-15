@@ -34,6 +34,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+use function PHPSTORM_META\map;
+
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
@@ -273,12 +275,7 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         $this->addFlash('success', 'La demande a bien été acceptée');
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
-            'controller_name' => 'FestivalController',
-            'demandes' => $festival->getDemandesBenevole(),
-            'idFest' => $id,
-            'benevoles' => $festival->getBenevoles()
-        ]);
+        $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
@@ -315,8 +312,8 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
-        
-        if ( !($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) ) {
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
 
@@ -342,8 +339,8 @@ class FestivalController extends AbstractController {
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
 
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole ) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403); 
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
 
         $postes = $festival->getPostes();
@@ -489,7 +486,13 @@ class FestivalController extends AbstractController {
                     'description' => $el->getDescription(),
                     'nombre_benevole' => $el->getNombreBenevole(),
                     'id' => $el->getId(),
-
+                    'benevoles' => array_map(function (Utilisateur $u) use ($el) {
+                        return [
+                            'id' => $u->getId(),
+                            'nom' => $u->getNom(),
+                            'prenom' => $u->getPrenom(),
+                        ];
+                    }, $el->getBenevoleAffecte()->toArray())
                 ];
             }, $p->getTaches()->toArray()));
         }, []);
@@ -573,12 +576,12 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/postes', name: 'app_festival_display_postes')]
-    public function displayPostes(#[MapEntity] Festival $festival,PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    public function displayPostes(#[MapEntity] Festival $festival, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
-        $postes = $posteRepository->findBy(["festival"=>$festival]);
+        $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
 
         return $this->render('utilisateur/liked_postes.html.twig', [

@@ -23,7 +23,6 @@ class DemandeFestivalController extends AbstractController {
     #[Route('/demandefestival', name: 'app_demandefestival_all', options: ["expose" => true], methods: ['GET'])]
     public function all(DemandeFestivalRepository $demandeFestivalRepository): Response {
 
-
         $demandesFestivals = $demandeFestivalRepository->findAll();
 
         return $this->render('demande_festival/index.html.twig', [
@@ -36,11 +35,7 @@ class DemandeFestivalController extends AbstractController {
     public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger) {
         $demandeFestival = new DemandeFestival();
 
-        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival,
-                                        [
-                                        'method'=> "POST",
-                                        'action'=>$this->generateUrl('home')
-                                    ]);
+        $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
 
         $form->handleRequest($req);
         if($req->isMethod('POST')) {
@@ -67,14 +62,15 @@ class DemandeFestivalController extends AbstractController {
                         $demandeFestival->setAfficheFestival($newFilename);
                     }
 
-
+                    
                     $demandeFestival->setOrganisateurFestival($this->getUser());
                     $demandeFestival->setLat($form->get('lat')->getData());
                     $demandeFestival->setLon($form->get('lon')->getData());
+
                     $em->persist($demandeFestival);
                     $em->flush();
                     $this->addFlash('success', 'Demande de festival envoyée');
-                    return $this->redirectToRoute('demandefestival');
+                    return $this->redirectToRoute('home');
                 }
                 else {
                 $this->addFlash('error', 'Les dates de votre festival ne sont pas conforme !');
@@ -134,10 +130,7 @@ class DemandeFestivalController extends AbstractController {
 
 
         $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->render('demande_festival/index.html.twig', [
-            'controller_name' => 'DemandeFestivalController',
-            'demandes'=>$demandeFestival
-        ]);
+        return $this->redirectToRoute('app_demandefestival_all');
     }
 
 }
