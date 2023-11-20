@@ -142,6 +142,8 @@ export class Planning {
 				const description = this.creneauDescription.value;
 				const nbBenevole = +this.creneauNombreBenevole.value || 0;
 				const posteId = +this.creneauPosteSelect.value;
+				const lieu = document.getElementById('creneau-lieu').value;
+				const addresse = document.getElementById('creneau-lieu-address').value;
 
 				if (debut > fin) return alert('La date de début doit être inférieure à la date de fin');
 				if (debut <= this.dateDebut || fin >= this.dateFin) return alert('Les créneaux doivent être compris dans la période du festival');
@@ -151,9 +153,11 @@ export class Planning {
 				const p = this.postes.find(poste => poste.id === posteId);
 				if (!p) return console.error('Poste introuvable');
 
-				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
-				const t = new Tache(null, this.creneauDescription.value, nbBenevole, p, c);
 
+				console.log("debut :" + this.startCreneauxInput.value , "fin : " + this.endCreneauxInput.value);
+				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
+				const t = new Tache(null, description, nbBenevole, p, c, [], lieu, addresse);
+				
 				this.addTache(t);
 				this.addCreneauxForm.classList.remove('visible');
 				this.html.classList.remove('blurred');
@@ -472,6 +476,7 @@ export class Planning {
 		this.taches.push(tache);
 		this.renderTaches();
 		try {
+			console.log('test' , tache);
 			await Backend.addTache(this.festId, tache);
 		} catch (error) {
 			alert('Une erreur est survenue lors de la création de la tâche');
