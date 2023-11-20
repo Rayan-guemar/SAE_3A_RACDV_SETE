@@ -49,7 +49,8 @@ export class Backend {
 			},
 			body: JSON.stringify(body)
 		});
-
+	
+		console.log(response);
 		return response;
 	}
 
@@ -131,10 +132,11 @@ export class Backend {
 	static async addTache(festivalId, tache) {
 		console.log(tache);
 		const body = {
-			dateDebut: tache.creneau.debut.toLocaleString(),
-			dateFin: tache.creneau.fin.toLocaleString(),
+			dateDebut: new Date(tache.creneau.debut),
+			dateFin: new Date(tache.creneau.fin),
 			poste_id: tache.poste.id,
 			lieu: tache.lieu,
+			addresse: tache.addresse,
 			description: tache.description,
 			nombre_benevole: tache.nbBenevole
 		};
