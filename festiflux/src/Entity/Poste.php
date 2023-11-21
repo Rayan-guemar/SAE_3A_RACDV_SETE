@@ -27,6 +27,25 @@ class Poste {
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'postes_aime')]
     private Collection $utilisateurs_aime;
 
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
     public function __construct() {
         $this->taches = new ArrayCollection();
         $this->utilisateurs_aime = new ArrayCollection();

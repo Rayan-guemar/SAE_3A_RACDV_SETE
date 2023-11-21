@@ -31,7 +31,7 @@ class Tache {
     private ?Poste $poste = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    private ?string $remarque = null;
 
     #[ORM\Column]
     private ?int $nombre_benevole = null;
@@ -95,12 +95,12 @@ class Tache {
     }
 
 
-    public function getDescription(): ?string {
-        return $this->description;
+    public function getRemarque(): ?string {
+        return $this->remarque;
     }
 
-    public function setDescription(?string $description): static {
-        $this->description = $description;
+    public function setRemarque(?string $remarque): static {
+        $this->remarque = $remarque;
 
         return $this;
     }

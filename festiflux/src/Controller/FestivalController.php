@@ -426,7 +426,7 @@ class FestivalController extends AbstractController {
         }
 
         $t = new Tache();
-        $t->setDescription($description);
+        $t->setRemarque($description);
         $t->setNombreBenevole($nombreBenevole);
 
         if ($dateDebut > $dateFin) {
@@ -483,7 +483,7 @@ class FestivalController extends AbstractController {
                     'poste_id' => $p->getId(),
                     'poste_nom' => $p->getNom(),
                     'lieu' => 'un truc au pif',
-                    'description' => $el->getDescription(),
+                    'description' => $el->getRemarque(),
                     'nombre_benevole' => $el->getNombreBenevole(),
                     'id' => $el->getId(),
                     'benevoles' => array_map(function (Utilisateur $u) use ($el) {

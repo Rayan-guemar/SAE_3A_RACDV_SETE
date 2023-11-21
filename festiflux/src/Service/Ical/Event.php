@@ -84,7 +84,7 @@ class Event {
     public static function fromTache(Tache $tache) {
         $uid = $tache->getId();
         $title = $tache->getNom();
-        $description = $tache->getDescription();
+        $description = $tache->getRemarque();
         $start = $tache->getCrenaux()->getDateDebut();
         $end = $tache->getCrenaux()->getDateDebut();
         $location = $tache->getLieu();
