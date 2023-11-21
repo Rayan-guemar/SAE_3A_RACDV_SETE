@@ -89,7 +89,7 @@ class UtilisateurController extends AbstractController {
                 $ical->add(new Event(
                     "Event" . $t->getId(),
                     $t->getPoste()->getNom(),
-                    $t->getDescription(),
+                    $t->getRemarque(),
                     $t->getCrenaux()->getDateDebut(),
                     $t->getCrenaux()->getDateFin(),
                     $t->getLieu()->getNomLieu(),
@@ -119,7 +119,7 @@ class UtilisateurController extends AbstractController {
                         $ical->add(new Event(
                             "Event" . $t->getId(),
                             $t->getPoste()->getNom(),
-                            $t->getDescription(),
+                            $t->getRemarque(),
                             $t->getCrenaux()->getDateDebut(),
                             $t->getCrenaux()->getDateFin(),
                             $t->getLieu()->getNomLieu(),
