@@ -1,3 +1,3 @@
-import { Planning } from './planning/Planning.js';
+import { Planning } from './planning/Planning_.js';
 
-var Planning = Planning
+var Planning = Planning;

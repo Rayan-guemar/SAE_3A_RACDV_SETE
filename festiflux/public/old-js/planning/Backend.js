@@ -1,6 +1,6 @@
-import { Creneau } from './Entity/Creneau.js';
-import { Poste } from './Entity/Poste.js';
-import { Tache } from './Entity/Tache.js';
+import { Creneau } from './Creneau.js';
+import { Poste } from './Poste.js';
+import { Tache } from './Tache.js';
 
 /**
  * Classe représentant un backend pour effectuer des requêtes HTTP.
@@ -61,9 +61,7 @@ export class Backend {
 	static async fetchPostes(festivalId) {
 		const URL = Routing.generate('app_festival_all_poste', { id: festivalId });
 		const res = await Backend.#get(URL);
-		return res.postes?.map(poste => {
-			return new Poste(poste.id, poste.nom, poste.couleur);
-		}) || [];
+		return res.postes?.map(poste => new Poste(poste.id, poste.nom)) || [];
 	}
 
 	/**
@@ -150,8 +148,9 @@ export class Backend {
 	static async getTaches(festivalId) {
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
 		const data = await Backend.#get(URL);
+		console.log(data);
 		const res = data.map(
-			o => new Tache(o.id, o.description, o.nombre_benevole, new Poste(o.poste_id, o.poste_nom, o.poste_couleur), new Creneau(null, new Date(o.date_debut?.date), new Date(o.date_fin?.date)), o.benevoles)
+			o => new Tache(o.id, o.description, o.nombre_benevole, new Poste(o.poste_id, o.poste_nom), new Creneau(null, new Date(o.date_debut?.date), new Date(o.date_fin?.date)), o.benevoles)
 		);
 		return res;
 	}
