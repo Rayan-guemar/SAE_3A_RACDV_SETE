@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
-use App\Form\TacheType;
+use App\Form\ModifierTacheType;
 use App\Entity\Utilisateur;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
@@ -30,7 +30,9 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
+use App\Repository\TacheRepository;
 use DateTime;
 use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -614,6 +616,76 @@ class FestivalController extends AbstractController
         //dd($taches);
         return new JsonResponse($taches, Response::HTTP_OK);
     }
+
+    #[Route('/festival/{id}/tache/{idTache}/edit', name: 'app_festival_edit_tache', methods: [ 'GET','POST'], options: ["expose" => true])]
+    public function editTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, PosteRepository $pRep, LieuRepository $lRep): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $form = $this->createForm(ModifierTacheType::class, $t);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $t->setRemarque($form->get('remarque')->getData());
+            $t->setNombreBenevole($form->get('nbBenevole')->getData());
+            //faire une sorte de select ? , a voir avec les lieux existants
+           
+            if($lRep->findBy(["nomLieu" => $form->get('lieu')->getData(), "festival" => $f])){
+                $t->setLieu($lRep->findBy(["nomLieu" => $form->get('lieu')->getData(), "festival" => $f])[0]);
+            }
+            
+            if($pRep->findBy(["nom" =>$form->get('poste')->getData(), "festival" => $f])){
+                 $t->setPoste($pRep->findBy(["nom" =>$form->get('poste')->getData(), "festival" => $f])[0]);
+            }
+            
+            // pareil pour les postes avec un select ?      
+           
+            $em->persist($t);
+            $em->flush();
+
+            $this->addFlash('success', 'La tache a bien été modifiée');
+            return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
+        }
+
+        //a modifier
+        return $this->render('festival/testmodiftache.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+           
+        ]);
+    }
+
+    #[Route('/festival/{id}/tache/{idTache}/delete', name: 'app_festival_delete_tache', methods: ['DELETE'], options: ["expose" => true])]
+    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $em->remove($t);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'La tache a bien été supprimée'], Response::HTTP_OK);
+    }
+
+
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
     public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
