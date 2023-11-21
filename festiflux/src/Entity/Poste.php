@@ -30,6 +30,9 @@ class Poste {
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $couleur = null;
+
     /**
      * @return string|null
      */
@@ -121,6 +124,18 @@ class Poste {
     public function removeUtilisateursAime(Utilisateur $utilisateursAime): static
     {
         $this->utilisateurs_aime->removeElement($utilisateursAime);
+
+        return $this;
+    }
+
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(?string $couleur): static
+    {
+        $this->couleur = $couleur;
 
         return $this;
     }
