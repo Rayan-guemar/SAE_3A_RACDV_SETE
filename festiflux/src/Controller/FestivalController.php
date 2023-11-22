@@ -320,6 +320,8 @@ class FestivalController extends AbstractController {
         $poste = new Poste();
         $poste->setFestival($festival);
         $poste->setNom($request->toArray()['nom']);
+        $poste->setCouleur($request->toArray()['couleur']);
+        $poste->setDescription('');
 
         $em->persist($poste);
         $em->flush();
@@ -350,6 +352,7 @@ class FestivalController extends AbstractController {
             $tab[] = [
                 'id' => $poste->getId(),
                 'nom' => $poste->getNom(),
+                'couleur' => $poste->getCouleur(),
             ];
         }
 
@@ -482,6 +485,7 @@ class FestivalController extends AbstractController {
                     'date_fin' => $el->getCrenaux()->getDateFin(),
                     'poste_id' => $p->getId(),
                     'poste_nom' => $p->getNom(),
+                    'poste_couleur' => $p->getCouleur(),
                     'lieu' => 'un truc au pif',
                     'description' => $el->getRemarque(),
                     'nombre_benevole' => $el->getNombreBenevole(),

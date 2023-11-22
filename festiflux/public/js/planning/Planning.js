@@ -54,6 +54,12 @@ export class Planning {
 			this.addPosteForm = document.getElementById('add-poste');
 			this.createPosteBtn = document.getElementById('create-poste-btn');
 			this.createPosteInput = document.getElementById('poste-name');
+			this.colorPosteInput = document.getElementById('poste-color');
+
+			this.colorPosteInput.onchange = () => {
+				console.log('color : ' + this.colorPosteInput.value);
+			}
+
 		}
 
 		this.benevoleForm = document.getElementById('add-benevole');
@@ -129,7 +135,7 @@ export class Planning {
 
 			// Lorsque l'on clique sur le bouton "Créer" du formulaire de création de poste, on crée le poste
 			this.createPosteBtn.addEventListener('click', () => {
-				let poste = Poste.new(this.createPosteInput.value);
+				let poste = Poste.new(this.createPosteInput.value, this.colorPosteInput.value);
 				this.addPoste(poste);
 				this.addPosteForm.classList.remove('visible');
 				this.html.classList.remove('blurred');
@@ -218,9 +224,14 @@ export class Planning {
 					console.error(`Aucun div de poste trouvé pour le poste ${poste}`);
 					continue;
 				}
-				const color = poste.toColor();
-				posteEl.style.backgroundColor = `rgb(${color.join(',')}, 0.1)`;
-				posteEl.style.borderColor = `rgb(${color.join(',')})`;
+				if (!!poste.couleur) {
+					posteEl.style.backgroundColor = poste.couleur + '1A';
+					posteEl.style.borderColor = poste.couleur;
+				} else {
+					const color = poste.toColor();
+					posteEl.style.backgroundColor = `rgb(${color.join(',')}, 0.1)`;
+					posteEl.style.borderColor = `rgb(${color.join(',')})`;
+				}
 			}
 		}
 	}
@@ -391,8 +402,13 @@ export class Planning {
 
 		taskDiv.style.top = `${(t.creneau.debut.getHours() / 24) * 100}%`;
 		taskDiv.style.height = `${((t.creneau.fin.getHours() - t.creneau.debut.getHours()) / 24) * 100}%`;
-		taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-		taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+		if (!!t.poste.couleur) {
+			taskDiv.style.borderColor = t.poste.couleur;
+			taskDiv.style.backgroundColor = t.poste.couleur + '1A';
+		} else {
+			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+		}
 		taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
 		dayDiv.appendChild(taskDiv);
 	};
@@ -418,9 +434,15 @@ export class Planning {
 			taskDiv.style.margin = `0 2px`;
 			taskDiv.style.left = `${(100 / taches.length) * i}%`;
 			taskDiv.style.transform = `translateX(0%)`;
-			taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
-			taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
-			taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
+			if (!!t.poste.couleur) {
+				taskDiv.style.borderColor = t.poste.couleur;
+				taskDiv.style.backgroundColor = t.poste.couleur + '1A';
+				taskDiv.style.color = t.poste.couleur;
+			} else {
+				taskDiv.style.borderColor = `rgb(${t.poste.toColor().join(',')})`;
+				taskDiv.style.backgroundColor = `rgb(${t.poste.toColor().join(',')}, 0.1)`;
+				taskDiv.style.color = `rgb(${t.poste.toColor().join(',')})`;
+			}
 			if (this.isResponsableOrOrganisateur) {
 				taskDiv.addEventListener('click', async () => {
 					document.getElementById('tache-id').value = t.id;
