@@ -5,9 +5,11 @@ import { SortedTachesList } from './SortedTachesList.js';
 export class TachesManager {
 	/**
 	 *
+	 * @param {number} idFestival
 	 * @param {Tache[]} taches
 	 */
-	constructor(taches = []) {
+	constructor(idFestival, taches = []) {
+		this.idFestival = idFestival;
 		this.taches = taches;
 		this.sortedTaches = new SortedTachesList(taches);
 	}
@@ -28,7 +30,7 @@ export class TachesManager {
 	}
 
 	async update() {
-		this.taches = await Backend.fetchTaches();
+		this.taches = await Backend.getTaches(this.idFestival);
 		this.sortedTaches.update(this.taches);
 	}
 

@@ -1,3 +1,5 @@
+import { modalManager } from './ModalManager.js';
+
 class FormBuilder {
 	constructor() {
 		this.form = document.createElement('form');
@@ -15,6 +17,11 @@ class FormBuilder {
 	 */
 	addTextField(label, name, placeholder, validator) {
 		const fieldContainer = document.createElement('div');
+		fieldContainer.classList.add('field', 'field-' + name);
+
+		const errorDiv = document.createElement('div');
+		errorDiv.className = 'error';
+		fieldContainer.appendChild(errorDiv);
 
 		const labelElement = document.createElement('label');
 		labelElement.textContent = label;
@@ -32,14 +39,19 @@ class FormBuilder {
 
 		fieldContainer.appendChild(inputElement);
 
-		this.fields.push({ name, type });
+		this.fields.push({ name, type: 'text' });
 		this.validators[name] = validator; // Stockage de la fonction de validation
 
 		this.form.appendChild(fieldContainer);
 	}
 
-	addDateField(label, name, placeholder, validator, min, max, value = '') {
+	addDateField(label, name, placeholder, validator, min, max, value = '', required = false) {
 		const fieldContainer = document.createElement('div');
+		fieldContainer.classList.add('field', 'field-' + name);
+
+		const errorDiv = document.createElement('div');
+		errorDiv.className = 'error';
+		fieldContainer.appendChild(errorDiv);
 
 		const labelElement = document.createElement('label');
 		labelElement.textContent = label;
@@ -52,6 +64,7 @@ class FormBuilder {
 		inputElement.min = new Date(min).toISOString().split('T')[0];
 		inputElement.max = new Date(max).toISOString().split('T')[0];
 		inputElement.value = value;
+		inputElement.required = required;
 
 		// Ajout de l'événement de validation lors de la saisie
 		inputElement.addEventListener('input', () => {
@@ -65,9 +78,21 @@ class FormBuilder {
 
 		this.form.appendChild(fieldContainer);
 	}
-
-	addSelectField(label, name, placeholder, validator, options) {
+	/**
+	 *
+	 * @param {string} label
+	 * @param {string} name
+	 * @param {string} placeholder
+	 * @param {(t:any) => string} validator
+	 * @param {({value: string, label: string})[]} options
+	 */
+	addSelectField(label, name, placeholder, validator, options = []) {
 		const fieldContainer = document.createElement('div');
+		fieldContainer.classList.add('field', 'field-' + name);
+
+		const errorDiv = document.createElement('div');
+		errorDiv.className = 'error';
+		fieldContainer.appendChild(errorDiv);
 
 		const labelElement = document.createElement('label');
 		labelElement.textContent = label;
@@ -97,17 +122,48 @@ class FormBuilder {
 		this.form.appendChild(fieldContainer);
 	}
 
+	addSubmitButton(label) {
+		const submitButton = document.createElement('button');
+		submitButton.type = 'submit';
+		submitButton.textContent = label;
+		this.form.appendChild(submitButton);
+	}
+
 	/**
 	 * Valide un champ spécifique.
 	 * @param {string} name - Nom du champ.
 	 * @param {string} value - Valeur du champ.
 	 * @param {Function} validator - Fonction de validation pour le champ.
 	 */
-	validateField(name, value, validator) {
-		const errorElement = this.form.querySelector(`[data-error="${name}"]`);
+	validateField(name, value) {
+		const errorElement = this.form.querySelector(`.field-${name} .error`);
+		const validator = this.validators[name];
 		if (validator) {
 			const errorMessage = validator(value);
 			errorElement.textContent = errorMessage || '';
+			return !errorMessage;
+		}
+		return true;
+	}
+
+	getForm() {
+		return this.form;
+	}
+
+	onSubmit(callback) {
+		this.form.addEventListener('submit', event => {
+			event.preventDefault();
+			if (this.isValid()) {
+				callback(this.getFormData());
+			}
+		});
+	}
+
+	isValid() {
+		for (const field of this.fields) {
+			const inputElement = this.form.querySelector(`[name="${field.name}"]`);
+			const isValid = this.validateField(field.name, inputElement.value, this.validators[field.name]);
+			if (!isValid) return false;
 		}
 	}
 
@@ -131,43 +187,52 @@ class FormBuilder {
 	}
 }
 
-export class CInput {
-	constructor(label, type, name = '', placeholder = '', validator = null) {
-		this.label = label;
-		this.type = type;
-		this.name = name;
-		this.placeholder = placeholder;
-		this.validator = validator;
+export const testForm = new FormBuilder();
+testForm.addTextField('Nom', 'nom', 'Entrez votre nom', value => {
+	if (value.length < 3) return 'Le nom doit contenir au moins 3 caractères.';
+});
 
-		this.create();
-	}
+testForm.addTextField('Prénom', 'prenom', 'Entrez votre prénom', value => {
+	if (value.length < 3) return 'Le prénom doit contenir au moins 3 caractères.';
+});
 
-	create() {
-		this.fieldContainer = document.createElement('div');
+testForm.addDateField(
+	'Date de naissance',
+	'dateNaissance',
+	'Entrez votre date de naissance',
+	value => {
+		if (new Date(value) > new Date()) return 'La date de naissance ne peut pas être dans le futur.';
+	},
+	'1900-01-01',
+	new Date(),
+	null,
+	true
+);
 
-		this.labelElement = document.createElement('label');
-		this.labelElement.textContent = this.label;
-		this.fieldContainer.appendChild(this.labelElement);
+testForm.addSelectField(
+	'Sexe',
+	'sexe',
+	'Entrez votre sexe',
+	value => {
+		if (value === '') return 'Veuillez sélectionner une option.';
+	},
+	[
+		{
+			label: 'Homme',
+			value: 'homme'
+		},
+		{
+			label: 'Femme',
+			value: 'femme'
+		},
+		{
+			label: 'Autre',
+			value: 'autre'
+		}
+	]
+);
 
-		this.inputElement = document.createElement('input');
-		this.inputElement.type = this.type;
-		this.inputElement.name = this.name;
-		this.inputElement.placeholder = this.placeholder;
-
-		this.fieldContainer.appendChild(this.inputElement);
-	}
-}
-
-export class CInput_Text extends CInput {
-	constructor(label, name, placeholder, validator) {
-		super(label, 'text', name, placeholder, validator);
-	}
-}
-
-export class CInput_Date extends CInput {
-	constructor(label, name, placeholder, validator, min, max) {
-		super(label, 'date', name, placeholder, validator);
-		this.inputElement.min = new Date(min).toISOString().split('T')[0];
-		this.inputElement.max = new Date(max).toISOString().split('T')[0];
-	}
-}
+testForm.addSubmitButton('Envoyer');
+testForm.onSubmit(data => {
+	console.log(data);
+});

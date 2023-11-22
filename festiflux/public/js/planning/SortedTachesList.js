@@ -20,8 +20,6 @@ export class SortedTachesList {
 		 */
 		const overridingTaches = [];
 
-		console.log('TACHES: ' + taches);
-
 		for (const t of taches) {
 			const a = overridingTaches.find(ts => ts.some(_t => _t.overrides(t)));
 			if (a) a.push(t);

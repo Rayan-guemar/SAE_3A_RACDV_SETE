@@ -2,6 +2,8 @@ import { dateDiff } from './utils.js';
 import { TacheElement } from './Element/TacheElement.js';
 import { Tache } from './Entity/Tache.js';
 import { TachesManager } from './TachesManager.js';
+import { modalManager } from './ModalManager.js';
+import { testForm } from './Form.js';
 
 export class Planning {
 	constructor(festId, dateDebut, dateFin, taches = []) {
@@ -11,7 +13,7 @@ export class Planning {
 		this.dateFin = new Date(dateFin);
 		this.tacheElements = [];
 
-		this.tachesManager = new TachesManager(taches);
+		this.tachesManager = new TachesManager(festId, taches);
 		this.tachesManager.onSortedTachesUpdate(this.showTaches);
 
 		if (this.dateDebut > this.dateFin) {
@@ -28,7 +30,18 @@ export class Planning {
 		this.dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 		this.monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
+		this.init();
+
+		this.html.classList.remove('loading');
+		document.getElementById('loader').remove();
+
+		modalManager.openWith('form test', testForm.getForm());
+	}
+
+	init() {
 		this.initDays();
+		this.addListeners();
+		this.tachesManager.update();
 	}
 
 	/**
@@ -71,6 +84,7 @@ export class Planning {
 	showTaches() {
 		const sortedTaches = this.tachesManager.sortedTaches;
 		this.clearTaches();
+		console.log(sortedTaches);
 		for (const taches of sortedTaches) {
 			for (let i = 0; i < taches.length; i++) {
 				t = taches[i];
@@ -112,4 +126,62 @@ export class Planning {
 
 		return dateToDayMap;
 	};
+
+	/**
+	 * Ajoute les écouteurs d'événements pour les boutons et formulaires de la page de planification.
+	 * @returns {void}
+	 */
+	addListeners() {
+		// Lorsque l'on clique sur la flèche de gauche, les jours défilent vers la gauche
+		document.getElementById('scroll-btn-left').addEventListener('click', () => {
+			this.scrollDaysLeft();
+		});
+
+		// Lorsque l'on clique sur la flèche de droite, les jours défilent vers la droite
+		document.getElementById('scroll-btn-right').addEventListener('click', () => {
+			this.scrollDaysRight();
+		});
+	}
+
+	/**
+	 * Fait défiler les jours vers la gauche.
+	 * @function
+	 * @name scrollDaysLeft
+	 * @memberof Planning
+	 * @instance
+	 * @returns {void}
+	 */
+	scrollDaysLeft() {
+		let daysWidth = this.days.getBoundingClientRect().width;
+		let dayWidth = this.days.querySelector('.day').getBoundingClientRect().width;
+		let scroll = this.days.scrollLeft - Math.floor(daysWidth / dayWidth) * dayWidth;
+		if (scroll < 0) {
+			scroll = 0;
+		}
+		this.days.scrollTo({
+			left: scroll,
+			behavior: 'smooth'
+		});
+	}
+
+	/**
+	 * Fait défiler les jours vers la droite.
+	 * @function
+	 * @name scrollDaysRight
+	 * @memberof Planning
+	 * @instance
+	 * @returns {void}
+	 */
+	scrollDaysRight() {
+		let daysWidth = this.days.getBoundingClientRect().width;
+		let dayWidth = this.days.querySelector('.day').getBoundingClientRect().width;
+		let scroll = this.days.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
+		if (scroll > this.days.scrollWidth) {
+			scroll = this.days.scrollWidth;
+		}
+		this.days.scrollTo({
+			left: scroll,
+			behavior: 'smooth'
+		});
+	}
 }
