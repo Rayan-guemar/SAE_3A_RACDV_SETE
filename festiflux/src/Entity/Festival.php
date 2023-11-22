@@ -75,6 +75,9 @@ class Festival {
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'festivals')]
     private Collection $tags;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: QuestionBenevole::class)]
+    private Collection $questionBenevoles;
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -85,6 +88,7 @@ class Festival {
         $this->disponibilites = new ArrayCollection();
         $this->isArchive=0;
         $this->tags = new ArrayCollection();
+        $this->questionBenevoles = new ArrayCollection();
 
     }
 
@@ -369,6 +373,36 @@ class Festival {
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuestionBenevole>
+     */
+    public function getQuestionBenevoles(): Collection
+    {
+        return $this->questionBenevoles;
+    }
+
+    public function addQuestionBenevole(QuestionBenevole $questionBenevole): static
+    {
+        if (!$this->questionBenevoles->contains($questionBenevole)) {
+            $this->questionBenevoles->add($questionBenevole);
+            $questionBenevole->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionBenevole(QuestionBenevole $questionBenevole): static
+    {
+        if ($this->questionBenevoles->removeElement($questionBenevole)) {
+            // set the owning side to null (unless already changed)
+            if ($questionBenevole->getFestival() === $this) {
+                $questionBenevole->setFestival(null);
+            }
+        }
 
         return $this;
     }
