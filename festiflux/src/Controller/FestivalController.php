@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Poste;
 use App\Form\ModifierFestivalType;
+use App\Form\ModifierPosteType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
@@ -357,6 +358,80 @@ class FestivalController extends AbstractController {
             'postes' => $tab
         ], 200);
     }
+
+    #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['GET', 'POST'], options: ['expose' => true])]
+    public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste){
+        $f = $repository->find($id);
+        $p = $poste->find($idPoste);
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        $isBenevole = $utilisateurUtils->isBenevole($u, $f);
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f)) && !$isBenevole) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        if(!$f){
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }
+
+        if (!$p) {
+            return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
+        }
+
+        $form = $this->createForm(ModifierPosteType::class, $p);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $p->setNom($form->get('nom')->getData());
+
+            $em->persist($p);
+            $em->flush();
+
+            $this->addFlash('success', 'Le poste a bien été modifié');
+            return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
+        }
+        return $this->render('festival/modifierPoste.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/festival/{id}/poste/{idPoste}/delete', name: 'app_festival_delete_poste', methods: ['GET','DELETE'], options: ["expose" => true])]
+    public function deletePoste(Request $request, EntityManagerInterface $em, int $id, int $idPoste, FestivalRepository $repository, UtilisateurUtils $utilisateurUtils, PosteRepository $poste): Response {
+        $f = $repository->find($id);
+        $p = $poste->find($idPoste);
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        $isBenevole = $utilisateurUtils->isBenevole($u, $f);
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f)) && !$isBenevole) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        if(!$f){
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }
+
+        if (!$p) {
+            return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
+        }
+
+        $em->remove($p);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'Le poste a bien été supprimée'], Response::HTTP_OK);
+    }
+
 
     #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
     public function allBenevoles(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
