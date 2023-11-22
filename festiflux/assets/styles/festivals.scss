@@ -56,3 +56,16 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+
+
+
+
+
+.tags-input-wrapper .tag{
+  background-color: $blue-primary;
+  color: white;
+  border-radius: 40px;
+  padding: 0px 3px 0px 7px;
+  box-shadow: 0 5px 15px -2px $blue-primary;
+  margin: 2px;
+}

@@ -24,6 +24,7 @@
         this.arr = [];
         this.wrapper = document.createElement('div');
         this.input = document.createElement('input');
+        this.input.placeholder = 'Ajouter des Tags';
         init(this);
         initEvents(this);
 
@@ -127,6 +128,7 @@
     function init(tags){
         tags.wrapper.append(tags.input);
         tags.wrapper.classList.add(tags.options.wrapperClass);
+
         tags.orignal_input.setAttribute('hidden' , 'true');
         tags.orignal_input.parentNode.insertBefore(tags.wrapper , tags.orignal_input);
     }
@@ -172,5 +174,5 @@ var tagInput1 = new TagsInput({
     max : 10
 });
 
-tagInput1.addData(['R&R'])
+tagInput1.addData([])
     

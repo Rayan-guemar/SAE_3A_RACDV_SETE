@@ -64,9 +64,6 @@ class DemandeFestivalType extends AbstractType
             ])
             ->add('tags', TextType::class, [
                 'label' => 'Tag',
-                'attr' => [
-                    'placeholder' => 'Ajouter des tags'
-                ],
             ])
             ->add('afficheFestival' , FileType::class, [
                 'attr' => [
