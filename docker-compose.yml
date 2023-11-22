@@ -1,11 +1,22 @@
 version: '3.8'
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - ./festiflux:/app
+  database:
+    image: postgres:12.2
     ports:
-      - "8080:80"
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=festiflux
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./festiflux:/app
+      - ./local-database/init.sql:/docker-entrypoint-initdb.d/init.sql
