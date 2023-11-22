@@ -72,6 +72,9 @@ class Festival {
     #[ORM\Column(nullable: true)]
     private ?int $isArchive;
 
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'festivals')]
+    private Collection $tags;
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -81,6 +84,7 @@ class Festival {
         $this->postes = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->isArchive=0;
+        $this->tags = new ArrayCollection();
 
     }
 
@@ -343,6 +347,30 @@ class Festival {
     {
 
         $this->isArchive = 1;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
     }
 
 

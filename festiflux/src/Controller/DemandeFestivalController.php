@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\DemandeFestival;
 use App\Entity\Festival;
+use App\Entity\Tag;
 use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,7 +36,10 @@ class DemandeFestivalController extends AbstractController {
     public function add(Request $req, EntityManagerInterface $em, SluggerInterface $slugger) {
         $demandeFestival = new DemandeFestival();
 
+
+
         $form = $this->createForm(DemandeFestivalType::class, $demandeFestival);
+
 
         $form->handleRequest($req);
         if($req->isMethod('POST')) {
