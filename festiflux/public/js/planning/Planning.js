@@ -460,8 +460,6 @@ export class Planning {
 		const sortedTaches = this.sortTachesByOverriding();
 		const dateToDayMap = this.getDateToDayMapping();
 
-		console.log(sortedTaches);
-
 		for (const d of dateToDayMap.values()) {
 			[...d.getElementsByClassName('task')].forEach(t => t.remove());
 		}
@@ -482,7 +480,6 @@ export class Planning {
 	 */
 	refeshTachesList = async () => {
 		this.taches = await Backend.getTaches(this.festId);
-		console.log(this.taches);
 		this.renderTaches();
 	};
 
