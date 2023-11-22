@@ -37,6 +37,13 @@
 			<div id="mapid"></div>
 		</div>
 
+		{% if isOrganisateur %}
+			<div class="questionsBenevole">
+			</div>
+		{% endif %}
+		<div>
+		</div>
+
 		<div class="btn-container">
 			{% if isBenevole %}
 
@@ -47,6 +54,8 @@
 			{% elseif isResponsable %}
 
 			{% elseif isOrganisateur %}
+
+
 				<div class="button-benevole">
 					<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>
 				</div>
