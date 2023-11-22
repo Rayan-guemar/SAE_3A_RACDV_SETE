@@ -28,7 +28,7 @@
 			{{ form_row(form.lon,{'attr':{'id':'lon'}}) }}
 		</div>
 		{{ form_row(form.afficheFestival, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
-		{{ form_row(form.tags, {'label':false, 'attr': {'name':'tags', 'class': 'festival-form__input', 'placeholder': 'Ajouter des tags'} })  }}
+		{{ form_row(form.tags, {'label':"Ajouter les tags", 'attr': {'name':'tags', 'class': 'festival-form__input', 'placeholder': 'Ajouter des tags'} })  }}
 		{{ form_widget(form.demanderCreationFestival, {'label': 'Demander création', 'attr': {'class': 'festival-form__checkbox'} }) }}
 
 		{{ form_end(form) }}

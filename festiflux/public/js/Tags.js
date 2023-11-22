@@ -172,5 +172,5 @@ var tagInput1 = new TagsInput({
     max : 10
 });
 
-tagInput1.addData([])
+tagInput1.addData(['R&R'])
     

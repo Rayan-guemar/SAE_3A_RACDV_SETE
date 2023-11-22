@@ -45,21 +45,15 @@ class DemandeFestival
     private ?float $lon = null;
 
     #[ORM\Column(nullable: true)]
-    private Collection $tags;
+    private ?string $tags;
 
-    /**
-     * @param Collection $tags
-     */
-    public function __construct()
-    {
-        $this->tags = new ArrayCollection();
-    }
+
 
 
     /**
      * @return Collection
      */
-    public function getTags(): Collection
+    public function getTags(): string
     {
         return $this->tags;
     }
@@ -67,7 +61,7 @@ class DemandeFestival
     /**
      * @param Collection $tags
      */
-    public function setTags(Collection $tags): void
+    public function setTags(string $tags): void
     {
         $this->tags = $tags;
     }
