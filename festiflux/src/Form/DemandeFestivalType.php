@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\DemandeFestival;
+use phpDocumentor\Reflection\Types\Collection;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -57,6 +59,15 @@ class DemandeFestivalType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Lieu du festival'
                 ]
+            ])
+            ->add('tags', CollectionType::class, [
+                'label' => 'Tag',
+                'entry_type' => TagType::class,
+                'entry_options' => ['label' => false,
+                    'attr' => ['placeholder' => 'Ajouter des tags']
+                ],
+                'allow_add' => true,
+
             ])
             ->add('afficheFestival' , FileType::class, [
                 'attr' => [

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DemandeFestivalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +43,37 @@ class DemandeFestival
 
     #[ORM\Column(nullable: true)]
     private ?float $lon = null;
+
+    #[ORM\Column(nullable: true)]
+    private Collection $tags;
+
+    /**
+     * @param Collection $tags
+     */
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
+
+    /**
+     * @return Collection
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Collection $tags
+     */
+    public function setTags(Collection $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+
+
 
     public function getId(): ?int
     {
