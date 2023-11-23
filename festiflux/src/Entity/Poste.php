@@ -33,6 +33,9 @@ class Poste {
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $couleur = null;
 
+    #[ORM\OneToMany(mappedBy: 'posteId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
+    private Collection $posteUtilisateurPreferences;
+
     /**
      * @return string|null
      */
@@ -52,6 +55,7 @@ class Poste {
     public function __construct() {
         $this->taches = new ArrayCollection();
         $this->utilisateurs_aime = new ArrayCollection();
+        $this->posteUtilisateurPreferences = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -136,6 +140,36 @@ class Poste {
     public function setCouleur(?string $couleur): static
     {
         $this->couleur = $couleur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PosteUtilisateurPreferences>
+     */
+    public function getPosteUtilisateurPreferences(): Collection
+    {
+        return $this->posteUtilisateurPreferences;
+    }
+
+    public function addPosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
+    {
+        if (!$this->posteUtilisateurPreferences->contains($posteUtilisateurPreference)) {
+            $this->posteUtilisateurPreferences->add($posteUtilisateurPreference);
+            $posteUtilisateurPreference->setPosteId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
+    {
+        if ($this->posteUtilisateurPreferences->removeElement($posteUtilisateurPreference)) {
+            // set the owning side to null (unless already changed)
+            if ($posteUtilisateurPreference->getPosteId() === $this) {
+                $posteUtilisateurPreference->setPosteId(null);
+            }
+        }
 
         return $this;
     }
