@@ -58,9 +58,8 @@ class ModalManager {
 
 		// Attacher les gestionnaires d'événements
 		document.body.appendChild(this.modal); // Ajouter la modale au corps du document
-		this.modal.appendChild(this.overlay); // Ajouter l'overlay au corps du document
 
-		this.closeButton.addEventListener('click', this.close);
+		this.closeButton.addEventListener('click', this.close.bind(this));
 	}
 
 	/**
@@ -76,6 +75,7 @@ class ModalManager {
 		const overlay = document.createElement('div');
 		overlay.className = 'overlay';
 		this.overlay = overlay;
+		this.modal.appendChild(overlay);
 	}
 
 	/**
@@ -102,7 +102,10 @@ class ModalManager {
 
 		this.modalHeader.appendChild(this.modalTitle);
 		this.modalHeader.appendChild(this.closeButton);
-		this.modalContent.appendChild(this.modalHeader);
+
+		this.modal.appendChild(this.modalHeader);
+
+		this.modal.appendChild(this.modalContent);
 	}
 
 	/**

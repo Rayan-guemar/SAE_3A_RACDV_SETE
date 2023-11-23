@@ -14,7 +14,7 @@ export class Planning {
 		this.tacheElements = [];
 
 		this.tachesManager = new TachesManager(festId, taches);
-		this.tachesManager.onSortedTachesUpdate(this.showTaches);
+		this.tachesManager.onSortedTachesUpdate(this.showTaches.bind(this));
 
 		if (this.dateDebut > this.dateFin) {
 			throw new Error('La date de début doit être antérieure à la date de fin.');
@@ -85,9 +85,9 @@ export class Planning {
 		const sortedTaches = this.tachesManager.sortedTaches;
 		this.clearTaches();
 		console.log(sortedTaches);
-		for (const taches of sortedTaches) {
+		for (const taches of sortedTaches.taches) {
 			for (let i = 0; i < taches.length; i++) {
-				t = taches[i];
+				const t = taches[i];
 				const tElement = new TacheElement(t, i, taches.length);
 				this.tacheElements.push(tElement.htmlNode());
 			}

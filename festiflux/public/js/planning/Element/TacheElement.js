@@ -1,3 +1,4 @@
+import { encodedStr } from '../utils.js';
 import { Tache } from '../Entity/Tache.js';
 
 export class TacheElement {
