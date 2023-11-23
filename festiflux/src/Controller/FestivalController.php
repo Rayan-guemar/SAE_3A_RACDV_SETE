@@ -7,7 +7,9 @@ use App\Form\ModifierFestivalType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,18 +45,30 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/all', name: 'app_festival_all')]
-    public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response {
+    public function all(FestivalRepository $repository, TagRepository $tagRepository , Request $request, FlashMessageService $flashMessageService): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $festivals = $repository->findBySearch($searchData);
+            $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
+            if ($festivalsWithNameOrAddress!=null) {
+                return $this->render('festival/index.html.twig', [
+                    'form' => $form->createView(),
+                    'festivals' => $festivalsWithNameOrAddress
+                ]);
+            }
+            $listeTags=$tagRepository->findBySearch($searchData);
+            foreach ($listeTags as $tag){
+                $festivalsWithTag = (($tag)->getFestivals());
+            }
 
-            return $this->render('festival/index.html.twig', [
-                'form' => $form->createView(),
-                'festivals' => $festivals
-            ]);
+            if ($festivalsWithTag!=null){
+                return $this->render('festival/index.html.twig', [
+                    'form' => $form->createView(),
+                    'festivals' => ($festivalsWithTag)
+                ]);
+            }
         }
 
         $festivals = $repository->findAll();
