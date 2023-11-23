@@ -135,8 +135,8 @@ export class Backend {
 			dateDebut: new Date(tache.creneau.debut),
 			dateFin: new Date(tache.creneau.fin),
 			poste_id: tache.poste.id,
-			lieu: tache.lieu,
-			addresse: tache.addresse,
+			lieu: tache.lieu.nom,
+			addresse: tache.lieu.addresse,
 			description: tache.description,
 			nombre_benevole: tache.nbBenevole
 		};
