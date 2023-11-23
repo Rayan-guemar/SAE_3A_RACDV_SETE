@@ -337,24 +337,6 @@ export class Planning {
 	};
 
 	/**
-	 *
-	 * @param {Tache} tache
-	 * @param {HTMLDivElement} dayDiv
-	 */
-	scrollDaysRight() {
-		let daysWidth = this.days.getBoundingClientRect().width;
-		let dayWidth = this.days.querySelector('.day').getBoundingClientRect().width;
-		let scroll = this.days.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
-		if (scroll > this.days.scrollWidth) {
-			scroll = this.days.scrollWidth;
-		}
-		this.days.scrollTo({
-			left: scroll,
-			behavior: 'smooth'
-		});
-	}
-
-	/**
 	 * Récupère la correspondance entre les dates et les divs de chaque jour.
 	 * @returns {Map<string, HTMLElement>} Un objet contenant la correspondance entre les dates et les divs de chaque jour.
 	 */
