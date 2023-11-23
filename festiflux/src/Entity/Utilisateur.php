@@ -76,6 +76,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
+    private Collection $posteUtilisateurPreferences;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -85,6 +88,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->disponibilites = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->postes_aime = new ArrayCollection();
+        $this->posteUtilisateurPreferences = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -373,6 +377,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     {
         if ($this->postes_aime->removeElement($postesAime)) {
             $postesAime->removeUtilisateursAime($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PosteUtilisateurPreferences>
+     */
+    public function getPosteUtilisateurPreferences(): Collection
+    {
+        return $this->posteUtilisateurPreferences;
+    }
+
+    public function addPosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
+    {
+        if (!$this->posteUtilisateurPreferences->contains($posteUtilisateurPreference)) {
+            $this->posteUtilisateurPreferences->add($posteUtilisateurPreference);
+            $posteUtilisateurPreference->setUtilisateurId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
+    {
+        if ($this->posteUtilisateurPreferences->removeElement($posteUtilisateurPreference)) {
+            // set the owning side to null (unless already changed)
+            if ($posteUtilisateurPreference->getUtilisateurId() === $this) {
+                $posteUtilisateurPreference->setUtilisateurId(null);
+            }
         }
 
         return $this;
