@@ -12,6 +12,10 @@
 {% endblock %}
 {% block body %}
 	<div class="detailFesival">
+		<div class="poste-modal">
+			<h4>Liste des postes</h4>
+			<div class="postes"></div>
+		</div>
 		<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
 		<div class="fest-info" id="fest-info">
 			<div class="fest-nom">

@@ -398,6 +398,10 @@
             outline: none;
             border-color: $blue-primary;
         }
+
+        &[type="color"] {
+            padding: 0;
+        }
     }
 }
 
