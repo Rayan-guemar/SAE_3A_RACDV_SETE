@@ -15,7 +15,7 @@ export class Tache {
    * @param {Poste} poste - Le poste associé à la tâche.
    * @param {Creneau} creneau - Le créneau horaire associé à la tâche.
    */
-  constructor(id, description, nbBenevole, poste, creneau, benevoles = [], lieu, addresse) {
+  constructor(id, description, nbBenevole, poste, creneau, lieu , benevoles = []) {
     this.id = id;
     this.description = description;
     this.nbBenevole = nbBenevole;
@@ -23,7 +23,7 @@ export class Tache {
     this.creneau = creneau;
     this.benevoles = benevoles;
     this.lieu = lieu;
-    this.addresse = addresse;
+
   }
 
   /**

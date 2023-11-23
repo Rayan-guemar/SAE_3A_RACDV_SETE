@@ -3,6 +3,7 @@ import { Poste } from './Poste.js';
 import { Backend } from './Backend.js';
 import { Creneau } from './Creneau.js';
 import { Tache } from './Tache.js';
+import { Lieu } from './Lieu.js';
 
 /**
  * Classe représentant un planning.
@@ -142,8 +143,9 @@ export class Planning {
 				const description = this.creneauDescription.value;
 				const nbBenevole = +this.creneauNombreBenevole.value || 0;
 				const posteId = +this.creneauPosteSelect.value;
-				const lieu = document.getElementById('creneau-lieu').value;
-				const addresse = document.getElementById('creneau-lieu-address').value;
+				const lieu = new Lieu();
+				lieu.setNom(document.getElementById('creneau-lieu').value);
+				lieu.setAdresse(document.getElementById('creneau-lieu-address').value);
 
 				if (debut > fin) return alert('La date de début doit être inférieure à la date de fin');
 				if (debut <= this.dateDebut || fin >= this.dateFin) return alert('Les créneaux doivent être compris dans la période du festival');
@@ -156,7 +158,7 @@ export class Planning {
 
 				console.log("debut :" + this.startCreneauxInput.value , "fin : " + this.endCreneauxInput.value);
 				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
-				const t = new Tache(null, description, nbBenevole, p, c, [], lieu, addresse);
+				const t = new Tache(null, description, nbBenevole, p, c, lieu);
 				
 				this.addTache(t);
 				this.addCreneauxForm.classList.remove('visible');
