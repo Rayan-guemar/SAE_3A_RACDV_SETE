@@ -7,6 +7,7 @@ use App\Entity\Festival;
 use App\Entity\Tag;
 use App\Form\DemandeFestivalType;
 use App\Repository\DemandeFestivalRepository;
+use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,7 +94,7 @@ class DemandeFestivalController extends AbstractController {
     }
 
     #[Route('/demandefestival/accept/{id}', name: 'app_demandefestival_accept')]
-    public function accept(DemandeFestivalRepository $demandeFestivalRepository, EntityManagerInterface $em, int $id): Response {
+    public function accept(TagRepository $tagRepository,DemandeFestivalRepository $demandeFestivalRepository, EntityManagerInterface $em, int $id): Response {
         // TODO : vérifier que l'utilisateur est bien un admin
         $demandeFestival = $demandeFestivalRepository->find($id);
         if ($demandeFestival === null) {
@@ -110,6 +111,14 @@ class DemandeFestivalController extends AbstractController {
         $festivals->setLat($demandeFestival->getLat());
         $festivals->setLon($demandeFestival->getLon());
         $festivals->setAffiche($demandeFestival->getAfficheFestival());
+
+        $tag_arr = explode (",", $demandeFestival->getTags());
+        foreach ($tag_arr as $tagName){
+            $verif = ($tagRepository)->findBy(["nom"=>$tagName]);
+            ($verif!= null)? $tag = $verif[0] : $tag = new Tag($tagName); $em->persist($tag);
+            $festivals->addTag($tag);
+        }
+
 
         $em->persist($festivals);
         $em->remove($demandeFestival);

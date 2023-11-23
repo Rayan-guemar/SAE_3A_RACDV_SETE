@@ -18,5 +18,9 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@yaireo/tagify": "^4.17.9",
+        "jquery": "^3.7.1"
     }
 }
