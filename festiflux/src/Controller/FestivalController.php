@@ -450,7 +450,7 @@ class FestivalController extends AbstractController
         if ($dateDebut > $dateFin) {
             return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
         } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
-            return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_GATEWAY);
+            return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
         } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
             return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
         }
