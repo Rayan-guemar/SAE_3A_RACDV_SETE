@@ -89,3 +89,7 @@ export const hashCode = (s: string): number => {
 export const assetsPath = (path: string): string => {
 	return `../../../public/${path}`;
 }
+
+export const generate_route = (route_name: string) => {
+  
+}

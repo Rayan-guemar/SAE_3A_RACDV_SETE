@@ -148,16 +148,27 @@ export class Backend {
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
 		const data = await Backend.#get(URL);
 		console.log(data);
-		const res = data.map(
+		const res = [...data].map(
 			(o: any) => ({
                 id: o.id, 
                 description: o.description, 
                 nbBenevole: o.nombre_benevole, 
-                poste: { id: o.poste_id, nom: o.poste_nom } as Poste, 
-                creneau: { id: null, debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) } as Creneau, 
+                poste: { id: o.poste_id, nom: o.poste_nom }, 
+                creneau: { id: null, debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) }, 
                 benevoles: o.benevoles
             } as Tache)
 		);
 		return res;
+	}
+
+	static async getICS(festId: number) : Promise<any> {
+		// @ts-ignore
+		const URL = Routing.generate('app_send_icsFile', { idFest: festId });
+		try {
+			await fetch(URL);
+			alert('Votre allez recevoir un mail avec en pj le fichier ics.');
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }

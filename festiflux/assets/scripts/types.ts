@@ -8,6 +8,14 @@ export interface Tache {
     benevoles?: any[]; // Ajouter le type approprié pour le tableau benevoles
 }
 
+export interface Festival {
+    festID: number,
+    title: string,
+    dateDebut: Date,
+    dateFin: Date,
+    isOrgaOrResp: boolean,
+}
+
 export interface Poste {
     id: number;
     nom: string;

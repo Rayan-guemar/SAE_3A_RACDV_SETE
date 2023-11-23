@@ -1,10 +1,11 @@
 <script setup lang="ts">
     import { VNodeRef, ref } from 'vue';
     import { dateDiff, assetsPath } from '../../scripts/utils';
-    import { Tache as TacheType } from '../../scripts/types';
+    import { Tache as TacheType, Festival } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
-    import ModalForm from './ModalForm.vue';
+    import Modal from './Modal.vue';
+    import TacheForm from './TacheForm.vue';
 
 
     type Props = {
@@ -12,14 +13,6 @@
         title: string,
         dateDebut: string,
         dateFin: string,
-        isOrgaOrResp: boolean,
-    }
-
-    interface Festival {
-        festID: number,
-        title: string,
-        dateDebut: Date,
-        dateFin: Date,
         isOrgaOrResp: boolean,
     }
 
@@ -41,7 +34,6 @@
 
     const taches = ref<TacheType[]>([]);
     const loading = ref(true);
-    const creatingPoste = ref(false);
     const creatingTache = ref(false);
 
     const getTaches = async () => {
@@ -51,7 +43,7 @@
         }
     }
 
-    function scrollDaysLeft() {
+    const scrollDaysLeft = () => {
         let div = daysDiv.value;
         if (!div) return;
         let daysWidth = div.getBoundingClientRect().width;
@@ -66,7 +58,7 @@
         });
     }
 
-    function scrollDaysRight() {
+    const scrollDaysRight = () => {
         let div = daysDiv.value;
         if (!div) return;
         let daysWidth = div.getBoundingClientRect().width;
@@ -81,6 +73,18 @@
         });
     }
 
+    const startCreatingTache = () => {
+        creatingTache.value = true;
+    }
+
+    const stopCreatingTache = () => {
+        creatingTache.value = false;
+    }
+
+    const askForICS = () => {
+        Backend.getICS(festival.value.festID);
+    }
+
     (async () => {
         await getTaches();
         loading.value = false;
@@ -90,9 +94,9 @@
 <template>
     <div v-if="loading" id="loader"></div>
 
-    <h2 v-if="!loading">{{ title }}</h2>
+    <h2 v-if="!loading" :class="{'blurred': creatingTache}">{{ title }}</h2>
 
-    <div v-if="!loading" id="planning" class="loading">
+    <div v-if="!loading" id="planning" :class="{'blurred': creatingTache}">
         <div class="hours">
             <div class="hour" v-for="i in parseInt('11')">{{ ((i * 2) < 10 ? '0' + (i * 2) : (i * 2)) + 'h00' }}</div>
         </div>
@@ -104,22 +108,20 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
-                    <Tache v-for="tache of taches.filter(t => t.creneau.debut.getDate() === day.getDate())" :tache="tache" :position="tache.poste.id" :total="taches.length" />
+                    <Tache v-for="tache of taches.filter(t => t.creneau.debut.getDate() === day.getDate())" :tache="tache" :position="0" :total="1" />
                 </div>
             </div>
         </div>
         <div class="manage-interface">
             <h4>Liste des postes</h4>
             <div class="postes"></div>
-
-            <div v-if="isOrgaOrResp" id="add-poste-btn" class="btn" @click="() => creatingPoste = true">Créer un poste</div>
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn">Ajouter un créneau</div>
 
-            <div id="add-ics-btn" class="btn">Demander un fichier ics</div>
+            <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
         </div>
     </div>
 
-    <div v-if="!loading" class="scroll-btn">
+    <div v-if="!loading" class="scroll-btn" :class="{'blurred': creatingTache}">
         <div id="scroll-btn-left" @click="scrollDaysLeft" >
             <img src="../../../public/icons/fleche-gauche.png" alt="Gauche">
         </div>
@@ -128,22 +130,20 @@
         </div>
     </div>
 
-    <ModalForm 
-        v-if="creatingPoste"
+    <Modal
+        v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        :inputs="[
-            {
-                label: 'Intitulé du poste',
-                type: 'text',
-                id: 'poste-name',
-                name: 'poste-n',
-            }
-        ]"
-        :submitBtn="{
-            id: 'create-poste-btn',
-            text: 'Créer',
-        }"
-        :active="creatingPoste"
+        :hideModal="stopCreatingTache"
+        :element="(
+            <TacheForm
+                festID={festival.value.festID}
+                title={festival.value.title}
+                dateDebut={festival.value.dateDebut.toISOString()}
+                dateFin={festival.value.dateFin.toISOString()}
+                isOrgaOrResp={festival.value.isOrgaOrResp}
+            />
+        )"
     />
+
 </template>
