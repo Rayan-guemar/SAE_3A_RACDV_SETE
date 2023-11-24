@@ -155,8 +155,6 @@ export class Planning {
 				const p = this.postes.find(poste => poste.id === posteId);
 				if (!p) return console.error('Poste introuvable');
 
-
-				console.log("debut :" + this.startCreneauxInput.value , "fin : " + this.endCreneauxInput.value);
 				const c = new Creneau(null, new Date(this.startCreneauxInput.value), new Date(this.endCreneauxInput.value));
 				const t = new Tache(null, description, nbBenevole, p, c, lieu);
 				
