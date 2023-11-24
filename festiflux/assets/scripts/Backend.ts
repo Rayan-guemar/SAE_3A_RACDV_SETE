@@ -1,7 +1,6 @@
-import { Benevole, Creneau, Poste, Tache } from "./types";
+import { Benevole, Creneau, Poste, Tache, TacheCreateData } from './types';
 
 export class Backend {
-
 	static async #fetch(URL: string, body?: RequestInit): Promise<any> {
 		const response = await fetch(URL, body);
 		if (!response.ok) {
@@ -48,11 +47,11 @@ export class Backend {
 	 * @param {number} festivalId - L'identifiant du festival.
 	 * @returns {Promise<Poste[]>} - Une promesse qui résout avec les données des postes.
 	 */
-	static async fetchPostes(festivalId: number) {
-        // @ts-ignore
+	static async getPostes(festivalId: number): Promise<Poste[]> {
+		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_poste', { id: festivalId });
 		const res = await Backend.#get(URL);
-		return res.postes?.map((poste: Poste) => ({id: poste.id, nom: poste.nom} as Poste)) || [];
+		return res.postes?.map((poste: Poste) => ({ id: poste.id, nom: poste.nom } as Poste)) || ([] as Poste[]);
 	}
 
 	/**
@@ -61,7 +60,7 @@ export class Backend {
 	 * @returns {Promise<Benevole[]>} - Une promesse qui résout avec les données des benevoles.
 	 */
 	static async fetchBenevoles(festivalId: number) {
-        // @ts-ignore
+		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_benevole', {
 			id: festivalId
 		});
@@ -82,24 +81,24 @@ export class Backend {
 	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
 	 */
 	static async addBenevole(benevole: Benevole, tache: Tache) {
-        // @ts-ignore
+		// @ts-ignore
 		const URL = Routing.generate('app_user_task_add', {
 			id: benevole.id,
 			idTask: tache.id
 		});
 		console.log(benevole, URL);
-        // @ts-ignore
+		// @ts-ignore
 		await Backend.#post(URL, '');
 	}
 
 	static async removeBenevole(benevole: Benevole, tache: Tache) {
-        // @ts-ignore
+		// @ts-ignore
 		const URL = Routing.generate('app_user_task_remove', {
 			id: benevole.id,
 			idTask: tache.id
 		});
 		console.log(benevole, URL);
-        // @ts-ignore
+		// @ts-ignore
 		await Backend.#post(URL, '');
 	}
 
@@ -110,7 +109,7 @@ export class Backend {
 	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
 	 */
 	static addPoste(festivalId: number, poste: Poste) {
-        // @ts-ignore
+		// @ts-ignore
 		const URL = Routing.generate('app_festival_create_poste', {
 			id: festivalId
 		});
@@ -121,21 +120,12 @@ export class Backend {
 	 * Ajoute une tâche à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
 	 * @param {Tache} tache - Les informations de la tâche à ajouter.
-	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
+	 * @returns {Promise<number>} - Une promesse qui résout avec les données de la réponse.
 	 */
-	static async addTache(festivalId:  Benevole, tache: Tache) {
-		console.log(tache);
-		const body = {
-			dateDebut: tache.creneau.debut.toLocaleString(),
-			dateFin: tache.creneau.fin.toLocaleString(),
-			poste_id: tache.poste.id,
-			lieu: tache.lieu,
-			description: tache.description,
-			nombre_benevole: tache.nbBenevole
-		}  as RequestInit;
-        // @ts-ignore
+	static async addTache(festivalId: number, tache: TacheCreateData) {
+		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
-		await Backend.#post(URL, body);
+		await Backend.#post(URL, tache as RequestInit);
 	}
 
 	/**
@@ -143,25 +133,27 @@ export class Backend {
 	 * @param {string} festivalId
 	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
 	 */
-	static async getTaches(festivalId: number) : Promise<Tache[]> {
-        // @ts-ignore
+	static async getTaches(festivalId: number): Promise<Tache[]> {
+		// @ts-ignore
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
 		const data = await Backend.#get(URL);
-		console.log(data);
 		const res = [...data].map(
-			(o: any) => ({
-                id: o.id, 
-                description: o.description, 
-                nbBenevole: o.nombre_benevole, 
-                poste: { id: o.poste_id, nom: o.poste_nom }, 
-                creneau: { id: null, debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) }, 
-                benevoles: o.benevoles
-            } as Tache)
+			(o: any) =>
+				({
+					id: o.id,
+					description: o.description,
+					nbBenevole: o.nombre_benevole,
+					poste: { id: o.poste_id, nom: o.poste_nom } as Poste,
+					creneau: { debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) },
+					benevoles: o.benevoles
+				} as Tache)
 		);
+		console.log(res);
+
 		return res;
 	}
 
-	static async getICS(festId: number) : Promise<any> {
+	static async getICS(festId: number): Promise<any> {
 		// @ts-ignore
 		const URL = Routing.generate('app_send_icsFile', { idFest: festId });
 		try {

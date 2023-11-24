@@ -30,7 +30,7 @@ const {tache} = defineProps<Props>()
 </script>
 
 <template>
-    <div class="task" :id="tache.id" :style="{
+    <div class="task" :id="''+tache.id" :style="{
       top: `${((tache.creneau.debut.getHours() * 60 + tache.creneau.debut.getMinutes()) / (24 * 60)) * 100}%`,
       height: `${((tache.creneau.fin.getHours() * 60 + tache.creneau.fin.getMinutes() - (tache.creneau.debut.getHours() * 60 + tache.creneau.debut.getMinutes())) / (24 * 60)) * 100}%`,
       width: `calc(${100 / total}% - 4px)`,

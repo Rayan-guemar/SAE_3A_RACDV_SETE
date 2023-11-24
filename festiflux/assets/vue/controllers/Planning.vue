@@ -1,11 +1,12 @@
 <script setup lang="ts">
     import { VNodeRef, ref } from 'vue';
     import { dateDiff, assetsPath } from '../../scripts/utils';
-    import { Tache as TacheType, Festival } from '../../scripts/types';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
     import TacheForm from './TacheForm.vue';
+    import { sortTachesByOverriding } from '../../scripts/tache';
 
 
     type Props = {
@@ -33,13 +34,26 @@
     const daysDiv = ref<HTMLDivElement>();
 
     const taches = ref<TacheType[]>([]);
+    const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
+    const postes = ref<Poste[]>([]);
+
     const loading = ref(true);
     const creatingTache = ref(false);
 
+
     const getTaches = async () => {
         const res = await Backend.getTaches(festival.value.festID);
+
         if (res) {
             taches.value = res;
+            sortedTaches.value = sortTachesByOverriding(res);
+        }
+    }
+
+    const getPostes = async () => {
+        const res = await Backend.getPostes(festival.value.festID);
+        if (res) {
+            postes.value = res;
         }
     }
 
@@ -74,6 +88,8 @@
     }
 
     const startCreatingTache = () => {
+        console.log('zizi');
+        
         creatingTache.value = true;
     }
 
@@ -85,8 +101,31 @@
         Backend.getICS(festival.value.festID);
     }
 
+    const updateTaches = async (tache: TacheCreateData) => {
+        const poste = postes.value.find(
+            (p) => {
+                return p.id == tache.poste_id
+        });  
+        if (!poste) {
+            throw new Error("pas de poste trouvé")
+        }
+        const t: TacheType = {
+            description: tache.description,
+            nbBenevole: tache.nombre_benevole,
+            poste: poste,
+            creneau: {
+                debut: tache.date_debut,
+                fin: tache.date_fin
+            }
+        }
+
+        sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+        await getTaches();
+    }
+
     (async () => {
         await getTaches();
+        await getPostes();
         loading.value = false;
     })()
 </script>
@@ -108,14 +147,12 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
-                    <Tache v-for="tache of taches.filter(t => t.creneau.debut.getDate() === day.getDate())" :tache="tache" :position="0" :total="1" />
+                    <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
         <div class="manage-interface">
-            <h4>Liste des postes</h4>
-            <div class="postes"></div>
-            <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn">Ajouter un créneau</div>
+            <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
         </div>
@@ -134,16 +171,15 @@
         v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        :hideModal="stopCreatingTache"
-        :element="(
-            <TacheForm
-                festID={festival.value.festID}
-                title={festival.value.title}
-                dateDebut={festival.value.dateDebut.toISOString()}
-                dateFin={festival.value.dateFin.toISOString()}
-                isOrgaOrResp={festival.value.isOrgaOrResp}
-            />
-        )"
-    />
-
+        :hideModal="stopCreatingTache" >
+        <TacheForm
+            :festID="festival.festID"
+            :title="festival.title"
+            :dateDebut="festival.dateDebut.toISOString()"
+            :dateFin="festival.dateFin.toISOString()"
+            :isOrgaOrResp="festival.isOrgaOrResp"
+            :postes="postes"
+            :update-taches="updateTaches"
+        />
+    </Modal>
 </template>

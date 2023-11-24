@@ -5,11 +5,10 @@ import { Input, SubmitBtn } from '../../scripts/types';
 interface Props {
     id: string;
     title: string;
-    element: VueElement;
     hideModal: () => void;
 }
 
-const { id, title, element, hideModal } = defineProps<Props>();
+const { id, title, hideModal } = defineProps<Props>();
 
 </script>
 
@@ -20,7 +19,8 @@ const { id, title, element, hideModal } = defineProps<Props>();
                 <img src="../../../public/icons/x-mark.png" alt="Fermer">
             </div>
         </div>
+        <slot>
 
-        {{ element }}
+        </slot>
     </div>
 </template>
