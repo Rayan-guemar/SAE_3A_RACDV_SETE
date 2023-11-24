@@ -491,6 +491,66 @@ class FestivalController extends AbstractController
         ], 200);
     }
 
+    #[Route('/tache/{id}/benevolespref', name: 'app_tache_benevolespref',  methods: ['GET'], options: ['expose' => true])]
+    public function Benevolespref(TacheRepository $repository, #[MapEntity] Tache $tache, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse
+    {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $tache->getPoste()->getFestival()) || $utilisateurUtils->isResponsable($u, $tache->getPoste()->getFestival()))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $benevolesAdore = [];
+        $benevolesAime =  [];
+        $benevolesAimePas = [];
+
+        foreach($tache->getPoste()->getPosteUtilisateurPreferences() as $bp){
+            if ($bp->getPreferencesDegree()==1){
+                $benevolesAdore[] = $bp->getUtilisateurId();
+            }else if ($bp->getPreferencesDegree()==0){
+                $benevolesAime[] = $bp->getUtilisateurId();
+            }else{
+                $benevolesAimePas[] = $bp->getUtilisateurId();
+            }
+        }
+
+
+        $tab1 = [];
+        $tab2 = [];
+        $tab3 = [];
+
+        foreach ($benevolesAdore as $benevole) {
+            $tab1[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+        foreach ($benevolesAime as $benevole) {
+            $tab2[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+        foreach ($benevolesAimePas as $benevole) {
+            $tab3[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+
+        return new JsonResponse([
+            'benevolesAdore' => $tab1,
+            'benevolesAime' => $tab2,
+            'benevolesAimePas' => $tab3,
+        ], 200);
+    }
+
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
     {
