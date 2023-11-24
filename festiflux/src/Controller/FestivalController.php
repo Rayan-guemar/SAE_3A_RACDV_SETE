@@ -515,10 +515,10 @@ class FestivalController extends AbstractController
             $description = (string)$body['description'];
             $nombreBenevole = (int)$body['nombre_benevole'];
             $poste_id = (string)$body['poste_id'];
-            $dateDebut = new DateTime($body['dateDebut']);
-            $dateFin = new DateTime($body['dateFin']);
+            $dateDebut = new DateTime($body['date_debut']);
+            $dateFin = new DateTime($body['date_fin']);
             $lieu = (string)$body['lieu'];
-            $address = (string)$body['addresse'];
+            $address = (string)$body['adresse'];
         } catch (\Throwable $th) {
             if ($th instanceof \ErrorException) {
                 return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
@@ -554,16 +554,16 @@ class FestivalController extends AbstractController
         $l->setAddress($address);
         $l->setFestival($f);
 
+        $em->persist($l);
+        $em->persist($c);
 
         $t->setCrenaux($c);
         $t->setPoste($p);
         $t->setLieu($l);
 
-        $em->persist($l);
-        $em->persist($c);
         $em->persist($t);
-        $em->flush();
 
+        $em->flush();
 
         return new JsonResponse(status: Response::HTTP_CREATED);
     }
