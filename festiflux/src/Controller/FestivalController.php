@@ -590,6 +590,7 @@ class FestivalController extends AbstractController
                     'lieu' => 'un truc au pif',
                     'description' => $el->getRemarque(),
                     'nombre_benevole' => $el->getNombreBenevole(),
+                    'benevole_affecte' => $el->getBenevoleAffecte()->count(),
                     'id' => $el->getId(),
                     'benevoles' => array_map(function (Utilisateur $u) use ($el) {
                         return [
