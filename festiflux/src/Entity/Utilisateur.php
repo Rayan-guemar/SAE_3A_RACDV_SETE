@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -79,6 +80,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
     private Collection $posteUtilisateurPreferences;
 
+    #[ORM\Column(length: 255)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $nomPhotoProfil = null;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->demandeFestivals = new ArrayCollection();
@@ -89,6 +99,54 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->taches = new ArrayCollection();
         $this->postes_aime = new ArrayCollection();
         $this->posteUtilisateurPreferences = new ArrayCollection();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    /**
+     * @param string|null $adresse
+     */
+    public function setAdresse(?string $adresse): void
+    {
+        $this->adresse = $adresse;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNomPhotoProfil(): ?string
+    {
+        return $this->nomPhotoProfil;
+    }
+
+    /**
+     * @param string|null $nomPhotoProfil
+     */
+    public function setNomPhotoProfil(?string $nomPhotoProfil): void
+    {
+        $this->nomPhotoProfil = $nomPhotoProfil;
     }
 
     public function getId(): ?int {

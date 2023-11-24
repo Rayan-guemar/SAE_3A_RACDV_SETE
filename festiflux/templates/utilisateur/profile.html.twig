@@ -15,6 +15,15 @@
 				{{ utilisateur.prenom }}
 			</h1>
 			<div class="info-box">
+				<a href="">
+					<img class="avatar"
+							{% if utilisateur.nomphotoprofil == false %}
+								src="{{ asset("uploads/user/anonyme.png") }}"
+							{% else %}
+								src="{{ asset("uploads/user/6560b8be1cfb1.jpg") }}"
+							{% endif %}
+						 alt="avatar de l'utilisateur">
+				</a>
 				<div class="info-row">
 					<div class="info-border">
 						<strong>Nom</strong>
@@ -33,6 +42,18 @@
 					<strong>Email</strong>
 					:
 					{{ utilisateur.email }}
+
+				</div>
+				<div class="info-border">
+					<strong>Adresse</strong>
+					:
+					{{ utilisateur.adresse }}
+
+				</div>
+				<div class="info-border">
+					<strong>Description</strong>
+					:
+					{{ utilisateur.description }}
 
 				</div>
 				<div class="fest-button">

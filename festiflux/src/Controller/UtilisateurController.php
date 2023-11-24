@@ -29,6 +29,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
 use Symfony\Component\Validator\Constraints\Date;
+use App\Service\UtilisateurManagerInterface;
 
 class UtilisateurController extends AbstractController {
 
@@ -148,7 +149,7 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/profile/{id}/edit', name: 'app_profile_edit')]
-    public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em,): Response {
+    public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em,UtilisateurManagerInterface $utilisateurManager): Response {
 
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
@@ -160,7 +161,8 @@ class UtilisateurController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-
+            $photoProfil=$form["fichierPhotoProfil"]->getData();
+            $utilisateurManager->processNewUtilisateur($utilisateur,$photoProfil);
             $em->flush();
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
             return $this->redirectToRoute('app_user_profile', ['id' => $utilisateur->getId()]);
