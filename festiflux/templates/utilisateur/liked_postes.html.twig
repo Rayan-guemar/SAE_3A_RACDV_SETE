@@ -10,18 +10,28 @@
     <thead>
     <tr>
         <th>Nom</th>
-        <th>j'aime</th>
+        <th>préférences</th>
     </tr>
     </thead>
     {% if postes|length() > 0 %}
     {% for poste in postes %}
+
     <tbody>
     <tr>
         <td>{{ poste.nom }}</td>
         <td>
-            <div class="switch__container">
-                <input id="{{ poste.id }}" class="switch switch--shadow" type="checkbox"{% if utilisateur in poste.getUtilisateursAime() %} checked {% endif %}>
-                <label for="{{ poste.id }}"></label>
+            <div class="wrapper">
+                <label for="yes_radio{{ poste.id }}" id="yes-lbl">j'aime pas</label><input type="radio" value="-1" name="choice_radio{{ poste.id }}" id="yes_radio{{ poste.id }}"
+                        {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==-1 %} checked="checked" {% endif %}    {% endfor %}
+                >
+                <label for="maybe_radio{{ poste.id }}" id="maybe-lbl">j'aime</label><input type="radio" value="0" name="choice_radio{{ poste.id }}" id="maybe_radio{{ poste.id }}"
+                        {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==0 %} checked="checked" {% endif %}{% endfor %}
+                >
+                <label for="no_radio{{ poste.id }}" id="no-lbl">j'adore</label><input type="radio" value="1" name="choice_radio{{ poste.id }}" id="no_radio{{ poste.id }}"
+                        {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==1 %} checked="checked" {% endif %}{% endfor %}
+                >
+
+                <div class="toggle"></div>
             </div>
         </td>
     </tr>

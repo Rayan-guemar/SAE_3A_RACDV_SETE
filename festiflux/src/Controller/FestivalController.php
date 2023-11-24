@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Poste;
+use App\Entity\PosteUtilisateurPreferences;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -308,7 +310,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
-    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
@@ -324,8 +326,17 @@ class FestivalController extends AbstractController {
         $poste->setCouleur($request->toArray()['couleur']);
         $poste->setDescription('');
 
+
         $em->persist($poste);
         $em->flush();
+
+        foreach ($festival->getBenevoles() as $benevole){
+            $postePref = new PosteUtilisateurPreferences();
+            $postePref->setUtilisateurId($benevole);
+            $postePref->setPosteId($poste);
+            $em->persist($postePref);
+            $em->flush();
+        }
 
         return new JsonResponse([
             'success' => 'Le poste a bien été créé',
@@ -655,7 +666,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/postes', name: 'app_festival_display_postes')]
-    public function displayPostes(#[MapEntity] Festival $festival, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    public function displayPostes(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
@@ -663,9 +674,13 @@ class FestivalController extends AbstractController {
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
 
+        $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId"=>$u]);
+
+
         return $this->render('utilisateur/liked_postes.html.twig', [
             'postes' => $postes,
-            'utilisateur' => $u
+            'utilisateur' => $u,
+            'preferences' => $pref
         ]);
     }
 }
