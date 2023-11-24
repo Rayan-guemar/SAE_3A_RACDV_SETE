@@ -53,21 +53,25 @@ class FestivalController extends AbstractController {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
-            if ($festivalsWithNameOrAddress!=null) {
-                return $this->render('festival/index.html.twig', [
-                    'form' => $form->createView(),
-                    'festivals' => $festivalsWithNameOrAddress
-                ]);
-            }
             $listeTags=$tagRepository->findBySearch($searchData);
+            $festivalsWithTag =[];
             foreach ($listeTags as $tag){
-                $festivalsWithTag = (($tag)->getFestivals());
+                $festivals = (($tag)->getFestivals());
+                foreach ($festivals as $f){
+                    $festivalsWithTag[] = $f;
+                }
             }
 
-            if ($festivalsWithTag!=null){
+            $allfest = $festivalsWithNameOrAddress;
+            foreach ($festivalsWithTag as $fest){
+                if (!in_array($fest , $allfest)){
+                    $allfest[]= $fest;
+                }
+            }
+            if ($allfest!=null){
                 return $this->render('festival/index.html.twig', [
                     'form' => $form->createView(),
-                    'festivals' => ($festivalsWithTag)
+                    'festivals' => ($allfest)
                 ]);
             }
         }
