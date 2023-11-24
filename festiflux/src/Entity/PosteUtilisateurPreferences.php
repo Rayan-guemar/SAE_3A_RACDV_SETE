@@ -24,6 +24,16 @@ class PosteUtilisateurPreferences
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $UtilisateurId = null;
 
+    /**
+     * @param int|null $preferencesDegree
+     * init les préférences en j'adore
+     */
+    public function __construct()
+    {
+        $this->preferencesDegree = 1;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
