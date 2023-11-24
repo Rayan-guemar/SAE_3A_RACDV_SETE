@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+{% block title %}modifier votre festival{% endblock %}
+
+{% block body %}
+
+    <div class="form-wrapper">
+        <h1>Modifier la tache</h1>
+
+        {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
+
+        {{ form_row(form.remarque, {'label': 'Nom du festival', 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.nbBenevole, {'label': 'Description du festival', 'attr': {'class': 'festival-form__input'}}) }}
+
+       
+        <div id="box-adresses">
+        {{ form_row(form.lieu, {'label': false, 'attr': {'class': 'festival-form__input'}}) }}
+        </div>
+        {{ form_row(form.poste, {'label': 'Choisissez un poste', 'attr': {'class': 'festival-form__input'}}) }}
+
+        {{ form_widget(form.modifTache, {'label': 'Modifier', 'attr': {'class': 'festival-form__checkbox'}}) }}
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
