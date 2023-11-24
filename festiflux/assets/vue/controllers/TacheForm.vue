@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue';
-    import { Festival, Poste, Tache, TacheCreateData } from '../../scripts/types';
+    import { Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
 
     type Props = {
@@ -55,6 +55,8 @@
             poste_id: posteId,
             date_debut: debut,
             date_fin: fin,
+            lieu: formData.get('creneau-lieu') + "",
+            adresse: formData.get('creneau-lieu-address') + ""
         };
 
         await Backend.addTache(festival.value.festID, tache);
@@ -82,6 +84,18 @@
             <label for="end-creneau">Fin du créneaux</label>
             <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" >
         </div>
+
+        <div class="flex-column flex-align-center">
+            <label for="lieuTache">Lieu du créneau</label>
+            <input type='text' name='creneau-lieu' id="creneau-lieu">
+        </div>
+
+        <div class="flex-column flex-align-center">
+            <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
+            <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" >
+        </div>
+
+
         <div class="flex-column flex-align-center">
             <label for="poste">Choisissez un poste</label>
             <select name="poste" id="creneau-poste-select">

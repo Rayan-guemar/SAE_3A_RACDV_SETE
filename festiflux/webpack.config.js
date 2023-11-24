@@ -73,7 +73,10 @@ Encore
 
   // uncomment if you're having problems with a jQuery plugin
   //.autoProvidejQuery()
-  .enableTypeScriptLoader()
+  .enableTypeScriptLoader(tsConfigPath => {
+    tsConfigPath.configFile = "tsconfig.json";
+    tsConfigPath.transpileOnly = true;
+  })
   .enableSassLoader();
 
 module.exports = Encore.getWebpackConfig();

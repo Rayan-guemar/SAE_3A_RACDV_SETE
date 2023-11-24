@@ -2,6 +2,7 @@ export interface Tache {
 	id?: number;
 	description: string;
 	nbBenevole: number;
+	benevoleAffecte: number;
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;
@@ -11,7 +12,8 @@ export interface TacheCreateData {
 	date_debut: Date;
 	date_fin: Date;
 	poste_id: string;
-	lieu?: string;
+	lieu: string;
+	adresse: string;
 	description: string;
 	nombre_benevole: number;
 }
@@ -33,6 +35,11 @@ export interface Creneau {
 	id?: number;
 	debut: Date;
 	fin: Date;
+}
+
+export interface Lieu {
+	nom: string;
+    adresse: string;
 }
 
 export interface Benevole {

@@ -88,8 +88,7 @@
     }
 
     const startCreatingTache = () => {
-        console.log('zizi');
-        
+                
         creatingTache.value = true;
     }
 
