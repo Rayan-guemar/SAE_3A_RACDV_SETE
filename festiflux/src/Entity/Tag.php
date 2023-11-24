@@ -21,8 +21,9 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Festival::class, mappedBy: 'tags')]
     private Collection $festivals;
 
-    public function __construct()
+    public function __construct(string $nom)
     {
+        $this->nom = $nom;
         $this->festivals = new ArrayCollection();
     }
 

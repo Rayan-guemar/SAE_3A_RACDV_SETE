@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Date;
 
+
+
 class DemandeFestivalType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -60,14 +62,8 @@ class DemandeFestivalType extends AbstractType
                     'placeholder' => 'Lieu du festival'
                 ]
             ])
-            ->add('tags', CollectionType::class, [
+            ->add('tags', TextType::class, [
                 'label' => 'Tag',
-                'entry_type' => TagType::class,
-                'entry_options' => ['label' => false,
-                    'attr' => ['placeholder' => 'Ajouter des tags']
-                ],
-                'allow_add' => true,
-
             ])
             ->add('afficheFestival' , FileType::class, [
                 'attr' => [

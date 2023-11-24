@@ -6,6 +6,7 @@
 	<script src="{{ asset('js/mapAddFest.js') }}" defer></script>
 	<link rel="stylesheet" href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css" />
 	<script src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js" defer></script>
+
 {% endblock %}
 {% block body %}
 
@@ -27,20 +28,13 @@
 			{{ form_row(form.lon,{'attr':{'id':'lon'}}) }}
 		</div>
 		{{ form_row(form.afficheFestival, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
-		<ul class="tags"
-			data-index="{{ form.tags|length > 0 ? form.tags|last.vars.name + 1 : 0 }}"
-			data-prototype="{{ form_widget(form.tags.vars.prototype)|e('html_attr') }}"
-		>
-		{{ form_row(form.tags, {'label':false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Ajouter des tags'} })  }}
-			<button type="button" class="add_item_link" data-collection-holder-class="tags">Add a tag</button>
-
-		</ul>
-
+		{{ form_row(form.tags, {'label':false, 'attr': {'name':'tags', 'class': 'festival-form__input'} })  }}
 		{{ form_widget(form.demanderCreationFestival, {'label': 'Demander création', 'attr': {'class': 'festival-form__checkbox'} }) }}
 
 		{{ form_end(form) }}
 	</div>
-	<script type="text/javascript" src="{{ asset('js/Tags.js') }}"></script>
+
 	<script type="text/javascript" src="{{ asset('js/Datepickers.js') }}"></script>
+	<script type="application/javascript" src="{{ asset('js/Tags.js') }}"> </script>
 
 {% endblock %}

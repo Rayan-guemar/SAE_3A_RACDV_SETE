@@ -32,6 +32,18 @@
 			<div class="main-desc">
 				{{ festival.description() }}
 			</div>
+
+			{% if festival.getTags() is not empty %}
+				<div class="title">
+					TAGS
+				</div>
+				<div>
+					{% for tag in festival.getTags() %}
+						{{ tag.getNom() }}
+					{% endfor %}
+				</div>
+			{% endif %}
+
 			<div class="title">
 				LOCALISATION
 			</div>
