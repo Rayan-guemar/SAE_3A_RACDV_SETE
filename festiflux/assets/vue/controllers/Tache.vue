@@ -45,5 +45,8 @@ const {tache} = defineProps<Props>()
     <div class="tache">
       {{ encodedStr(`${getDateHours2Digits(tache.creneau.debut)} - ${getDateHours2Digits(tache.creneau.fin)}`) }}
     </div>
+    <div class="benevole__number">
+      {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
+    </div>
   </div>
 </template>
