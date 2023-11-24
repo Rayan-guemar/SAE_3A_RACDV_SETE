@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
-use App\Form\TacheType;
+use App\Form\ModifierTacheType;
 use App\Entity\Utilisateur;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
@@ -30,7 +30,9 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
+use App\Repository\TacheRepository;
 use DateTime;
 use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -577,15 +579,6 @@ class FestivalController extends AbstractController
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
-        // $u = $this->getUser();
-        // if (!$u || !$u instanceof Utilisateur) {
-        //     return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-        // }
-
-        // if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
-        //     return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
-        // }
-
         $taches = $f->getPostes()->reduce(function ($acc, Poste $p) {
             return array_merge($acc, array_map(function (Tache $el) use ($p) {
                 return [
@@ -614,6 +607,92 @@ class FestivalController extends AbstractController
         //dd($taches);
         return new JsonResponse($taches, Response::HTTP_OK);
     }
+
+    #[Route('/festival/{id}/tache/{idTache}/edit', name: 'app_festival_edit_tache', methods: [ 'GET','POST'], options: ["expose" => true])]
+    public function editTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, PosteRepository $pRep, LieuRepository $lRep, Request $req): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $body = json_decode($request->getContent(), true);
+
+        try {
+            $description = (string)$body['description'];
+            $nombreBenevole = (int)$body['nombre_benevole'];
+            $poste_id = (string)$body['poste_id'];
+            $dateDebut = new DateTime($body['date_debut']);
+            $dateFin = new DateTime($body['date_fin']);
+            $nomLieu = (string)$body['lieu'];
+            $address = (string)$body['adresse'];
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            }
+
+            throw $th;
+        }
+
+        $lieu = $lRep->findBy(['nomLieu' => $nomLieu, 'festival' => $f]);
+        if(!$lieu){
+            $lieu = new Lieu();
+            $lieu->setNomLieu($nomLieu);
+            $lieu->setAddress($address);
+            $lieu->setFestival($f);
+            $em->persist($lieu);
+        } 
+
+        $t->setRemarque($description);
+        $t->setNombreBenevole($nombreBenevole);
+        $t->setPoste($pRep->find($poste_id));
+        $t->getCrenaux()->setDateDebut($dateDebut);
+        $t->getCrenaux()->setDateFin($dateFin);
+        $t->setLieu($lieu);
+        $t->getLieu()->setAddress($address);
+                        
+        $em->persist($t);
+        $em->flush();
+
+        $this->addFlash('success', 'La tache a bien été modifiée');
+        return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
+    
+
+        //a modifier
+        return $this->render('festival/testmodiftache.html.twig', [
+            'controller_name' => 'FestivalController',
+        
+           
+        ]);
+    }
+
+    #[Route('/festival/{id}/tache/{idTache}/delete', name: 'app_festival_delete_tache', methods: ['DELETE'], options: ["expose" => true])]
+    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $em->remove($t);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'La tache a bien été supprimée'], Response::HTTP_OK);
+    }
+
+
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
     public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
