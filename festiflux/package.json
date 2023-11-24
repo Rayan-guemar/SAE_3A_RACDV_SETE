@@ -2,11 +2,22 @@
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
+        "@babel/preset-react": "^7.23.3",
+        "@hotwired/stimulus": "^3.0.0",
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/ux-vue": "file:vendor/symfony/ux-vue/assets",
         "@symfony/webpack-encore": "^4.0.0",
         "core-js": "^3.23.0",
+        "react": "^18.0",
+        "react-dom": "^18.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.68.0",
         "sass-loader": "^13.0.0",
+        "svelte": "^4.2.7",
+        "ts-loader": "^9.5.1",
+        "typescript": "^5.3.2",
+        "vue": "^3.0",
+        "vue-loader": "^17.3.1",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-notifier": "^1.15.0"
@@ -21,6 +32,10 @@
     },
     "dependencies": {
         "@yaireo/tagify": "^4.17.9",
-        "jquery": "^3.7.1"
+        "jquery": "^3.7.1",
+        "symfony-ts-router": "^1.0.6",
+        "svelte-loader": "^3.1.9",
+        "tsd": "^0.29.0",
+        "vuex": "^4.0.2"
     }
 }

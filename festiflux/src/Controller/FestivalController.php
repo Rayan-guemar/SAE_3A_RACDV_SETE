@@ -486,8 +486,8 @@ class FestivalController extends AbstractController {
             $description = (string)$body['description'];
             $nombreBenevole = (int)$body['nombre_benevole'];
             $poste_id = (string)$body['poste_id'];
-            $dateDebut = new DateTime($body['dateDebut']);
-            $dateFin = new DateTime($body['dateFin']);
+            $dateDebut = new DateTime($body['date_debut']);
+            $dateFin = new DateTime($body['date_fin']);
             // $lieu = $body['lieu'];
         } catch (\Throwable $th) {
             if ($th instanceof \ErrorException) {

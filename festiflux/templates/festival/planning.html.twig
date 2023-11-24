@@ -12,19 +12,28 @@
 		<script type="text/javascript" src="{{ asset('js/DatePickerCreneau.js') }}"></script>
 		<script defer type="module">
 			import {Planning} from "{{ asset('js/planning/Planning.js') }}";
-import {pause} from "{{ asset('js/planning/utils.js') }}";
+			import {pause} from "{{ asset('js/planning/utils.js') }}";
 
-(async () => {
-let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'), !!'{{ isOrgaOrResp }}');
-})()
+// (async () => { // let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'), !!'{{ isOrgaOrResp }}');
+// let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDebut | date("m/d/Y") }}'), Date.parse('{{ festival.dateFin | date("m/d/Y") }}'));
+// })()
 // let planning = new Planning(Date.parse('2018-09-10'), Date.parse('2019-09-15'));
 		</script>
 
 		{% block overhead %}{% endblock %}
 	</head>
 	<body>
+		{{ encore_entry_script_tags('app') }}
 		<main>
-			<div id="loader"></div>
+			<div class="planning-wrapper" {{ vue_component('Planning', {
+				'festID': festival.id,
+				'title': 'Planning du ' ~ festival.nom,
+				'isOrgaOrResp': isOrgaOrResp,
+				'dateDebut': festival.dateDebut | date("m/d/Y"),
+				'dateFin': festival.dateFin | date("m/d/Y"),
+			}) }} ></div>
+
+			<!-- <div id="loader"></div>
 			<a id="back-button" href="{{ path('app_festival_detail', { id: festival.id }) }}">
 				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
 			</a>
@@ -66,11 +75,11 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 					</div>
 				</div>
 
-			</div>
+			</div> -->
 
 
 		</main>
-		<div id="modal-wrapper">
+		<!-- <div id="modal-wrapper">
 			<div id="add-creneau" class="planning-form">
 				<div class="close-btn">
 					<img src="{{ asset('icons/x-mark.png') }}" alt="Fermer">
@@ -91,7 +100,7 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="end-creneau">Fin du créneaux</label>
-						<input name="end" id="end-creneau" onchange="changeHandlerFin()" type="datetime-local" value={{festival.dateFin | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
+					<input name="end" id="end-creneau" onchange="changeHandlerFin()" type="datetime-local" value={{festival.dateFin | date("Y-m-d\\TH:i:s") }} min={{festival.dateDebut | date("Y-m-d\\TH:i:s")}} max={{festival.dateFin | date("Y-m-d\\TH:i:s")}}>
 				</div>
 				<div class="flex-column flex-align-center">
 					<label for="poste">Choisissez un poste</label>
@@ -123,10 +132,9 @@ let planning = new Planning('{{ festival.id }}', Date.parse('{{ festival.dateDeb
 				<div class="flex-column flex-align-center">
 					<input type="hidden" id="tache-id" name='idTache' value="">
 					<label for="benevole-name">Bénévoles</label>
-					<div id="benevoles-list">
-					</div>
+					<div id="benevoles-list"></div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</body>
 </html>
