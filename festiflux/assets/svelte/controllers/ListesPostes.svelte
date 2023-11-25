@@ -18,7 +18,7 @@
             value.desc = poste.description;
             return value;
         });
-        
+
         posteOpened.set(true);
     }
 
@@ -36,7 +36,6 @@
     onMount(async () => {
         const listeOfPostes = await Backend.getPostes(parseInt(festivalId));
         posteList.set(listeOfPostes);
-        console.log(listeOfPostes);
     });
 </script>
 
