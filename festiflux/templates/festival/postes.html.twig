@@ -5,6 +5,11 @@
 {% block overhead %} {% endblock %}
 
 {% block body %}
+
+    <a id="back-button" href="{{ path('app_festival_detail', { id: festival.id }) }}">
+        <img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+    </a>
+
     {{ encore_entry_script_tags('app') }}
 
     <main
@@ -12,6 +17,17 @@
             'festivalId': festival.id,
             'festivalName': festival.nom,
         }) }} 
-    ></main>
+    >
+    
+    </main>
+
+    {# <main
+        {{ vue_component('ListesPostes', {
+            'festivalId': festival.id,
+            'festivalName': festival.nom,
+        }) }} 
+    >
+    
+    </main> #}
 
 {% endblock %}
