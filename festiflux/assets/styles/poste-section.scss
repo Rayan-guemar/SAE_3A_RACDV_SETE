@@ -17,6 +17,10 @@ h2.poste-section {
     margin-top: 50px;
 }
 
+.poste-section , .poste-list {
+    transition: filter 0.2s;
+}
+
 .pointer {
     cursor: pointer;
 }
@@ -29,6 +33,10 @@ h2.poste-section {
     align-items: center;
     justify-content: center;
     gap: 50px;
+    
+    .new-poste-btn {
+        font-weight: 500;
+    }
 
     .new-poste-btn:hover {
         color: $blue-primary;

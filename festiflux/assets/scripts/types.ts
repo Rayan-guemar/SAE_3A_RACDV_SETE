@@ -26,9 +26,9 @@ export interface Festival {
 }
 
 export interface Poste {
-	id: string;
+	id: string | null;
 	nom: string;
-	description?: string;
+	description: string;
 	couleur?: string;
 }
 
