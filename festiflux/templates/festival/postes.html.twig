@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Postes festival {% endblock %}
+
+{% block overhead %} {% endblock %}
+
+{% block body %}
+    {{ encore_entry_script_tags('app') }}
+
+    <main
+        {{ svelte_component('ListesPostes', {
+            'festivalId': festival.id,
+            'festivalName': festival.nom,
+        }) }} 
+    ></main>
+
+{% endblock %}

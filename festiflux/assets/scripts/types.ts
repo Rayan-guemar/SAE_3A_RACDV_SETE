@@ -28,6 +28,8 @@ export interface Festival {
 export interface Poste {
 	id: string;
 	nom: string;
+	description?: string;
+	couleur?: string;
 }
 
 export interface Creneau {

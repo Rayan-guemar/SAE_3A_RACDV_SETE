@@ -85,9 +85,12 @@ export const hashCode = (s: string): number => {
   return hash;
 };
 
-
-export const assetsPath = (path: string): string => {
-	return `../../../public/${path}`;
+export const toCSS = (object: { [key: string]: string }): string => {
+  let css = "";
+  for (const key in object) {
+    css += `${key.replace(/([A-Z])/g, (match) => `-${match[0].toLowerCase()}`)}: ${object[key]};`;
+  }
+  return css;
 }
 
 export const generate_route = (route_name: string) => {

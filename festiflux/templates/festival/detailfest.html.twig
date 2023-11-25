@@ -12,10 +12,6 @@
 {% endblock %}
 {% block body %}
 	<div class="detailFesival">
-		<div class="poste-modal">
-			<h4>Liste des postes</h4>
-			<div class="postes"></div>
-		</div>
 		<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
 		<div class="fest-info" id="fest-info">
 			<div class="fest-nom">
@@ -54,14 +50,16 @@
 		</div>
 
 		<div class="btn-container">
+			{% if isResponsable or isOrganisateur %}
+				<div class="button-benevole">
+					<a href={{ path("app_festival_postes", {'id' : festival.getId()} ) }} class="btn btn-primary">Postes du festival</a>
+				</div>
+			{% endif %}
 			{% if isBenevole %}
 
 				<div class="button-benevole">
 					<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">Planning du festival</a>
 				</div>
-
-			{% elseif isResponsable %}
-
 			{% elseif isOrganisateur %}
 				<div class="button-benevole">
 					<a href={{ path("app_festival_demandesBenevolat", {'id' : festival.getId()} ) }} class="btn btn-primary">Demandes de bénévolat</a>

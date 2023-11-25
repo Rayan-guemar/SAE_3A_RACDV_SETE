@@ -265,6 +265,18 @@
             "./config/packages/uid.yaml"
         ]
     },
+    "symfony/ux-svelte": {
+        "version": "2.13",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.9",
+            "ref": "4a6ee82d817d4e9be8d4a861476a112011d701e1"
+        },
+        "files": [
+            "assets/svelte/controllers/Hello.svelte"
+        ]
+    },
     "symfony/ux-twig-component": {
         "version": "v2.12.0"
     },
