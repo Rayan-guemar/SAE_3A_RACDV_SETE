@@ -64,12 +64,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 class="poste-section" :class="{ blurred: askingForDelete }">
+  <h2 class="poste-section" :class="{blurred: askingForDelete}">
     {{ festivalName }}
   </h2>
 
-  <div class="poste-list-wrapper">
-    <div class="poste-list" :class="{ blurred: askingForDelete }">
+  <div class="poste-list-wrapper" :class="{blurred: askingForDelete}">
+    <div class="poste-list" >
       <h3>Liste des postes</h3>
       <div class="postes">
         <div
@@ -85,7 +85,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div v-if="!posteOpened" class="new-poste-btn pointer">
+      <div v-if="!posteOpened" class="new-poste-btn pointer" @click="newPoste">
         Ajouter un poste
       </div>
     </div>

@@ -29,9 +29,7 @@ function editing() {
 }
 
 const deletePoste = async () => {
-    console.log(props);
-
-    if (props.askingForDelete) return;
+    props.setAskingForDelete(false);
     deleting.value = true;
 
     await Backend.deletePoste(props.festivalId, props.currentPoste);
@@ -90,19 +88,19 @@ const closePoste = () => {
 </script>
 
 <template>
-    <div class="poste-form-wrapper" :class="{ blurred: askingForDelete }">
+    <div class="poste-form-wrapper" > <!-- :class="{ blurred: askingForDelete }" -->
         <div class="poste-form">
             <h2 class="top-heading">Poste</h2>
 
             <input type="text" class="poste-name" :class="{ 'missing-field': currentPoste.nom === '' }"
-                v-bind="currentPoste.nom" placeholder="ex: Accuei artiste">
+                v-model="currentPoste.nom" placeholder="ex: Accuei artiste">
             <div class="color-wrapper">
                 <div>Couleur :</div>
-                <input type="color" v-bind="currentPoste.couleur">
+                <input type="color" v-model="currentPoste.couleur">
             </div>
-            <textarea v-bind="currentPoste.description" placeholder="ex: Accueillir les artistes"></textarea>
+            <textarea v-model="currentPoste.description" placeholder="ex: Accueillir les artistes"></textarea>
 
-            <div v-if='editing()' class="pointer edit-poste" :class="{ loading: updating }" @click="updatePoste">Modifier
+            <div v-if='editing()' class="pointer edit-poste" @click="updatePoste">Modifier <!-- :class="{ loading: updating }" -->
             </div>
             <div v-if='editing()' class="pointer delete-poste" :class="{ loading: deleting }"
                 @click="(e) => setAskingForDelete(true)">Supprimer</div>
@@ -129,12 +127,18 @@ const closePoste = () => {
     </div>
 
 
-    <div v-if="askingForDelete" class="delete-poste-confirm">
-        <div class="delete-poste-confirm-text">Voulez-vous vraiment supprimer ce poste ?</div>
-        <div class="delete-poste-confirm-text">Cela entrainera la suppression de tous les créneaux associés à ce poste</div>
-        <div class="delete-poste-confirm-btns">
-            <div class="pointer delete-poste-confirm-yes" @click="deletePoste">Oui</div>
-            <div class="pointer delete-poste-confirm-no" @click="(e) => setAskingForDelete(false)">Non</div>
+    <Teleport v-if="askingForDelete" to="main">
+        <div class="delete-poste-confirm">
+            <div class="delete-poste-confirm-text">Voulez-vous vraiment supprimer ce poste ?</div>
+            <div class="delete-poste-confirm-text">Cela entrainera la suppression de tous les créneaux associés à ce poste</div>
+            <div class="delete-poste-confirm-btns">
+                <div class="pointer delete-poste-confirm-yes" @click="deletePoste">Oui</div>
+                <div class="pointer delete-poste-confirm-no" @click="(e) => setAskingForDelete(false)">Non</div>
+            </div>
         </div>
-    </div>
+
+        <!-- <div class="blurbackground">
+
+        </div> -->
+    </Teleport>
 </template>
