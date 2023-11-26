@@ -12,6 +12,10 @@
 {% endblock %}
 {% block body %}
 	<div class="detailFesival">
+		<div class="poste-modal">
+			<h4>Liste des postes</h4>
+			<div class="postes"></div>
+		</div>
 		<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
 		<div class="fest-info" id="fest-info">
 			<div class="fest-nom">
@@ -28,6 +32,18 @@
 			<div class="main-desc">
 				{{ festival.description() }}
 			</div>
+
+			{% if festival.getTags() is not empty %}
+				<div class="title">
+					TAGS
+				</div>
+				<div>
+					{% for tag in festival.getTags() %}
+						{{ tag.getNom() }}
+					{% endfor %}
+				</div>
+			{% endif %}
+
 			<div class="title">
 				LOCALISATION
 			</div>

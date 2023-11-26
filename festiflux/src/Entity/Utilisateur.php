@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -78,6 +79,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
     private Collection $posteUtilisateurPreferences;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $nomPhotoProfil = null;
 
     public function __construct() {
         $this->festivals = new ArrayCollection();

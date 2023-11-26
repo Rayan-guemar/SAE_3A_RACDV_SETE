@@ -8,14 +8,33 @@ export class Poste {
      * @constructor
      * @param {number} id - L'ID du poste.
      * @param {string} nom - Le nom du poste.
+     * @param {string} couleur - La couleur du poste
      */
-    constructor(id, nom) {
+    constructor(id, nom, couleur) {
         this.id = id;
         this.nom = nom;
+        this.couleur = couleur;
     }
 
-    static new(nom) {
-        return new Poste(null, nom);
+    static new(nom, couleur) {
+        return new Poste(null, nom, couleur);
+    }
+
+    toColor() {
+        let colors = [
+            [97, 26, 221],
+            [255, 68, 84],
+        ];
+
+        let nameHash = this.nom.hashCode();
+
+        let mod = nameHash % colors.length;
+        if (mod < 0) {
+            mod = colors.length + mod;
+        }
+        let color = colors[mod];
+
+        return color;
     }
 
     toColor() {

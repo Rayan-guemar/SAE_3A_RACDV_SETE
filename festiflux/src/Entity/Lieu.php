@@ -70,7 +70,7 @@ class Lieu
         return $this->taches;
     }
 
-    public function addTach(Tache $tach): static
+    public function addTache(Tache $tach): static
     {
         if (!$this->taches->contains($tach)) {
             $this->taches->add($tach);
@@ -80,7 +80,7 @@ class Lieu
         return $this;
     }
 
-    public function removeTach(Tache $tach): static
+    public function removeTache(Tache $tach): static
     {
         if ($this->taches->removeElement($tach)) {
             // set the owning side to null (unless already changed)
