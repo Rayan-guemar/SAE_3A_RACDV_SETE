@@ -554,8 +554,8 @@ class FestivalController extends AbstractController
         ], 200);
     }
 
-    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST','GET'], options: ["expose" => true])]
-    public function addDebutFinDay(#[MapEntity] Festival $f, int $d,Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
     {
         if ($f == null) {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
@@ -571,37 +571,46 @@ class FestivalController extends AbstractController
         }
 
         $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp())/86400;
-        $listeCreaneaux = new ArrayCollection();
-        for ($i = 0; $i < $nbJours; $i++) {
-            $creaneaux = new Creneaux();
-            $listeCreaneaux->add($creaneaux);
-        }
 
-        $form = $this->createForm(AjoutDebutFinType::class, $listeCreaneaux);
 
-        $form->handleRequest($request);
-        if($request->isMethod('POST')) {
-            $this->denyAccessUnlessGranted('ROLE_USER');
-            if ($form->isSubmitted() && $form->isValid()) {
-                foreach ($form->getData() as $creaneaux) {
-                    if ($creaneaux->getDateFin() > $creaneaux->getDateDebut()){
-                        dd($creaneaux);
-                        //$em->persist($creaneaux);
-                    } else {
+        $body = json_decode($request->getContent(), true);
+
+
+
+        try {
+            for ($i = 0; $i < $nbJours; $i++)
+                {
+
+                    $dateDebut = new DateTime($body['date_debut'+$i]);
+                    $dateFin = new DateTime($body['date_fin'+$i]);
+
+                    if ($dateDebut > $dateFin) {
                         return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                    } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                        return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+                    } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                        return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
                     }
+
+                    $c = new Creneaux();
+                    $c->setDateDebut($dateDebut);
+                    $c->setDateFin($dateFin);
+                    $em->persist($c);
+                    $em->flush();
+                    $f->addHeuresJour($c);
+                    $em->persist($f);
+                    $em->flush();
                 }
-                $em->flush();
-                //$f->setListeCreaneaux($listeCreaneaux);
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
             }
+            throw $th;
         }
 
 
-        return $this->render('festival/ajoutDebutFin.html.twig', [
-            'controller_name' => 'FestivalController',
-            'form' => $form->createView(),
-            'creaneaux' => $listeCreaneaux,
-        ]);
+        return new JsonResponse(status: Response::HTTP_CREATED);
+
     }
 
 
