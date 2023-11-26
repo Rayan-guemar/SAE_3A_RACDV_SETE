@@ -24,9 +24,6 @@ class Poste {
     #[ORM\OneToMany(mappedBy: 'poste', targetEntity: Tache::class, orphanRemoval: true)]
     private Collection $taches;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'postes_aime')]
-    private Collection $utilisateurs_aime;
-
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
@@ -54,7 +51,6 @@ class Poste {
 
     public function __construct() {
         $this->taches = new ArrayCollection();
-        $this->utilisateurs_aime = new ArrayCollection();
         $this->posteUtilisateurPreferences = new ArrayCollection();
     }
 
@@ -108,29 +104,6 @@ class Poste {
         return $this;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateursAime(): Collection
-    {
-        return $this->utilisateurs_aime;
-    }
-
-    public function addUtilisateursAime(Utilisateur $utilisateursAime): static
-    {
-        if (!$this->utilisateurs_aime->contains($utilisateursAime)) {
-            $this->utilisateurs_aime->add($utilisateursAime);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateursAime(Utilisateur $utilisateursAime): static
-    {
-        $this->utilisateurs_aime->removeElement($utilisateursAime);
-
-        return $this;
-    }
 
     public function getCouleur(): ?string
     {
