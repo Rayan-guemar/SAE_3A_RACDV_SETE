@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Poste;
 use App\Entity\PosteUtilisateurPreferences;
+use App\Form\AjoutDebutFinType;
+use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
 use App\Form\SearchType;
@@ -11,6 +13,7 @@ use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -550,6 +553,57 @@ class FestivalController extends AbstractController
             'benevolesAimePas' => $tab3,
         ], 200);
     }
+
+    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST','GET'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, int $d,Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    {
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        }
+
+        $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp())/86400;
+        $listeCreaneaux = new ArrayCollection();
+        for ($i = 0; $i < $nbJours; $i++) {
+            $creaneaux = new Creneaux();
+            $listeCreaneaux->add($creaneaux);
+        }
+
+        $form = $this->createForm(AjoutDebutFinType::class, $listeCreaneaux);
+
+        $form->handleRequest($request);
+        if($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted('ROLE_USER');
+            if ($form->isSubmitted() && $form->isValid()) {
+                foreach ($form->getData() as $creaneaux) {
+                    if ($creaneaux->getDateFin() > $creaneaux->getDateDebut()){
+                        dd($creaneaux);
+                        //$em->persist($creaneaux);
+                    } else {
+                        return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                    }
+                }
+                $em->flush();
+                //$f->setListeCreaneaux($listeCreaneaux);
+            }
+        }
+
+
+        return $this->render('festival/ajoutDebutFin.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+            'creaneaux' => $listeCreaneaux,
+        ]);
+    }
+
 
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
