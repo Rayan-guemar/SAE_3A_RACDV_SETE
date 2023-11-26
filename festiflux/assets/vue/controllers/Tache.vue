@@ -16,6 +16,7 @@ const posteToColor = (poste:Poste) => {
     [97, 26, 221],
     [255, 68, 84],
   ];
+
   let nameHash = hashCode(poste.nom);
   let mod = nameHash % colors.length;
   
@@ -33,8 +34,6 @@ const showInfo = ref(false);
 const toggleInfo = () => {
   showInfo.value = !showInfo.value;
 }
-
-
 
 </script>
 
@@ -57,6 +56,6 @@ const toggleInfo = () => {
     <div class="benevole__number">
       {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
     </div>
+    <InfoTache :tache="tache" v-if="showInfo" />
   </div>
-  <InfoTache :tache="tache" :show="showInfo" />
 </template>
