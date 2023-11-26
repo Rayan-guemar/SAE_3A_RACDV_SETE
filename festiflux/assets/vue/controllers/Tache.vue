@@ -2,12 +2,13 @@
 import { ref } from 'vue';
 import { encodedStr, getDateHours2Digits, hashCode } from '../../scripts/utils';
 import { Tache, Creneau, Poste } from '../../scripts/types';
+import InfoTache from './InfoTache.vue';
 
 
 interface Props {
-    tache: Tache,
-    position: number,
-    total: number,
+  tache: Tache,
+  position: number,
+  total: number,
 }
 
 const posteToColor = (poste:Poste) => {
@@ -27,6 +28,14 @@ const posteToColor = (poste:Poste) => {
 
 const {tache} = defineProps<Props>()
 
+const showInfo = ref(false);
+
+const toggleInfo = () => {
+  showInfo.value = !showInfo.value;
+}
+
+
+
 </script>
 
 <template>
@@ -40,7 +49,7 @@ const {tache} = defineProps<Props>()
       borderColor: `rgb(${posteToColor(tache.poste).join(',')})`,
       backgroundColor: `rgb(${posteToColor(tache.poste).join(',')}, 0.1)`,
       color: `rgb(${posteToColor(tache.poste).join(',')})`
-    }" >
+    }" @click="(e) => toggleInfo()" >
     <div class="name">{{ encodedStr(tache.poste.nom) }}</div>
     <div class="tache">
       {{ encodedStr(`${getDateHours2Digits(tache.creneau.debut)} - ${getDateHours2Digits(tache.creneau.fin)}`) }}
@@ -49,4 +58,5 @@ const {tache} = defineProps<Props>()
       {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
     </div>
   </div>
+  <InfoTache :tache="tache" :show="showInfo" />
 </template>

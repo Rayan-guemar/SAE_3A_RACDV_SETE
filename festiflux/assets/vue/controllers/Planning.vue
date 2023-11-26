@@ -1,6 +1,6 @@
 <script setup lang="ts">
-    import { VNodeRef, ref } from 'vue';
-    import { dateDiff, assetsPath } from '../../scripts/utils';
+    import {  ref } from 'vue';
+    import { dateDiff } from '../../scripts/utils';
     import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
