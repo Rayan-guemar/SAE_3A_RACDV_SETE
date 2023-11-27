@@ -110,7 +110,7 @@
     }
 
     const stopCreatingPlage = () => {
-      creatingPlage.value = false;
+        creatingPlage.value = false;
     }
 
     const askForICS = () => {
