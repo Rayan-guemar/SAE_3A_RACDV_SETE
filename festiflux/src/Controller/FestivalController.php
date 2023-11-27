@@ -587,8 +587,10 @@ class FestivalController extends AbstractController
             $c = new Creneaux();
             $c->setDateDebut($dateDebut);
             $c->setDateFin($dateFin);
+            $c->setFestival($f);
             $em->persist($c);
-            dd($c);
+            $em->flush();
+
             $f->addHeuresJour($c);
             $em->persist($f);
             $em->flush();

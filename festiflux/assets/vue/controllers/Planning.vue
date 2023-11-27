@@ -102,7 +102,7 @@
 
     const startCreatingPlage = () => {
 
-      creatingPlage.value = true;
+        creatingPlage.value = true;
     }
 
     const stopCreatingTache = () => {
@@ -110,7 +110,7 @@
     }
 
     const stopCreatingPlage = () => {
-      creatingPlage.value = false;
+        creatingPlage.value = false;
     }
 
     const askForICS = () => {
