@@ -20,6 +20,10 @@
 
       {{ form_row(form.password.second, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Confirmation mot de passe'}}) }}
 
+      {{ form_row(form.adresse, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'Adresse'}}) }}
+
+      {{ form_row(form.description, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'Description'}}) }}
+
       {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': 'registration-form__submit'}}) }}
 
       <div class="form-center">

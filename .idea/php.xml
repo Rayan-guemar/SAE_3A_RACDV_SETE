@@ -139,6 +139,8 @@
       <path value="$PROJECT_DIR$/festiflux/vendor/symfony/ux-twig-component" />
       <path value="$PROJECT_DIR$/festiflux/vendor/symfonycasts/verify-email-bundle" />
       <path value="$PROJECT_DIR$/festiflux/vendor/symfonycasts/reset-password-bundle" />
+      <path value="$PROJECT_DIR$/festiflux/vendor/symfony/stimulus-bundle" />
+      <path value="$PROJECT_DIR$/festiflux/vendor/symfony/ux-vue" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
