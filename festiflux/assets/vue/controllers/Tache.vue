@@ -55,7 +55,6 @@ window.addEventListener('click', (e) => {
     }
   }
 });
-
 </script>
 
 <template>
