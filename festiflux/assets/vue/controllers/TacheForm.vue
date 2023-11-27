@@ -74,12 +74,12 @@ import { getDateFromLocale } from '../../scripts/utils';
             <h2>Création d'un créneaux</h2 >
                 <div class="flex-column flex-align-center">
                     <label for="description">Description</label>
-                    <input name="description" id="creneau-description" type="text" value="test">
+                    <input name="description" id="creneau-description" type="text">
                 </div>
                 <div class="flex-column flex-align-center">
                     <label for="nombre_benevole">Nombre de benevole nécessaire
                     </label>
-                    <input name="nombre_benevole" id="creneau-nombre-benevole" type="number" value="3">
+                    <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
                 </div>
                 <div class="flex-column flex-align-center">
                     <label for="start-creneau">Debut du créneaux</label>
@@ -92,12 +92,12 @@ import { getDateFromLocale } from '../../scripts/utils';
                 
                 <div class="flex-column flex-align-center">
                     <label for="lieuTache">Lieu du créneau</label>
-                    <input type='text' name='creneau-lieu' id="creneau-lieu" value="test">
+                    <input type='text' name='creneau-lieu' id="creneau-lieu" >
                 </div>
                 
                 <div class="flex-column flex-align-center">
                     <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
-                    <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" value="test">
+                    <input type='text' name='creneau-lieu-address' id="creneau-lieu-address">
                 </div>
                 
                 
