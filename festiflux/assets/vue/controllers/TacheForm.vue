@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import { Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
+import { getDateFromLocale } from '../../scripts/utils';
 
     type Props = {
         festID: number;
@@ -10,8 +11,8 @@
         dateFin: string;
         isOrgaOrResp: boolean;
         postes: Poste[];
-        updateTaches: (t:TacheCreateData) => void
-        cancel: () => void
+        updateTaches: () => void
+        close: (tache?:TacheCreateData) => void
     }
 
     const props = defineProps<Props>();
@@ -44,8 +45,8 @@
      const createTache = async (e: Event) => {
         const formData = new FormData(e.target as HTMLFormElement)
         
-        const debut = new Date(formData.get("start") + "");
-        const fin = new Date(formData.get("end") + "");
+        const debut = getDateFromLocale(formData.get("start") + "");
+        const fin = getDateFromLocale(formData.get("end") + "");
         const description = formData.get('description') + "";
         const nbBenevole = +(formData.get('nombre_benevole') + "");
         const posteId = formData.get('poste') + "";
@@ -59,9 +60,11 @@
             lieu: formData.get('creneau-lieu') + "",
             adresse: formData.get('creneau-lieu-address') + ""
         };
-
+        
+        props.close(tache);
         await Backend.addTache(festival.value.festID, tache);
-        props.updateTaches(tache)
+        props.updateTaches();
+        
     };
 </script>
 
@@ -71,12 +74,12 @@
             <h2>Création d'un créneaux</h2 >
                 <div class="flex-column flex-align-center">
                     <label for="description">Description</label>
-                    <input name="description" id="creneau-description" type="text">
+                    <input name="description" id="creneau-description" type="text" value="test">
                 </div>
                 <div class="flex-column flex-align-center">
                     <label for="nombre_benevole">Nombre de benevole nécessaire
                     </label>
-                    <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
+                    <input name="nombre_benevole" id="creneau-nombre-benevole" type="number" value="3">
                 </div>
                 <div class="flex-column flex-align-center">
                     <label for="start-creneau">Debut du créneaux</label>
@@ -89,12 +92,12 @@
                 
                 <div class="flex-column flex-align-center">
                     <label for="lieuTache">Lieu du créneau</label>
-                    <input type='text' name='creneau-lieu' id="creneau-lieu">
+                    <input type='text' name='creneau-lieu' id="creneau-lieu" value="test">
                 </div>
                 
                 <div class="flex-column flex-align-center">
                     <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
-                    <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" >
+                    <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" value="test">
                 </div>
                 
                 
@@ -107,7 +110,7 @@
 
                 <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
                     <button type="submit" id="create-creneau-btn" class="btn" value="Créer un créneau">Créer</button>
-                    <button id="cancel-creneau-btn" class="btn" @click="cancel">Annuler</button>
+                    <button id="cancel-creneau-btn" class="btn" @click="close()">Annuler</button>
                 </div>
             </form>
         </div>

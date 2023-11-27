@@ -35,8 +35,7 @@ const posteToColorBright = (poste:Poste) => {
   c[2] =  c[2] + 100 > 255 ? 255 : c[2] + 100
   return c;
 
-} 
-console.log(tache.poste.nom, position, total, ((total - position) / total));
+};
 </script>
 
 <template>
@@ -60,9 +59,9 @@ console.log(tache.poste.nom, position, total, ((total - position) / total));
       <div class="tache">
         {{ `${getDateHours2Digits(tache.creneau.debut)} - ${getDateHours2Digits(tache.creneau.fin)}` }}
       </div>
-    </div>
-    <div class="benevole__number">
-      {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
+      <div class="benevole__number">
+        {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
+      </div>
     </div>
   </div>
 </template>
