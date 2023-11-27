@@ -40,6 +40,7 @@
 
     const loading = ref(true);
     const creatingTache = ref(false);
+    const creatingPlage = ref(false);
 
 
     const getTaches = async () => {
@@ -93,8 +94,17 @@
         creatingTache.value = true;
     }
 
+    const startCreatingPlage = () => {
+
+      creatingPlages.value = true;
+    }
+
     const stopCreatingTache = () => {
         creatingTache.value = false;
+    }
+
+    const stopCreatingPlage = () => {
+      creatingPlage.value = false;
     }
 
     const askForICS = () => {
@@ -105,7 +115,7 @@
         const poste = postes.value.find(
             (p) => {
                 return p.id == tache.poste_id
-        });  
+        });
         if (!poste) {
             throw new Error("pas de poste trouvé")
         }
@@ -152,7 +162,9 @@
             </div>
         </div>
         <div class="manage-interface">
-            <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
+          <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours de festival</div>
+
+          <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
         </div>
@@ -183,4 +195,11 @@
         />
         <HeureDebutFinJour v-for="i in numberOfDays"></HeureDebutFinJour>
     </Modal>
+  <Modal
+      v-if="creatingPlage"
+      id="add-plage"
+      title="Ajout des plages horaires"
+      :hideModal="stopCreatingPlage" >
+  <HeureDebutFinJour v-for="i in numberOfDays"></HeureDebutFinJour>
+  </Modal>
 </template>
