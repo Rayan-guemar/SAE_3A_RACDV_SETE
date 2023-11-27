@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { VNodeRef, ref } from 'vue';
     import { dateDiff, assetsPath } from '../../scripts/utils';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
+    import {Tache as TacheType, Festival, Poste, TacheCreateData, Creneau} from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -26,6 +26,12 @@
         dateDebut: new Date(props.dateDebut),
         dateFin: new Date(props.dateFin),
         isOrgaOrResp: props.isOrgaOrResp,
+    })
+
+    const creneaux = ref<Creneau>({
+        id:0,
+        debut:new Date(),
+        fin:new Date(),
     })
 
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
@@ -162,11 +168,11 @@
             </div>
         </div>
         <div class="manage-interface">
-          <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours de festival</div>
+          <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
 
           <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
-            <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
+          <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
         </div>
     </div>
 
@@ -193,13 +199,13 @@
             :postes="postes"
             :update-taches="updateTaches"
         />
-        <HeureDebutFinJour v-for="i in numberOfDays"></HeureDebutFinJour>
     </Modal>
   <Modal
       v-if="creatingPlage"
       id="add-plage"
       title="Ajout des plages horaires"
       :hideModal="stopCreatingPlage" >
-  <HeureDebutFinJour v-for="i in numberOfDays"></HeureDebutFinJour>
+      <HeureDebutFinJour :festivalId="festID"
+      />
   </Modal>
 </template>
