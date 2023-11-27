@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block body %}
+	{% if app.user.getId() != utilisateur.getId() %}
+	<h1>Oups, il semblerait que vous ne soyez pas sur la bonne page</h1>
+	{% else %}
 
 		<div class="profil-box">
 			<h1>
@@ -66,5 +69,6 @@
 				</div>
 			</div>
 		</div>
+	{% endif %}
 
 {% endblock %}
