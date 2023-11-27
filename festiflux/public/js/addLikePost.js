@@ -1,4 +1,3 @@
-const checkboxs = document.getElementsByClassName('switch');
 var radioButtons = document.querySelectorAll('input[type="radio"]');
 
 [...radioButtons].forEach(radioButton => {

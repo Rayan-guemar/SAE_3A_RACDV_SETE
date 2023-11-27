@@ -79,6 +79,7 @@ class Festival {
     private Collection $questionBenevoles;
 
 
+
     public function __construct() {
         $this->lieux = new ArrayCollection();
         $this->benevoles = new ArrayCollection();
