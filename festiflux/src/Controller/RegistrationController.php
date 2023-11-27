@@ -42,9 +42,6 @@ class RegistrationController extends AbstractController
                     $form->get('password')->getData()
                 )
             );
-
-            $photoProfil=$form["fichierPhotoProfil"]->getData();
-            $utilisateurManager->processNewUtilisateur($user,$photoProfil);
             $entityManager->persist($user);
             $entityManager->flush();
 

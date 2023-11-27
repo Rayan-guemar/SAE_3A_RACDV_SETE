@@ -27,12 +27,6 @@ class InscriptionType extends AbstractType {
             ->add('email', EmailType::class)
             ->add('adresse',TextType::class)
             ->add('description',TextType::class)
-            ->add('fichierPhotoProfil',FileType::class,[
-                "mapped"=>false,
-                "constraints" =>[
-                    new File(maxSize : '10M', extensions : ['jpg', 'png'], maxSizeMessage:'Fichier trop lourd',extensionsMessage: 'Format invalide')
-                ]
-            ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe ne correspondent pas.',
