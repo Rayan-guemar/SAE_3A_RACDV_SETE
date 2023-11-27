@@ -560,23 +560,15 @@ class FestivalController extends AbstractController
         if ($f == null) {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
-
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
-
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
             return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
         }
-
         $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp())/86400;
-
-
         $body = json_decode($request->getContent(), true);
-
-
-
         try {
             for ($i = 0; $i < $nbJours; $i++)
                 {
