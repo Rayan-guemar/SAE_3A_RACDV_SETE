@@ -102,7 +102,7 @@
 
     const startCreatingPlage = () => {
 
-      creatingPlages.value = true;
+      creatingPlage.value = true;
     }
 
     const stopCreatingTache = () => {

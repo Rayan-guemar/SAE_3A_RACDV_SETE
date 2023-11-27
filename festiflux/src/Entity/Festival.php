@@ -78,7 +78,7 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: QuestionBenevole::class)]
     private Collection $questionBenevoles;
 
-    #[ORM\OneToMany(mappedBy: 'heuresJour', targetEntity: Creneaux::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Creneaux::class, orphanRemoval: true)]
     private Collection $heuresJour;
 
 

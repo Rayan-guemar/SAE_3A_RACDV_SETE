@@ -573,8 +573,8 @@ class FestivalController extends AbstractController
         $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp()) / 86400;
         $body = json_decode($request->getContent(), true);
         try {
-            $dateDebut = new DateTime($body['date_debut']);
-            $dateFin = new DateTime($body['date_fin']);
+            $dateDebut = new DateTime($body['debut']);
+            $dateFin = new DateTime($body['fin']);
 
             if ($dateDebut > $dateFin) {
                 return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
@@ -587,13 +587,13 @@ class FestivalController extends AbstractController
             $c = new Creneaux();
             $c->setDateDebut($dateDebut);
             $c->setDateFin($dateFin);
-            $em->persist($c);
             $f->addHeuresJour($c);
-            $em->persist($f);
+
+            $em->persist($c);
             $em->flush();
         } catch (\Throwable $th) {
             if ($th instanceof \ErrorException) {
-                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "Les données ne sont pas valides"], Response::HTTP_BAD_REQUEST);
             }
             throw $th;
         }
