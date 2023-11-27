@@ -78,8 +78,9 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: QuestionBenevole::class)]
     private Collection $questionBenevoles;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Creneaux::class, orphanRemoval: true)]
-    private Collection $heuresJour;
+    #[ORM\ManyToMany(targetEntity: Creneaux::class)]
+    private Collection $PlagesHoraires;
+
 
 
     public function __construct() {
@@ -92,7 +93,7 @@ class Festival {
         $this->isArchive=0;
         $this->tags = new ArrayCollection();
         $this->questionBenevoles = new ArrayCollection();
-        $this->heuresJour = new ArrayCollection();
+        $this->PlagesHoraires = new ArrayCollection();
 
     }
 
@@ -414,29 +415,23 @@ class Festival {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getHeuresJour(): Collection
+    public function getPlagesHoraires(): Collection
     {
-        return $this->heuresJour;
+        return $this->PlagesHoraires;
     }
 
-    public function addHeuresJour(Creneaux $heuresJour): static
+    public function addPlagesHoraire(Creneaux $plagesHoraire): static
     {
-        if (!$this->heuresJour->contains($heuresJour)) {
-            $this->heuresJour->add($heuresJour);
-            $heuresJour->setFestival($this);
+        if (!$this->PlagesHoraires->contains($plagesHoraire)) {
+            $this->PlagesHoraires->add($plagesHoraire);
         }
 
         return $this;
     }
 
-    public function removeHeuresJour(Creneaux $heuresJour): static
+    public function removePlagesHoraire(Creneaux $plagesHoraire): static
     {
-        if ($this->heuresJour->removeElement($heuresJour)) {
-            // set the owning side to null (unless already changed)
-            if ($heuresJour->getFestival() === $this) {
-                $heuresJour->setFestival(null);
-            }
-        }
+        $this->PlagesHoraires->removeElement($plagesHoraire);
 
         return $this;
     }

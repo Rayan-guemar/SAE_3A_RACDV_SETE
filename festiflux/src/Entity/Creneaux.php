@@ -31,9 +31,6 @@ class Creneaux {
     #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
     private ?Tache $tache = null;
 
-    #[ORM\ManyToOne(inversedBy: 'heuresJour')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Festival $festival = null;
 
     public function __construct() {
         $this->disponibilites = new ArrayCollection();
@@ -102,15 +99,5 @@ class Creneaux {
         return $this;
     }
 
-    public function getFestival(): ?Festival
-    {
-        return $this->festival;
-    }
 
-    public function setFestival(?Festival $festival): static
-    {
-        $this->festival = $festival;
-
-        return $this;
-    }
 }

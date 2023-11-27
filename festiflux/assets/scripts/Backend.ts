@@ -155,6 +155,7 @@ export class Backend {
 					description: o.description,
 					nbBenevole: o.nombre_benevole,
 					benevoleAffecte: o.benevole_affecte,
+					lieu: o.lieu,
 					poste: { id: o.poste_id, nom: o.poste_nom } as Poste,
 					creneau: { debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) },
 					benevoles: o.benevoles

@@ -699,7 +699,7 @@ class FestivalController extends AbstractController
                     'poste_id' => $p->getId(),
                     'poste_nom' => $p->getNom(),
                     'poste_couleur' => $p->getCouleur(),
-                    'lieu' => 'un truc au pif',
+                    'lieu' => $el->getLieu()->getNomLieu(),
                     'description' => $el->getRemarque(),
                     'nombre_benevole' => $el->getNombreBenevole(),
                     'benevole_affecte' => $el->getBenevoleAffecte()->count(),
