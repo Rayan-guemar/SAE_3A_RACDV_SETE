@@ -18,11 +18,11 @@
   border: solid 4px #463BC3;
   border-radius: 20px;
   width: 80%;
-
-  height: 60%;
+  height: 70%;
   position: relative;
   justify-content: center;
   align-items: center;
+  padding-bottom: 100px;
 
   .info-box {
     display: flex;
@@ -61,7 +61,7 @@ img {
   gap: 20px;
   width: 100%;
   flex-direction: column;
-  margin-top: 30%;
+  margin-top: 40%;
 }
 
 .info-border {
@@ -78,7 +78,7 @@ div.info-border:hover {
 div.info-name-surname {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
 
   &>* {
     width: 50%;
@@ -134,8 +134,5 @@ div.biographie {
 
   .button-shortcut {
     font-size: 11px;
-
-  h1 {
-    width: auto;
   }
 }
