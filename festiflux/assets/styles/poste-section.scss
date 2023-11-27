@@ -13,6 +13,28 @@
     }
 }
 
+@keyframes sayno {
+    0% {
+        transform: translateX(0);
+    } 25% {
+        transform: translateX(5px);
+    } 50% {
+        transform: translateX(-5px);
+    } 75% {
+        transform: translateX(5px);
+    } 100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes becomingRed {
+    40% {
+        border-color: red;
+    } to {
+        border-color: $red-primary;
+    }
+}
+
 h2.poste-section {
     margin-top: 50px;
 }
@@ -71,7 +93,7 @@ h2.poste-section {
     
         width: fit-content;
     
-        border: solid 2px black;
+        border: solid 1px $grey-primary;
         border-radius: 10px;
 
         &:hover {
@@ -107,7 +129,7 @@ h2.poste-section {
     }
 }
 
-.blurbackground {
+.darkbackground {
     position: absolute;
 
     background-color: #0000004d;
@@ -135,6 +157,10 @@ h2.poste-section {
     border-radius: 10px;
 }
 
+.saying-no {
+    animation: sayno 0.4s infinite ease;
+}
+
 .poste-form-wrapper {
     display: flex;
     flex-direction: column;
@@ -151,7 +177,6 @@ h2.poste-section {
 
     .create-poste.missing-field:hover {
         color: unset;
-        cursor: not-allowed;
     }
 
     .cancel-poste:hover {
@@ -231,6 +256,10 @@ h2.poste-section {
     .poste-name.missing-field {
         border-color: $red-primary;
     }
+
+    .poste-name.becoming-red {
+        animation: becomingRed 0.7s forwards;
+    }
 }
 
 .task-preview-wrapper {
@@ -238,7 +267,7 @@ h2.poste-section {
 
     padding: 20px;
 
-    border: solid 2px black;
+    border: solid 1px $grey-primary;
     border-radius: 10px;
 
     .task-preview {
@@ -273,7 +302,7 @@ h2.poste-section {
 
     background-color: white;
 
-    border: solid 2px black;
+    border: solid 1px $grey-primary;
     border-radius: 10px;
 
     & > * {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-    import { VNodeRef, ref } from 'vue';
-    import { dateDiff, assetsPath } from '../../scripts/utils';
+    import { VNodeRef, ref, onMounted } from 'vue';
+    import { dateDiff } from '../../scripts/utils';
     import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
@@ -88,7 +88,6 @@
     }
 
     const startCreatingTache = () => {
-                
         creatingTache.value = true;
     }
 
@@ -122,11 +121,11 @@
         await getTaches();
     }
 
-    (async () => {
+    onMounted(async () => {
         await getTaches();
         await getPostes();
         loading.value = false;
-    })()
+    })
 </script>
 
 <template>
@@ -170,7 +169,8 @@
         v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        :hideModal="stopCreatingTache" >
+        @hideModal="stopCreatingTache"
+    >
         <TacheForm
             :festID="festival.festID"
             :title="festival.title"

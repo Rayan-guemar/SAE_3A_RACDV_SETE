@@ -46,14 +46,17 @@ const setPosteList = (value: Poste[]) => {
 const openPoste = (poste: Poste) => {
   if (askingForDelete.value) return;
 
-  currentPoste.value = poste;
+  currentPoste.value = {...poste};
 
   posteOpened.value = true;
 };
 
 const newPoste = () => {
   if (askingForDelete.value) return;
-  currentPoste.value = defaultPoste;
+  
+  currentPoste.value = {...defaultPoste};
+  
+  
   posteOpened.value = true;
 };
 
@@ -64,11 +67,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 class="poste-section" :class="{blurred: askingForDelete}">
+  <h2 class="poste-section">
     {{ festivalName }}
   </h2>
 
-  <div class="poste-list-wrapper" :class="{blurred: askingForDelete}">
+  <div class="poste-list-wrapper">
     <div class="poste-list" >
       <h3>Liste des postes</h3>
       <div class="postes">

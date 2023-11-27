@@ -35,8 +35,10 @@
     "dependencies": {
         "@yaireo/tagify": "^4.17.9",
         "jquery": "^3.7.1",
+        "leaflet": "^1.9.4",
         "symfony-ts-router": "^1.0.6",
         "tsd": "^0.29.0",
+        "vue-leaflet": "^0.1.0",
         "vuex": "^4.0.2"
     }
 }

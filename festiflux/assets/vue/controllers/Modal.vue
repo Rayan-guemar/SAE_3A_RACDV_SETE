@@ -5,17 +5,16 @@ import { Input, SubmitBtn } from '../../scripts/types';
 interface Props {
     id: string;
     title: string;
-    hideModal: () => void;
 }
 
-const { id, title, hideModal } = defineProps<Props>();
+const { id, title } = defineProps<Props>();
 
 </script>
 
 <template>
     <div :id="id" class="planning-form">
         <div>
-            <div class="close-btn" @click="hideModal">
+            <div class="close-btn" @click="$emit('hideModal')">
                 <img src="../../../public/icons/x-mark.png" alt="Fermer">
             </div>
         </div>
