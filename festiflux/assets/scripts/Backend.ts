@@ -131,6 +131,31 @@ export class Backend {
 	/**
 	 *
 	 * @param {string} festivalId
+	 * @returns {Promise<Creneau[]>} - Une promesse qui résout avec les données des Creneaux.
+	 */
+	// static async addHeureDepartFin(festivalId: number): Promise<Creneau[]> {
+	// 	// @ts-ignore
+	// 	const URL = Routing.generate('app_festival_tache', { id: festivalId });
+	// 	const data = await Backend.#get(URL);
+	// 	const res = [...data].map(
+	// 		(o: any) =>
+	// 			({
+	// 				id: o.id,
+	// 				description: o.description,
+	// 				nbBenevole: o.nombre_benevole,
+	// 				poste: { id: o.poste_id, nom: o.poste_nom } as Poste,
+	// 				creneau: { debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) },
+	// 				benevoles: o.benevoles
+	// 			} as Tache)
+	// 	);
+	// 	console.log(res);
+	//
+	// 	return res;
+	// }
+
+	/**
+	 *
+	 * @param {string} festivalId
 	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
 	 */
 	static async getTaches(festivalId: number): Promise<Tache[]> {

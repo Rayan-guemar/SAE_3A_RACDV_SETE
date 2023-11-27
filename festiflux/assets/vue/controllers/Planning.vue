@@ -7,6 +7,7 @@
     import Modal from './Modal.vue';
     import TacheForm from './TacheForm.vue';
     import { sortTachesByOverriding } from '../../scripts/tache';
+    import HeureDebutFinJour from "./HeureDebutFinJour.vue";
 
 
     type Props = {
@@ -180,5 +181,6 @@
             :postes="postes"
             :update-taches="updateTaches"
         />
+        <HeureDebutFinJour v-for="i in numberOfDays"></HeureDebutFinJour>
     </Modal>
 </template>
