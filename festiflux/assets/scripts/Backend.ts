@@ -139,6 +139,15 @@ export class Backend {
 		await Backend.#post(URL,  creneau as RequestInit);
 	}
 
+	static async getPlagesHoraires(festivalId: number): Promise<Creneau[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
+		const data = await Backend.#get(URL);
+		const res = data
+		console.log(res);
+
+		return res;
+	}
 	/**
 	 *
 	 * @param {string} festivalId

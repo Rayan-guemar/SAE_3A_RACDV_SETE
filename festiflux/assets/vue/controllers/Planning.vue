@@ -43,6 +43,7 @@
     const taches = ref<TacheType[]>([]);
     const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
     const postes = ref<Poste[]>([]);
+    const crx = ref<Creneau[]>([]);
 
     const loading = ref(true);
     const creatingTache = ref(false);
@@ -55,6 +56,13 @@
         if (res) {
             taches.value = res;
             sortedTaches.value = sortTachesByOverriding(res);
+        }
+    }
+
+    const getPlagesHoraires = async () => {
+        const res = await Backend.getPlagesHoraires(festival.value.festID);
+        if (res) {
+            crx.value = res;
         }
     }
 
@@ -142,6 +150,8 @@
     (async () => {
         await getTaches();
         await getPostes();
+        await getPlagesHoraires();
+        console.log(crx.value);
         loading.value = false;
     })()
 </script>

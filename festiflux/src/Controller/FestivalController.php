@@ -570,7 +570,6 @@ class FestivalController extends AbstractController
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
             return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
         }
-        $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp()) / 86400;
         $body = json_decode($request->getContent(), true);
         try {
             $dateDebut = new DateTime($body['debut']);
@@ -587,7 +586,7 @@ class FestivalController extends AbstractController
             $c = new Creneaux();
             $c->setDateDebut($dateDebut);
             $c->setDateFin($dateFin);
-            $f->addHeuresJour($c);
+            $f->addPlagesHoraire($c);
 
             $em->persist($c);
             $em->flush();
@@ -603,6 +602,26 @@ class FestivalController extends AbstractController
 
     }
 
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_get_DebutFinDay', methods: ['GET'], options: ["expose" => true])]
+    public function getPlagesHoraires(#[MapEntity] Festival $f): JsonResponse
+    {
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+        $creneaux = $f->getPlagesHoraires();
+        $tab = [];
+        foreach ($creneaux as $creneau) {
+            $tab[] = [
+                'id' => $creneau->getId(),
+                'debut' => $creneau->getDateDebut(),
+                'fin' => $creneau->getDateFin(),
+            ];
+        }
+        return new JsonResponse([
+            'plagesHoraires' => $tab
+        ], 200);
+
+    }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
