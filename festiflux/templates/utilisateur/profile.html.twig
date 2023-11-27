@@ -20,7 +20,7 @@
 							{% if utilisateur.nomphotoprofil == false %}
 								src="{{ asset("uploads/user/anonyme.png") }}"
 							{% else %}
-								src="{{ asset("uploads/user/6560b8be1cfb1.jpg") }}"
+								src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
 							{% endif %}
 						 alt="avatar de l'utilisateur">
 				</a>

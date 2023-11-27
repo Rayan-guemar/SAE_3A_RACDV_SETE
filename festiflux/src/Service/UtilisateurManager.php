@@ -23,7 +23,7 @@ class UtilisateurManager implements UtilisateurManagerInterface
             //On met à jour l'attribut "nomPhotoProfil" de l'utilisateur
             $fileName = uniqid() . '.' . $fichierPhotoProfil->guessExtension();
             $fichierPhotoProfil->move($this->dossier_photo_profil, $fileName);
-            $utilisateur->setNomPhotoProfil($fichierPhotoProfil);
+            $utilisateur->setNomPhotoProfil($fileName);
         }
     }
 
