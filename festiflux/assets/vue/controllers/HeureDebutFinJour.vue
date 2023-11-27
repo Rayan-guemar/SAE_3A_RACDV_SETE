@@ -21,7 +21,7 @@ async function createCreneau(e: Event) {
   const res = await Backend.addHeureDepartFin(props.festivalId, creneau.value);
 
   if (res) {
-    creaneau.value = res;
+    creneau.value = res;
   }
 }
 
