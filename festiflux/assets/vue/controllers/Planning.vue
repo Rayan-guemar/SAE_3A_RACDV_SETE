@@ -115,7 +115,8 @@
             creneau: {
                 debut: tache.date_debut,
                 fin: tache.date_fin
-            }
+            },
+            benevoleAffecte: 0,
         }
 
         sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
@@ -170,7 +171,7 @@
         v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        :hideModal="stopCreatingTache" >
+        >
         <TacheForm
             :festID="festival.festID"
             :title="festival.title"
@@ -179,6 +180,7 @@
             :isOrgaOrResp="festival.isOrgaOrResp"
             :postes="postes"
             :update-taches="updateTaches"
+            :cancel="stopCreatingTache"
         />
     </Modal>
 </template>
