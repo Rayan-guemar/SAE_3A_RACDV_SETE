@@ -1,11 +1,5 @@
 {
     "controllers": {
-        "@symfony/ux-svelte": {
-            "svelte": {
-                "enabled": true,
-                "fetch": "eager"
-            }
-        },
         "@symfony/ux-vue": {
             "vue": {
                 "enabled": true,
