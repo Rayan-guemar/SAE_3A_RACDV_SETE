@@ -8,6 +8,7 @@
     import TacheForm from './TacheForm.vue';
     import { sortTachesByOverriding } from '../../scripts/tache';
 
+type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ; 
 
     type Props = {
         festID: number,
@@ -28,6 +29,8 @@
         isOrgaOrResp: props.isOrgaOrResp,
     })
 
+    
+
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
     const days = Array.from({ length: numberOfDays }, (_, i) => new Date(festival.value.dateDebut.getFullYear(), festival.value.dateDebut.getMonth(), festival.value.dateDebut.getDate() + i));
     const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -41,8 +44,21 @@
     const loading = ref(true);
     const creatingTache = ref(false);
 
+    const filterByPoste = ref("");
+
     const displayTaches = computed (() => {
-        return sortedTaches.value.filter(({tache}) => !vuePerso.value || tache.benevoles?.map(b => b.id).includes(props.userId) )
+        
+        const filters: ((tache: TacheType) => unknown)[] = []
+        if (vuePerso.value) filters.push((tache) => tache.benevoles?.map(b => b.id).includes(props.userId))
+        if (filterByPoste.value) filters.push(tache => tache.poste.id == filterByPoste.value)
+        
+        
+        let tachesToDisplay = [...sortedTaches.value]
+        for (const filter of filters) {
+            tachesToDisplay = tachesToDisplay.filter(({tache}) => filter(tache))
+        }
+
+        return tachesToDisplay
     })
 
 
@@ -170,6 +186,14 @@
             </div>
         </div>
         <div class="manage-interface">
+            <div>
+                <label for="poste_filter">Filtrer par:</label>
+                <select name="poste_filter" class="btn" id="poste_filter" v-model="filterByPoste"> 
+                    <option selected="true" value="">Tous les postes</option>
+                    <option v-for="poste of postes" :value="poste.id">{{ poste.nom }}</option>
+                </select>
+            </div>
+            
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
@@ -186,6 +210,7 @@
             <img src="../../../public/icons/fleche-gauche.png" alt="Droite">
         </div>
     </div>
+
 
     <Modal
         v-if="creatingTache"
