@@ -454,3 +454,22 @@
     height: 100%;
     font-size: 65%;
 }
+
+#modal-portal {
+    z-index: 100;
+}
+
+.modal-container>* {
+    z-index: 101;
+}
+
+.modal-background {
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    opacity: 0.5;
+}

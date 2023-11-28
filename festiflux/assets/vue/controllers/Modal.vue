@@ -1,11 +1,13 @@
 <script setup lang="ts"> 
-const modalContainer = document.getElementById('modal-container') as HTMLDivElement | null;
-if (!modalContainer) document.body.insertAdjacentHTML('afterbegin', '<div id="modal-container"></div>');
+const modalContainer = document.getElementById('modal-portal') as HTMLDivElement | null;
+if (!modalContainer) document.body.insertAdjacentHTML('afterbegin', '<div id="modal-portal"></div>');
 </script>
 
 <template>
-        <Teleport to="#modal-container">
-            <slot></slot>
+        <Teleport to="#modal-portal">
+            <div class="modal-container">
+                <slot></slot>
+            </div>
             <div class="modal-background" @click="$emit('close')"></div>
         </Teleport>
 </template>
