@@ -24,6 +24,11 @@
   align-items: center;
   padding-bottom: 100px;
 
+  img {
+    max-width: 250px;
+    max-height: 250px;
+  }
+
   .info-box {
     display: flex;
     flex-direction: column;
@@ -47,15 +52,11 @@
   color: white;
 }
 
-
 h1 {
   text-align: center;
 }
 
-img {
-  max-width: 250px;
-  max-height: 250px;
-}
+
 
 .info-row {
   display: flex;
@@ -96,7 +97,7 @@ div.biographie {
     width: 80%;
   }
 
-  img {
+  #img-profil {
     max-width: 150px;
     max-height: 150px;
 
@@ -119,7 +120,7 @@ div.biographie {
 
 @media screen and (max-width: 450px) {
 
-  img {
+  #img-profil {
     max-width: 100px;
     max-height: 100px;
 
@@ -135,6 +136,5 @@ div.biographie {
 
   .button-shortcut {
     font-size: 11px;
-
   }
 }
