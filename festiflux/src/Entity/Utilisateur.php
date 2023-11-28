@@ -214,6 +214,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->nom;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getNomPhotoProfil(): ?string
+    {
+        return $this->nomPhotoProfil;
+    }
+
     public function setNom(string $nom): static {
         $this->nom = $nom;
 
@@ -228,6 +236,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->prenom = $prenom;
 
         return $this;
+    }
+
+    public function getDescription(): ?string {
+        return $this->description;
     }
 
     /**

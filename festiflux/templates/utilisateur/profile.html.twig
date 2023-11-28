@@ -14,53 +14,54 @@
 				{{ utilisateur.nom }}
 				{{ utilisateur.prenom }}
 			</h1>
+
+			<div class="info-box-wrapper">
 			<div class="info-box">
-				<a href="">
-					<img class="avatar"
-							{% if utilisateur.nomphotoprofil == false %}
-								src="{{ asset("uploads/user/anonyme.png") }}"
-							{% else %}
-								src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
-							{% endif %}
-						 alt="avatar de l'utilisateur">
-				</a>
+				<div class="image_profile">
+				<img {% if utilisateur.nomphotoprofil == true %} 
+				            src="{{ asset("uploads/Path-of-Exile-Logo-6522d2462da93.png") }}" alt=""
+					 {% else %}
+							src="{{ asset("uploads/"~utilisateur.nomPhotoProfil~"") }}"
+					 {% endif %}>
+			    </div>
 				<div class="info-row">
 					<div class="info-border">
-						<strong>Nom</strong>
+						<strong>Email</strong>
 						:
-						{{ utilisateur.nom }}
-					</div>
+						{{ utilisateur.email }}
 
-					<div class="info-border">
-						<strong>Prénom</strong>
-						:
-						{{ utilisateur.prenom }}
-					</div>
-				</div>
+				    </div>
+						<div class="info-name-surname">
+							<div class="info-border">
+								<strong>Nom</strong>
+								:
+								{{ utilisateur.nom }}
+							</div>
 
-				<div class="info-border">
-					<strong>Email</strong>
-					:
-					{{ utilisateur.email }}
-
-				</div>
-				<div class="info-border">
+							<div class="info-border">
+								<strong>Prénom</strong>
+								:
+								{{ utilisateur.prenom }}
+							</div>		
+						</div>	
+            <div class="info-border">
 					<strong>Adresse</strong>
 					:
 					{{ utilisateur.adresse }}
 
 				</div>
-				<div class="info-border">
-					<strong>Description</strong>
-					:
-					{{ utilisateur.description }}
-
+						<div class="info-border biographie">
+								<strong>Biographie</strong>
+								:
+								{{ utilisateur.description }}
+						</div>
+					</div>
 				</div>
 				<div class="fest-button">
 
 					<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
 						<div class="button-shortcut">
-							<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
+							Modifier mon profil
 						</div>
 					</a>
 				</div>
