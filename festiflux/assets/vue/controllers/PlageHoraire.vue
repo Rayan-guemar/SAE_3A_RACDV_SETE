@@ -23,21 +23,23 @@
             }
         }
     });
+    let debut = new Date(creneau.debut.date);
+    let fin = new Date(creneau.fin.date);
+
 </script>
 <template>
     <div ref="plage" class="plage" :id="''+id" :style="{
-      top: `${((creneau.debut.getHours() * 60 + creneau.debut.getMinutes()) / (24 * 60)) * 100}%`,
-      height: `${((creneau.fin.getHours() * 60 + creneau.fin.getMinutes() - (creneau.debut.getHours() * 60 + creneau.debut.getMinutes())) / (24 * 60)) * 100}%`,
-      width: `100%`,
-      margin: `0 2px`,
-      left: `${(100)}%`,
+      top: `${((debut.getHours() * 60 + debut.getMinutes()) / (24 * 60)) * 100}%`,
+      height: `${( ( (fin.getHours() * 60 + fin.getMinutes()) - (debut.getHours() * 60 + debut.getMinutes()) ) / (24 * 60) ) * 100}%`,
+      width:  `100%`,
+      left: `0%`,
       transform: `translateX(0%)`,
       backgroundColor: `rgb(216, 230, 243)`,
       zIndex: ajoutIndispo ? 1000 : -10,
     }" @click="(e) => addPlage()" >
 <!--        <div class="name">{{ encodedStr(poste.nom) }}</div>-->
 <!--        <div class="tache">-->
-<!--            {{ encodedStr(`${getDateHours2Digits(creneau.debut)} - ${getDateHours2Digits(creneau.fin)}`) }}-->
+<!--            {{ encodedStr(`${getDateHours2Digits(debut)} - ${getDateHours2Digits(fin)}`) }}-->
 <!--        </div>-->
 <!--        <InfoTache v-if="ajoutIndispo" :tache="tache" />-->
     </div>

@@ -173,9 +173,10 @@
                         {{ dayNames[day.getDay()].substring(0, 3) + ' ' + day.getDate() + ' ' + monthNames[day.getMonth()].substring(0, 4) + '.' }}
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
-                    <!-- <Tache /> -->
-                    <PlageHoraire v-for="creneauWithPos of crx.filter(({debut}) => debut.getDate() === day.getDate() )" :creneau="creneauWithPos" />
-                    <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <!-- <Plages /> -->
+                    <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut.date)).getDate() === day.getDate())" :creneau="creneauWithPos" />
+                  <!-- <Tache /> -->
+                  <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
