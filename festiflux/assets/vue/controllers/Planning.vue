@@ -8,6 +8,7 @@
     import TacheForm from './TacheForm.vue';
     import { sortTachesByOverriding } from '../../scripts/tache';
     import HeureDebutFinJour from "./HeureDebutFinJour.vue";
+    import PlageHoraire from "./PlageHoraire.vue";
 
 
     type Props = {
@@ -62,7 +63,7 @@
     const getPlagesHoraires = async () => {
         const res = await Backend.getPlagesHoraires(festival.value.festID);
         if (res) {
-            crx.value = res;
+            crx.value = res['plagesHorraires'];
         }
     }
 
@@ -151,7 +152,6 @@
         await getTaches();
         await getPostes();
         await getPlagesHoraires();
-        console.log(crx.value);
         loading.value = false;
     })()
 </script>
@@ -173,6 +173,7 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
+                    <PlageHoraire v-for="creneauWithPos of crx.filter(({creneau}) => creneau.debut.getDate() === day.getDate() )" :creneau="creneauWithPos" />
                     <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
