@@ -1,0 +1,331 @@
+@import "_variables";
+
+@keyframes underlineLoading {
+    0% {
+        left: 0;
+        width: 0;
+    } 50% {
+        left: 0;
+        width: 100%;
+    } 100% {
+        left: 100%;
+        width: 0;
+    }
+}
+
+@keyframes sayno {
+    0% {
+        transform: translateX(0);
+    } 25% {
+        transform: translateX(5px);
+    } 50% {
+        transform: translateX(-5px);
+    } 75% {
+        transform: translateX(5px);
+    } 100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes becomingRed {
+    40% {
+        border-color: red;
+    } to {
+        border-color: $red-primary;
+    }
+}
+
+h2.poste-section {
+    margin-top: 50px;
+}
+
+.poste-section , .poste-list {
+    transition: filter 0.2s;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.poste-list-wrapper {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    
+    .new-poste-btn {
+        font-weight: 500;
+    }
+
+    .new-poste-btn:hover {
+        color: $blue-primary;
+    }
+    
+    .postes {
+        box-shadow: inset 0px 0px 5px 0px #0000004d;
+        
+        width: 100%;
+    
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    
+        overflow: auto;
+    }
+    
+    .poste {
+        padding: 5px;
+    
+        border-left: solid 5px;
+
+        box-shadow: 0px 0px 5px 0px #0000004d;
+
+        &:hover {
+            border-left: solid 10px;
+        }
+    }
+    
+    .add-poste {
+        padding: 5px;
+    
+        width: fit-content;
+    
+        border: solid 1px $grey-primary;
+        border-radius: 10px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: #00000004;
+        }
+    }
+}
+
+.top-heading {
+    position: absolute;
+
+    padding: 5px;
+
+    background-color: white;
+
+    top: 0;
+    left: 50%;
+
+    transform: translate(-50%, -65%);
+
+    text-wrap: nowrap;
+}
+
+.poste-list {
+    width: 40%;
+    max-width: 500px;
+
+    font-size: 20px;
+
+    &.blurred .poste:hover {
+        border-left: solid 5px;
+    }
+}
+
+.darkbackground {
+    position: absolute;
+
+    background-color: #0000004d;
+
+    inset: 0;
+
+    z-index: 2;
+}
+
+.delete-poste-confirm {
+    z-index: 3;
+}
+
+.poste-list, .poste-form {
+    padding: 20px;
+    
+    max-height: 65%;
+    
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    
+    border-radius: 10px;
+}
+
+.saying-no {
+    animation: sayno 0.4s infinite ease;
+}
+
+.poste-form-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    gap: 50px;
+
+    .delete-poste:hover {
+        color: $red-primary;
+    }
+
+    .edit-poste:hover, .create-poste:hover {
+        color: $blue-primary;
+    }
+
+    .create-poste.missing-field:hover {
+        color: unset;
+    }
+
+    .cancel-poste:hover {
+        color: $grey-primary;
+    }
+
+    .delete-poste, .edit-poste, .create-poste, .cancel-poste {
+        position: relative;
+        font-weight: 500;
+        font-size: large;
+
+        &.loading::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            height: 2px;
+            animation: underlineLoading 1s infinite;
+        }
+    }
+
+    .create-poste::before {
+        background-color: $blue-primary;
+    }
+
+    .edit-poste::before {
+        background-color: $blue-primary;
+    }
+
+    .delete-poste::before {
+        background-color: $red-primary;
+    }
+
+    textarea, input {
+        padding: 10px;
+
+        background-color: #00000004;
+
+        border: none;
+        border-bottom: solid 2px black;
+
+        font-size: 15px;
+
+        &[type="color"] {
+            padding: 0;
+            border-bottom: none;
+        }
+
+        &:focus {
+            outline: none;
+            border-bottom: solid 3px $blue-primary;
+        }
+    }
+
+    .color-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    textarea {
+        resize: none;
+        height: 100px;
+    }
+}
+
+.poste-form {
+    position: relative;
+
+    padding: 20px;
+
+    justify-content: center;
+
+    border: solid 1px $grey-primary;
+    border-radius: 10px;
+
+    .poste-name.missing-field {
+        border-color: $red-primary;
+    }
+
+    .poste-name.becoming-red {
+        animation: becomingRed 0.7s forwards;
+    }
+}
+
+.task-preview-wrapper {
+    position: relative;
+
+    padding: 20px;
+
+    border: solid 1px $grey-primary;
+    border-radius: 10px;
+
+    .task-preview {
+        background-color: #fcdcdf;
+        border-left: #ff4454 solid 4px;
+        color: #ff4454;
+        border-radius: 3px;
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+    
+        font-weight: bold;
+    }
+}
+
+.delete-poste-confirm {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    background-color: white;
+
+    border: solid 1px $grey-primary;
+    border-radius: 10px;
+
+    & > * {
+        width: 100%;
+        text-align: center;
+    }
+
+    .delete-poste-confirm-btns {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        gap: 20px;
+
+        .pointer {
+            font-weight: 500;
+        }
+
+        .delete-poste-confirm-yes:hover {
+            color: $red-primary;
+        }
+
+        .delete-poste-confirm-no:hover {
+            color: $grey-primary;
+        }
+    }
+}

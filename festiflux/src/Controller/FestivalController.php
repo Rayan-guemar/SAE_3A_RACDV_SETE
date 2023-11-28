@@ -273,6 +273,31 @@ class FestivalController extends AbstractController
         ]);
     }
 
+    #[Route('/festival/{id}/postes', name: 'app_festival_postes')]
+    public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+        $festival = $repository->find($id);
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/postes.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+        ]);
+    }
+
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
     public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em)
     {
@@ -384,6 +409,7 @@ class FestivalController extends AbstractController
                 'id' => $poste->getId(),
                 'nom' => $poste->getNom(),
                 'couleur' => $poste->getCouleur(),
+                'description' => $poste->getDescription(),
             ];
         }
 
@@ -392,7 +418,7 @@ class FestivalController extends AbstractController
         ], 200);
     }
 
-    #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['GET', 'POST'], options: ['expose' => true])]
+    #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
     public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste){
         $f = $repository->find($id);
         $p = $poste->find($idPoste);
@@ -416,23 +442,14 @@ class FestivalController extends AbstractController
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
 
-        $form = $this->createForm(ModifierPosteType::class, $p);
-        $form->handleRequest($request);
+        $p->setNom($request->toArray()['nom']);
+        $p->setCouleur($request->toArray()['couleur']);
+        $p->setDescription($request->toArray()['description']);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $em->persist($p);
+        $em->flush();
 
-            $p->setNom($form->get('nom')->getData());
-
-            $em->persist($p);
-            $em->flush();
-
-            $this->addFlash('success', 'Le poste a bien été modifié');
-            return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
-        }
-        return $this->render('festival/modifierPoste.html.twig', [
-            'controller_name' => 'FestivalController',
-            'form' => $form->createView(),
-        ]);
+        return new JsonResponse(['success' => 'Le poste a bien été modifié'], Response::HTTP_OK);
     }
 
     #[Route('/festival/{id}/poste/{idPoste}/delete', name: 'app_festival_delete_poste', methods: ['GET','DELETE'], options: ["expose" => true])]
