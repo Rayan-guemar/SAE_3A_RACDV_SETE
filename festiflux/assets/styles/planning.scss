@@ -160,6 +160,20 @@
                 left: 0% !important;
             }
         }
+        .plage{
+                position: absolute;
+                top: calc(15/24*100%);
+                left: 0%;
+                height: calc(2/24*100%);
+                width: 100%;
+                transform: translate(-50%, 0);
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 5px;
+        }
     }
 
     .days {
@@ -219,8 +233,8 @@
 
         .btn {
             // margin-top: 20px;
-            border: solid 3px black;
-            border-radius: 10px;
+            box-shadow: 0 0 3px 0px $grey-primary;
+            border-radius: 5px;
             padding: 10px;
             width: 100%;
             text-align: center;
@@ -230,7 +244,8 @@
 
             &:hover {
                 border-color: $blue-primary;
-                color: $blue-primary;
+                //color: $blue-primary;
+                box-shadow: 0 0 5px 0px $grey-primary;
             }
         }
 
@@ -475,4 +490,8 @@
     width: 100vw;
     background-color: black;
     opacity: 0.5;
+}
+
+.switch-vue {
+    
 }

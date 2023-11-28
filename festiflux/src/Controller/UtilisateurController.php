@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Festival;
+use App\Entity\Poste;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
 use App\Form\ModifierFestivalType;
@@ -30,6 +31,7 @@ use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
+use PHPUnit\Util\Json;
 
 class UtilisateurController extends AbstractController {
 
@@ -292,4 +294,6 @@ class UtilisateurController extends AbstractController {
 
         return $this->redirectToRoute('home');
     }
+
+
 }
