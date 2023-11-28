@@ -12,13 +12,16 @@
 {% endblock %}
 {% block body %}
 	<div class="detailFesival">
-		<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
-		<div class="fest-info" id="fest-info">
-			<div class="fest-nom">
-				<span>{{ festival.getNom() }}</span>
-			</div>
-			<div class="fest-dateEtLieux">
-				<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+	<div class="detailFesival-block">
+		<div class="container-affiche">
+			<img class="affiche" id="affiche" {% if (festival.getAffiche()) != null %} src="{{ asset("uploads/" ~ festival.getAffiche() ) }}" {% else %} src="{{ asset("img/affiches/affiche-XX.jpg") }}" {% endif %} alt="affiche du festival">
+			<div class="fest-info" id="fest-info">
+				<div class="fest-nom">
+					<span>{{ festival.getNom() }}</span>
+				</div>
+				<div class="fest-dateEtLieux">
+					<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+				</div>
 			</div>
 		</div>
 		<div class="fest-description">
@@ -48,6 +51,7 @@
 
 			<div id="mapid"></div>
 		</div>
+	</div>	
 
 		<div class="btn-container">
 			{% if isResponsable or isOrganisateur %}

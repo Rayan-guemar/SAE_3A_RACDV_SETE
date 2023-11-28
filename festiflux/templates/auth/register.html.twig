@@ -27,7 +27,8 @@
       {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': 'registration-form__submit'}}) }}
 
       <div class="form-center">
-        Vous avez déjà un compte ? <a style="margin-left: 5px;" href="{{ path("app_auth_login") }}" class="login-form__link--register">Se connecter</a>
+        <span>Vous avez déjà un compte ? </span>
+        <a style="margin-left: 5px;" href="{{ path("app_auth_login") }}" class="login-form__link--register">Se connecter</a>
       </div>
       
       {{ form_rest(form) }}
