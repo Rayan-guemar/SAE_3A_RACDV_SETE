@@ -23,7 +23,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 */
-console.log(getAllFestival());
+console.log((async () => {
+    let a =await getAllFestival()
+    console.log(a)
+})());
 /*
 let lat = document.getElementById("lat").value;
 let lon = document.getElementById("lon").value;

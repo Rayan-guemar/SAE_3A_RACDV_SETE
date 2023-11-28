@@ -173,6 +173,7 @@ class FestivalController extends AbstractController
             return $errorService->MustBeLoggedError();
         }
     }
+
     #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true])]
     public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService)
     {
@@ -207,7 +208,7 @@ class FestivalController extends AbstractController
         } else {
             $this->addFlash('erreur', "");
             return $errorService->MustBeLoggedError();
-        }
+        } 
     }
 
     #[Route('/festival/{id}', name: 'app_festival_detail')]
@@ -243,6 +244,22 @@ class FestivalController extends AbstractController
             'isOrganisateur' => $isOrganisateur,
             'hasApplied' => $hasApplied,
         ]);
+    }
+
+    #[Route('/festival/all/coordinate', name: 'app_all_festival', methods: ['GET'], options: ['expose' => true])]
+    public function allCoordinatesFest(FestivalRepository $repository): JsonResponse
+    {
+        $festivals = $repository->findAll();
+        $tab = [];
+        foreach ($festivals as $festival) {
+            $tab[] = [
+                'id' => $festival->getId(),
+                'nom' => $festival->getNom(),
+                'latitude' => $festival->getLat(),
+                'longitude' => $festival->getLon(),
+            ];
+        }
+        return new JsonResponse($tab, 200);
     }
 
     #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
@@ -434,15 +451,6 @@ class FestivalController extends AbstractController
         ], 200);
     }
 
-    #[Route('/festival/allCoordinatesFestival', name: 'app_all_festival', methods: ['GET'], options: ['expose' => true])]
-    public function allCoordinatesFest(FestivalRepository $repository, Request $request): JsonResponse
-    {
-        $tab = "test";
-
-        return new JsonResponse($tab, 200);
-
-    }
-
     #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
     public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste)
     {
@@ -477,6 +485,8 @@ class FestivalController extends AbstractController
 
         return new JsonResponse(['success' => 'Le poste a bien été modifié'], Response::HTTP_OK);
     }
+
+    
 
     #[Route('/festival/{id}/poste/{idPoste}/delete', name: 'app_festival_delete_poste', methods: ['GET', 'DELETE'], options: ["expose" => true])]
     public function deletePoste(Request $request, EntityManagerInterface $em, int $id, int $idPoste, FestivalRepository $repository, UtilisateurUtils $utilisateurUtils, PosteRepository $poste): Response
