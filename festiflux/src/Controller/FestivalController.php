@@ -166,6 +166,7 @@ class FestivalController extends AbstractController {
             return $errorService->MustBeLoggedError();
         }
     }
+
     #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true])]
     public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService) {
 
@@ -380,6 +381,14 @@ class FestivalController extends AbstractController {
         $em->persist($poste);
         $em->flush();
 
+        foreach ($festival->getBenevoles() as $benevole) {
+            $postePref = new PosteUtilisateurPreferences();
+            $postePref->setUtilisateurId($benevole);
+            $postePref->setPosteId($poste);
+            $em->persist($postePref);
+            $em->flush();
+        }
+
         return new JsonResponse([
             'success' => 'Le poste a bien été créé',
             'id' => $poste->getId(),
@@ -418,6 +427,7 @@ class FestivalController extends AbstractController {
 
     #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
     public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste) {
+
         $f = $repository->find($id);
         $p = $poste->find($idPoste);
 
@@ -520,7 +530,7 @@ class FestivalController extends AbstractController {
         }
 
         $benevolesAdore = [];
-        $benevolesAime =  [];
+        $benevolesAime = [];
         $benevolesAimePas = [];
 
         foreach ($tache->getPoste()->getPosteUtilisateurPreferences() as $bp) {
@@ -567,55 +577,68 @@ class FestivalController extends AbstractController {
         ], 200);
     }
 
-    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST', 'GET'], options: ["expose" => true])]
-    public function addDebutFinDay(#[MapEntity] Festival $f, int $d, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    {
         if ($f == null) {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
-
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
-
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
             return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
         }
+        $body = json_decode($request->getContent(), true);
+        try {
+            $dateDebut = new DateTime($body['debut']);
+            $dateFin = new DateTime($body['fin']);
 
-        $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp()) / 86400;
-        $listeCreaneaux = new ArrayCollection();
-        for ($i = 0; $i < $nbJours; $i++) {
-            $creaneaux = new Creneaux();
-            $listeCreaneaux->add($creaneaux);
-        }
-
-        $form = $this->createForm(AjoutDebutFinType::class, $listeCreaneaux);
-
-        $form->handleRequest($request);
-        if ($request->isMethod('POST')) {
-            $this->denyAccessUnlessGranted('ROLE_USER');
-            if ($form->isSubmitted() && $form->isValid()) {
-                foreach ($form->getData() as $creaneaux) {
-                    if ($creaneaux->getDateFin() > $creaneaux->getDateDebut()) {
-                        dd($creaneaux);
-                        //$em->persist($creaneaux);
-                    } else {
-                        return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
-                    }
-                }
-                $em->flush();
-                //$f->setListeCreaneaux($listeCreaneaux);
+            if ($dateDebut > $dateFin) {
+                return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+            } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
             }
+
+            $c = new Creneaux();
+            $c->setDateDebut($dateDebut);
+            $c->setDateFin($dateFin);
+            $f->addPlagesHoraire($c);
+
+            $em->persist($c);
+            $em->flush();
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => "Les données ne sont pas valides"], Response::HTTP_BAD_REQUEST);
+            }
+            throw $th;
         }
 
+        return new JsonResponse(status: Response::HTTP_CREATED);
 
-        return $this->render('festival/ajoutDebutFin.html.twig', [
-            'controller_name' => 'FestivalController',
-            'form' => $form->createView(),
-            'creaneaux' => $listeCreaneaux,
-        ]);
     }
 
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_get_DebutFinDay', methods: ['GET'], options: ["expose" => true])]
+    public function getPlagesHoraires(#[MapEntity] Festival $f): JsonResponse
+    {
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+        $creneaux = $f->getPlagesHoraires();
+        $tab = [];
+        foreach ($creneaux as $creneau) {
+            $tab[] = [
+                'id' => $creneau->getId(),
+                'debut' => $creneau->getDateDebut(),
+                'fin' => $creneau->getDateFin(),
+            ];
+        }
+        return new JsonResponse($tab, 200);
+
+    }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
@@ -635,7 +658,6 @@ class FestivalController extends AbstractController {
         }
 
         $body = json_decode($request->getContent(), true);
-
 
 
         try {
@@ -666,9 +688,9 @@ class FestivalController extends AbstractController {
 
         if ($dateDebut > $dateFin) {
             return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
-        } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+        } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
             return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
-        } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') ||  $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+        } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
             return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
         }
 
@@ -726,7 +748,6 @@ class FestivalController extends AbstractController {
                 ];
             }, $p->getTaches()->toArray()));
         }, []);
-
 
 
         //dd($taches);
@@ -798,7 +819,8 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/tache/{idTache}/delete', name: 'app_festival_delete_tache', methods: ['DELETE'], options: ["expose" => true])]
-    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response {
+    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response
+    {
 
         $f = $fRep->find($id);
         $t = $tRep->find($idTache);
@@ -816,7 +838,6 @@ class FestivalController extends AbstractController {
 
         return new JsonResponse(['success' => 'La tache a bien été supprimée'], Response::HTTP_OK);
     }
-
 
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
@@ -899,6 +920,8 @@ class FestivalController extends AbstractController {
         }
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
+
+        $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId" => $u]);
 
         return $this->render('utilisateur/liked_postes.html.twig', [
             'postes' => $postes,
