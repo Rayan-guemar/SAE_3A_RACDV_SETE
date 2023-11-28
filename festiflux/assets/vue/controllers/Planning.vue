@@ -63,7 +63,7 @@
     const getPlagesHoraires = async () => {
         const res = await Backend.getPlagesHoraires(festival.value.festID);
         if (res) {
-            crx.value = res['plagesHoraires'];
+            crx.value = res;
         }
       console.log(res);
     }
@@ -174,7 +174,7 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
-                    <PlageHoraire v-for="creneauWithPos of (crx.value).filter(({debut}) => debut.getDate() === day.getDate() )" :creneau="creneauWithPos" />
+                    <PlageHoraire v-for="creneauWithPos of crx.filter(({debut}) => debut.getDate() === day.getDate() )" :creneau="creneauWithPos" />
                     <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>

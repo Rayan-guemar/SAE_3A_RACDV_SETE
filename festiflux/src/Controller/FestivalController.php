@@ -617,9 +617,7 @@ class FestivalController extends AbstractController
                 'fin' => $creneau->getDateFin(),
             ];
         }
-        return new JsonResponse([
-            'plagesHoraires' => $tab
-        ], 200);
+        return new JsonResponse($tab, 200);
 
     }
 
