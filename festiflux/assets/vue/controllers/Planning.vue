@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { VNodeRef, ref, onMounted } from 'vue';
+    import { VNodeRef, ref, onMounted, computed } from 'vue';
     import { dateDiff } from '../../scripts/utils';
     import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
@@ -40,6 +40,10 @@
 
     const loading = ref(true);
     const creatingTache = ref(false);
+
+    const displayTaches = computed (() => {
+        return sortedTaches.value.filter(({tache}) => !vuePerso.value || tache.benevoles?.map(b => b.id).includes(props.userId) )
+    })
 
 
     const getTaches = async () => {
@@ -93,7 +97,6 @@
     }
     
     const stopCreatingTache = (tache?: TacheCreateData) => {
-        console.log("test");
         creatingTache.value = false;
         if (tache) {
             const poste = postes.value.find(
@@ -162,7 +165,7 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
-                    <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate()).filter(({tache}) => !vuePerso || tache.benevoles?.map(b => b.id).includes(props.userId) )" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <Tache v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
@@ -171,7 +174,7 @@
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
 
-            <div @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
+            <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
         </div>
     </div>
 
