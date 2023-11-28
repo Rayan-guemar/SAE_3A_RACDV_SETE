@@ -78,6 +78,10 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: QuestionBenevole::class)]
     private Collection $questionBenevoles;
 
+    #[ORM\ManyToMany(targetEntity: Creneaux::class)]
+    private Collection $PlagesHoraires;
+
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -89,6 +93,7 @@ class Festival {
         $this->isArchive=0;
         $this->tags = new ArrayCollection();
         $this->questionBenevoles = new ArrayCollection();
+        $this->PlagesHoraires = new ArrayCollection();
 
     }
 
@@ -403,6 +408,30 @@ class Festival {
                 $questionBenevole->setFestival(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Creneaux>
+     */
+    public function getPlagesHoraires(): Collection
+    {
+        return $this->PlagesHoraires;
+    }
+
+    public function addPlagesHoraire(Creneaux $plagesHoraire): static
+    {
+        if (!$this->PlagesHoraires->contains($plagesHoraire)) {
+            $this->PlagesHoraires->add($plagesHoraire);
+        }
+
+        return $this;
+    }
+
+    public function removePlagesHoraire(Creneaux $plagesHoraire): static
+    {
+        $this->PlagesHoraires->removeElement($plagesHoraire);
 
         return $this;
     }

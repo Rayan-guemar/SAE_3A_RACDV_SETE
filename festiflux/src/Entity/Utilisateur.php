@@ -101,6 +101,54 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->posteUtilisateurPreferences = new ArrayCollection();
     }
 
+    /**
+     * @return string|null
+     */
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    /**
+     * @param string|null $adresse
+     */
+    public function setAdresse(?string $adresse): void
+    {
+        $this->adresse = $adresse;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNomPhotoProfil(): ?string
+    {
+        return $this->nomPhotoProfil;
+    }
+
+    /**
+     * @param string|null $nomPhotoProfil
+     */
+    public function setNomPhotoProfil(?string $nomPhotoProfil): void
+    {
+        $this->nomPhotoProfil = $nomPhotoProfil;
+    }
+
     public function getId(): ?int {
         return $this->id;
     }

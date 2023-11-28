@@ -44,6 +44,12 @@
 								{{ utilisateur.prenom }}
 							</div>		
 						</div>	
+            <div class="info-border">
+					<strong>Adresse</strong>
+					:
+					{{ utilisateur.adresse }}
+
+				</div>
 						<div class="info-border biographie">
 								<strong>Biographie</strong>
 								:
@@ -51,7 +57,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div class="fest-button">
 
 					<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
