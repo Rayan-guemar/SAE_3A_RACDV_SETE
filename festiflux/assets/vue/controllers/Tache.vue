@@ -66,8 +66,8 @@ window.addEventListener('click', (e) => {
       left: `${(100 / total) * (position-1)}%`,
       transform: `translateX(0%)`,
       borderColor: `rgb(${posteToColor(tache.poste).join(',')})`,
-      backgroundColor: `rgb(${posteToColor(tache.poste).join(',')}, 0.1)`,
-      color: `rgb(${posteToColor(tache.poste).join(',')})`,
+      backgroundColor: `rgb(${posteToColorBright(tache.poste).join(',')})`,
+      color:'black', //`rgb(${posteToColor(tache.poste).join(',')})`,
       zIndex: showingInfo ? 100 : 0,
     }" @click="showInfo()"  >
    
@@ -78,9 +78,9 @@ window.addEventListener('click', (e) => {
       <div class="tache">
         {{ `${getDateHours2Digits(tache.creneau.debut)} - ${getDateHours2Digits(tache.creneau.fin)}` }}
       </div>
-    </div>
-    <div class="benevole__number">
-      {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
+      <div class="benevole__number">
+        {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
+      </div>
     </div>
     <InfoTache v-if="showingInfo" :tache="tache" />
     </div>
