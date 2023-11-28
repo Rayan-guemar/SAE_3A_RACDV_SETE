@@ -15,14 +15,15 @@ async function getAllFestival() {
     }
     else {
         let data;
+        let layer = new L.layerGroup();
         try {
             data = await response.json();
             data.forEach(festival => {
-                let lat = festival.latitude;
-                let lon = festival.longitude;
-                marker = L.marker([lat, lon]).addTo(map);
-                //Sets the view of the map (geographical center and zoom) with the given animation options.
+                new L.Marker([festival.latitude, festival.longitude])
+                console.log(festival.longitude);
+                console.log(festival.latitude);
             });
+            layer.addTo(map);
         } catch (error) {
             data = {};
         }

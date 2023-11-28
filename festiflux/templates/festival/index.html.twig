@@ -20,7 +20,7 @@
 		<input type="submit" id="saf" value="">
 	{{ form_end(form) }}
 	<div class="fest-wrapper">
-					<div id="map"></div>
+    <div id="map" style="width: 300px; height: 300px"></div>
 		{% for festival in festivals %}
 			{% if festival.getIsArchive() != 1 %}
 				{{ include('festival/fest.html.twig',{'festival':festival}) }}
