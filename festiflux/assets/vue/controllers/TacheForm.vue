@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import { Festival, Poste, TacheCreateData } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
+import { getDateFromLocale } from '../../scripts/utils';
 
     type Props = {
         festID: number;
@@ -10,7 +11,8 @@
         dateFin: string;
         isOrgaOrResp: boolean;
         postes: Poste[];
-        updateTaches: (t:TacheCreateData) => void
+        updateTaches: () => void
+        close: (tache?:TacheCreateData) => void
     }
 
     const props = defineProps<Props>();
@@ -43,8 +45,8 @@
      const createTache = async (e: Event) => {
         const formData = new FormData(e.target as HTMLFormElement)
         
-        const debut = new Date(formData.get("start") + "");
-        const fin = new Date(formData.get("end") + "");
+        const debut = getDateFromLocale(formData.get("start") + "");
+        const fin = getDateFromLocale(formData.get("end") + "");
         const description = formData.get('description') + "";
         const nbBenevole = +(formData.get('nombre_benevole') + "");
         const posteId = formData.get('poste') + "";
@@ -58,50 +60,58 @@
             lieu: formData.get('creneau-lieu') + "",
             adresse: formData.get('creneau-lieu-address') + ""
         };
-
+        
+        props.close(tache);
         await Backend.addTache(festival.value.festID, tache);
-        props.updateTaches(tache)
+        props.updateTaches();
+        
     };
 </script>
 
 <template>
-    <form @submit.prevent="createTache">
-        <h2>Création d'un créneaux</h2 >
-        <div class="flex-column flex-align-center">
-            <label for="description">Description</label>
-            <input name="description" id="creneau-description" type="text">
-        </div>
-        <div class="flex-column flex-align-center">
-            <label for="nombre_benevole">Nombre de benevole nécessaire
-            </label>
-            <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
-        </div>
-        <div class="flex-column flex-align-center">
-            <label for="start-creneau">Debut du créneaux</label>
-            <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :value="festival.dateDebut" @change="changeHandlerStart">
-        </div>
-        <div class="flex-column flex-align-center">
-            <label for="end-creneau">Fin du créneaux</label>
-            <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" @change="changeHandlerEnd">
-        </div>
+    <div class="planning-form">
+        <form @submit.prevent="createTache">
+            <h2>Création d'un créneaux</h2 >
+                <div class="flex-column flex-align-center">
+                    <label for="description">Description</label>
+                    <input name="description" id="creneau-description" type="text">
+                </div>
+                <div class="flex-column flex-align-center">
+                    <label for="nombre_benevole">Nombre de benevole nécessaire
+                    </label>
+                    <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
+                </div>
+                <div class="flex-column flex-align-center">
+                    <label for="start-creneau">Debut du créneaux</label>
+                    <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :value="festival.dateDebut" @change="changeHandlerStart">
+                </div>
+                <div class="flex-column flex-align-center">
+                    <label for="end-creneau">Fin du créneaux</label>
+                    <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" @change="changeHandlerEnd">
+                </div>
+                
+                <div class="flex-column flex-align-center">
+                    <label for="lieuTache">Lieu du créneau</label>
+                    <input type='text' name='creneau-lieu' id="creneau-lieu">
+                </div>
+                
+                <div class="flex-column flex-align-center">
+                    <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
+                    <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" >
+                </div>
+                
+                
+                <div class="flex-column flex-align-center">
+                    <label for="poste">Choisissez un poste</label>
+                    <select name="poste" id="creneau-poste-select">
+                        <option v-for="poste in postes" :value="poste.id">{{ poste.nom }}</option> 
+                    </select>
+                </div>
 
-        <div class="flex-column flex-align-center">
-            <label for="lieuTache">Lieu du créneau</label>
-            <input type='text' name='creneau-lieu' id="creneau-lieu">
+                <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
+                    <button type="submit" id="create-creneau-btn" class="btn" value="Créer un créneau">Créer</button>
+                    <button id="cancel-creneau-btn" class="btn" @click="close()">Annuler</button>
+                </div>
+            </form>
         </div>
-
-        <div class="flex-column flex-align-center">
-            <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
-            <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" >
-        </div>
-
-
-        <div class="flex-column flex-align-center">
-            <label for="poste">Choisissez un poste</label>
-            <select name="poste" id="creneau-poste-select">
-                <option v-for="poste in postes" :value="poste.id">{{ poste.nom }}</option> 
-            </select>
-        </div>
-        <button type="submit" id="create-creneau-btn" class="btn" value="Créer un créneau">Créer</button>
-    </form>
-</template>
+    </template>

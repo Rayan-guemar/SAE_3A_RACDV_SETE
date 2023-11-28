@@ -90,34 +90,43 @@
     const startCreatingTache = () => {
         creatingTache.value = true;
     }
-
-    const stopCreatingTache = () => {
+    
+    const stopCreatingTache = (tache?: TacheCreateData) => {
+        console.log("test");
         creatingTache.value = false;
+        if (tache) {
+            const poste = postes.value.find(
+                (p) => {
+                    return p.id == tache.poste_id
+            });  
+            if (!poste) {
+                throw new Error("pas de poste trouvé")
+            }
+    
+            
+            const t: TacheType = {
+                description: tache.description,
+                nbBenevole: tache.nombre_benevole,
+                poste: poste,
+                creneau: {
+                    debut: tache.date_debut,
+                    fin: tache.date_fin
+                },
+                benevoleAffecte: 0, 
+                lieu: tache.lieu,
+            }
+    
+            
+            sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+        }
+
     }
 
     const askForICS = () => {
         Backend.getICS(festival.value.festID);
     }
 
-    const updateTaches = async (tache: TacheCreateData) => {
-        const poste = postes.value.find(
-            (p) => {
-                return p.id == tache.poste_id
-        });  
-        if (!poste) {
-            throw new Error("pas de poste trouvé")
-        }
-        const t: TacheType = {
-            description: tache.description,
-            nbBenevole: tache.nombre_benevole,
-            poste: poste,
-            creneau: {
-                debut: tache.date_debut,
-                fin: tache.date_fin
-            }
-        }
-
-        sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+    const updateTaches = async () => {
         await getTaches();
     }
 
@@ -169,8 +178,7 @@
         v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        @hideModal="stopCreatingTache"
-    >
+     >
         <TacheForm
             :festID="festival.festID"
             :title="festival.title"
@@ -179,6 +187,7 @@
             :isOrgaOrResp="festival.isOrgaOrResp"
             :postes="postes"
             :update-taches="updateTaches"
+            :close="stopCreatingTache"
         />
     </Modal>
 </template>

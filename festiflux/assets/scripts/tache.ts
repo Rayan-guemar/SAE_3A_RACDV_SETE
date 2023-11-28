@@ -14,7 +14,7 @@ export const sortTachesByOverriding = (taches: Tache[]) => {
 		const taches = overridingTaches[i];
 		for (let j = 0; j < taches.length; j++) {
 			const tache = taches[j];
-			res.push({ tache: tache, position: j, total: taches.length });
+			res.push({ tache: tache, position: j + 1, total: taches.length });
 		}
 	}
 
@@ -24,5 +24,7 @@ export const sortTachesByOverriding = (taches: Tache[]) => {
 const overrides = (tache1: Tache, tache2: Tache) => {
 	const c1 = tache1.creneau;
 	const c2 = tache2.creneau;
-	(c1.debut.getTime() > c2.debut.getTime() && c1.debut.getTime() < c2.fin.getTime()) || (c1.fin.getTime() > c2.debut.getTime() && c1.fin.getTime() < c2.fin.getTime());
+	if (c1.debut.getTime() == c2.debut.getTime() && c1.fin.getTime() == c2.fin.getTime()) return true;
+	if (c1.debut.getTime() >= c2.debut.getTime() && c1.debut.getTime() <= c2.fin.getTime()) return true;
+	if (c1.fin.getTime() >= c2.debut.getTime() && c1.fin.getTime() <= c2.fin.getTime()) return true;
 };

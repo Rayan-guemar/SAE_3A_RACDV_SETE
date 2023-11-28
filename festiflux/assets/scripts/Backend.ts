@@ -146,9 +146,14 @@ export class Backend {
 	 * @returns {Promise<number>} - Une promesse qui résout avec les données de la réponse.
 	 */
 	static async addTache(festivalId: number, tache: TacheCreateData) {
+		const body = {
+			...tache,
+			date_debut: tache.date_debut.toISOString(),
+			date_fin: tache.date_fin.toISOString()
+		};
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
-		await Backend.#post(URL, tache as RequestInit);
+		return await Backend.#post(URL, body as RequestInit);
 	}
 
 	/**
