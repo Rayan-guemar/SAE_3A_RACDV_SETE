@@ -280,6 +280,7 @@ class FestivalController extends AbstractController {
             'controller_name' => 'FestivalController',
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
         ]);
     }
 
@@ -327,7 +328,7 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         $this->addFlash('success', 'La demande a bien été acceptée');
-        $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
+        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
