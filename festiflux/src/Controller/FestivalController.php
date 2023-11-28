@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Poste;
 use App\Entity\PosteUtilisateurPreferences;
+use App\Form\AjoutDebutFinType;
+use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
 use App\Form\SearchType;
@@ -11,6 +13,7 @@ use App\Model\SearchData;
 use App\Repository\FestivalRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
-use App\Form\TacheType;
+use App\Form\ModifierTacheType;
 use App\Entity\Utilisateur;
 use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
@@ -30,7 +33,9 @@ use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
+use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
+use App\Repository\TacheRepository;
 use DateTime;
 use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -506,6 +511,117 @@ class FestivalController extends AbstractController
         ], 200);
     }
 
+    #[Route('/tache/{id}/benevolespref', name: 'app_tache_benevolespref',  methods: ['GET'], options: ['expose' => true])]
+    public function Benevolespref(TacheRepository $repository, #[MapEntity] Tache $tache, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse
+    {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $tache->getPoste()->getFestival()) || $utilisateurUtils->isResponsable($u, $tache->getPoste()->getFestival()))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        $benevolesAdore = [];
+        $benevolesAime =  [];
+        $benevolesAimePas = [];
+
+        foreach($tache->getPoste()->getPosteUtilisateurPreferences() as $bp){
+            if ($bp->getPreferencesDegree()==1){
+                $benevolesAdore[] = $bp->getUtilisateurId();
+            }else if ($bp->getPreferencesDegree()==0){
+                $benevolesAime[] = $bp->getUtilisateurId();
+            }else{
+                $benevolesAimePas[] = $bp->getUtilisateurId();
+            }
+        }
+
+
+        $tab1 = [];
+        $tab2 = [];
+        $tab3 = [];
+
+        foreach ($benevolesAdore as $benevole) {
+            $tab1[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+        foreach ($benevolesAime as $benevole) {
+            $tab2[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+        foreach ($benevolesAimePas as $benevole) {
+            $tab3[] = [
+                'id' => $benevole->getId(),
+                'nom' => $benevole->getNom(),
+                'prenom' => $benevole->getPrenom(),
+            ];
+        }
+
+        return new JsonResponse([
+            'benevolesAdore' => $tab1,
+            'benevolesAime' => $tab2,
+            'benevolesAimePas' => $tab3,
+        ], 200);
+    }
+
+    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST','GET'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, int $d,Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    {
+        if ($f == null) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+        }
+
+        $nbJours = (($f->getDateFin())->getTimestamp() - ($f->getDateDebut())->getTimestamp())/86400;
+        $listeCreaneaux = new ArrayCollection();
+        for ($i = 0; $i < $nbJours; $i++) {
+            $creaneaux = new Creneaux();
+            $listeCreaneaux->add($creaneaux);
+        }
+
+        $form = $this->createForm(AjoutDebutFinType::class, $listeCreaneaux);
+
+        $form->handleRequest($request);
+        if($request->isMethod('POST')) {
+            $this->denyAccessUnlessGranted('ROLE_USER');
+            if ($form->isSubmitted() && $form->isValid()) {
+                foreach ($form->getData() as $creaneaux) {
+                    if ($creaneaux->getDateFin() > $creaneaux->getDateDebut()){
+                        dd($creaneaux);
+                        //$em->persist($creaneaux);
+                    } else {
+                        return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                    }
+                }
+                $em->flush();
+                //$f->setListeCreaneaux($listeCreaneaux);
+            }
+        }
+
+
+        return $this->render('festival/ajoutDebutFin.html.twig', [
+            'controller_name' => 'FestivalController',
+            'form' => $form->createView(),
+            'creaneaux' => $listeCreaneaux,
+        ]);
+    }
+
+
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
     public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
     {
@@ -594,15 +710,6 @@ class FestivalController extends AbstractController
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
         }
 
-        // $u = $this->getUser();
-        // if (!$u || !$u instanceof Utilisateur) {
-        //     return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-        // }
-
-        // if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
-        //     return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
-        // }
-
         $taches = $f->getPostes()->reduce(function ($acc, Poste $p) {
             return array_merge($acc, array_map(function (Tache $el) use ($p) {
                 return [
@@ -611,9 +718,10 @@ class FestivalController extends AbstractController
                     'poste_id' => $p->getId(),
                     'poste_nom' => $p->getNom(),
                     'poste_couleur' => $p->getCouleur(),
-                    'lieu' => 'un truc au pif',
+                    'lieu' => $el->getLieu()->getNomLieu(),
                     'description' => $el->getRemarque(),
                     'nombre_benevole' => $el->getNombreBenevole(),
+                    'benevole_affecte' => $el->getBenevoleAffecte()->count(),
                     'id' => $el->getId(),
                     'benevoles' => array_map(function (Utilisateur $u) use ($el) {
                         return [
@@ -631,6 +739,92 @@ class FestivalController extends AbstractController
         //dd($taches);
         return new JsonResponse($taches, Response::HTTP_OK);
     }
+
+    #[Route('/festival/{id}/tache/{idTache}/edit', name: 'app_festival_edit_tache', methods: [ 'GET','POST'], options: ["expose" => true])]
+    public function editTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, PosteRepository $pRep, LieuRepository $lRep, Request $req): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $body = json_decode($request->getContent(), true);
+
+        try {
+            $description = (string)$body['description'];
+            $nombreBenevole = (int)$body['nombre_benevole'];
+            $poste_id = (string)$body['poste_id'];
+            $dateDebut = new DateTime($body['date_debut']);
+            $dateFin = new DateTime($body['date_fin']);
+            $nomLieu = (string)$body['lieu'];
+            $address = (string)$body['adresse'];
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            }
+
+            throw $th;
+        }
+
+        $lieu = $lRep->findBy(['nomLieu' => $nomLieu, 'festival' => $f]);
+        if(!$lieu){
+            $lieu = new Lieu();
+            $lieu->setNomLieu($nomLieu);
+            $lieu->setAddress($address);
+            $lieu->setFestival($f);
+            $em->persist($lieu);
+        } 
+
+        $t->setRemarque($description);
+        $t->setNombreBenevole($nombreBenevole);
+        $t->setPoste($pRep->find($poste_id));
+        $t->getCrenaux()->setDateDebut($dateDebut);
+        $t->getCrenaux()->setDateFin($dateFin);
+        $t->setLieu($lieu);
+        $t->getLieu()->setAddress($address);
+                        
+        $em->persist($t);
+        $em->flush();
+
+        $this->addFlash('success', 'La tache a bien été modifiée');
+        return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
+    
+
+        //a modifier
+        return $this->render('festival/testmodiftache.html.twig', [
+            'controller_name' => 'FestivalController',
+        
+           
+        ]);
+    }
+
+    #[Route('/festival/{id}/tache/{idTache}/delete', name: 'app_festival_delete_tache', methods: ['DELETE'], options: ["expose" => true])]
+    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response {
+
+        $f = $fRep->find($id);
+        $t = $tRep->find($idTache);
+
+        if(!$f){
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        if (!$t) {
+            throw $this->createNotFoundException("La tache n'existe pas");
+        }
+
+        $em->remove($t);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'La tache a bien été supprimée'], Response::HTTP_OK);
+    }
+
+
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
     public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response

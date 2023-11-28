@@ -78,11 +78,11 @@
         </div>
         <div class="flex-column flex-align-center">
             <label for="start-creneau">Debut du créneaux</label>
-            <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :value="festival.dateDebut" >
+            <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :value="festival.dateDebut" @change="changeHandlerStart">
         </div>
         <div class="flex-column flex-align-center">
             <label for="end-creneau">Fin du créneaux</label>
-            <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" >
+            <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" @change="changeHandlerEnd">
         </div>
 
         <div class="flex-column flex-align-center">

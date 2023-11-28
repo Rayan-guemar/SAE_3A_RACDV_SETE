@@ -37,6 +37,23 @@ export class Poste {
         return color;
     }
 
+    toColor() {
+        let colors = [
+            [97, 26, 221],
+            [255, 68, 84],
+        ];
+
+        let nameHash = this.nom.hashCode();
+
+        let mod = nameHash % colors.length;
+        if (mod < 0) {
+            mod = colors.length + mod;
+        }
+        let color = colors[mod];
+
+        return color;
+    }
+
     htmlNode() {
         let div = document.createElement('div');
         div.classList.add('poste');
