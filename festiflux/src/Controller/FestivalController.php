@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Poste;
+
 use App\Entity\PosteUtilisateurPreferences;
 use App\Form\AjoutDebutFinType;
 use App\Form\DemandeFestivalType;
@@ -11,7 +12,7 @@ use App\Form\ModifierPosteType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
-use App\Repository\PosteUtilisateurPreferencesRepository;
+use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,21 +54,35 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/all', name: 'app_festival_all')]
-    public function all(FestivalRepository $repository, Request $request, FlashMessageService $flashMessageService): Response
-    {
+    public function all(FestivalRepository $repository, TagRepository $tagRepository , Request $request, FlashMessageService $flashMessageService): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $festivals = $repository->findBySearch($searchData);
+            $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
+            $listeTags=$tagRepository->findBySearch($searchData);
+            $festivalsWithTag =[];
+            foreach ($listeTags as $tag){
+                $festivals = (($tag)->getFestivals());
+                foreach ($festivals as $f){
+                    $festivalsWithTag[] = $f;
+                }
+            }
 
-            return $this->render('festival/index.html.twig', [
-                'form' => $form->createView(),
-                'festivals' => $festivals,
-                'searched' => true
-            ]);
-        }
+            $allfest = $festivalsWithNameOrAddress;
+            foreach ($festivalsWithTag as $fest){
+                if (!in_array($fest , $allfest)){
+                    $allfest[]= $fest;
+                }
+            }
+            if ($allfest!=null){
+                return $this->render('festival/index.html.twig', [
+                    'form' => $form->createView(),
+                    'festivals' => ($allfest)
+                ]);
+            }
+
 
         $festivals = $repository->findAll();
 
@@ -353,7 +368,6 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
-
     public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse {
 
         $u = $this->getUser();
@@ -371,17 +385,8 @@ class FestivalController extends AbstractController
         $poste->setCouleur($request->toArray()['couleur']);
         $poste->setDescription('');
 
-
         $em->persist($poste);
         $em->flush();
-
-        foreach ($festival->getBenevoles() as $benevole){
-            $postePref = new PosteUtilisateurPreferences();
-            $postePref->setUtilisateurId($benevole);
-            $postePref->setPosteId($poste);
-            $em->persist($postePref);
-            $em->flush();
-        }
 
         return new JsonResponse([
             'success' => 'Le poste a bien été créé',
@@ -904,7 +909,6 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/postes', name: 'app_festival_display_postes')]
-
     public function displayPostes(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
 
       if (!$festival) {
@@ -913,13 +917,9 @@ class FestivalController extends AbstractController
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
 
-        $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId"=>$u]);
-
-
         return $this->render('utilisateur/liked_postes.html.twig', [
             'postes' => $postes,
-            'utilisateur' => $u,
-            'preferences' => $pref
+            'utilisateur' => $u
         ]);
     }
 }
