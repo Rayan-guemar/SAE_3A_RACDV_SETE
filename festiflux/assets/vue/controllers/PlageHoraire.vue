@@ -11,7 +11,7 @@
 
     const ajoutIndispo = ref(false);
     const plage = ref<HTMLDivElement>();
-    const addPlage = () => {
+    const addIndispo = () => {
       ajoutIndispo.value = true;
     }
     window.addEventListener('click', (e) => {
@@ -36,11 +36,6 @@
       transform: `translateX(0%)`,
       backgroundColor: `rgb(216, 230, 243)`,
       zIndex: ajoutIndispo ? 1000 : -10,
-    }" @click="(e) => addPlage()" >
-<!--        <div class="name">{{ encodedStr(poste.nom) }}</div>-->
-<!--        <div class="tache">-->
-<!--            {{ encodedStr(`${getDateHours2Digits(debut)} - ${getDateHours2Digits(fin)}`) }}-->
-<!--        </div>-->
-<!--        <InfoTache v-if="ajoutIndispo" :tache="tache" />-->
+    }" @click="(e) => addIndispo()" >
     </div>
 </template>
