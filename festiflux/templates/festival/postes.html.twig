@@ -14,16 +14,7 @@
 
 	{{ encore_entry_script_tags('app') }}
 
-	{# <main
-	        {{ svelte_component('ListesPostes', {
-	            'festivalId': festival.id,
-	            'festivalName': festival.nom,
-	        }) }} 
-	    >
-	    
-	    </main> #}
-
 	<main {{ vue_component('ListesPostes', { 'festivalId': festival.id, 'festivalName': festival.nom, } ) }}></main>
 
-	
+
 {% endblock %}
