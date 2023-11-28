@@ -15,15 +15,16 @@ async function getAllFestival() {
     }
     else {
         let data;
-        let layer = new L.layerGroup();
+        let layer = L.layerGroup().addTo(map);
         try {
             data = await response.json();
             data.forEach(festival => {
-                new L.Marker([festival.latitude, festival.longitude])
-                console.log(festival.longitude);
-                console.log(festival.latitude);
+                if (festival.latitude && festival.longitude){
+                    layer.addLayer(new L.Marker([festival.latitude, festival.longitude]))
+                }
             });
-            layer.addTo(map);
+            var overlay = {'markers': layer};
+            L.control.layers(null, overlay).addTo(map);
         } catch (error) {
             data = {};
         }
