@@ -69,7 +69,7 @@ window.addEventListener('click', (e) => {
       backgroundColor: `rgb(${posteToColorBright(tache.poste).join(',')})`,
       color:'black', //`rgb(${posteToColor(tache.poste).join(',')})`,
       zIndex: showingInfo ? 100 : 0,
-    }" @click="showInfo()"  >
+    }" @click="showInfo"  >
    
     <div class="task-text" :style="{
       width: `${total == 1 ? 100 : (1 / ((total-(position-1)))*100)}%`,
