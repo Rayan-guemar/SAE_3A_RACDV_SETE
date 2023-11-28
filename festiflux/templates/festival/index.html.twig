@@ -6,6 +6,9 @@
 {% block body %}
 	{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
 		{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
+		{% if searched %}
+			<a id="cancel-research" href="{{ path('app_festival_all') }}" ><img src="{{ asset('icons/fermer.png') }}" alt="cross" id="cross"></a>
+		{% endif %}
 		<input type="submit" id="saf" value="">
 	{{ form_end(form) }}
 	<div class="fest-wrapper">

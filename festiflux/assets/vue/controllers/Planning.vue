@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { VNodeRef, ref } from 'vue';
-    import { dateDiff, assetsPath } from '../../scripts/utils';
+    import { dateDiff } from '../../scripts/utils';
     import {Tache as TacheType, Festival, Poste, TacheCreateData, Creneau} from '../../scripts/types';
+    import { VNodeRef, ref, onMounted, computed } from 'vue';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -17,6 +17,7 @@
         dateDebut: string,
         dateFin: string,
         isOrgaOrResp: boolean,
+        userId: number,
     }
 
     const props = defineProps<Props>();
@@ -50,10 +51,14 @@
     const creatingTache = ref(false);
     const creatingPlage = ref(false);
 
+    const displayTaches = computed (() => {
+        return sortedTaches.value.filter(({tache}) => !vuePerso.value || tache.benevoles?.map(b => b.id).includes(props.userId) )
+    })
+
 
     const getTaches = async () => {
         const res = await Backend.getTaches(festival.value.festID);
-
+        
         if (res) {
             taches.value = res;
             sortedTaches.value = sortTachesByOverriding(res);
@@ -106,17 +111,37 @@
     }
 
     const startCreatingTache = () => {
-                
         creatingTache.value = true;
     }
-
-    const startCreatingPlage = () => {
-
-      creatingPlage.value = true;
-    }
-
-    const stopCreatingTache = () => {
+    
+    const stopCreatingTache = (tache?: TacheCreateData) => {
         creatingTache.value = false;
+        if (tache) {
+            const poste = postes.value.find(
+                (p) => {
+                    return p.id == tache.poste_id
+            });  
+            if (!poste) {
+                throw new Error("pas de poste trouvé")
+            }
+    
+            
+            const t: TacheType = {
+                description: tache.description,
+                nbBenevole: tache.nombre_benevole,
+                poste: poste,
+                creneau: {
+                    debut: tache.date_debut,
+                    fin: tache.date_fin
+                },
+                benevoleAffecte: 0, 
+                lieu: tache.lieu,
+            }
+    
+            
+            sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+        }
+
     }
 
     const stopCreatingPlage = () => {
@@ -149,12 +174,19 @@
         await getTaches();
     }
 
-    (async () => {
+    onMounted(async () => {
         await getTaches();
         await getPostes();
         await getPlagesHoraires();
         loading.value = false;
-    })()
+    })
+
+    const vuePerso = ref(false);
+
+    const toggleVuePerso = async () => {
+        vuePerso.value = !vuePerso.value;
+    }
+
 </script>
 
 <template>
@@ -173,10 +205,8 @@
                         {{ dayNames[day.getDay()].substring(0, 3) + ' ' + day.getDate() + ' ' + monthNames[day.getMonth()].substring(0, 4) + '.' }}
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
-                    <!-- <Plages /> -->
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut.date)).getDate() === day.getDate())" :creneau="creneauWithPos" />
-                  <!-- <Tache /> -->
-                  <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <Tache v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
@@ -185,7 +215,9 @@
 
           <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
-          <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
+            <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
+            
+            <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
         </div>
     </div>
 
@@ -202,7 +234,7 @@
         v-if="creatingTache"
         id="add-poste"
         title="Ajout d'un poste"
-        :hideModal="stopCreatingTache" >
+     >
         <TacheForm
             :festID="festival.festID"
             :title="festival.title"
@@ -211,6 +243,7 @@
             :isOrgaOrResp="festival.isOrgaOrResp"
             :postes="postes"
             :update-taches="updateTaches"
+            :close="stopCreatingTache"
         />
     </Modal>
   <Modal

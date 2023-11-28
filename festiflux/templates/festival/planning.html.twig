@@ -16,12 +16,17 @@
 	<body>
 		{{ encore_entry_script_tags('app') }}
 		<main>
+			<a id="back-button" href="{{ path('app_festival_detail', { id: festival.id }) }}">
+				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+			</a>
+
 			<div class="planning-wrapper" {{ vue_component('Planning', {
 				'festID': festival.id,
 				'title': 'Planning du ' ~ festival.nom,
 				'isOrgaOrResp': isOrgaOrResp,
 				'dateDebut': festival.dateDebut | date("m/d/Y"),
 				'dateFin': festival.dateFin | date("m/d/Y"),
+				'userId': userId,
 			}) }} ></div>
 
 		</main>
