@@ -59,7 +59,6 @@ class FestivalController extends AbstractController
     {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
@@ -208,7 +207,7 @@ class FestivalController extends AbstractController
         } else {
             $this->addFlash('erreur', "");
             return $errorService->MustBeLoggedError();
-        } 
+        }
     }
 
     #[Route('/festival/{id}', name: 'app_festival_detail')]
@@ -486,7 +485,7 @@ class FestivalController extends AbstractController
         return new JsonResponse(['success' => 'Le poste a bien été modifié'], Response::HTTP_OK);
     }
 
-    
+
 
     #[Route('/festival/{id}/poste/{idPoste}/delete', name: 'app_festival_delete_poste', methods: ['GET', 'DELETE'], options: ["expose" => true])]
     public function deletePoste(Request $request, EntityManagerInterface $em, int $id, int $idPoste, FestivalRepository $repository, UtilisateurUtils $utilisateurUtils, PosteRepository $poste): Response
