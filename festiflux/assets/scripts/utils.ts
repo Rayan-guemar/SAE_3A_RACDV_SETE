@@ -76,10 +76,6 @@ export const hashCode = (s: string): number => {
 	return hash;
 };
 
-export const assetsPath = (path: string): string => {
-	return `../../../public/${path}`;
-};
-
 export const generate_route = (route_name: string) => {};
 
 export const getDateFromLocale = (date_local: string) => {

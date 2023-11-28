@@ -8,17 +8,6 @@ export interface Tache {
 	creneau: Creneau;
 }
 
-export interface Poste {
-	id: string;
-	nom: string;
-}
-
-export interface Creneau {
-	id?: number;
-	debut: Date;
-	fin: Date;
-}
-
 export interface TacheCreateData {
 	date_debut: Date;
 	date_fin: Date;
@@ -35,6 +24,19 @@ export interface Festival {
 	dateDebut: Date;
 	dateFin: Date;
 	isOrgaOrResp: boolean;
+}
+
+export interface Poste {
+	id: string | null;
+	nom: string;
+	description: string;
+	couleur?: string;
+}
+
+export interface Creneau {
+	id?: number;
+	debut: Date;
+	fin: Date;
 }
 
 export interface Lieu {
