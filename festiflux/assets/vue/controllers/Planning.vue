@@ -31,12 +31,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         isOrgaOrResp: props.isOrgaOrResp,
     })
 
-    const creneaux = ref<Creneau>({
-        id:0,
-        debut:new Date(),
-        fin:new Date(),
-    })
-
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
     const days = Array.from({ length: numberOfDays }, (_, i) => new Date(festival.value.dateDebut.getFullYear(), festival.value.dateDebut.getMonth(), festival.value.dateDebut.getDate() + i));
     const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -47,6 +41,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
     const postes = ref<Poste[]>([]);
     const crx = ref<Creneau[]>([]);
+
+    computed(() => {
+        console.log(crx.value)
+        
+    })
 
     const loading = ref(true);
     const creatingTache = ref(false);
@@ -61,12 +60,12 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         if (filterByPoste.value) filters.push(tache => tache.poste.id == filterByPoste.value)
         
         
-        let tachesToDisplay = [...sortedTaches.value]
+        let tachesToDisplay = [...taches.value]
         for (const filter of filters) {
-            tachesToDisplay = tachesToDisplay.filter(({tache}) => filter(tache))
+            tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache))
         }
 
-        return tachesToDisplay
+        return sortTachesByOverriding(tachesToDisplay);
     })
 
 
@@ -75,7 +74,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         
         if (res) {
             taches.value = res;
-            sortedTaches.value = sortTachesByOverriding(res);
         }
     }
 
@@ -158,33 +156,20 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     }
 
-    const stopCreatingPlage = () => {
+    const stopCreatingPlage = async (tempCreneau?: Creneau, update?: Promise<any>) => {
         creatingPlage.value = false;
+        if (tempCreneau && update) {
+            crx.value.push(tempCreneau as Creneau);
+            await update;
+            getPlagesHoraires(); 
+        }
     }
 
     const askForICS = () => {
         Backend.getICS(festival.value.festID);
     }
 
-    const updateTaches = async (tache: TacheCreateData) => {
-        const poste = postes.value.find(
-            (p) => {
-                return p.id == tache.poste_id
-        });
-        if (!poste) {
-            throw new Error("pas de poste trouvé")
-        }
-        const t: TacheType = {
-            description: tache.description,
-            nbBenevole: tache.nombre_benevole,
-            poste: poste,
-            creneau: {
-                debut: tache.date_debut,
-                fin: tache.date_fin
-            }
-        }
-
-        sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+    const updateTaches = async () => {
         await getTaches();
     }
 
@@ -199,6 +184,10 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const toggleVuePerso = async () => {
         vuePerso.value = !vuePerso.value;
+    }
+
+    const startCreatingPlage = () => {
+        creatingPlage.value = true;
     }
 
 </script>
@@ -219,12 +208,14 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                         {{ dayNames[day.getDay()].substring(0, 3) + ' ' + day.getDate() + ' ' + monthNames[day.getMonth()].substring(0, 4) + '.' }}
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
-                    <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut.date)).getDate() === day.getDate())" :creneau="creneauWithPos" />
+                    <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <Tache v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
         <div class="manage-interface">
+
+            <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
             <div>
                 <label for="poste_filter">Filtrer par:</label>
                 <select name="poste_filter" class="btn" id="poste_filter" v-model="filterByPoste"> 
@@ -232,9 +223,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <option v-for="poste of postes" :value="poste.id">{{ poste.nom }}</option>
                 </select>
             </div>
-          <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
-
-          <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
+            
+            <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
             
@@ -272,8 +262,10 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       v-if="creatingPlage"
       id="add-plage"
       title="Ajout des plages horaires"
-      :hideModal="stopCreatingPlage" >
-      <HeureDebutFinJour :festivalId="festID"
+       >
+      <HeureDebutFinJour 
+      :festivalId="festID"
+      @close="stopCreatingPlage"
       />
   </Modal>
 </template>

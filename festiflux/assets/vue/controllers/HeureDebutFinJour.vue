@@ -8,6 +8,10 @@ type Props = {
   festivalId: number;
 }
 
+const emit = defineEmits<{
+  (event: 'close', tempCreneau?: Creneau, update?: Promise<any>): void
+}>()
+
 const props = defineProps<Props>();
 
 const creneau = ref<Creneau>({
@@ -16,13 +20,18 @@ const creneau = ref<Creneau>({
 })
 
 
+
 const createCreneau = async (e: Event) => {
-  await Backend.addHeureDepartFin(props.festivalId, creneau.value);
+  const tempCreneau: Creneau = {
+    debut: creneau.value.debut,
+    fin: creneau.value.fin,
+  }
+  emit('close', tempCreneau, Backend.addHeureDepartFin(props.festivalId, creneau.value));
 }
 
 </script>
 <template>
-  <form @submit.prevent="createCreneau">
+  <form class="planning-form" @submit.prevent="createCreneau">
     <h2>Ajout d'une plage horaire</h2>
     <div class="flex-column flex-align-center">
       <label for="start-creneau">Debut du créneaux</label>
@@ -34,6 +43,7 @@ const createCreneau = async (e: Event) => {
     </div>
     <div class="flex-column flex-align-center">
       <input type="submit" value="Ajouter">
+      <button id="cancel-creneau-btn" class="btn" @click="$emit('close')">Annuler</button>
     </div>
   </form>
 </template>
