@@ -15,6 +15,7 @@
         dateDebut: string,
         dateFin: string,
         isOrgaOrResp: boolean,
+        userId: number,
     }
 
     const props = defineProps<Props>();
@@ -135,6 +136,33 @@
         await getPostes();
         loading.value = false;
     })
+
+    const getTachesByBenevole = async () => {
+        const res = await Backend.getTacheByBenevole(festival.value.festID, props.userId );
+
+        console.log(res);
+        
+
+        if (res) {
+            taches.value = res;
+            sortedTaches.value = sortTachesByOverriding(res);
+        }
+    }
+
+    const vuePerso = ref(false);
+
+    const toggleVuePerso = async () => {
+
+        if(vuePerso) {
+            await getTachesByBenevole();
+        }
+        else {
+            await getTaches();
+        }
+        vuePerso.value = !vuePerso.value;
+    }
+
+
 </script>
 
 <template>
@@ -162,6 +190,8 @@
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
+
+            <div @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
         </div>
     </div>
 

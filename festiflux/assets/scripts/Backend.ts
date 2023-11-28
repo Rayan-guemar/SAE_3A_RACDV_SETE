@@ -192,4 +192,32 @@ export class Backend {
 			console.log(error);
 		}
 	}
+
+
+	/**
+	 *
+	 * @param {number} festivalId
+	 * @param {number} benevoleId
+	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
+	 */
+	static async getTacheByBenevole( festivalId : number, benevoleId : number) : Promise<Tache[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_task', { id: benevoleId, idFest: festivalId });
+		const data = await Backend.#get(URL);
+		const res = [...data].map(
+			(o: any) =>
+				({
+					id: o.id,
+					description: o.description,
+					nbBenevole: o.nombre_benevole,
+					benevoleAffecte: o.benevole_affecte,
+					lieu: o.lieu,
+					poste: { id: o.poste.id, nom: o.poste.nom, description: o.poste.description, couleur: o.poste?.couleur } as Poste,
+					creneau: { debut: new Date(o.creneau.debut), fin: new Date(o.creneau.fin) },
+				} as Tache)
+		);
+
+		return res;
+	}
+
 }

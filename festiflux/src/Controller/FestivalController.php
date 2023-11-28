@@ -270,6 +270,7 @@ class FestivalController extends AbstractController
             'controller_name' => 'FestivalController',
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
         ]);
     }
 

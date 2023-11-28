@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Festival;
+use App\Entity\Poste;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
 use App\Form\ModifierFestivalType;
@@ -30,6 +31,7 @@ use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
+use PHPUnit\Util\Json;
 
 class UtilisateurController extends AbstractController {
 
@@ -291,5 +293,55 @@ class UtilisateurController extends AbstractController {
         $fm->add(FlashMessageType::SUCCESS, 'Tâche supprimée');
 
         return $this->redirectToRoute('home');
+    }
+
+    #[Route('/user/{id}/festival/{idFest}/task/all', name: 'app_user_task', options: ['expose' => true])]
+    public function user_task(int $id, int $idFest, UtilisateurRepository $user, FestivalRepository $festival,PosteRepository $posteRep): Response {
+
+        $u = $user->find($id);
+        $f = $festival->find($idFest);
+
+        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
+        if (!$f) throw $this->createNotFoundException("Le festival n'existe pas");
+        if (!$f->getBenevoles()->contains($u)) throw $this->createNotFoundException("L'utilisateur n'est pas bénévole pour ce festival");
+
+
+        $postes = $posteRep->findBy(["festival"=>$f]);
+
+        $posteIds = [];
+
+        foreach ($postes as $p){
+            $posteIds[] = $p->getId();
+        }
+
+        $userTaches = $u->getTaches();
+
+        $taches = [];
+
+        foreach ($userTaches as $t){
+            if (in_array($t->getPoste()->getId(),$posteIds)){
+                $taches[] = [
+                    'id' => $t->getId(),
+                    'description' => $t->getRemarque(),
+                    'nbBenevole' => $t->getNombreBenevole(),
+                    'benevoleAffecte' => $t->getBenevoleAffecte(),
+                    'lieu' => $t->getLieu()->getNomLieu(),
+                    'poste' => [
+                        'id' => $t->getPoste()->getId(),
+                        'nom' => $t->getPoste()->getNom(),
+                        'description' => $t->getPoste()->getDescription(),
+                        'couleur' => $t->getPoste()->getCouleur(),
+                    ],
+                    'creneau' => [
+                        'id' => $t->getCrenaux()->getId(),
+                        'debut' => $t->getCrenaux()->getDateDebut(),
+                        'fin' => $t->getCrenaux()->getDateFin(),
+                    ],
+
+                ];
+            }
+        }     
+        
+        return new JsonResponse($taches, Response::HTTP_ACCEPTED);
     }
 }
