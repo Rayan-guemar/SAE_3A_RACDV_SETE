@@ -64,7 +64,8 @@ class FestivalController extends AbstractController
 
             return $this->render('festival/index.html.twig', [
                 'form' => $form->createView(),
-                'festivals' => $festivals
+                'festivals' => $festivals,
+                'searched' => true
             ]);
         }
 
@@ -73,6 +74,7 @@ class FestivalController extends AbstractController
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
             'festivals' => $festivals,
+            'searched' => false
         ]);
     }
 
