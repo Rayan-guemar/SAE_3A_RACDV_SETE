@@ -297,6 +297,63 @@
         }
 
     }
+
+    .toggle-mode-affectation-wrapper {
+        display: flex;
+        gap: 10px;
+
+        font-weight: 500;
+
+        .toggle-mode-affectation.on {
+            background-color: $green-primary;
+
+            .toggle {
+                left: calc(100% - 20px);
+            }
+        }
+
+        .toggle-mode-affectation {
+            position: relative;
+            height: 20px;
+            width: 40px;
+            border-radius: 1000px;
+
+            background-color: $red-primary;
+
+            .toggle {
+                position: absolute;
+                left: 0;
+
+                height: 20px;
+                width: 20px;
+
+                border-radius: 50px;
+                outline: solid 1px black;
+
+                background-color: white;
+
+                transition: all 0.5s;
+            }
+        }
+    }
+}
+
+.task-affectation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    height: 80%;
+    width: 90%;
+
+    display: flex;
+
+    border: solid 1px $grey-primary;
+
+    background-color: white;
+
+    z-index: 101;
 }
 
 .scroll-btn {

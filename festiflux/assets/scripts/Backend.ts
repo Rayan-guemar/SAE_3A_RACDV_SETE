@@ -200,10 +200,26 @@ export class Backend {
 					nbBenevole: o.nombre_benevole,
 					benevoleAffecte: o.benevole_affecte,
 					lieu: o.lieu,
-					poste: { id: o.poste_id, nom: o.poste_nom } as Poste,
+					poste: { id: o.poste_id, nom: o.poste_nom, description: o.poste_description, couleur: o.poste_couleur } as Poste,
 					creneau: { debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) },
 					benevoles: o.benevoles
 				} as Tache)
+		);
+
+		return res;
+	}
+
+	static async getBenevoles(festivalId: number): Promise<Benevole[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
+		const data = await Backend.#get(URL);
+		const res = [...data].map(
+			(o: any) =>
+				({
+					id: o.id,
+					nom: o.nom,
+					prenom: o.prenom
+				} as Benevole)
 		);
 
 		return res;

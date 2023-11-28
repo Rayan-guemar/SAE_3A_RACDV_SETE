@@ -1,22 +1,42 @@
 <script setup lang="ts" >
+import { computed } from 'vue';
 import { Tache } from '../../scripts/types';
 
 interface Props {
    tache : Tache
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const affectedBenevole = computed(() => {
+    return props.tache.benevoles?.filter(b => b.affecte);
+})
 
 </script>
 
 
 <template>
-    <div class="tache-info_wrapper" >
-        <div class="tache-info_nom"  >{{ tache.poste.nom }}</div>
-        <div class="tache-info_desc" >{{ tache.description }}</div>
-        <div class="tache-info_lieu " >{{ tache.lieu }}</div>
-        <div class="tache-info_benevoles" >{{ tache.nbBenevole }} bénévoles requis</div>
-        <div class="tache-info_benevoles" >{{ tache.benevoleAffecte }} bénévoles affectés</div>
-    </div>
+    <Teleport to="body">
+        <div class="task-affectation">
+            <h4>{{ tache.poste.nom }}</h4>
+            <div class="benevole-lists">
+                <div class="affected">
+                    <h5>Bénévoles affectés</h5>
+                    <div class="benevole" v-for="benevole of tache">
+                        <!-- <div class="benevole-name">{{ benevole.nom }}</div>
+                        <div class="benevole-delete" @click="removeBenevole(benevole)">X</div> -->
+                    </div>
+                </div>
+                <div class="unaffected">
+                    <h5>Bénévoles non affectés</h5>
+                    <div class="benevole" v-for="benevole of tache.benevolesNonAffectes">
+                        <div class="benevole-name">{{ benevole.nom }}</div>
+                        <div class="benevole-add" @click="addBenevole(benevole)">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Teleport>
+    
 </template>
 

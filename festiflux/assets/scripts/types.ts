@@ -2,7 +2,7 @@ export interface Tache {
 	id?: number;
 	description: string;
 	nbBenevole: number;
-	benevoleAffecte: number;
+	benevoleAffecte?: number;	
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;

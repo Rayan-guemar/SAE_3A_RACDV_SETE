@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { getDateHours2Digits, hashCode } from '../../scripts/utils';
-import { Tache, Creneau, Poste } from '../../scripts/types';
+import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
+import { Tache, Creneau, Poste, Benevole } from '../../scripts/types';
 import InfoTache from './InfoTache.vue';
 
 
@@ -9,9 +9,11 @@ interface Props {
   tache: Tache,
   position: number,
   total: number,
+  modeAffectation: boolean,
+  benevoles: Benevole[],
 }
 
-const {tache, position, total} = defineProps<Props>();
+const {tache, position, total, modeAffectation} = defineProps<Props>();
 
 
 const posteToColor = (poste:Poste) => {
@@ -48,13 +50,16 @@ const showInfo = () => {
 
 window.addEventListener('click', (e) => {
   if (showingInfo.value) {
-    if (task.value && task.value.contains(e.target as Node)) {
+    if (task.value && task.value.contains(e.target as Node) || modeAffectation) {
       showingInfo.value = true;
     } else {
+      console.log('click outside', modeAffectation);
+      
       showingInfo.value = false;
     }
   }
 });
+
 </script>
 
 <template>
@@ -65,8 +70,8 @@ window.addEventListener('click', (e) => {
       margin: `0 2px`,
       left: `${(100 / total) * (position-1)}%`,
       transform: `translateX(0%)`,
-      borderColor: `rgb(${posteToColor(tache.poste).join(',')})`,
-      backgroundColor: `rgb(${posteToColorBright(tache.poste).join(',')})`,
+      borderColor: tache.poste.couleur ? tache.poste.couleur : `rgb(${posteToColor(tache.poste).join(',')})`,
+      backgroundColor: tache.poste.couleur ? hexToBrighterHex(tache.poste.couleur) : `rgb(${posteToColorBright(tache.poste).join(',')})`,
       color:'black', //`rgb(${posteToColor(tache.poste).join(',')})`,
       zIndex: showingInfo ? 100 : 0,
     }" @click="showInfo"  >
@@ -82,6 +87,13 @@ window.addEventListener('click', (e) => {
         {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }} bénévoles
       </div>
     </div>
-    <InfoTache v-if="showingInfo" :tache="tache" />
+    <div v-if="showingInfo && !modeAffectation" class="tache-info_wrapper" >
+        <div class="tache-info_nom"  >{{ tache.poste.nom }}</div>
+        <div class="tache-info_desc" >{{ tache.description }}</div>
+        <div class="tache-info_lieu " >{{ tache.lieu }}</div>
+        <div class="tache-info_benevoles" >{{ tache.nbBenevole }} bénévoles requis</div>
+        <div class="tache-info_benevoles" >{{ tache.benevoleAffecte }} bénévoles affectés</div>
     </div>
+    <InfoTache v-if="showingInfo && modeAffectation" :tache="tache" />
+  </div>
 </template>
