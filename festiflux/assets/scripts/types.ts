@@ -6,6 +6,7 @@ export interface Tache {
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;
+	benevoles?: Benevole[];
 }
 
 export interface TacheCreateData {

@@ -44,7 +44,7 @@
 
     const getTaches = async () => {
         const res = await Backend.getTaches(festival.value.festID);
-
+        
         if (res) {
             taches.value = res;
             sortedTaches.value = sortTachesByOverriding(res);
@@ -137,31 +137,11 @@
         loading.value = false;
     })
 
-    const getTachesByBenevole = async () => {
-        const res = await Backend.getTacheByBenevole(festival.value.festID, props.userId );
-
-        console.log(res);
-        
-
-        if (res) {
-            taches.value = res;
-            sortedTaches.value = sortTachesByOverriding(res);
-        }
-    }
-
     const vuePerso = ref(false);
 
     const toggleVuePerso = async () => {
-
-        if(vuePerso) {
-            await getTachesByBenevole();
-        }
-        else {
-            await getTaches();
-        }
         vuePerso.value = !vuePerso.value;
     }
-
 
 </script>
 
@@ -182,7 +162,7 @@
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <!-- <Tache /> -->
-                    <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <Tache v-for="tacheWithPos of sortedTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate()).filter(({tache}) => !vuePerso || tache.benevoles?.map(b => b.id).includes(props.userId) )" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
                 </div>
             </div>
         </div>
