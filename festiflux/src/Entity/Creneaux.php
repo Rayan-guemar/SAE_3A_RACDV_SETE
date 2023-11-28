@@ -31,6 +31,7 @@ class Creneaux {
     #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
     private ?Tache $tache = null;
 
+
     public function __construct() {
         $this->disponibilites = new ArrayCollection();
     }
@@ -97,4 +98,6 @@ class Creneaux {
 
         return $this;
     }
+
+
 }

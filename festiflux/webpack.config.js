@@ -77,6 +77,7 @@ Encore
     tsConfigPath.configFile = "tsconfig.json";
     tsConfigPath.transpileOnly = true;
   })
+  .enableSvelte()
   .enableSassLoader();
 
 module.exports = Encore.getWebpackConfig();

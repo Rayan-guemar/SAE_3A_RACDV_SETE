@@ -1,0 +1,31 @@
+.tache-info_wrapper {
+  position: absolute;
+  top: -15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  max-width: 400px;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.tache-info_nom {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: auto; 
+  text-align: center; 
+}
+
+.tache-info_desc,
+.tache-info_lieu,
+.tache-info_benevoles,
+.tache-info_poste {
+  margin-top: 8px;
+  text-align: left;
+}

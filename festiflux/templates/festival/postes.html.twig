@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postes festival
+{% endblock %}
+
+{% block overhead %}{% endblock %}
+
+{% block body %}
+
+	<a id="back-button" style="position: absolute" href="{{ path('app_festival_detail', { id: festival.id }) }}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+
+	{{ encore_entry_script_tags('app') }}
+
+	{# <main
+	        {{ svelte_component('ListesPostes', {
+	            'festivalId': festival.id,
+	            'festivalName': festival.nom,
+	        }) }} 
+	    >
+	    
+	    </main> #}
+
+	<main {{ vue_component('ListesPostes', { 'festivalId': festival.id, 'festivalName': festival.nom, } ) }}></main>
+
+	
+{% endblock %}

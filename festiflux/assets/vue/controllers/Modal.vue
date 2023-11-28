@@ -1,26 +1,13 @@
-<script setup lang="ts">
-import { VueElement } from 'vue';
-import { Input, SubmitBtn } from '../../scripts/types';
-
-interface Props {
-    id: string;
-    title: string;
-    hideModal: () => void;
-}
-
-const { id, title, hideModal } = defineProps<Props>();
-
+<script setup lang="ts"> 
+const modalContainer = document.getElementById('modal-portal') as HTMLDivElement | null;
+if (!modalContainer) document.body.insertAdjacentHTML('afterbegin', '<div id="modal-portal"></div>');
 </script>
 
 <template>
-    <div :id="id" class="planning-form">
-        <div>
-            <div class="close-btn" @click="hideModal">
-                <img src="../../../public/icons/x-mark.png" alt="Fermer">
+        <Teleport to="#modal-portal">
+            <div class="modal-container">
+                <slot></slot>
             </div>
-        </div>
-        <slot>
-
-        </slot>
-    </div>
+            <div class="modal-background" @click="$emit('close')"></div>
+        </Teleport>
 </template>
