@@ -23,12 +23,12 @@
             }
         }
     });
-    let debut = new Date(creneau.debut.date);
-    let fin = new Date(creneau.fin.date);
+    let debut = new Date(creneau.debut);
+    let fin = new Date(creneau.fin);
 
 </script>
 <template>
-    <div ref="plage" class="plage" :id="''+id" :style="{
+    <div ref="plage" class="plage" :id="creneau.id + ''" :style="{
       top: `${((debut.getHours() * 60 + debut.getMinutes()) / (24 * 60)) * 100}%`,
       height: `${( ( (fin.getHours() * 60 + fin.getMinutes()) - (debut.getHours() * 60 + debut.getMinutes()) ) / (24 * 60) ) * 100}%`,
       width:  `100%`,

@@ -51,12 +51,14 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_poste', { id: festivalId });
 		const res = await Backend.#get(URL);
-		return res.postes?.map((poste: Poste) => ({ 
-			id: poste.id, 
-			nom: poste.nom,
-			description: poste.description,
-			couleur: poste.couleur
-		 })) || ([] as Poste[]);
+		return (
+			res.postes?.map((poste: Poste) => ({
+				id: poste.id,
+				nom: poste.nom,
+				description: poste.description,
+				couleur: poste.couleur
+			})) || ([] as Poste[])
+		);
 	}
 
 	/**
@@ -164,14 +166,20 @@ export class Backend {
 	static async addHeureDepartFin(festivalId: number, creneau: Creneau) {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_DebutFinDay', { id: festivalId });
-		await Backend.#post(URL,  creneau as RequestInit);
+		await Backend.#post(URL, creneau as RequestInit);
 	}
 
 	static async getPlagesHoraires(festivalId: number): Promise<Creneau[]> {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
 		const data = await Backend.#get(URL);
-		const res = data
+		console.log(data);
+
+		const res = [...data].map<Creneau>((o: any) => ({
+			id: o.id,
+			debut: new Date(o.debut?.date),
+			fin: new Date(o.fin?.date)
+		}));
 
 		return res;
 	}
@@ -211,5 +219,4 @@ export class Backend {
 			console.log(error);
 		}
 	}
-
 }
