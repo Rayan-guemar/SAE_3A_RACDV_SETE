@@ -10,6 +10,8 @@ type Props = {
 
 const props = defineProps<Props>();
 
+const emits = defineEmits(['close'])
+
 const creneau = ref<Creneau>({
   debut: new Date(),
   fin: new Date()
@@ -17,8 +19,8 @@ const creneau = ref<Creneau>({
 
 
 const createIndispo = async (e: Event) => {
-  console.log('coucou');
   await Backend.addIndispo(props.festivalId, creneau.value);
+  emits('close');
 }
 
 </script>
@@ -36,7 +38,7 @@ const createIndispo = async (e: Event) => {
     </div>
     <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
       <input type="submit" value="Ajouter">
-      <button class="btn" @click="close()">Annuler</button>
+      <button class="btn" @click="() => $emit('close')">Annuler</button>
     </div>
   </form>
   </div>

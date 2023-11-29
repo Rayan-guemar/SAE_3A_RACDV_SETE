@@ -332,7 +332,7 @@ class UtilisateurController extends AbstractController
             $dateDebut = new DateTime($data['debut']);
             $dateFin = new DateTime($data['fin']);
 
-            if (!$dateDebut || !$dateFin || $dateDebut >= $dateFin) {
+            if ($dateDebut >= $dateFin) {
                 return new JsonResponse(['error' => 'Les heures fournies sont invalides'], Response::HTTP_BAD_REQUEST);
             }
 
