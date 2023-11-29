@@ -22,11 +22,7 @@ const creneau = ref<Creneau>({
 
 
 const createCreneau = async (e: Event) => {
-  const tempCreneau: Creneau = {
-    debut: creneau.value.debut,
-    fin: creneau.value.fin,
-  }
-  emit('close', tempCreneau, Backend.addHeureDepartFin(props.festivalId, creneau.value));
+  await Backend.addHeureDepartFin(props.festivalId, creneau.value);
 }
 
 </script>
