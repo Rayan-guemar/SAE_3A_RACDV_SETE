@@ -1,3 +1,18 @@
+const btn = document.querySelector(".map-btn");
+const map = document.getElementById("map");
+
+btn.addEventListener('click', () => {
+    if (btn.innerText === "Afficher la carte") {
+        map.style.display = "block";
+        btn.innerText = "Cacher la carte"
+    }
+    else if (btn.innerText === "Cacher la carte") {
+        map.style.display = "none";
+        btn.innerText = "Afficher la carte"
+    }
+})
+
+
 async function getAllFestival() {
 
     // Initialisation de la carte
@@ -5,7 +20,7 @@ async function getAllFestival() {
 
     // Ajout de la carte OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+        maxZoom: 12,
         attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
     }).addTo(map);
 
@@ -19,11 +34,16 @@ async function getAllFestival() {
         try {
             data = await response.json();
             data.forEach(festival => {
-                if (festival.latitude && festival.longitude){
-                    layer.addLayer(new L.Marker([festival.latitude, festival.longitude]))
+                if (festival.latitude && festival.longitude) {
+                    let coordinates = new L.Marker([festival.latitude, festival.longitude])
+                    layer.addLayer(coordinates)
+                    function redirectToFest() {
+                        window.location = Routing.generate('app_festival_detail', { id: festival.id })
+                    }
+                    coordinates.on('click', redirectToFest)
                 }
             });
-            var overlay = {'markers': layer};
+            var overlay = { 'markers': layer };
             L.control.layers(null, overlay).addTo(map);
         } catch (error) {
             data = {};
