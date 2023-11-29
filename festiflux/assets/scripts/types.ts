@@ -51,6 +51,14 @@ export interface Benevole {
 	prenom: string;
 }
 
+export interface IndispoCreateData {
+	id: number;
+	userID: number;
+	festID: number;
+	dateDebut: Date;
+	dateFin: Date;
+}
+
 export interface Attribute {
 	name: string;
 	value: string;
@@ -70,3 +78,4 @@ export interface SubmitBtn {
 	text: string;
 	attributes: Attribute[] | undefined;
 }
+

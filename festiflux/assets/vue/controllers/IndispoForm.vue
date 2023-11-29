@@ -17,11 +17,13 @@ const creneau = ref<Creneau>({
 
 
 const createIndispo = async (e: Event) => {
-  await Backend.addHeureDepartFin(props.festivalId, creneau.value);
+  console.log('coucou');
+  await Backend.addIndispo(props.festivalId, creneau.value);
 }
 
 </script>
 <template>
+  <div class="planning-form">
   <form @submit.prevent="createIndispo">
     <h2>Prévénir d'une indisponibilité</h2>
     <div class="flex-column flex-align-center">
@@ -32,8 +34,10 @@ const createIndispo = async (e: Event) => {
       <label for="end-creneau">Fin du créneaux</label>
       <input name="end" id="end-creneau" type="datetime-local" v-model="creneau.fin">
     </div>
-    <div class="flex-column flex-align-center">
+    <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
       <input type="submit" value="Ajouter">
+      <button class="btn" @click="close()">Annuler</button>
     </div>
   </form>
+  </div>
 </template>

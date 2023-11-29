@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData } from './types';
+import {Benevole, Creneau, IndispoCreateData, Poste, Tache, TacheCreateData} from './types';
 
 export class Backend {
 	static async #fetch(URL: string, body?: RequestInit): Promise<any> {
@@ -169,6 +169,7 @@ export class Backend {
 		await Backend.#post(URL, creneau as RequestInit);
 	}
 
+
 	static async getPlagesHoraires(festivalId: number): Promise<Creneau[]> {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
@@ -183,6 +184,14 @@ export class Backend {
 
 		return res;
 	}
+
+	static async addIndispo(festivalId: number, creneau: Creneau) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_add_disponibilities', {id: festivalId});
+		console.log(URL)
+		return await Backend.#post(URL, creneau as RequestInit);
+	}
+
 	/**
 	 *
 	 * @param {string} festivalId

@@ -34,6 +34,7 @@ use App\Service\FlashMessageType;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
 use PHPUnit\Util\Json;
+use DateTime;
 
 class UtilisateurController extends AbstractController
 {
@@ -305,7 +306,7 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    #[Route('/festival/{id}/disponibilities', name: 'app_festival_add_disponibilities', methods: ['POST'])]
+    #[Route('/festival/{id}/disponibilities', name: 'app_festival_add_disponibilities', options: ['expose' => true], methods: ['POST'])]
     public function addDispo(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response
     {
         $u = $this->getUser();
@@ -327,32 +328,38 @@ class UtilisateurController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        $dateDebut = $data['date_debut'];
-        $dateFin = $data['date_fin'];
+        try {
+            $dateDebut = new DateTime($data['debut']);
+            $dateFin = new DateTime($data['fin']);
 
-        if (!$dateDebut || !$dateFin || $dateDebut >= $dateFin) {
-            return new JsonResponse(['error' => 'Les heures fournies sont invalides'], Response::HTTP_BAD_REQUEST);
+            if (!$dateDebut || !$dateFin || $dateDebut >= $dateFin) {
+                return new JsonResponse(['error' => 'Les heures fournies sont invalides'], Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($dateDebut < $festival->getDateDebut() || $dateFin > $festival->getDateFin()) {
+                return new JsonResponse(['error' => 'Les dates fournies dépassent la plage horaire du festival'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $c = new Creneaux();
+            $c->setDateDebut($dateDebut);
+            $c->setDateFin($dateFin);
+            $em->persist($c);
+
+            $dispo = new Disponibilite();
+            $dispo->setUtilisateur($u);
+            $dispo->setFestival($festival);
+            $dispo->setCreneau($c);
+
+            $em->persist($dispo);
+            $em->flush();
+
+            return new JsonResponse(status: Response::HTTP_CREATED);
+
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            }
+            throw $th;
         }
-
-        if ($dateDebut < $festival->getDateDebut() || $dateFin > $festival->getDateFin()) {
-            return new JsonResponse(['error' => 'Les dates fournies dépassent la plage horaire du festival'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $c = new Creneaux();
-        $c->setDateDebut($dateDebut);
-        $c->setDateFin($dateFin);
-
-        $dispo = new Disponibilite();
-        $dispo->setUtilisateur($u);
-        $dispo->setFestival($festival);
-        $dispo->setCreneau($c);
-
-
-
-        $em->persist($c);
-        $em->persist($dispo);
-        $em->flush();
-
-        return new JsonResponse(status: Response::HTTP_CREATED);
     }
 }

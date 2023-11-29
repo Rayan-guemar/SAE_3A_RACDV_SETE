@@ -73,7 +73,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const getTaches = async () => {
         const res = await Backend.getTaches(festival.value.festID);
-        
+
         if (res) {
             taches.value = res;
         }
@@ -128,19 +128,19 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         creatingTache.value = true;
     }
 
-    
+
     const stopCreatingTache = (tache?: TacheCreateData) => {
         creatingTache.value = false;
         if (tache) {
             const poste = postes.value.find(
                 (p) => {
                     return p.id == tache.poste_id
-            });  
+            });
             if (!poste) {
                 throw new Error("pas de poste trouvé")
             }
-    
-            
+
+
             const t: TacheType = {
                 description: tache.description,
                 nbBenevole: tache.nombre_benevole,
@@ -149,11 +149,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     debut: tache.date_debut,
                     fin: tache.date_fin
                 },
-                benevoleAffecte: 0, 
+                benevoleAffecte: 0,
                 lieu: tache.lieu,
             }
-    
-            
+
+
             sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
         }
 
@@ -238,7 +238,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
-            
+
             <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
 
           <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
