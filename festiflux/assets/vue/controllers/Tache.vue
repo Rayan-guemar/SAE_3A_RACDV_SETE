@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
 import { Tache, Creneau, Poste, Benevole } from '../../scripts/types';
-import InfoTache from './InfoTache.vue';
+import Modal from './Modal.vue';
+import TacheAffectations from './TacheAffectations.vue';
 
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
   benevoles: Benevole[],
 }
 
-const {tache, position, total, modeAffectation} = defineProps<Props>();
+const {tache, position, total, modeAffectation} = defineProps<Props>(); 
 
 
 const posteToColor = (poste:Poste) => {
@@ -41,6 +42,7 @@ const posteToColorBright = (poste:Poste) => {
 }
 
 const showingInfo = ref(false);
+const showingAffectionMode = ref(false);
 
 const task = ref<HTMLDivElement>();
 
@@ -48,7 +50,19 @@ const showInfo = () => {
   showingInfo.value = true;
 }
 
+const showAffectionMode = () => {
+  showingAffectionMode.value = true;
+}
+
+const log = () => {
+  console.log('showingInfo', showingInfo.value);
+  console.log('modeAffectation', modeAffectation);
+}
+
 window.addEventListener('click', (e) => {
+  if (modeAffectation) {
+    return;
+  }
   if (showingInfo.value) {
     if (task.value && task.value.contains(e.target as Node) || modeAffectation) {
       showingInfo.value = true;
@@ -74,7 +88,7 @@ window.addEventListener('click', (e) => {
       backgroundColor: tache.poste.couleur ? hexToBrighterHex(tache.poste.couleur) : `rgb(${posteToColorBright(tache.poste).join(',')})`,
       color:'black', //`rgb(${posteToColor(tache.poste).join(',')})`,
       zIndex: showingInfo ? 100 : 0,
-    }" @click="showInfo"  >
+    }" @click="() => modeAffectation ? showAffectionMode() : showInfo()"  >
    
     <div class="task-text" :style="{
       width: `${total == 1 ? 100 : (1 / ((total-(position-1)))*100)}%`,
@@ -94,6 +108,15 @@ window.addEventListener('click', (e) => {
         <div class="tache-info_benevoles" >{{ tache.nbBenevole }} bénévoles requis</div>
         <div class="tache-info_benevoles" >{{ tache.benevoleAffecte }} bénévoles affectés</div>
     </div>
-    <InfoTache v-if="showingInfo && modeAffectation" :tache="tache" />
+    <Modal
+      v-if="showingAffectionMode && modeAffectation"
+      @close="() => showingAffectionMode = false"
+    >
+      <TacheAffectations 
+        @close="() => showingAffectionMode = false" 
+        :tache="tache" :benevoles="benevoles" 
+        @reloadBenevoles="() => $emit('reloadBenevoles')" 
+      />
+    </Modal>
   </div>
 </template>

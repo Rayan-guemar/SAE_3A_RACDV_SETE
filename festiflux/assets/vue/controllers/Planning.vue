@@ -72,6 +72,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const toggleModeAffectation = () => {
         modeAffectation.value = !modeAffectation.value;
+        console.log(modeAffectation.value);
+        
     }
 
 
@@ -191,6 +193,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         await getPostes();
         await getPlagesHoraires();
         loading.value = false;
+        await getBenevoles();
     })
 
     const vuePerso = ref(false);
@@ -222,13 +225,25 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
-                    <Tache v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :benevoles="benevoles" :tache="tacheWithPos.tache" :modeAffectation="modeAffectation" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <!-- <Tache /> -->
+                    <Tache 
+                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
+                        :benevoles="benevoles" 
+                        :tache="tacheWithPos.tache" 
+                        :modeAffectation="modeAffectation" 
+                        :position="tacheWithPos.position" 
+                        :total="tacheWithPos.total" 
+                        @reloadBenevoles="async () => {
+                            await getTaches();
+                            await getBenevoles();
+                        }"
+                    />
                 </div>
             </div>
         </div>
         <div class="manage-interface">
-
             <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
+
             <div>
                 <label for="poste_filter">Filtrer par:</label>
                 <select name="poste_filter" class="btn" id="poste_filter" v-model="filterByPoste"> 
@@ -238,9 +253,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             </div>
             
             <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper">
-                <div>Mode affectation :</div>
-                <div class="toggle-mode-affectation" :class="{on: modeAffectation}" @click="toggleModeAffectation">
-                    <div class="toggle"></div>
+                <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper btn flex-align-center">
+                    <div>Mode affectation :</div>
+                    <div class="toggle-mode-affectation" :class="{on: modeAffectation}" @click="toggleModeAffectation">
+                        <div class="toggle"></div>
+                    </div>
                 </div>
             </div>
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
@@ -263,8 +280,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     <Modal
         v-if="creatingTache"
-        id="add-poste"
-        title="Ajout d'un poste"
      >
         <TacheForm
             :festID="festival.festID"

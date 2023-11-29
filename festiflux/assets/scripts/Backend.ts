@@ -213,6 +213,8 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
 		const data = await Backend.#get(URL);
+		console.log(data);
+		
 		const res = [...data].map(
 			(o: any) =>
 				({
@@ -223,6 +225,15 @@ export class Backend {
 		);
 
 		return res;
+	}
+
+	static async saveBenevole(tacheId: number, affected: Benevole[], unaffected: Benevole[]) {
+		// @ts-ignore
+		const URL = Routing.generate('app_benevole_save', { id: tacheId });
+		return await Backend.#post(URL, {
+			affected: affected.map((b) => b.id),
+			unaffected: unaffected.map((b) => b.id)
+		} as RequestInit);
 	}
 
 	static async getICS(festId: number): Promise<any> {

@@ -1,4 +1,7 @@
 <script setup lang="ts"> 
+defineEmits<{
+    (event:'close'): void
+}>();
 const modalContainer = document.getElementById('modal-portal') as HTMLDivElement | null;
 if (!modalContainer) document.body.insertAdjacentHTML('afterbegin', '<div id="modal-portal"></div>');
 </script>

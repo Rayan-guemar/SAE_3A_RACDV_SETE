@@ -303,6 +303,13 @@
         gap: 10px;
 
         font-weight: 500;
+        &.btn {
+            cursor: default;
+        }
+
+        .toggle-mode-affectation {
+            cursor: pointer;
+        }
 
         .toggle-mode-affectation.on {
             background-color: $green-primary;
@@ -318,7 +325,7 @@
             width: 40px;
             border-radius: 1000px;
 
-            background-color: $red-primary;
+            background-color: $grey-primary;
 
             .toggle {
                 position: absolute;
@@ -547,6 +554,7 @@
     width: 100vw;
     background-color: black;
     opacity: 0.5;
+    cursor: pointer;
 }
 
 .switch-vue {

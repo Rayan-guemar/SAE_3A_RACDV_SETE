@@ -401,7 +401,7 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
-
+        
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole) {
@@ -490,9 +490,49 @@ class FestivalController extends AbstractController {
         return new JsonResponse(['success' => 'Le poste a bien été supprimée'], Response::HTTP_OK);
     }
 
+    #[Route('/tache/{id}/affect', name: 'app_benevole_save', methods: ['POST'], options: ["expose" => true])]
+    public function affectBenevoles(int $id, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteRepository $poste, FestivalRepository $repository, TacheRepository $tacheRepository, UtilisateurRepository $ur): Response {
+        $tache = $tacheRepository->find($id);
+        $festival = $tache->getPoste()->getFestival();
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        if (!$festival) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }
+
+        if (!$tache) {
+            return new JsonResponse(['error', 'La tache n\'existe pas'], 403);
+        }
+
+        $affected = $request->toArray()['affected'];
+        $unaffected = $request->toArray()['unaffected'];
+
+        foreach ($affected as $benevole) {
+            $ben = $ur->findBy(['id' => $benevole])[0];
+            $tache->addBenevoleAffecte($ben);
+        }
+
+        foreach ($unaffected as $benevole) {
+            $ben = $ur->findBy(['id' => $benevole])[0];
+            $tache->removeBenevoleAffecte($ben);
+        }
+
+        $em->persist($tache);
+        $em->flush();
+
+        return new JsonResponse(['success' => 'Les bénévoles ont bien été affectés'], Response::HTTP_OK);
+    }
 
     #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
-    public function allBenevoles(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function allBenevoles(FestivalRepository $festRepo, PosteUtilisateurPreferencesRepository $prefRepo, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
@@ -503,19 +543,26 @@ class FestivalController extends AbstractController {
         }
 
         $benevoles = $festival->getBenevoles();
+        $preferences = $prefRepo->findAll();
 
-        $tab = [];
+        $responseBenevoles = [];
         foreach ($benevoles as $benevole) {
-            $tab[] = [
+            $responseBenevoles[] = [
                 'id' => $benevole->getId(),
                 'nom' => $benevole->getNom(),
                 'prenom' => $benevole->getPrenom(),
+                'preferences' => array_map(function (PosteUtilisateurPreferences $pref) {
+                    return [
+                        'poste' => $pref->getPosteId()->getId(),
+                        'degree' => $pref->getPreferencesDegree(),
+                    ];
+                }, array_filter($preferences, function (PosteUtilisateurPreferences $pref) use ($benevole) {
+                    return $pref->getUtilisateurId()->getId() == $benevole->getId();
+                })),
             ];
         }
 
-        return new JsonResponse([
-            'benevoles' => $tab
-        ], 200);
+        return new JsonResponse($responseBenevoles, 200);
     }
 
     #[Route('/tache/{id}/benevolespref', name: 'app_tache_benevolespref',  methods: ['GET'], options: ['expose' => true])]
