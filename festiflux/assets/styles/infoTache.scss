@@ -18,8 +18,8 @@
 .tache-info_nom {
   font-weight: bold;
   font-size: 1.2em;
-  margin-bottom: auto; 
-  text-align: center; 
+  margin-bottom: auto;
+  text-align: center;
 }
 
 .tache-info_desc,
@@ -34,7 +34,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   padding: 20px 20px 80px;
   gap: 20px;
 
@@ -55,9 +55,9 @@
       padding: 10px;
     }
 
-    & > div  {
+    &>div {
       width: 45%;
-      
+
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -93,7 +93,7 @@
         width: fit-content;
 
         border-radius: 5px;
-        
+
         &.unaffect:hover {
           color: $red-primary;
         }
@@ -106,13 +106,13 @@
   }
 
   .info-wrapper {
-    width: 50%;
+    width: 90%;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 
-    & > div {
+    &>div {
 
       gap: 2px 10px;
 
@@ -134,10 +134,14 @@
   from {
     display: none;
     opacity: 0;
-  } 1% {
+  }
+
+  1% {
     display: flex;
     opacity: 0;
-  } to {
+  }
+
+  to {
     opacity: 1;
   }
 }

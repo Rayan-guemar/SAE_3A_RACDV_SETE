@@ -2,7 +2,7 @@
     import { ref } from 'vue';
     import { encodedStr, getDateHours2Digits, hashCode } from '../../scripts/utils';
     import { Tache, Creneau, Poste } from '../../scripts/types';
-    import InfoTache from './InfoTache.vue';
+    
     interface Props {
         creneau: Creneau
     }

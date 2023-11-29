@@ -4,7 +4,6 @@ import { Benevole as BenevoleType, Tache } from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
 import { displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
-import { emit } from 'process';
 
 interface Props {
    tache : Tache
@@ -18,6 +17,13 @@ const loading = ref(false);
 const emits = defineEmits(['close', 'reloadBenevoles']);
 
 let defaultAffected = [...(props.tache.benevoles?.map(b => b.id) ?? [])];
+const selectedSort = ref<"preference" | "charge" | "">("");
+
+const sortedBenevoles = computed(() => {
+    if (selectedSort.value == "preference") {
+        return [...props.benevoles].sort((a, b) => -1);
+    }
+})
 
 const affectedBenevoles = computed(() => {
     return props.tache.benevoles?.filter(b => props.benevoles.map(b => b.id).includes(b.id)) ?? [];
@@ -75,6 +81,13 @@ const save = async () => {
                 <div>
                     <h5 v-if="tache.lieu">Lieu :</h5>
                     <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
+                </div>
+                <div>
+                    <select v-model="selectedSort">
+                        <option value="">Ne pas trier</option>
+                        <option value="charge">Trier par charge</option>
+                        <option value="preference">Trier par préférences</option>
+                    </select>
                 </div>
             </div>
             <div class="benevole-lists">
