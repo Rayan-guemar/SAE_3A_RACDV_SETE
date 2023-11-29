@@ -5,19 +5,23 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  justify-content: space-evenly;
 }
 
 #fest-info {
   border-radius: 0 0 30px 30px;
-  border: 0.1rem solid;
+  border-top: none;
 }
 
 #affiche {
-  height: 520px;
+  width: 65%;
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .fest-description {
   margin: 30px;
+  width: 50%;
 
 }
 
@@ -76,6 +80,50 @@
 
 #mapid {
   height: 250px;
-  width: 25vw;
+  width: 70%;
   z-index: 0;
+}
+
+.container-affiche {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  border-collapse: collapse;
+}
+
+.fest-description {
+  .title {
+    margin: 40px 0;
+  }
+}
+
+.detailFesival-block {
+  display: flex;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 768px) {
+  div.main-desc {
+    font-size: 11px;
+  }
+
+  .detailFesival-block {
+    display: block;
+  }
+
+  .fest-description {
+    width: unset;
+
+  }
+
+  main {
+    overflow-y: unset;
+  }
+
+  .container-affiche {
+    margin-top: 100px;
+  }
 }

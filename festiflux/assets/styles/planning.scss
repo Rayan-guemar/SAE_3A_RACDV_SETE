@@ -29,7 +29,7 @@
 
     border-color: black transparent black transparent;
 
-    animation: loading 1s linear infinite;  
+    animation: loading 1s linear infinite;
 }
 
 @keyframes loading {
@@ -47,11 +47,13 @@
     padding: 10px;
     border-radius: 50%;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
-    
+
     display: grid;
     place-items: center;
 
     transition: box-shadow 0.1s;
+
+    z-index: 100;
 
     img {
         height: 100%;
@@ -84,10 +86,7 @@
         padding-top: 50px;
     }
 
-    &.loading > .day, &.loading > .days, &.loading > .hours, &.loading > .manage-interface {
-        // display: none;
-    }
- 
+
     .day {
         height: 100%;
         width: 250px;
@@ -142,7 +141,7 @@
             color: #ff4454;
             transform: translate(-50%, 0);
             border-radius: 3px;
-            
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -150,6 +149,30 @@
             gap: 5px;
 
             font-weight: bold;
+            container-type: inline-size;
+            container-name: task;
+
+
+            &:hover {
+                cursor: pointer;
+                z-index: 100 !important;
+                width: 98% !important;
+                left: 0% !important;
+            }
+        }
+        .plage{
+                position: absolute;
+                top: calc(15/24*100%);
+                left: 0%;
+                height: calc(2/24*100%);
+                width: 100%;
+                transform: translate(-50%, 0);
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 5px;
         }
         .plage{
                 position: absolute;
@@ -185,7 +208,7 @@
             display: none;
         }
 
-        & > .day:nth-child(1) {
+        &>.day:nth-child(1) {
             border-left: none;
         }
     }
@@ -197,7 +220,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
-        
+
         padding: 60px 0 10px;
 
         color: #0007;
@@ -211,7 +234,7 @@
         margin-left: 50px;
 
         padding-top: 0;
-        
+
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -224,18 +247,19 @@
 
         .btn {
             // margin-top: 20px;
-            border: solid 3px black;
-            border-radius: 10px;
+            box-shadow: 0 0 3px 0px $grey-primary;
+            border-radius: 5px;
             padding: 10px;
             width: 100%;
             text-align: center;
-    
+
             font-weight: 700;
             cursor: pointer;
-    
+
             &:hover {
                 border-color: $blue-primary;
-                color: $blue-primary;
+                //color: $blue-primary;
+                box-shadow: 0 0 5px 0px $grey-primary;
             }
         }
 
@@ -297,7 +321,7 @@
 
     height: 50px;
 
-    & > div:nth-child(2) {
+    &>div:nth-child(2) {
         border-left: solid 2px black;
 
         img {
@@ -305,7 +329,7 @@
         }
     }
 
-    & > div {
+    &>div {
         height: 100%;
         width: 70px;
 
@@ -373,7 +397,7 @@
         margin-bottom: 20px;
     }
 
-    & > div {
+    &>div {
 
         display: flex;
         flex-direction: column;
@@ -453,3 +477,35 @@
     opacity: 0;
 }
 
+.task-text {
+    position: absolute;
+    left: 0px;
+    text-wrap: wrap;
+    word-wrap: break-word;
+    overflow: hidden;
+    height: 100%;
+    font-size: 65%;
+}
+
+#modal-portal {
+    z-index: 100;
+}
+
+.modal-container>* {
+    z-index: 101;
+}
+
+.modal-background {
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    opacity: 0.5;
+}
+
+.switch-vue {
+    
+}

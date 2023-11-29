@@ -51,7 +51,12 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_poste', { id: festivalId });
 		const res = await Backend.#get(URL);
-		return res.postes?.map((poste: Poste) => ({ id: poste.id, nom: poste.nom } as Poste)) || ([] as Poste[]);
+		return res.postes?.map((poste: Poste) => ({ 
+			id: poste.id, 
+			nom: poste.nom,
+			description: poste.description,
+			couleur: poste.couleur
+		 })) || ([] as Poste[]);
 	}
 
 	/**
@@ -116,6 +121,24 @@ export class Backend {
 		return Backend.#post(URL, poste as RequestInit);
 	}
 
+	static updatePoste(festivalId: number, poste: Poste) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_edit_poste', {
+			id: festivalId,
+			idPoste: poste.id
+		});
+		return Backend.#post(URL, poste as RequestInit);
+	}
+
+	static deletePoste(festivalId: number, poste: Poste) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_delete_poste', {
+			id: festivalId,
+			idPoste: poste.id
+		});
+		return Backend.#get(URL);
+	}
+
 	/**
 	 * Ajoute une tâche à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
@@ -123,9 +146,14 @@ export class Backend {
 	 * @returns {Promise<number>} - Une promesse qui résout avec les données de la réponse.
 	 */
 	static async addTache(festivalId: number, tache: TacheCreateData) {
+		const body = {
+			...tache,
+			date_debut: tache.date_debut.toISOString(),
+			date_fin: tache.date_fin.toISOString()
+		};
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
-		await Backend.#post(URL, tache as RequestInit);
+		return await Backend.#post(URL, body as RequestInit);
 	}
 
 	/**
@@ -169,7 +197,6 @@ export class Backend {
 					benevoles: o.benevoles
 				} as Tache)
 		);
-		console.log(res);
 
 		return res;
 	}
@@ -184,4 +211,5 @@ export class Backend {
 			console.log(error);
 		}
 	}
+
 }

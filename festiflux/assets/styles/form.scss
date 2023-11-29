@@ -17,17 +17,17 @@
         margin-top: 50px;
         width: 45%;
         max-width: 500px;
-    
+
         a {
             color: black;
             font-size: large;
             font-weight: 700;
         }
-    
+
         &>div {
             width: 100%;
             position: relative;
-    
+
             input,
             textarea {
                 border: 3px solid $grey-primary;
@@ -37,29 +37,29 @@
                 border-radius: 20px;
                 font-size: large;
                 font-weight: 700;
-    
+
                 &:focus {
                     outline: none;
                     border: 3px solid $blue-primary;
                 }
             }
-    
+
             textarea {
                 height: 150px;
                 resize: none;
                 overflow-y: auto;
-    
+
                 &::-webkit-scrollbar-track {
                     width: 20px;
                 }
             }
-    
+
             select {
                 border-width: 0 2px 0;
                 padding: 5px;
             }
         }
-    
+
         &>button {
             border: none;
             border-radius: 20px;
@@ -69,15 +69,16 @@
             font-weight: bolder;
             width: 100%;
             height: 70px;
+            cursor: pointer;
         }
     }
-    
+
     .form-center {
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    
+
     .form-row {
         display: flex;
         align-items: center;
@@ -85,34 +86,34 @@
         gap: 30px;
         width: 100%;
     }
-    
+
     input[type='password'] {
         font-family: Verdana;
         letter-spacing: 0.125em;
-    
+
         &::placeholder {
             font-family: 'Montserrat', sans-serif;
             letter-spacing: normal;
         }
     }
-    
+
     input[type='date'] {
         color: #757575;
     }
-    
+
     input[type='file'] {
         position: relative;
         font-size: 15px;
-    
+
         &::-webkit-file-upload-button {
             display: none;
         }
     }
-    
+
     input[type='file']:invalid {
         color: #0000;
     }
-    
+
     label:has(~input[type='file']:invalid) {
         display: block;
         position: absolute;
@@ -120,11 +121,32 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
-    
+
     label:has(~input[type='file']) {
         display: none;
         font-size: 18px;
         font-weight: 700;
         color: #757575;
     }
+
+    #toggle-eye {
+        height: 30px;
+        aspect-ratio: 1;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+    }
+
+    .login-form__field {
+        position: relative;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .form-center {
+        display: flex;
+        flex-direction: column;
+    }
+
 }

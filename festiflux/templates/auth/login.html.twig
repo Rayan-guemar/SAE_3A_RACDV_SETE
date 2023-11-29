@@ -1,5 +1,9 @@
 {% extends "base.html.twig" %}
 
+{% block overhead %}
+	<script defer src="{{ asset('js/login.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 	<div class="form-wrapper">
 		<h1 class="login-form__title">Connexion</h1>
@@ -10,14 +14,15 @@
 			</div>
 
 			<div class="login-form__field">
-				<input placeholder="Mot de passe" type="password" name="_password" class="login-form__input">
+				<input placeholder="Mot de passe" type="password" id="x_password" name="_password" class="login-form__input">
+				<img id="toggle-eye" class="opened_eye" src={{ asset('/icons/opened_eye.png') }} >
 			</div>
 			<a href="{{ path("app_forgot_password_request") }}" style="position: relative; top: -15px;">Mot de passe oublié</a>
 
 			<button type="submit" class="login-form__submit">Se connecter</button>
 
 			<div class="form-center">
-				Vous n'avez pas de compte ?
+				<span>Vous n'avez pas de compte ?</span>
 				<a href="{{ path("app_auth_register") }}" style="margin-left: 5px;" class="login-form__link--register">S'inscrire</a>
 			</div>
 		</form>

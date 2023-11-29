@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Tag;
+use App\Model\SearchData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,26 @@ class TagRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * Get published fests thanks to Search Data value
+     *
+     * @param SearchData $searchData
+     * @return array
+     */
+    public function findBySearch(SearchData $searchData): array
+    {
+        $data = $this->createQueryBuilder('p');
+
+        if (!empty($searchData->q)) {
+            $data = $data
+                ->Where('p.nom LIKE :searchTerm')
+                ->setParameter('searchTerm', "%{$searchData->q}%");
+        }
+
+        $data = $data
+            ->getQuery()
+            ->getResult();
+
+        return $data;
+    }
 }

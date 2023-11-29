@@ -6,6 +6,7 @@ export interface Tache {
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;
+	benevoles?: Benevole[];
 }
 
 export interface TacheCreateData {
@@ -27,8 +28,10 @@ export interface Festival {
 }
 
 export interface Poste {
-	id: string;
+	id: string | null;
 	nom: string;
+	description: string;
+	couleur?: string;
 }
 
 export interface Creneau {
@@ -39,7 +42,7 @@ export interface Creneau {
 
 export interface Lieu {
 	nom: string;
-    adresse: string;
+	adresse: string;
 }
 
 export interface Benevole {

@@ -33,6 +33,10 @@ main {
     width: 100%;
     margin-bottom: 100px;
     height: 100vh;
+
+    @media screen and (max-width: 768px) {
+        height: unset;
+    }
 }
 
 footer {
@@ -83,5 +87,5 @@ footer {
 @import "planning";
 @import "toggleButton";
 @import "liste_benevoles";
+@import "poste-section";
 @import 'infoTache';
-
