@@ -1,6 +1,7 @@
 import { Tache } from './types';
 
 export const sortTachesByOverriding = (taches: Tache[]) => {
+	const s = performance.now();
 	const overridingTaches = [] as Tache[][];
 
 	for (const t of taches) {
@@ -17,7 +18,7 @@ export const sortTachesByOverriding = (taches: Tache[]) => {
 			res.push({ tache: tache, position: j + 1, total: taches.length });
 		}
 	}
-
+	console.log('perf', performance.now() - s);
 	return res;
 };
 

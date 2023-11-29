@@ -45,8 +45,8 @@ function changeHandlerEnd() {
 const createTache = async (e: Event) => {
     const formData = new FormData(e.target as HTMLFormElement)
     
-    const debut = getDateFromLocale(formData.get("start") + "");
-    const fin = getDateFromLocale(formData.get("end") + "");
+    const debut = new Date(formData.get("start") + "");
+    const fin = new Date(formData.get("end") + "");
     const description = formData.get('description') + "";
     const nbBenevole = +(formData.get('nombre_benevole') + "");
     const posteId = formData.get('poste') + "";
@@ -60,7 +60,7 @@ const createTache = async (e: Event) => {
         lieu: formData.get('creneau-lieu') + "",
         adresse: formData.get('creneau-lieu-address') + ""
     };
-    
+
     props.close(tache);
     await Backend.addTache(festival.value.festID, tache);
     props.updateTaches();

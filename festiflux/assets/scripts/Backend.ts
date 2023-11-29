@@ -1,4 +1,5 @@
-import {Benevole, Creneau, IndispoCreateData, Poste, Tache, TacheCreateData} from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData } from './types';
+import { getDateFromLocale } from './utils';
 
 export class Backend {
 	static async #fetch(URL: string, body?: RequestInit): Promise<any> {
@@ -150,8 +151,8 @@ export class Backend {
 	static async addTache(festivalId: number, tache: TacheCreateData) {
 		const body = {
 			...tache,
-			date_debut: tache.date_debut.toISOString(),
-			date_fin: tache.date_fin.toISOString()
+			date_debut: getDateFromLocale(tache.date_debut).toISOString(),
+			date_fin: getDateFromLocale(tache.date_fin).toISOString()
 		};
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_tache', { id: festivalId });
@@ -168,7 +169,6 @@ export class Backend {
 		const URL = Routing.generate('app_festival_add_DebutFinDay', { id: festivalId });
 		await Backend.#post(URL, creneau as RequestInit);
 	}
-
 
 	static async getPlagesHoraires(festivalId: number): Promise<Creneau[]> {
 		// @ts-ignore
@@ -187,8 +187,8 @@ export class Backend {
 
 	static async addIndispo(festivalId: number, creneau: Creneau) {
 		// @ts-ignore
-		const URL = Routing.generate('app_festival_add_disponibilities', {id: festivalId});
-		console.log(URL)
+		const URL = Routing.generate('app_festival_add_disponibilities', { id: festivalId });
+		console.log(URL);
 		return await Backend.#post(URL, creneau as RequestInit);
 	}
 
@@ -223,7 +223,7 @@ export class Backend {
 		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
 		const data = await Backend.#get(URL);
 		console.log(data);
-		
+
 		const res = [...data].map(
 			(o: any) =>
 				({
@@ -240,8 +240,8 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_benevole_save', { id: tacheId });
 		return await Backend.#post(URL, {
-			affected: affected.map((b) => b.id),
-			unaffected: unaffected.map((b) => b.id)
+			affected: affected.map(b => b.id),
+			unaffected: unaffected.map(b => b.id)
 		} as RequestInit);
 	}
 

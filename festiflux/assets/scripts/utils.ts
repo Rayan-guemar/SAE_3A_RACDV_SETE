@@ -78,7 +78,7 @@ export const hashCode = (s: string): number => {
 
 export const generate_route = (route_name: string) => {};
 
-export const getDateFromLocale = (date_local: string) => {
+export const getDateFromLocale = (date_local: string | Date) => {
 	const date = new Date(date_local);
 	const res = date.getTime() - date.getTimezoneOffset() * 60 * 1000;
 	return new Date(res);
@@ -95,19 +95,10 @@ export const hexToBrighterHex = (hex: string): string => {
 	g += Math.round((255 - g) * 0.9);
 	b += Math.round((255 - b) * 0.9);
 
-	return (
-		'rgb(' +
-		Math.min(r, 255) +
-		',' +
-		Math.min(g, 255) +
-		',' +
-		Math.min(b, 255) +
-		')'
-	);
-}
-
+	return 'rgb(' + Math.min(r, 255) + ',' + Math.min(g, 255) + ',' + Math.min(b, 255) + ')';
+};
 
 export const displayHoursMinutes = (date: Date): string => {
-	const conv = (e: number) => e < 10 ? `0${e}` : e;
+	const conv = (e: number) => (e < 10 ? `0${e}` : e);
 	return `${conv(date.getHours())}h${conv(date.getMinutes())}`;
-}
+};

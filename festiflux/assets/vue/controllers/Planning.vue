@@ -57,6 +57,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const filterByPoste = ref("");
 
     const displayTaches = computed (() => {
+        console.log('comp', Date.now());
         
         const filters: ((tache: TacheType) => unknown)[] = []
         if (vuePerso.value) filters.push((tache) => tache.benevoles?.map(b => b.id).includes(props.userId))
@@ -146,31 +147,28 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const stopCreatingTache = (tache?: TacheCreateData) => {
         creatingTache.value = false;
-        if (tache) {
-            const poste = postes.value.find(
-                (p) => {
-                    return p.id == tache.poste_id
-            });
-            if (!poste) {
-                throw new Error("pas de poste trouvé")
-            }
-
-
-            const t: TacheType = {
-                description: tache.description,
-                nbBenevole: tache.nombre_benevole,
-                poste: poste,
-                creneau: {
-                    debut: tache.date_debut,
-                    fin: tache.date_fin
-                },
-                benevoleAffecte: 0,
-                lieu: tache.lieu,
-            }
-
-
-            sortedTaches.value = sortTachesByOverriding([...taches.value, t]);
+        if (!tache) return;
+        const poste = postes.value.find(
+            (p) => {
+                return p.id == tache.poste_id
+        });
+        if (!poste) {
+            throw new Error("pas de poste trouvé")
         }
+
+        const t: TacheType = {
+            description: tache.description,
+            nbBenevole: tache.nombre_benevole,
+            poste: poste,
+            creneau: {
+                debut: tache.date_debut,
+                fin: tache.date_fin
+            },
+            benevoleAffecte: 0,
+            lieu: tache.lieu,
+        };
+        
+        taches.value.push(t);
 
     }
 
