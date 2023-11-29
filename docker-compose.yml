@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   # web:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8080:80"
-  #   volumes:
-  #     - ./festiflux:/app
+      # build:
+      #   context: .
+      #   dockerfile: Dockerfile
+      # ports:
+      #   - "8080:80"
+      # volumes:
+      #   - ./festiflux:/app
   database:
     image: postgres:12.2
     ports:
@@ -18,5 +18,27 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=festiflux
       - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - ./local-database/init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+
+# version: '3.8'
+
+# services:
+#   database:
+#     image: mariadb:10.5.8
+#     ports:
+#       - 3306:3306
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=secret
+#       - MYSQL_DATABASE=database
+#       - MYSQL_USER=user
+#       - MYSQL_PASSWORD=secret
+#     volumes:
+#       - ./local-database-data:/var/lib/mysql
+#       - ./local-database/init.sql:/docker-entrypoint-initdb.d/init.sql
