@@ -28,9 +28,6 @@ class Festival {
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-    // #[ORM\ManyToOne(inversedBy: 'festivals')]
-    // #[ORM\JoinColumn(nullable: false)]
-
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 

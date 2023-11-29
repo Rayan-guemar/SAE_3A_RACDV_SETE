@@ -1,13 +1,16 @@
 <script setup lang="ts">
-    import { VNodeRef, ref, onMounted, computed } from 'vue';
     import { dateDiff } from '../../scripts/utils';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData } from '../../scripts/types';
+    import { VNodeRef, ref, onMounted, computed } from 'vue';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
     import TacheForm from './TacheForm.vue';
     import { sortTachesByOverriding } from '../../scripts/tache';
+    import HeureDebutFinJour from "./HeureDebutFinJour.vue";
+    import PlageHoraire from "./PlageHoraire.vue";
 
+type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ; 
 
     type Props = {
         festID: number,
@@ -37,13 +40,41 @@
     const taches = ref<TacheType[]>([]);
     const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
     const postes = ref<Poste[]>([]);
+    const crx = ref<Creneau[]>([]);
+
+    computed(() => {
+        console.log(crx.value)
+        
+    })
+    const benevoles = ref<Benevole[]>([]);
 
     const loading = ref(true);
     const creatingTache = ref(false);
+    const creatingPlage = ref(false);
+
+    const filterByPoste = ref("");
 
     const displayTaches = computed (() => {
-        return sortedTaches.value.filter(({tache}) => !vuePerso.value || tache.benevoles?.map(b => b.id).includes(props.userId) )
+        
+        const filters: ((tache: TacheType) => unknown)[] = []
+        if (vuePerso.value) filters.push((tache) => tache.benevoles?.map(b => b.id).includes(props.userId))
+        if (filterByPoste.value) filters.push(tache => tache.poste.id == filterByPoste.value)
+        
+        
+        let tachesToDisplay = [...taches.value]
+        for (const filter of filters) {
+            tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache))
+        }
+
+        return sortTachesByOverriding(tachesToDisplay);
     })
+    const modeAffectation = ref(false);
+
+    const toggleModeAffectation = () => {
+        modeAffectation.value = !modeAffectation.value;
+        console.log(modeAffectation.value);
+        
+    }
 
 
     const getTaches = async () => {
@@ -51,8 +82,22 @@
         
         if (res) {
             taches.value = res;
-            sortedTaches.value = sortTachesByOverriding(res);
         }
+    }
+    
+    const getBenevoles = async () => {
+        const res = await Backend.getBenevoles(festival.value.festID);
+        if (res) {
+            benevoles.value = res;
+        }
+    }
+
+    const getPlagesHoraires = async () => {
+        const res = await Backend.getPlagesHoraires(festival.value.festID);
+        if (res) {
+            crx.value = res;
+        }
+      console.log(res);
     }
 
     const getPostes = async () => {
@@ -126,6 +171,15 @@
 
     }
 
+    const stopCreatingPlage = async (tempCreneau?: Creneau, update?: Promise<any>) => {
+        creatingPlage.value = false;
+        if (tempCreneau && update) {
+            crx.value.push(tempCreneau as Creneau);
+            await update;
+            getPlagesHoraires(); 
+        }
+    }
+
     const askForICS = () => {
         Backend.getICS(festival.value.festID);
     }
@@ -137,13 +191,19 @@
     onMounted(async () => {
         await getTaches();
         await getPostes();
+        await getPlagesHoraires();
         loading.value = false;
+        await getBenevoles();
     })
 
     const vuePerso = ref(false);
 
     const toggleVuePerso = async () => {
         vuePerso.value = !vuePerso.value;
+    }
+
+    const startCreatingPlage = () => {
+        creatingPlage.value = true;
     }
 
 </script>
@@ -164,16 +224,46 @@
                         {{ dayNames[day.getDay()].substring(0, 3) + ' ' + day.getDate() + ' ' + monthNames[day.getMonth()].substring(0, 4) + '.' }}
                     </div>
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
+                    <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <!-- <Tache /> -->
-                    <Tache v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" :tache="tacheWithPos.tache" :position="tacheWithPos.position" :total="tacheWithPos.total" />
+                    <Tache 
+                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
+                        :benevoles="benevoles" 
+                        :tache="tacheWithPos.tache" 
+                        :modeAffectation="modeAffectation" 
+                        :position="tacheWithPos.position" 
+                        :total="tacheWithPos.total" 
+                        @reloadBenevoles="async () => {
+                            await getTaches();
+                            await getBenevoles();
+                        }"
+                    />
                 </div>
             </div>
         </div>
         <div class="manage-interface">
+            <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
+
+            <div>
+                <label for="poste_filter">Filtrer par:</label>
+                <select name="poste_filter" class="btn" id="poste_filter" v-model="filterByPoste"> 
+                    <option selected="true" value="">Tous les postes</option>
+                    <option v-for="poste of postes" :value="poste.id">{{ poste.nom }}</option>
+                </select>
+            </div>
+            
+            <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper">
+                <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper btn flex-align-center">
+                    <div>Mode affectation :</div>
+                    <div class="toggle-mode-affectation" :class="{on: modeAffectation}" @click="toggleModeAffectation">
+                        <div class="toggle"></div>
+                    </div>
+                </div>
+            </div>
             <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
-
+            
             <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
         </div>
     </div>
@@ -187,10 +277,9 @@
         </div>
     </div>
 
+
     <Modal
         v-if="creatingTache"
-        id="add-poste"
-        title="Ajout d'un poste"
      >
         <TacheForm
             :festID="festival.festID"
@@ -203,4 +292,14 @@
             :close="stopCreatingTache"
         />
     </Modal>
+  <Modal
+      v-if="creatingPlage"
+      id="add-plage"
+      title="Ajout des plages horaires"
+       >
+      <HeureDebutFinJour 
+      :festivalId="festID"
+      @close="stopCreatingPlage"
+      />
+  </Modal>
 </template>

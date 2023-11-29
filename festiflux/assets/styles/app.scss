@@ -33,6 +33,10 @@ main {
     width: 100%;
     margin-bottom: 100px;
     height: 100vh;
+
+    @media screen and (max-width: 768px) {
+        height: unset;
+    }
 }
 
 footer {
@@ -71,7 +75,7 @@ footer {
 }
 
 
-
+@import 'animations';
 @import 'sidebar';
 @import "searchbar";
 @import "festivals";

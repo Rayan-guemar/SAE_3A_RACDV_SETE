@@ -18,7 +18,7 @@
 			<div class="info-box-wrapper">
 			<div class="info-box">
 				<div class="image_profile">
-				<img {% if utilisateur.nomphotoprofil == true %} 
+				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
 				            src="{{ asset("uploads/Path-of-Exile-Logo-6522d2462da93.png") }}" alt=""
 					 {% else %}
 							src="{{ asset("uploads/"~utilisateur.nomPhotoProfil~"") }}"
@@ -57,6 +57,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="fest-button">
 
 					<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">

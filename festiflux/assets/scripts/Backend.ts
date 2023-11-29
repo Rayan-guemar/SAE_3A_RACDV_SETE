@@ -51,12 +51,14 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_poste', { id: festivalId });
 		const res = await Backend.#get(URL);
-		return res.postes?.map((poste: Poste) => ({ 
-			id: poste.id, 
-			nom: poste.nom,
-			description: poste.description,
-			couleur: poste.couleur
-		 })) || ([] as Poste[]);
+		return (
+			res.postes?.map((poste: Poste) => ({
+				id: poste.id,
+				nom: poste.nom,
+				description: poste.description,
+				couleur: poste.couleur
+			})) || ([] as Poste[])
+		);
 	}
 
 	/**
@@ -159,6 +161,31 @@ export class Backend {
 	/**
 	 *
 	 * @param {string} festivalId
+	 * @param creneau
+	 */
+	static async addHeureDepartFin(festivalId: number, creneau: Creneau) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_add_DebutFinDay', { id: festivalId });
+		await Backend.#post(URL, creneau as RequestInit);
+	}
+
+	static async getPlagesHoraires(festivalId: number): Promise<Creneau[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
+		const data = await Backend.#get(URL);
+		console.log(data);
+
+		const res = [...data].map<Creneau>((o: any) => ({
+			id: o.id,
+			debut: new Date(o.debut?.date),
+			fin: new Date(o.fin?.date)
+		}));
+
+		return res;
+	}
+	/**
+	 *
+	 * @param {string} festivalId
 	 * @returns {Promise<Tache[]>} - Une promesse qui résout avec les données des tâches.
 	 */
 	static async getTaches(festivalId: number): Promise<Tache[]> {
@@ -173,13 +200,40 @@ export class Backend {
 					nbBenevole: o.nombre_benevole,
 					benevoleAffecte: o.benevole_affecte,
 					lieu: o.lieu,
-					poste: { id: o.poste_id, nom: o.poste_nom } as Poste,
+					poste: { id: o.poste_id, nom: o.poste_nom, description: o.poste_description, couleur: o.poste_couleur } as Poste,
 					creneau: { debut: new Date(o.date_debut?.date), fin: new Date(o.date_fin?.date) },
 					benevoles: o.benevoles
 				} as Tache)
 		);
 
 		return res;
+	}
+
+	static async getBenevoles(festivalId: number): Promise<Benevole[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
+		const data = await Backend.#get(URL);
+		console.log(data);
+		
+		const res = [...data].map(
+			(o: any) =>
+				({
+					id: o.id,
+					nom: o.nom,
+					prenom: o.prenom
+				} as Benevole)
+		);
+
+		return res;
+	}
+
+	static async saveBenevole(tacheId: number, affected: Benevole[], unaffected: Benevole[]) {
+		// @ts-ignore
+		const URL = Routing.generate('app_benevole_save', { id: tacheId });
+		return await Backend.#post(URL, {
+			affected: affected.map((b) => b.id),
+			unaffected: unaffected.map((b) => b.id)
+		} as RequestInit);
 	}
 
 	static async getICS(festId: number): Promise<any> {
@@ -192,5 +246,4 @@ export class Backend {
 			console.log(error);
 		}
 	}
-
 }

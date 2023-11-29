@@ -160,6 +160,20 @@
                 left: 0% !important;
             }
         }
+        .plage{
+                position: absolute;
+                top: calc(15/24*100%);
+                left: 0%;
+                height: calc(2/24*100%);
+                width: 100%;
+                transform: translate(-50%, 0);
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 5px;
+        }
     }
 
     .days {
@@ -283,6 +297,70 @@
         }
 
     }
+
+    .toggle-mode-affectation-wrapper {
+        display: flex;
+        gap: 10px;
+
+        font-weight: 500;
+        &.btn {
+            cursor: default;
+        }
+
+        .toggle-mode-affectation {
+            cursor: pointer;
+        }
+
+        .toggle-mode-affectation.on {
+            background-color: $green-primary;
+
+            .toggle {
+                left: calc(100% - 20px);
+            }
+        }
+
+        .toggle-mode-affectation {
+            position: relative;
+            height: 20px;
+            width: 40px;
+            border-radius: 1000px;
+
+            background-color: $grey-primary;
+
+            .toggle {
+                position: absolute;
+                left: 0;
+
+                height: 20px;
+                width: 20px;
+
+                border-radius: 50px;
+                outline: solid 1px black;
+
+                background-color: white;
+
+                transition: all 0.5s;
+            }
+        }
+    }
+}
+
+.task-affectation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    height: 80%;
+    width: 90%;
+
+    display: flex;
+
+    border: solid 1px $grey-primary;
+
+    background-color: white;
+
+    z-index: 101;
 }
 
 .scroll-btn {
@@ -476,6 +554,7 @@
     width: 100vw;
     background-color: black;
     opacity: 0.5;
+    cursor: pointer;
 }
 
 .switch-vue {
