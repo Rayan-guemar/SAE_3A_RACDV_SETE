@@ -52,20 +52,13 @@ export interface Benevole {
 	nom: string;
 	prenom: string;
 	preferences: Preference[];
+	indisponibilites: Creneau[];
 }
 
 export interface Preference {
 	poste: ID;
 	degree: number;
 }
-export interface IndispoCreateData {
-	id: ID;
-	userID: number;
-	festID: number;
-	dateDebut: Date;
-	dateFin: Date;
-}
-
 
 export interface SelectOption {
 	value: ID;

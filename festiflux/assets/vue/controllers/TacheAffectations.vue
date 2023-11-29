@@ -1,5 +1,5 @@
 <script setup lang="ts" >
-import { computed, ref } from 'vue';
+import { computed, ref, defineEmits } from 'vue';
 import { Benevole as BenevoleType, Tache, ID } from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
 import { displayHoursMinutes } from '../../scripts/utils';

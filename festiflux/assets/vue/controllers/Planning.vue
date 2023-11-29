@@ -85,9 +85,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     
     const getBenevoles = async () => {
         const res = await Backend.getBenevoles(festival.value.festID);
+        console.log(1, res);
+        
         if (res) {
             benevoles.value = res;
-        }
+        }                
     }
 
     const getPlagesHoraires = async () => {
@@ -209,6 +211,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         creatingPlage.value = true;
     }
 
+    console.log(props.isOrgaOrResp);
+    
+
 </script>
 
 <template>
@@ -231,7 +236,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <!-- <Tache /> -->
                     <Tache 
                         v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
-                        :benevoles="benevoles" 
                         :tache="tacheWithPos.tache" 
                         :modeAffectation="modeAffectation" 
                         :position="tacheWithPos.position" 
@@ -240,6 +244,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                             await getTaches();
                             await getBenevoles();
                         }"
+                        v-bind:benevoles="benevoles"
                     />
                 </div>
             </div>

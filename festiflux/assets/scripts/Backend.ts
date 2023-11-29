@@ -206,7 +206,8 @@ export class Backend {
 					id: o.id,
 					nom: o.nom,
 					prenom: o.prenom,
-					preferences: o.preferences
+					preferences: o.preferences,
+					indisponibilites: o.indisponibilites
 				} as Benevole)
 		);
 
