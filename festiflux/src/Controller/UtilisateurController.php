@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Creneaux;
+use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Poste;
 use App\Entity\Utilisateur;
@@ -33,10 +35,12 @@ use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
 use PHPUnit\Util\Json;
 
-class UtilisateurController extends AbstractController {
+class UtilisateurController extends AbstractController
+{
 
     #[Route('/user/profile/{id}', name: 'app_user_profile')]
-    public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
+    public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response
+    {
 
         $u = $utilisateurRepository->find($id);
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
@@ -53,7 +57,8 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
-    public function user_festivals(FestivalRepository $festivalRepository): Response {
+    public function user_festivals(FestivalRepository $festivalRepository): Response
+    {
         $u = $this->getUser();
 
         if (!$u instanceof Utilisateur) {
@@ -75,7 +80,8 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'])]
-    public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
+    public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response
+    {
         $currentUser = $this->getUser();
         $fest = $festivalRepository->find($idFest);
         if (!$currentUser instanceof Utilisateur) {
@@ -146,7 +152,6 @@ class UtilisateurController extends AbstractController {
         }
 
 
-
         return $this->redirectToRoute('app_festival_all');
     }
 
@@ -178,7 +183,8 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/{id}/task/{idTask}/add', name: 'app_user_task_add', options: ['expose' => true])]
-    public function user_task_add(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
+    public function user_task_add(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response
+    {
 
         $u = $user->find($id);
         $t = $tache->find($idTask);
@@ -204,14 +210,15 @@ class UtilisateurController extends AbstractController {
 
 
     #[Route('/user/poste/{idPoste}/adore', name: 'app_user_AdorePoste_add', options: ["expose" => true], methods: ['GET'])]
-    public function user_AdorePoste_add(int $idPoste, UtilisateurRepository $user, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response {
+    public function user_AdorePoste_add(int $idPoste, UtilisateurRepository $user, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
+    {
 
         $u = $this->getUser();
         if (!$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
 
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId"=>$idPoste,"UtilisateurId"=>$u]))[0];
+        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
 
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
@@ -228,14 +235,15 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/poste/{idPoste}/liked', name: 'app_user_likedPoste_add', options: ["expose" => true], methods: ['GET'])]
-    public function user_likedPoste_add(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response {
+    public function user_likedPoste_add(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
+    {
 
         $u = $this->getUser();
         if (!$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
 
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId"=>$idPoste,"UtilisateurId"=>$u]))[0];
+        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
 
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
@@ -251,14 +259,15 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/poste/{idPoste}/disliked', name: 'app_user_likedPoste_remove', options: ["expose" => true], methods: ['GET'])]
-    public function user_likedPoste_remove(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response {
+    public function user_likedPoste_remove(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
+    {
 
         $u = $this->getUser();
         if (!$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
 
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId"=>$idPoste,"UtilisateurId"=>$u]))[0];
+        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
 
         if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
@@ -274,7 +283,8 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/{id}/task/{idTask}/remove', name: 'app_user_task_remove', options: ['expose' => true])]
-    public function user_task_remove(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response {
+    public function user_task_remove(int $id, int $idTask, UtilisateurRepository $user, TacheRepository $tache, EntityManagerInterface $em, FlashMessageService $fm): Response
+    {
 
         $u = $user->find($id);
         $t = $tache->find($idTask);
@@ -295,5 +305,54 @@ class UtilisateurController extends AbstractController {
         return $this->redirectToRoute('home');
     }
 
+    #[Route('/festival/{id}/disponibilities', name: 'app_festival_add_disponibilities', methods: ['POST'])]
+    public function addDispo(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response
+    {
+        $u = $this->getUser();
+        $f = $festival->getId();
 
+        if (!$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        $isBenevole = $user->isBenevole($u, $festival);
+
+        if (!$isBenevole) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        if (!$f) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $dateDebut = $data['date_debut'];
+        $dateFin = $data['date_fin'];
+
+        if (!$dateDebut || !$dateFin || $dateDebut >= $dateFin) {
+            return new JsonResponse(['error' => 'Les heures fournies sont invalides'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($dateDebut < $festival->getDateDebut() || $dateFin > $festival->getDateFin()) {
+            return new JsonResponse(['error' => 'Les dates fournies dépassent la plage horaire du festival'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $c = new Creneaux();
+        $c->setDateDebut($dateDebut);
+        $c->setDateFin($dateFin);
+
+        $dispo = new Disponibilite();
+        $dispo->setUtilisateur($u);
+        $dispo->setFestival($festival);
+        $dispo->setCreneau($c);
+
+
+
+        $em->persist($c);
+        $em->persist($dispo);
+        $em->flush();
+
+        return new JsonResponse(status: Response::HTTP_CREATED);
+    }
 }

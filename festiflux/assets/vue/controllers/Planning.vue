@@ -7,8 +7,9 @@
     import Modal from './Modal.vue';
     import TacheForm from './TacheForm.vue';
     import { sortTachesByOverriding } from '../../scripts/tache';
-    import HeureDebutFinJour from "./HeureDebutFinJour.vue";
+    import PlageHoraireForm from "./PlageHoraireForm.vue";
     import PlageHoraire from "./PlageHoraire.vue";
+    import IndispoForm from "./IndispoForm.vue";
 
 type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ; 
 
@@ -50,6 +51,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const loading = ref(true);
     const creatingTache = ref(false);
     const creatingPlage = ref(false);
+    const addIndispo = ref(false);
 
     const filterByPoste = ref("");
 
@@ -125,6 +127,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const startCreatingTache = () => {
         creatingTache.value = true;
     }
+
     
     const stopCreatingTache = (tache?: TacheCreateData) => {
         creatingTache.value = false;
@@ -163,6 +166,14 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             await update;
             getPlagesHoraires(); 
         }
+    }
+
+    const startAddIndispo = () => {
+      addIndispo.value = true;
+    }
+
+    const stopAddIndispo = () => {
+      addIndispo.value = false;
     }
 
     const askForICS = () => {
@@ -229,6 +240,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             <div id="add-ics-btn" class="btn" @click="askForICS">Demander un fichier ics</div>
             
             <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn "> {{ vuePerso ? 'Planning général' : ' Mon planning'}} </div>
+
+          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
         </div>
     </div>
 
@@ -262,10 +275,18 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       v-if="creatingPlage"
       id="add-plage"
       title="Ajout des plages horaires"
-       >
-      <HeureDebutFinJour 
-      :festivalId="festID"
-      @close="stopCreatingPlage"
+      :hideModal="stopCreatingPlage" >
+      <PlageHoraireForm :festivalId="festID"
       />
+  </Modal>
+
+  <Modal
+      v-if="addIndispo"
+      id="add-indispo"
+      title="Ajout d'une indisponibilité'"
+      >
+    <IndispoForm
+        :festivalId="festID"
+    />
   </Modal>
 </template>
