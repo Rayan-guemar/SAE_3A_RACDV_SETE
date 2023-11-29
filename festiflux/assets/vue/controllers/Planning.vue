@@ -149,6 +149,7 @@
         await getTaches();
     }
 
+
     (async () => {
         await getTaches();
         await getPostes();
@@ -182,6 +183,7 @@
         </div>
         <div class="manage-interface">
           <div v-if="isOrgaOrResp" id="add-plage-btn" class="btn" @click="startCreatingPlage">Ajouter les plages horaires des jours du festival</div>
+          <div>caca</div>
 
           <div v-if="isOrgaOrResp" id="add-creneau-btn" class="btn" @click="startCreatingTache">Ajouter un créneau</div>
 
@@ -218,7 +220,7 @@
       id="add-plage"
       title="Ajout des plages horaires"
       :hideModal="stopCreatingPlage" >
-      <HeureDebutFinJour :festivalId="festID"
+      <HeureDebutFinJour :festivalId="festID" :updatePlage="getPlagesHoraires"
       />
   </Modal>
 </template>

@@ -6,6 +6,7 @@ import {Backend} from "../../scripts/Backend";
 
 type Props = {
   festivalId: number;
+  updatePlage: (c: Creneau) => void
 }
 
 const props = defineProps<Props>();
@@ -18,6 +19,7 @@ const creneau = ref<Creneau>({
 
 const createCreneau = async (e: Event) => {
   await Backend.addHeureDepartFin(props.festivalId, creneau.value);
+  props.updatePlage(creneau.value);
 }
 
 </script>

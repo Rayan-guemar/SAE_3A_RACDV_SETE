@@ -26,6 +26,7 @@
     let debut = new Date(creneau.debut.date);
     let fin = new Date(creneau.fin.date);
 
+
 </script>
 <template>
     <div ref="plage" class="plage" :id="''+id" :style="{
