@@ -234,7 +234,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <div class="line-break" v-for="i in parseInt('11')" :id="`line-break-${(i * 2)}`"></div>
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <!-- <Tache /> -->
-                    <Tache 
+                    <Tache
                         v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
                         :tache="tacheWithPos.tache" 
                         :modeAffectation="modeAffectation" 
@@ -244,7 +244,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                             await getTaches();
                             await getBenevoles();
                         }"
-                        v-bind:benevoles="benevoles"
+                        :benevoles="benevoles"
                     />
                 </div>
             </div>

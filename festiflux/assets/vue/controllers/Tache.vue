@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watchEffect, watch } from "vue";
 import {
   getDateHours2Digits,
   hashCode,
@@ -19,7 +19,7 @@ interface Props {
 
 defineEmits(['reloadBenevoles'])
 
-const { tache, position, total, modeAffectation, benevoles} = defineProps<Props>();
+const props = defineProps<Props>();
 
 const posteToColor = (poste: Poste) => {
   const colors = [
@@ -58,14 +58,14 @@ const showAffectionMode = () => {
   showingAffectionMode.value = true;
 };
 
-window.addEventListener('click', (e) => {
-  if (modeAffectation) {
+window.addEventListener("click", (e) => {
+  if (props.modeAffectation) {
     return;
   }
   if (showingInfo.value) {
     if (
       (task.value && task.value.contains(e.target as Node)) ||
-      modeAffectation
+      props.modeAffectation
     ) {
       showingInfo.value = true;
     } else {
@@ -74,26 +74,37 @@ window.addEventListener('click', (e) => {
   }
 });
 
-const nbDispo = ref(0) 
 
-watch(benevoles, (bs) => {
+
+
+const nbDispo = computed(() => {
   let nb = 0;
-  console.log("test", bs);
-
-  bs.forEach((b) => {
+  props.benevoles.forEach((b) => {
     if (b.indisponibilites.length == 0){
       nb++;
     }
-  });
-    
-  nbDispo.value = nb;
-});
+  }); 
+  
+  return nb
+})
+
+
+// const nbDispo = ref(0)
+
+// let nb = 0;
+
+// benevoles.forEach((b) => {
+//   if (b.indisponibilites.length == 0){
+//     nb++;
+//   }
+// });
+
+// benevoles.filter(b => b.indisponibilites.length == 0).length
 
 
 </script>
 
 <template>
-  {{  benevoles.length }}
   <div
     ref="task"
     class="task"
@@ -171,7 +182,7 @@ watch(benevoles, (bs) => {
       <div class="pastille benevole__number">
         {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }}
       </div>
-      <div class="pastille benevole__dipo"> {{ nbDispo  }} </div>
+      <div class="pastille benevole__dipo"> {{ nbDispo }} </div>
       <div class="pastille benevole__like"></div>
     </div>
 
