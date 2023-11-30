@@ -43,10 +43,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const postes = ref<Poste[]>([]);
     const crx = ref<Creneau[]>([]);
 
-    computed(() => {
-        console.log(crx.value)
-        
-    })
+   
     const benevoles = ref<Benevole[]>([]);
 
     const loading = ref(true);
@@ -57,10 +54,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const filterByPoste = ref("");
 
     const displayTaches = computed (() => {
-        console.log('comp', Date.now());
         
         const filters: ((tache: TacheType) => unknown)[] = []
-        if (vuePerso.value) filters.push((tache) => tache.benevoles?.map(b => b.id).includes(props.userId))
+        if (vuePerso.value) filters.push((tache) => tache.benevoles?.includes(props.userId))
         if (filterByPoste.value) filters.push(tache => tache.poste.id == filterByPoste.value)
         
         
@@ -75,7 +71,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const toggleModeAffectation = () => {
         modeAffectation.value = !modeAffectation.value;
-        console.log(modeAffectation.value);
         
     }
 
@@ -100,7 +95,6 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         if (res) {
             crx.value = res;
         }
-      console.log(res);
     }
 
     const getPostes = async () => {

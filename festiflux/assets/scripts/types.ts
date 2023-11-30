@@ -1,4 +1,4 @@
-type ID = string | number;
+export type ID = string | number;
 
 export interface Tache {
 	id?: ID;
@@ -8,7 +8,7 @@ export interface Tache {
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;
-	benevoles?: Benevole[];
+	benevoles?: ID[];
 }
 
 export interface TacheCreateData {
@@ -51,14 +51,11 @@ export interface Benevole {
 	id: ID;
 	nom: string;
 	prenom: string;
-}
-
-export interface BenevoleWithPreference extends Benevole {
-	preference: number;
+	preferences: Preference[];
 }
 
 export interface Preference {
-	poste: number;
+	poste: ID;
 	degree: number;
 }
 export interface IndispoCreateData {
@@ -67,4 +64,10 @@ export interface IndispoCreateData {
 	festID: number;
 	dateDebut: Date;
 	dateFin: Date;
+}
+
+
+export interface SelectOption {
+	value: ID;
+	label: string;
 }

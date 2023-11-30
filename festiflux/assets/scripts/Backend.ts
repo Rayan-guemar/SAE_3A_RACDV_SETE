@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData, ID } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -74,7 +74,6 @@ export class Backend {
 			id: benevole.id,
 			idTask: tache.id
 		});
-		console.log(benevole, URL);
 		// @ts-ignore
 		await Backend.#post(URL, '');
 	}
@@ -85,7 +84,6 @@ export class Backend {
 			id: benevole.id,
 			idTask: tache.id
 		});
-		console.log(benevole, URL);
 		// @ts-ignore
 		await Backend.#post(URL, '');
 	}
@@ -154,7 +152,6 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
 		const data = await Backend.#get(URL);
-		console.log(data);
 
 		const res = [...data].map<Creneau>((o: any) => ({
 			id: o.id,
@@ -168,7 +165,6 @@ export class Backend {
 	static async addIndispo(festivalId: ID, creneau: Creneau) {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_add_disponibilities', { id: festivalId });
-		console.log(URL);
 		return await Backend.#post(URL, creneau as RequestInit);
 	}
 
@@ -181,6 +177,7 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
 		const data = await Backend.#get(URL);
+		
 		const res = [...data].map(
 			(o: any) =>
 				({
@@ -202,26 +199,26 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_all_benevole', { id: festivalId });
 		const data = await Backend.#get(URL);
-		console.log(data);
 
 		const res = [...data].map(
 			(o: any) =>
 				({
 					id: o.id,
 					nom: o.nom,
-					prenom: o.prenom
+					prenom: o.prenom,
+					preferences: o.preferences
 				} as Benevole)
 		);
 
 		return res;
 	}
 
-	static async saveBenevole(tacheId: ID, affected: Benevole[], unaffected: Benevole[]) {
+	static async saveBenevole(tacheId: ID, affected: ID[], unaffected: ID[]) {
 		// @ts-ignore
 		const URL = Routing.generate('app_benevole_save', { id: tacheId });
 		return await Backend.#post(URL, {
-			affected: affected.map(b => b.id),
-			unaffected: unaffected.map(b => b.id)
+			affected: affected,
+			unaffected: unaffected
 		} as RequestInit);
 	}
 
