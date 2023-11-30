@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData, ID } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData, ID, Preference } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -206,7 +206,8 @@ export class Backend {
 					id: o.id,
 					nom: o.nom,
 					prenom: o.prenom,
-					preferences: o.preferences
+					preferences: o.preferences,
+					indisponibilites: o.indisponibilites.map((i : any) => ({ debut: new Date(i.debut?.date), fin: new Date(i.fin?.date) }))
 				} as Benevole)
 		);
 
@@ -233,4 +234,22 @@ export class Backend {
 		}
 	}
 
+	static async addPrefDegree(poste: Poste, prefDegree: number) {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_add_pref_poste', { id: poste.id });
+		await Backend.#post(URL, {
+			degree: prefDegree
+		} as RequestInit);
+	}
+
+	static async getPreferences(festivalId: ID): Promise<Preference[]> {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId });
+		const data = await Backend.#get(URL);
+		console.log(data);
+		
+		const res = [...data].map((o: any) => (o as Preference));
+
+		return res;
+	}
 }

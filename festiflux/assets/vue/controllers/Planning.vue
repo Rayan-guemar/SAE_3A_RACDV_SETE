@@ -93,9 +93,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     
     const getBenevoles = async () => {
         const res = await Backend.getBenevoles(festival.value.festID);
+        console.log(1, res);
+        
         if (res) {
             benevoles.value = res;
-        }
+        }                
     }
 
     const getPlagesHoraires = async () => {
@@ -216,6 +218,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const startCreatingPlage = () => {
         creatingPlage.value = true;
     }
+
+    console.log(props.isOrgaOrResp);
+    
 
 </script>
 

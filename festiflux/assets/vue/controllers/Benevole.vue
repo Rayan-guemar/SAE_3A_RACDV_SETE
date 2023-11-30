@@ -17,13 +17,13 @@ interface Props {
         const degree = props.benevole.preferences.find(p => p.poste == props.poste.id + "")?.degree || 0;
         return degree
     })
-
+    
     const colors = [
         '#C80000',
         '#3b3a39',
         '#00C800'
     ]
-    
+   
 </script>
 
 <template>
@@ -41,6 +41,12 @@ interface Props {
                 backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
                 color: colors[pref + 1],
                 outlineColor: colors[pref + 1]
+        <div 
+            v-if="pref === 1 || pref == -1" 
+            class="pref-pastille"
+            :class="{
+                'pref-like': pref === 1,
+                'pref-dislike': pref === -1
             }"
         >
             {{ pref === 1 ? 'Aime' : 'N\'aime pas' }}
