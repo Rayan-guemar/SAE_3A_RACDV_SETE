@@ -1,12 +1,13 @@
 <script setup lang="ts" >
-import { computed, ref, defineEmits } from 'vue';
-import { Benevole as BenevoleType, Tache, ID } from '../../scripts/types';
+import { computed, ref } from 'vue';
+import {Benevole as BenevoleType, Festival, Tache, ID} from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
-import { displayHoursMinutes } from '../../scripts/utils';
+import { calculCharge, displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
 import CustomSelect from './CustomSelect.vue';
 
 interface Props {
+   AllTaches: Tache[],
    tache : Tache
    benevoles : BenevoleType[]
 }
@@ -126,7 +127,8 @@ const save = async () => {
                     <div class="list">
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
-                            :benevole="benevole" 
+                            :benevole="benevole"
+                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                             :poste="tache.poste"
@@ -137,9 +139,10 @@ const save = async () => {
                     <h4>Bénévoles non affectés</h4>
                     <div class="list">
                         <Benevole 
-                            v-for="benevole of unaffectedBenevoles" 
-                            :benevole="benevole" 
-                            :affected="false" 
+                            v-for="benevole of unaffectedBenevoles"
+                            :benevole="benevole"
+                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
+                            :affected="false"
                             @addBenevole="addBenevole(benevole)"
                             :poste="tache.poste"
                         />

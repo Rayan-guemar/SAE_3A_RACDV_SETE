@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect, watch } from "vue";
-import {
-  getDateHours2Digits,
-  hashCode,
-  hexToBrighterHex,
-} from "../../scripts/utils";
-import { Tache, Creneau, Poste, Benevole } from "../../scripts/types";
-import Modal from "./Modal.vue";
-import TacheAffectations from "./TacheAffectations.vue";
+import { ref } from 'vue';
+import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
+import {Tache, Creneau, Poste, Benevole, Festival} from '../../scripts/types';
+import Modal from './Modal.vue';
+import TacheAffectations from './TacheAffectations.vue';
+
 
 interface Props {
-  tache: Tache;
-  position: number;
-  total: number;
-  modeAffectation: boolean;
-  benevoles: Benevole[];
+  AllTaches: Tache[],
+  tache: Tache,
+  position: number,
+  total: number,
+  modeAffectation: boolean,
+  benevoles: Benevole[],
 }
-
-defineEmits(['reloadBenevoles'])
 
 const props = defineProps<Props>();
 
@@ -169,11 +165,12 @@ const nbLike = computed(() => {
       v-if="showingAffectionMode && modeAffectation"
       @close="() => (showingAffectionMode = false)"
     >
-      <TacheAffectations
-        @close="() => (showingAffectionMode = false)"
+      <TacheAffectations 
+        @close="() => showingAffectionMode = false" 
         :tache="tache"
         :benevoles="benevoles"
-        @reloadBenevoles="() => $emit('reloadBenevoles')"
+        :AllTaches = "AllTaches"
+        @reloadBenevoles="() => $emit('reloadBenevoles')" 
       />
     </Modal>
 

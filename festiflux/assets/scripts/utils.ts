@@ -3,6 +3,8 @@
  * @param s - La chaîne de caractères à encoder.
  * @returns La chaîne de caractères encodée.
  */
+import {Benevole, Tache} from "./types";
+
 export const encodedStr = (s: string): string => (s + '').replace(/[\u00A0-\u9999<>\&]/g, i => '&#' + i.charCodeAt(0) + ';');
 
 /**
@@ -47,6 +49,19 @@ export const dateDiff = (date1: Date, date2: Date): { sec: number; min: number; 
 
 	return diff;
 };
+
+export const calculCharge = (taches: Tache[]): number => {
+	/* parcourir la liste de taches et incrementer une variable avec le calcul de la difference entre la date debut et la date de fin du creneau de la tache */
+	let charge = 0;
+	taches.forEach(tache => {
+		console.log(tache);
+		const diff = dateDiff(tache.creneau.debut, tache.creneau.fin);
+		charge += diff.hour + diff.min / 60;
+	});
+	//arrondir à l'entier supérieur
+	return Math.ceil(charge);
+
+}
 
 /**
  * Compare deux dates. Renvoie 0 si elles sont égales, 1 si la première est plus grande que la seconde, -1 sinon.
@@ -101,4 +116,8 @@ export const hexToBrighterHex = (hex: string, percent: number = 0.1): string => 
 export const displayHoursMinutes = (date: Date): string => {
 	const conv = (e: number) => (e < 10 ? `0${e}` : e);
 	return `${conv(date.getHours())}h${conv(date.getMinutes())}`;
+};
+
+export const getDateForInputAttribute = (date: Date | string): string => {
+	return new Date(date).toISOString().split('.')[0];
 };
