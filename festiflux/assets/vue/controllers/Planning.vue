@@ -321,8 +321,10 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         <PlageHoraireForm 
             :festivalId="festID" 
             :dateDebut="festival.dateDebut.toISOString()"
-            :dateFin="festival.dateFin.toISOString()" 
-            :close="stopCreatingPlage" :update-plages="updatePlages" />
+            :dateFin="festival.dateFin.toISOString()"
+            :close="stopCreatingPlage"
+            :update-plages="updatePlages"
+        />
         />
   </Modal>
 
