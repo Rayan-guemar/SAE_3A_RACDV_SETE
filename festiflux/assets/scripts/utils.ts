@@ -102,3 +102,7 @@ export const displayHoursMinutes = (date: Date): string => {
 	const conv = (e: number) => (e < 10 ? `0${e}` : e);
 	return `${conv(date.getHours())}h${conv(date.getMinutes())}`;
 };
+
+export const getDateForInputAttribute = (date: Date | string): string => {
+	return new Date(date).toISOString().split('.')[0];
+};
