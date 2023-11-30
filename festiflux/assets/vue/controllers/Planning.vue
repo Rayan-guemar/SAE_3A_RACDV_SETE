@@ -296,12 +296,17 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         />
     </Modal>
   <Modal
-      v-if="creatingPlage"
-      id="add-plage"
-      title="Ajout des plages horaires"
-      :hideModal="stopCreatingPlage" >
-      <PlageHoraireForm :festivalId="festID" :close="stopCreatingPlage" :update-plages="updatePlages"
-      />
+        v-if="creatingPlage"
+        id="add-plage"
+        title="Ajout des plages horaires"
+        :hideModal="stopCreatingPlage" >
+        <PlageHoraireForm
+            :festivalId="festID"
+            :dateDebut="festival.dateDebut.toISOString()"
+            :dateFin="festival.dateFin.toISOString()"
+            :close="stopCreatingPlage"
+        />
+        />
   </Modal>
 
   <Modal
@@ -311,7 +316,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       >
     <IndispoForm
         :festivalId="festID"
-        @close="stopAddIndispo"
+        :dateDebut="festival.dateDebut.toISOString()"
+        :dateFin="festival.dateFin.toISOString()"
     />
   </Modal>
 </template>
