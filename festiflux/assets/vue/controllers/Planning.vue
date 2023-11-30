@@ -166,13 +166,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     }
 
-    const stopCreatingPlage = async (tempCreneau?: Creneau, update?: Promise<any>) => {
+    const stopCreatingPlage = async (tempCreneau?: Creneau) => {
         creatingPlage.value = false;
-        if (tempCreneau && update) {
-            crx.value.push(tempCreneau as Creneau);
-            await update;
-            getPlagesHoraires(); 
-        }
     }
 
     const startAddIndispo = () => {
@@ -189,6 +184,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const updateTaches = async () => {
         await getTaches();
+    }
+    const updatePlages = async () => {
+      await getPlagesHoraires();
     }
 
     onMounted(async () => {
@@ -302,7 +300,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       id="add-plage"
       title="Ajout des plages horaires"
       :hideModal="stopCreatingPlage" >
-      <PlageHoraireForm :festivalId="festID"
+      <PlageHoraireForm :festivalId="festID" :close="stopCreatingPlage" :update-plages="updatePlages"
       />
   </Modal>
 
