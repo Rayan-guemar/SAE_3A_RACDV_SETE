@@ -75,38 +75,18 @@ window.addEventListener("click", (e) => {
 });
 
 
-
-
 const nbDispo = computed(() => {
   let nb = 0;
   props.benevoles.forEach((b) => {
     if (b.indisponibilites.length == 0){
       nb++;
     } else {
-      b.indisponibilites.forEach((i) => {
-        if (i.debut < props.tache.creneau.debut && i.fin > props.tache.creneau.fin){
-          nb++;
-        }
-      })
+      b.indisponibilites.every((i) => i.debut.getTime() > props.tache.creneau.fin.getTime() || i.fin.getTime() < props.tache.creneau.debut.getTime()) && nb++;
     }
   }); 
   
   return nb
 })
-
-
-// const nbDispo = ref(0)
-
-// let nb = 0;
-
-// benevoles.forEach((b) => {
-//   if (b.indisponibilites.length == 0){
-//     nb++;
-//   }
-// });
-
-// benevoles.filter(b => b.indisponibilites.length == 0).length
-
 
 </script>
 
