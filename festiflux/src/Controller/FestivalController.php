@@ -31,6 +31,7 @@ use App\Service\FlashMessageService;
 use App\Service\UtilisateurUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Creneaux;
+use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Repository\DemandeBenevoleRepository;
@@ -596,6 +597,12 @@ class FestivalController extends AbstractController
                 }, array_filter($preferences, function (PosteUtilisateurPreferences $pref) use ($benevole) {
                     return $pref->getUtilisateurId()->getId() == $benevole->getId();
                 }))),
+                'indisponibilites' => array_map(function (Disponibilite $dispo) {
+                    return [
+                        'debut' => $dispo->getCreneau()->getDateDebut(),
+                        'fin' => $dispo->getCreneau()->getDateFin(),
+                    ];
+                }, $benevole->getDisponibilites()->toArray()),
             ];
         }
 

@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData, ID } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -206,7 +206,8 @@ export class Backend {
 					id: o.id,
 					nom: o.nom,
 					prenom: o.prenom,
-					preferences: o.preferences
+					preferences: o.preferences,
+					indisponibilites: o.indisponibilites.map((i : any) => ({ debut: new Date(i.debut?.date), fin: new Date(i.fin?.date) }))
 				} as Benevole)
 		);
 
