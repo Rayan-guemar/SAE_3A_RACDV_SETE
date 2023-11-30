@@ -9,10 +9,9 @@ interface Props {
   AllTachesBenevole : Tache[]
   benevole: Benevole
   affected: boolean
-  charge: number
 }
 
-const {benevole, affected, charge, AllTachesBenevole} = defineProps<Props>();
+const {benevole, affected, AllTachesBenevole} = defineProps<Props>();
 
 let showChargeLine = ref(false);
 let chargeHeures = ref(0);

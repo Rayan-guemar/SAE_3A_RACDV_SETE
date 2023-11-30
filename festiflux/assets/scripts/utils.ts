@@ -53,7 +53,7 @@ export const dateDiff = (date1: Date, date2: Date): { sec: number; min: number; 
 export const calculCharge = (taches: Tache[]): number => {
 	/* parcourir la liste de taches et incrementer une variable avec le calcul de la difference entre la date debut et la date de fin du creneau de la tache */
 	let charge = 0;
-	console.log(taches);
+	console.log("taches", taches);
 	taches.forEach(tache => {
 		console.log(tache);
 		const diff = dateDiff(tache.creneau.debut, tache.creneau.fin);

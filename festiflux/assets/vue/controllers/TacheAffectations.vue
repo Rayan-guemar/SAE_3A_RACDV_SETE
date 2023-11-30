@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import {Benevole as BenevoleType, Festival, Tache} from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
-import { displayHoursMinutes } from '../../scripts/utils';
+import { calculCharge, displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
 import { emit } from 'process';
 
@@ -85,7 +85,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter(({tache}) => tache.benevoles.includes(benevole))"
+                            :AllTachesBenevole="AllTaches.filter((tache) => tache.benevoles?.includes(benevole))"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                         />
@@ -97,9 +97,8 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of unaffectedBenevoles"
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter(({tache}) => tache.benevoles.includes(benevole))"
+                            :AllTachesBenevole="AllTaches.filter((tache) => tache.benevoles?.includes(benevole))"
                             :affected="false"
-                            :charge="benevole.charge"
                             @addBenevole="addBenevole(benevole)"
                         />
                     </div>
