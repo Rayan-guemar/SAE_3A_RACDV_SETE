@@ -7,9 +7,9 @@ import Benevole from './Benevole.vue';
 import CustomSelect from './CustomSelect.vue';
 
 interface Props {
-   AllTaches: Tache[],
-   tache : Tache
-   benevoles : BenevoleType[]
+    chargesBenevole: Record<ID, number>,
+    tache : Tache
+    benevoles : BenevoleType[]
 }
 
 const getBenevoleFromID = (id:ID) => {
@@ -40,7 +40,11 @@ const sortedBenevoles = computed(() => {
     } 
     if (selectedSort.value == "charge") {
         // TODO
-        return [...props.benevoles];
+        return [...props.benevoles].sort((a, b) => {
+            const a_charge = props.chargesBenevole[a.id] || 0;
+            const b_charge = props.chargesBenevole[b.id] || 0;
+            return b_charge - a_charge;
+        })
     }
 
     return [...props.benevoles];
@@ -128,7 +132,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
+                            :charge="chargesBenevole[benevole.id]"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                             :poste="tache.poste"
@@ -141,7 +145,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of unaffectedBenevoles"
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
+                            :charge="chargesBenevole[benevole.id]"
                             :affected="false"
                             @addBenevole="addBenevole(benevole)"
                             :poste="tache.poste"

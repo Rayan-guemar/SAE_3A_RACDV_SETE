@@ -66,7 +66,11 @@ export const calculCharge = (benevole: Benevole, taches: Tache[]): number => {
 	// return Math.ceil(charge);
 
 	const BenevoleTaches = taches.filter(tache => tache.benevoles?.includes(benevole.id));
-	return BenevoleTaches.reduce((acc, tache) => acc + dateDiff(tache.creneau.debut, tache.creneau.fin).milisecond, 0);
+	console.log();
+
+	return BenevoleTaches.reduce((acc, tache) => {
+		return acc + dateDiff(tache.creneau.debut, tache.creneau.fin).hour;
+	}, 0);
 };
 
 /**
@@ -127,3 +131,23 @@ export const displayHoursMinutes = (date: Date): string => {
 export const getDateForInputAttribute = (date: Date | string): string => {
 	return new Date(date).toISOString().split('.')[0];
 };
+
+export const getColorByRatio(ratio: number): string {
+    if (ratio < 0 || ratio > 1) {
+        throw new Error("Le ratio doit être compris entre 0 et 1.");
+    }
+
+    // Définition des couleurs de départ et d'arrêt
+    const startColor: number[] = [0, 255, 0]; // Vert
+    const endColor: number[] = [255, 0, 0];   // Rouge
+
+    // Calcul de la couleur dégradée
+    const r = Math.round((1 - ratio) * startColor[0] + ratio * endColor[0]);
+    const g = Math.round((1 - ratio) * startColor[1] + ratio * endColor[1]);
+    const b = Math.round((1 - ratio) * startColor[2] + ratio * endColor[2]);
+
+    // Formatage en code hexadécimal
+    const colorHex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+
+    return colorHex;
+}

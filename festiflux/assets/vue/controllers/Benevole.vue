@@ -7,10 +7,10 @@ import { calculCharge } from '../../scripts/utils';
 
 
 interface Props {
-  AllTachesBenevole : Tache[]
-  benevole: Benevole
-  affected: boolean
-        poste: Poste
+    charge : number;
+    benevole: Benevole;
+    affected: boolean;
+    poste: Poste;
 }
 
     const props = defineProps<Props>();
@@ -24,16 +24,20 @@ interface Props {
         '#3b3a39',
         '#00C800'
     ]
-
-    let showChargeLine = ref(false);
-    let chargeHeures = ref(0);
-    chargeHeures.value = calculCharge(props.AllTachesBenevole);
+    
 </script>
 
 <template>
     <div class="benevole-element">
         <!-- <input style="position: absolute;" type="color" v-model="color"> -->
         <div class="benevole-name">{{ benevole.nom }}</div>
+        <div class="pref-pastille" :style="{
+                backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
+                color: colors[pref + 1],
+                outlineColor: colors[pref + 1]
+            }">
+        {{ charge }}h
+         </div>
         <div v-if="pref === 1 || pref == -1" class="pref-pastille" :style="{
                 backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
                 color: colors[pref + 1],

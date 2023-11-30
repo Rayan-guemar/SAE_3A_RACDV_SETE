@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
-import {Tache, Creneau, Poste, Benevole, Festival} from '../../scripts/types';
+import {Tache, Creneau, Poste, Benevole, Festival, ID} from '../../scripts/types';
 import Modal from './Modal.vue';
 import TacheAffectations from './TacheAffectations.vue';
 
 
 interface Props {
-  AllTaches: Tache[],
+  chargesBenevole: Record<ID, number>,
   tache: Tache,
   position: number,
   total: number,
@@ -110,7 +110,7 @@ window.addEventListener('click', (e) => {
         @close="() => showingAffectionMode = false" 
         :tache="tache"
         :benevoles="benevoles"
-        :AllTaches = "AllTaches"
+        :chargesBenevole = "chargesBenevole"
         @reloadBenevoles="() => $emit('reloadBenevoles')" 
       />
     </Modal>
