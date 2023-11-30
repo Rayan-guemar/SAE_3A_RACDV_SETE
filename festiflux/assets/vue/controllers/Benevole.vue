@@ -41,6 +41,8 @@ interface Props {
                 backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
                 color: colors[pref + 1],
                 outlineColor: colors[pref + 1]
+            }">
+        </div>
         <div 
             v-if="pref === 1 || pref == -1" 
             class="pref-pastille"
