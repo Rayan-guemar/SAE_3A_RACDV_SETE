@@ -230,10 +230,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <!-- <Tache /> -->
                     <Tache 
-                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
+                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())"
+                        :AllTaches="taches"
                         :benevoles="benevoles" 
-                        :tache="tacheWithPos.tache" 
-                        :modeAffectation="modeAffectation" 
+                        :tache="tacheWithPos.tache"
+                        :modeAffectation="modeAffectation"
                         :position="tacheWithPos.position" 
                         :total="tacheWithPos.total" 
                         @reloadBenevoles="async () => {
