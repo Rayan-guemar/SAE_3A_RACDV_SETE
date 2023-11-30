@@ -88,6 +88,19 @@ const nbDispo = computed(() => {
   return nb
 })
 
+const nbLike = computed(() => {
+  let nb = 0;
+  props.benevoles.forEach((b) => {
+    b.preferences.forEach((p) => {
+      if (p.poste == props.tache.poste.id){
+        if (p.degree == 1 ) nb++;
+      }
+    })
+  }); 
+  
+  return nb
+})
+
 </script>
 
 <template>
@@ -169,7 +182,7 @@ const nbDispo = computed(() => {
         {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }}
       </div>
       <div class="pastille benevole__dipo"> {{ nbDispo }} </div>
-      <div class="pastille benevole__like"></div>
+      <div class="pastille benevole__like"> {{ nbLike }} </div>
     </div>
 
   </div>
