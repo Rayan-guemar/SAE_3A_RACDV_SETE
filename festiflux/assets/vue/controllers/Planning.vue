@@ -305,6 +305,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             :dateDebut="festival.dateDebut.toISOString()"
             :dateFin="festival.dateFin.toISOString()"
             :close="stopCreatingPlage"
+            :update-plages="updatePlages"
         />
         />
   </Modal>
