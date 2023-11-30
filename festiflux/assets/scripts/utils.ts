@@ -132,22 +132,13 @@ export const getDateForInputAttribute = (date: Date | string): string => {
 	return new Date(date).toISOString().split('.')[0];
 };
 
-export const getColorByRatio(ratio: number): string {
-    if (ratio < 0 || ratio > 1) {
-        throw new Error("Le ratio doit être compris entre 0 et 1.");
-    }
+export const getColorHexByRatio = (ratio: number) => {
+	if (ratio > 1) ratio = 1;
+	if (ratio < 0) ratio = 0;
 
-    // Définition des couleurs de départ et d'arrêt
-    const startColor: number[] = [0, 255, 0]; // Vert
-    const endColor: number[] = [255, 0, 0];   // Rouge
-
-    // Calcul de la couleur dégradée
-    const r = Math.round((1 - ratio) * startColor[0] + ratio * endColor[0]);
-    const g = Math.round((1 - ratio) * startColor[1] + ratio * endColor[1]);
-    const b = Math.round((1 - ratio) * startColor[2] + ratio * endColor[2]);
-
-    // Formatage en code hexadécimal
-    const colorHex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
-
-    return colorHex;
-}
+	if (ratio === 1) return '#dd0000';
+	if (ratio > 0.75) return '#dd6400';
+	if (ratio > 0.5) return '#dddd00';
+	if (ratio > 0.25) return '#64dd00';
+	return '#00dd00';
+};

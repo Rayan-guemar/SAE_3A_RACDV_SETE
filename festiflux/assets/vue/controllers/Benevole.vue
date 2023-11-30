@@ -2,8 +2,7 @@
 
 import { computed,ref} from 'vue';
 import {Benevole, Poste, Festival, Tache} from '../../scripts/types';
-import { hexToBrighterHex } from '../../scripts/utils';
-import { calculCharge } from '../../scripts/utils';
+import { getColorHexByRatio, hexToBrighterHex } from '../../scripts/utils';
 
 
 interface Props {
@@ -32,9 +31,9 @@ interface Props {
         <!-- <input style="position: absolute;" type="color" v-model="color"> -->
         <div class="benevole-name">{{ benevole.nom }}</div>
         <div class="pref-pastille" :style="{
-                backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
-                color: colors[pref + 1],
-                outlineColor: colors[pref + 1]
+                backgroundColor: hexToBrighterHex(getColorHexByRatio(charge/30), 0.2),
+                color: getColorHexByRatio(charge/30),
+                outlineColor: getColorHexByRatio(charge/30)
             }">
         {{ charge }}h
          </div>
