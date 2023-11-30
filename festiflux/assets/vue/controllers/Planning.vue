@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { dateDiff } from '../../scripts/utils';
+    import { calculCharge, dateDiff } from '../../scripts/utils';
     import { VNodeRef, ref, onMounted, computed } from 'vue';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau } from '../../scripts/types';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -45,6 +45,14 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
    
     const benevoles = ref<Benevole[]>([]);
+
+    const chargesBenevole = computed(() => {
+        const charges: Record<ID, number> = {};
+        for (const benevole of benevoles.value) {
+            charges[benevole.id] = calculCharge(benevole, taches.value);
+        }
+        return charges;
+    })
 
     const loading = ref(true);
     const creatingTache = ref(false);
@@ -236,7 +244,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <!-- <Tache /> -->
                     <Tache 
                         v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())"
-                        :AllTaches="taches"
+                        :chargesBenevole="chargesBenevole"
                         :benevoles="benevoles" 
                         :tache="tacheWithPos.tache"
                         :modeAffectation="modeAffectation"
