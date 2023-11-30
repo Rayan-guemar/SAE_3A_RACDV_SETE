@@ -576,6 +576,10 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+
+    & > div {
+        padding: 2px;
+    }
     
     .benevole__number{
         background-color: black;

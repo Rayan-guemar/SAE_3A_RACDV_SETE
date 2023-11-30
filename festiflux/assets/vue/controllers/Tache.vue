@@ -82,6 +82,12 @@ const nbDispo = computed(() => {
   props.benevoles.forEach((b) => {
     if (b.indisponibilites.length == 0){
       nb++;
+    } else {
+      b.indisponibilites.forEach((i) => {
+        if (i.debut < props.tache.creneau.debut && i.fin > props.tache.creneau.fin){
+          nb++;
+        }
+      })
     }
   }); 
   
