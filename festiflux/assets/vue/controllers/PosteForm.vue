@@ -149,9 +149,9 @@ const dislike = async () => {
 
             <input :readonly="!isOrgaOrResp" type="text" class="poste-name" :class="{ 'missing-field': missingName, 'becoming-red': becomingRed }"
                 v-model="currentPoste.nom" placeholder="ex: Accueil artiste" @input="() => missingName = false" >
-            <div class="color-wrapper">
+            <div v-if="isOrgaOrResp" class="color-wrapper">
                 <div>Couleur :</div>
-                <input :readonly="!isOrgaOrResp" type="color" v-model="currentPoste.couleur">
+                <input type="color" v-model="currentPoste.couleur">
             </div>
             <textarea :readonly="!isOrgaOrResp" v-model="currentPoste.description" :placeholder="isOrgaOrResp ? 'ex: Accueillir les artistes' : 'Il n\'y a pas de description pour ce poste'"></textarea>
 
@@ -167,7 +167,7 @@ const dislike = async () => {
             <div class="pointer poste-action cancel-poste" @click="closePoste">Annuler</div>
         </div>
 
-        <div class="task-preview-wrapper">
+        <div v-if="isOrgaOrResp" class="task-preview-wrapper">
             <h4 class="top-heading">Aperçu d'une tache</h4>
             <div class="task-preview" :style="{
                 'border-color': currentPoste.couleur,
