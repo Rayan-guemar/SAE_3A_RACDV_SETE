@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, IndispoCreateData, ID, Preference } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -59,6 +59,26 @@ export class Backend {
 				description: poste.description,
 				couleur: poste.couleur
 			})) || ([] as Poste[])
+		);
+	}
+
+	/**
+	 * Récupère les benevoles liés à un festival spécifique.
+	 * @param {number} festivalId - L'identifiant du festival.
+	 * @returns {Promise<Benevole[]>} - Une promesse qui résout avec les données des benevoles.
+	 */
+	static async fetchBenevoles(festivalId: number) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_all_benevole', {
+			id: festivalId
+		});
+		const res = await Backend.#get(URL);
+		return (
+			res.benevoles?.map((benevole: Benevole) => ({
+				id: benevole.id,
+				nom: benevole.nom,
+				prenom: benevole.prenom
+			})) || []
 		);
 	}
 
@@ -177,7 +197,7 @@ export class Backend {
 		// @ts-ignore
 		const URL = Routing.generate('app_festival_tache', { id: festivalId });
 		const data = await Backend.#get(URL);
-		
+
 		const res = [...data].map(
 			(o: any) =>
 				({
@@ -207,7 +227,7 @@ export class Backend {
 					nom: o.nom,
 					prenom: o.prenom,
 					preferences: o.preferences,
-					indisponibilites: o.indisponibilites.map((i : any) => ({ debut: new Date(i.debut?.date), fin: new Date(i.fin?.date) }))
+					indisponibilites: o.indisponibilites.map((i: any) => ({ debut: new Date(i.debut?.date), fin: new Date(i.fin?.date) }))
 				} as Benevole)
 		);
 
@@ -225,10 +245,14 @@ export class Backend {
 
 	static async getICS(festId: ID): Promise<any> {
 		// @ts-ignore
-		const URL = Routing.generate('app_send_icsFile', { idFest: festId });
+		const URL = Routing.generate('app_icalLink', { idFest: festId });
 		try {
-			await fetch(URL);
-			alert('Votre allez recevoir un mail avec en pj le fichier ics.');
+			const resp = await fetch(URL);
+			const data = await resp.blob();
+			let a = document.createElement('a');
+			a.href = window.URL.createObjectURL(data);
+			a.download = 'Calendrier_Benevole.ics';
+			a.click();
 		} catch (error) {
 			console.log(error);
 		}
@@ -247,8 +271,8 @@ export class Backend {
 		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId });
 		const data = await Backend.#get(URL);
 		console.log(data);
-		
-		const res = [...data].map((o: any) => (o as Preference));
+
+		const res = [...data].map((o: any) => o as Preference);
 
 		return res;
 	}

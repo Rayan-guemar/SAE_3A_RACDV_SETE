@@ -32,6 +32,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         isOrgaOrResp: props.isOrgaOrResp,
     })
 
+    
+
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
     const days = Array.from({ length: numberOfDays }, (_, i) => new Date(festival.value.dateDebut.getFullYear(), festival.value.dateDebut.getMonth(), festival.value.dateDebut.getDate() + i));
     const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
