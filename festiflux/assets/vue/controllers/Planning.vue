@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { dateDiff } from '../../scripts/utils';
     import { VNodeRef, ref, onMounted, computed } from 'vue';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau } from '../../scripts/types';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -45,6 +45,10 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
    
     const benevoles = ref<Benevole[]>([]);
+
+    const chargesBenvole = computed(() => {
+        
+    })
 
     const loading = ref(true);
     const creatingTache = ref(false);
