@@ -18,7 +18,7 @@
 			<div class="info-box-wrapper">
 			<div class="info-box">
 				<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == false %} 
+				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
 						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
 					 {% else %}
 						src="{{ asset("uploads/user/anonyme.png") }}"
