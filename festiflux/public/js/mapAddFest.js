@@ -8,7 +8,6 @@ function addressAutocomplete(containerElement) {
 
     adresse.addEventListener("input", function (e) {
         var currentValue = adresse.value;
-        // console.log(currentValue);
         // Cancel previous request promise
         if (currentPromiseReject) {
             currentPromiseReject({

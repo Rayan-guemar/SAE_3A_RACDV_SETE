@@ -99,16 +99,16 @@ export const getDateFromLocale = (date_local: string | Date) => {
 	return new Date(res);
 };
 
-export const hexToBrighterHex = (hex: string): string => {
+export const hexToBrighterHex = (hex: string, percent: number = 0.1): string => {
 	hex = hex.replace(/^\s*#|\s*$/g, '');
 
 	let r = parseInt(hex.substring(0, 2), 16),
 		g = parseInt(hex.substring(2, 4), 16),
 		b = parseInt(hex.substring(4, 6), 16);
 
-	r += Math.round((255 - r) * 0.9);
-	g += Math.round((255 - g) * 0.9);
-	b += Math.round((255 - b) * 0.9);
+	r += Math.round((255 - r) * (1 - percent));
+	g += Math.round((255 - g) * (1 - percent));
+	b += Math.round((255 - b) * (1 - percent));
 
 	return 'rgb(' + Math.min(r, 255) + ',' + Math.min(g, 255) + ',' + Math.min(b, 255) + ')';
 };

@@ -55,11 +55,6 @@ const showAffectionMode = () => {
   showingAffectionMode.value = true;
 }
 
-const log = () => {
-  console.log('showingInfo', showingInfo.value);
-  console.log('modeAffectation', modeAffectation);
-}
-
 window.addEventListener('click', (e) => {
   if (modeAffectation) {
     return;
@@ -68,8 +63,6 @@ window.addEventListener('click', (e) => {
     if (task.value && task.value.contains(e.target as Node) || modeAffectation) {
       showingInfo.value = true;
     } else {
-      console.log('click outside', modeAffectation);
-      
       showingInfo.value = false;
     }
   }
