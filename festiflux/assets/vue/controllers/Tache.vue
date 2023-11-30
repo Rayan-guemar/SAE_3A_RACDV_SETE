@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
 import {Tache, Creneau, Poste, Benevole, Festival} from '../../scripts/types';
 import Modal from './Modal.vue';
