@@ -54,7 +54,7 @@
 	</div>	
 
 		<div class="btn-container">
-			{% if isResponsable or isOrganisateur %}
+			{% if isResponsable or isOrganisateur or isBenevole %}
 				<div class="button-benevole">
 					<a href={{ path("app_festival_postes", {'id' : festival.getId()} ) }} class="btn btn-primary">Postes du festival</a>
 				</div>
