@@ -1,14 +1,22 @@
 <script setup lang="ts" >
 import { computed, ref } from 'vue';
-import { Benevole as BenevoleType, Tache } from '../../scripts/types';
+import { Benevole as BenevoleType, Tache, ID } from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
 import { displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
-import { emit } from 'process';
+import CustomSelect from './CustomSelect.vue';
 
 interface Props {
    tache : Tache
    benevoles : BenevoleType[]
+}
+
+const getBenevoleFromID = (id:ID) => {
+    return props.benevoles.find((b) => b.id == id);
+}
+
+const getBenevoleFromIDs = (ids: ID[]) => {
+    return ids.map(getBenevoleFromID).filter(id => id) as (BenevoleType )[];
 }
 
 const props = defineProps<Props>();
@@ -17,37 +25,55 @@ const loading = ref(false);
 
 const emits = defineEmits(['close', 'reloadBenevoles']);
 
-let defaultAffected = [...(props.tache.benevoles?.map(b => b.id) ?? [])];
+let defaultAffected = getBenevoleFromIDs(props.tache.benevoles || []);
+const selectedSort = ref<"preference" | "charge" | "">("");
+
+const sortedBenevoles = computed(() => {
+
+    if (selectedSort.value == "preference") {
+        return [...props.benevoles].sort((a, b) => {
+            const a_degree = a.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
+            const b_degree = b.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
+            return b_degree - a_degree;
+        });
+    } 
+    if (selectedSort.value == "charge") {
+        // TODO
+        return [...props.benevoles];
+    }
+
+    return [...props.benevoles];
+})
 
 const affectedBenevoles = computed(() => {
-    return props.tache.benevoles?.filter(b => props.benevoles.map(b => b.id).includes(b.id)) ?? [];
+    return sortedBenevoles.value.filter(b => props.tache.benevoles?.includes(b.id));
 })
 
 const unaffectedBenevoles = computed(() => {
-    return props.benevoles?.filter(b => !props.tache.benevoles?.map(b => b.id).includes(b.id)) ?? [];
+    // return getBenevoleFromIDs(props.benevoles?.filter(b => affectedBenevoles.value.includes(b.id)).map(b => b.id) || []) ?? [];
+    return sortedBenevoles.value.filter(b => !props.tache.benevoles?.includes(b.id)) || [];
 })
 
 const addBenevole = (benevole: BenevoleType) => {
-    props.tache.benevoles?.push(benevole);
+    props.tache.benevoles?.push(benevole.id);
 }
 
 const removeBenevole = (benevole: BenevoleType) => {
-    props.tache.benevoles = props.tache.benevoles?.filter(b => b.id != benevole.id);
+    props.tache.benevoles = props.tache.benevoles?.filter(id => id != benevole.id);
 }
 
 const clickable = computed(() => {
-    const affectedId = affectedBenevoles.value.map(b => b.id);
-    return affectedId.sort().join() != defaultAffected.sort().join();
+    return affectedBenevoles.value.map(b => b.id).sort().join() != defaultAffected.map(b => b.id).sort().join();
 })
 
 const save = async () => {
     if (props.tache.id) {
         loading.value = true;
-        const resp = await Backend.saveBenevole(props.tache.id, props.tache.benevoles ?? [],  props.benevoles?.filter(b => !props.tache.benevoles?.map(b => b.id).includes(b.id)) ?? []);
+        const resp = await Backend.saveBenevole(props.tache.id, affectedBenevoles?.value.map(b => b.id) || [], unaffectedBenevoles.value.map(b => b.id) || []);
         
         if (resp.success) {
             emits('reloadBenevoles');
-            defaultAffected = [...(props.tache.benevoles?.map(b => b.id) ?? [])];
+            defaultAffected = getBenevoleFromIDs(props.tache.benevoles || []);
             loading.value = false;
             emits('close');
         }
@@ -76,6 +102,23 @@ const save = async () => {
                     <h5 v-if="tache.lieu">Lieu :</h5>
                     <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
                 </div>
+                <div>
+                    <CustomSelect
+                        class="select-sort"
+                        :options="[
+                            {label: 'Ne pas trier', value: ''},
+                            {label: 'Trier par charge', value: 'charge'},
+                            {label: 'Trier par préférences', value: 'preference'},
+                        ]"
+                        :selected="selectedSort"
+                        @select="selectedSort = $event"
+                    />
+                    <!-- <select class="select-sort" v-model="selectedSort">
+                        <option value="">Ne pas trier</option>
+                        <option value="charge">Trier par charge</option>
+                        <option value="preference">Trier par préférences</option>
+                    </select> -->
+                </div>
             </div>
             <div class="benevole-lists">
                 <div class="affected">
@@ -86,6 +129,7 @@ const save = async () => {
                             :benevole="benevole" 
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
+                            :poste="tache.poste"
                         />
                     </div>
                 </div>
@@ -97,6 +141,7 @@ const save = async () => {
                             :benevole="benevole" 
                             :affected="false" 
                             @addBenevole="addBenevole(benevole)"
+                            :poste="tache.poste"
                         />
                     </div>
                 </div>

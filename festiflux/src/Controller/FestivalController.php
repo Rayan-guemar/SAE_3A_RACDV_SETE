@@ -588,14 +588,14 @@ class FestivalController extends AbstractController
                 'id' => $benevole->getId(),
                 'nom' => $benevole->getNom(),
                 'prenom' => $benevole->getPrenom(),
-                'preferences' => array_map(function (PosteUtilisateurPreferences $pref) {
+                'preferences' => array(...array_map(function (PosteUtilisateurPreferences $pref) {
                     return [
                         'poste' => $pref->getPosteId()->getId(),
                         'degree' => $pref->getPreferencesDegree(),
                     ];
                 }, array_filter($preferences, function (PosteUtilisateurPreferences $pref) use ($benevole) {
                     return $pref->getUtilisateurId()->getId() == $benevole->getId();
-                })),
+                }))),
             ];
         }
 
@@ -828,11 +828,7 @@ class FestivalController extends AbstractController
                     'benevole_affecte' => $el->getBenevoleAffecte()->count(),
                     'id' => $el->getId(),
                     'benevoles' => array_map(function (Utilisateur $u) use ($el) {
-                        return [
-                            'id' => $u->getId(),
-                            'nom' => $u->getNom(),
-                            'prenom' => $u->getPrenom(),
-                        ];
+                        return $u->getId();
                     }, $el->getBenevoleAffecte()->toArray())
                 ];
             }, $p->getTaches()->toArray()));
@@ -1005,7 +1001,7 @@ class FestivalController extends AbstractController
         return $this->redirectToRoute('app_user_festivals');
     }
 
-    #[Route('/festival/{id}/postes', name: 'app_festival_display_postes')]
+    #[Route('/festival/{id}/postesPref', name: 'app_festival_display_postes')]
     public function displayPostes(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
 
@@ -1019,7 +1015,8 @@ class FestivalController extends AbstractController
 
         return $this->render('utilisateur/liked_postes.html.twig', [
             'postes' => $postes,
-            'utilisateur' => $u
+            'utilisateur' => $u,
+            'preferences' => $pref,
         ]);
     }
 }
