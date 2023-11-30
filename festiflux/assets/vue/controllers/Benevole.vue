@@ -1,13 +1,17 @@
 <script setup lang="ts">
-    import { computed, ref } from 'vue';
-    import { Benevole, Poste } from '../../scripts/types';
-    import { hexToBrighterHex } from '../../scripts/utils';
 
-    interface Props {
-        benevole: Benevole
-        affected: boolean
+import { computed,ref} from 'vue';
+import {Benevole, Poste, Festival, Tache} from '../../scripts/types';
+import { hexToBrighterHex } from '../../scripts/utils';
+import { calculCharge } from '../../scripts/utils';
+
+
+interface Props {
+  AllTachesBenevole : Tache[]
+  benevole: Benevole
+  affected: boolean
         poste: Poste
-    }
+}
 
     const props = defineProps<Props>();
     const pref = computed(() => {

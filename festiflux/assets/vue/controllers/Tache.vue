@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
-import { Tache, Creneau, Poste, Benevole } from '../../scripts/types';
+import {Tache, Creneau, Poste, Benevole, Festival} from '../../scripts/types';
 import Modal from './Modal.vue';
 import TacheAffectations from './TacheAffectations.vue';
 
 
 interface Props {
+  AllTaches: Tache[],
   tache: Tache,
   position: number,
   total: number,
@@ -14,7 +15,7 @@ interface Props {
   benevoles: Benevole[],
 }
 
-const {tache, position, total, modeAffectation} = defineProps<Props>(); 
+const {tache, position, total, modeAffectation} = defineProps<Props>();
 
 
 const posteToColor = (poste:Poste) => {
@@ -107,7 +108,9 @@ window.addEventListener('click', (e) => {
     >
       <TacheAffectations 
         @close="() => showingAffectionMode = false" 
-        :tache="tache" :benevoles="benevoles" 
+        :tache="tache"
+        :benevoles="benevoles"
+        :AllTaches = "AllTaches"
         @reloadBenevoles="() => $emit('reloadBenevoles')" 
       />
     </Modal>

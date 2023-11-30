@@ -230,10 +230,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <!-- <Tache /> -->
                     <Tache 
-                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
+                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())"
+                        :AllTaches="taches"
                         :benevoles="benevoles" 
-                        :tache="tacheWithPos.tache" 
-                        :modeAffectation="modeAffectation" 
+                        :tache="tacheWithPos.tache"
+                        :modeAffectation="modeAffectation"
                         :position="tacheWithPos.position" 
                         :total="tacheWithPos.total" 
                         @reloadBenevoles="async () => {
@@ -298,12 +299,16 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         />
     </Modal>
   <Modal
-      v-if="creatingPlage"
-      id="add-plage"
-      title="Ajout des plages horaires"
-      :hideModal="stopCreatingPlage" >
-      <PlageHoraireForm :festivalId="festID"
-      />
+        v-if="creatingPlage"
+        id="add-plage"
+        title="Ajout des plages horaires"
+        :hideModal="stopCreatingPlage" >
+        <PlageHoraireForm 
+            :festivalId="festID" 
+            :dateDebut="festival.dateDebut.toISOString()"
+            :dateFin="festival.dateFin.toISOString()" 
+            @close="stopCreatingPlage" />
+        />
   </Modal>
 
   <Modal
@@ -313,6 +318,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       >
     <IndispoForm
         :festivalId="festID"
+        :dateDebut="festival.dateDebut.toISOString()"
+        :dateFin="festival.dateFin.toISOString()" 
         @close="stopAddIndispo"
     />
   </Modal>
