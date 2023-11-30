@@ -238,7 +238,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <Tache 
                         v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
                         :benevoles="benevoles" 
-                        :tache="tacheWithPos.tache" 
+                        :tache="tacheWithPos.tache"
+                        :festID="festival.festID"
                         :modeAffectation="modeAffectation" 
                         :position="tacheWithPos.position" 
                         :total="tacheWithPos.total" 

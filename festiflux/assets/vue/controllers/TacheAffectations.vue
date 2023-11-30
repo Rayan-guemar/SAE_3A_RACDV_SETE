@@ -1,12 +1,13 @@
 <script setup lang="ts" >
 import { computed, ref } from 'vue';
-import { Benevole as BenevoleType, Tache } from '../../scripts/types';
+import {Benevole as BenevoleType, Festival, Tache} from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
 import { displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
 import { emit } from 'process';
 
 interface Props {
+   festID: number
    tache : Tache
    benevoles : BenevoleType[]
 }
@@ -83,7 +84,8 @@ const save = async () => {
                     <div class="list">
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
-                            :benevole="benevole" 
+                            :benevole="benevole"
+                            :festID = "festID"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                         />
@@ -93,9 +95,11 @@ const save = async () => {
                     <h4>Bénévoles non affectés</h4>
                     <div class="list">
                         <Benevole 
-                            v-for="benevole of unaffectedBenevoles" 
-                            :benevole="benevole" 
-                            :affected="false" 
+                            v-for="benevole of unaffectedBenevoles"
+                            :benevole="benevole"
+                            :festID = "festID"
+                            :affected="false"
+                            :charge="benevole.charge"
                             @addBenevole="addBenevole(benevole)"
                         />
                     </div>
