@@ -3,9 +3,12 @@
 import {Creneau, Festival, Poste, TacheCreateData} from "../../scripts/types";
 import {ref} from "vue";
 import {Backend} from "../../scripts/Backend";
+import { getDateForInputAttribute } from "../../scripts/utils";
 
 type Props = {
   festivalId: number;
+  dateDebut: string;
+  dateFin: string;
 }
 
 const emit = defineEmits<{
@@ -19,9 +22,40 @@ const creneau = ref<Creneau>({
   fin: new Date()
 })
 
+const start = ref<HTMLInputElement>();
+const end = ref<HTMLInputElement>();
+
+function changeHandlerStart() {
+  if (!start.value || !end.value) return;
+
+  if (start.value.value) {;
+    end.value.setAttribute("min", start.value.value);
+  } else {    
+    end.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
+    end.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
+  }
+}
+
+function changeHandlerEnd() {
+  if (!start.value || !end.value) return;
+
+  if (end.value.value) {
+    start.value.setAttribute("max", end.value.value);
+  } else {
+    start.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
+    start.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
+  }
+}
+
 
 
 const createCreneau = async (e: Event) => {
+  if (!creneau.value.debut || !creneau.value.fin) return;
+
+  if (creneau.value.debut >= creneau.value.fin) {
+    alert("La date de début doit être avant la date de fin");
+    return;
+  }
   await Backend.addHeureDepartFin(props.festivalId, creneau.value);
 }
 
@@ -31,11 +65,11 @@ const createCreneau = async (e: Event) => {
     <h2>Ajout d'une plage horaire</h2>
     <div class="flex-column flex-align-center">
       <label for="start-creneau">Debut du créneaux</label>
-      <input name="start" id="start-creneau" type="datetime-local" v-model="creneau.debut">
+      <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart">
     </div>
     <div class="flex-column flex-align-center">
       <label for="end-creneau">Fin du créneaux</label>
-      <input name="end" id="end-creneau" type="datetime-local" v-model="creneau.fin">
+      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" >
     </div>
     <div class="flex-column flex-align-center">
       <input type="submit" value="Ajouter">

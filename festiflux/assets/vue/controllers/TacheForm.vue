@@ -2,7 +2,7 @@
 import {ref} from 'vue';
 import {Festival, Poste, TacheCreateData} from '../../scripts/types';
 import {Backend} from '../../scripts/Backend';
-import { getDateFromLocale } from '../../scripts/utils';
+import { getDateFromLocale, getDateForInputAttribute } from '../../scripts/utils';
 
 type Props = {
   festID: number;
@@ -29,16 +29,25 @@ const startTache = ref<HTMLInputElement>();
 const endTache = ref<HTMLInputElement>();
 
 function changeHandlerStart() {
-  startTache.value?.setAttribute("value", startTache.value.value);
-  if (startTache.value && endTache.value) {
+
+  if (!startTache.value || !endTache.value) return;
+
+  if (startTache.value.value) {;
     endTache.value.setAttribute("min", startTache.value.value);
+  } else {    
+    endTache.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
+    endTache.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
   }
 }
 
 function changeHandlerEnd() {
-  endTache.value?.setAttribute("value", endTache.value.value);
-  if (startTache.value && endTache.value) {
+  if (!startTache.value || !endTache.value) return;
+
+  if (endTache.value.value) {
     startTache.value.setAttribute("max", endTache.value.value);
+  } else {
+    startTache.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
+    startTache.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
   }
 }
 
@@ -51,6 +60,12 @@ const createTache = async (e: Event) => {
     const nbBenevole = +(formData.get('nombre_benevole') + "");
     const posteId = formData.get('poste') + "";
 
+    if (debut >= fin) {
+      alert("La date de début doit être avant la date de fin");
+      return;
+    }
+
+
     const tache: TacheCreateData = {
         description: description,
         nombre_benevole: nbBenevole,
@@ -60,7 +75,6 @@ const createTache = async (e: Event) => {
         lieu: formData.get('creneau-lieu') + "",
         adresse: formData.get('creneau-lieu-address') + ""
     };
-
     props.close(tache);
     await Backend.addTache(festival.value.festID, tache);
     props.updateTaches();
@@ -88,11 +102,11 @@ const createTache = async (e: Event) => {
       </div>
       <div class="flex-column flex-align-center">
         <label for="start-creneau">Debut du créneaux</label>
-        <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :value="festival.dateDebut" @change="changeHandlerStart">
+        <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateDebut" @change="changeHandlerStart">
       </div>
       <div class="flex-column flex-align-center">
         <label for="end-creneau">Fin du créneaux</label>
-        <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :value="festival.dateFin" @change="changeHandlerEnd">
+        <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateFin" @change="changeHandlerEnd">
       </div>
 
       <div class="flex-column flex-align-center">

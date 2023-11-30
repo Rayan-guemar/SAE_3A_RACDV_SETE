@@ -232,3 +232,11 @@
   color: $blue-primary;
   cursor: pointer;
 }
+
+.charge-line {
+  display: none;
+}
+
+.benevole-element:hover .charge-line {
+  display: block;
+}
