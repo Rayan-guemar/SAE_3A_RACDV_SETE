@@ -13,6 +13,7 @@ use App\Form\ModifierProfilType;
 use App\Repository\FestivalRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
+use App\Entity\PosteUtilisateurPreferences;
 use App\Repository\TacheRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
@@ -210,77 +211,43 @@ class UtilisateurController extends AbstractController
     }
 
 
-    #[Route('/user/poste/{idPoste}/adore', name: 'app_user_AdorePoste_add', options: ["expose" => true], methods: ['GET'])]
-    public function user_AdorePoste_add(int $idPoste, UtilisateurRepository $user, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
+    #[Route('/user/poste/{id}/pref', name: 'app_user_add_pref_poste', options: ["expose" => true], methods: ['POST'])]
+    public function user_AdorePoste_add(#[MapEntity] Poste $poste, Request $request, UtilisateurRepository $user, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $uu): Response
     {
 
         $u = $this->getUser();
+
         if (!$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
         }
 
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
+        $festival = $poste->getFestival();
+        $uu->isBenevole($u, $festival);
 
-        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
-        if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
+        $prefs = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $poste, "UtilisateurId" => $u]));
 
-        if (!$p) {
-            return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
+        $pref;
+
+        if (count($prefs) > 0) {
+            $pref = $prefs[0];
+        } else {
+            $pref = new PosteUtilisateurPreferences();
+            $pref->setPosteId($poste);
+            $pref->setUtilisateurId($u);    
         }
-        $p->setPreferencesDegree(1);
 
-        $em->persist($p);
+        $degree = $request->toArray()['degree'];
+
+        if ($degree !== 0 && $degree !== 1 && $degree !== -1) {
+            return new JsonResponse(['error' => 'degré de préférence non fourni'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $pref->setPreferencesDegree($degree);
+
+        $em->persist($pref);
         $em->flush();
 
-        return new JsonResponse(['success' => "mention j'adore ajoutée"], Response::HTTP_ACCEPTED);
-    }
-
-    #[Route('/user/poste/{idPoste}/liked', name: 'app_user_likedPoste_add', options: ["expose" => true], methods: ['GET'])]
-    public function user_likedPoste_add(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
-    {
-
-        $u = $this->getUser();
-        if (!$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-        }
-
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
-
-        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
-        if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
-
-        if (!$p) {
-            return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
-        }
-        $p->setPreferencesDegree(0);
-
-        $em->persist($p);
-        $em->flush();
-        return new JsonResponse(['success' => "mention j'aime ajoutée"], Response::HTTP_ACCEPTED);
-    }
-
-    #[Route('/user/poste/{idPoste}/disliked', name: 'app_user_likedPoste_remove', options: ["expose" => true], methods: ['GET'])]
-    public function user_likedPoste_remove(int $idPoste, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, UtilisateurRepository $user, PosteRepository $posteRepository, EntityManagerInterface $em, FlashMessageService $fm): Response
-    {
-
-        $u = $this->getUser();
-        if (!$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-        }
-
-        $p = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $idPoste, "UtilisateurId" => $u]))[0];
-
-        if (!$u) throw $this->createNotFoundException("L'utilisateur n'existe pas");
-        if (!$p) throw $this->createNotFoundException("Le poste n'existe pas pour ce bénévole");
-
-        if (!$p) {
-            return new JsonResponse(['error' => "vous n'êtes pas bénévole pour le festival au quel appartiens ce post"], Response::HTTP_FORBIDDEN);
-        }
-        $p->setPreferencesDegree(-1);
-
-        $em->persist($p);
-        $em->flush();
-        return new JsonResponse(['success' => "mention j'aime annulée"], Response::HTTP_ACCEPTED);
+        return new JsonResponse(['success' => "Mention ajoutée!"], Response::HTTP_ACCEPTED);
     }
 
     #[Route('/user/{id}/task/{idTask}/remove', name: 'app_user_task_remove', options: ['expose' => true])]
@@ -361,5 +328,39 @@ class UtilisateurController extends AbstractController
             }
             throw $th;
         }
+    }
+
+    #[Route('/festival/{id}/preferences', name: 'app_festival_get_preferences', options: ['expose' => true], methods: ['GET'])]
+    public function getPreferences(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response
+    {
+        $u = $this->getUser();
+        $f = $festival->getId();
+
+        if (!$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+        }
+
+        $isBenevole = $user->isBenevole($u, $festival);
+
+        if (!$isBenevole) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+        }
+
+        if (!$f) {
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }
+
+        $prefs = $u->getPosteUtilisateurPreferences()->filter(function ($p) use ($festival) {
+            return $p->getPosteId()->getFestival() === $festival;
+        });
+
+        $prefs = array_map(function ($p) {
+            return [
+                'poste' => $p->getPosteId()->getId(),
+                'degree' => $p->getPreferencesDegree(),
+            ];
+        }, $prefs->toArray());
+
+        return new JsonResponse(array(...$prefs), Response::HTTP_OK);
     }
 }

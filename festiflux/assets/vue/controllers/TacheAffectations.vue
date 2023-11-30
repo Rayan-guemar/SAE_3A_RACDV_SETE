@@ -113,11 +113,6 @@ const save = async () => {
                         :selected="selectedSort"
                         @select="selectedSort = $event"
                     />
-                    <!-- <select class="select-sort" v-model="selectedSort">
-                        <option value="">Ne pas trier</option>
-                        <option value="charge">Trier par charge</option>
-                        <option value="preference">Trier par préférences</option>
-                    </select> -->
                 </div>
             </div>
             <div class="benevole-lists">
