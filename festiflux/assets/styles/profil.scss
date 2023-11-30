@@ -25,8 +25,9 @@
   padding-bottom: 100px;
 
   img {
-    max-width: 250px;
-    max-height: 250px;
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50px;
   }
 
   .info-box {
@@ -45,6 +46,7 @@
   left: 50%;
   top: 0;
   transform: translate(-50%, 10%);
+  padding: 0 15px;
 
 }
 
@@ -121,13 +123,13 @@ div.biographie {
 @media screen and (max-width: 450px) {
 
   #img-profil {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 75%;
 
   }
 
   .image_profile {
-    margin-top: -40px;
+    display: flex;
+    justify-content: center;
   }
 
   .info-border {

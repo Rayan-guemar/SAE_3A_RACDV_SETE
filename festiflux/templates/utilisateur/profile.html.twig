@@ -18,10 +18,10 @@
 			<div class="info-box-wrapper">
 			<div class="info-box">
 				<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
-				            src="{{ asset("uploads/Path-of-Exile-Logo-6522d2462da93.png") }}" alt=""
+				<img id="img-profil" {% if utilisateur.nomphotoprofil == false %} 
+						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
 					 {% else %}
-							src="{{ asset("uploads/"~utilisateur.nomPhotoProfil~"") }}"
+						src="{{ asset("uploads/user/anonyme.png") }}"
 					 {% endif %}>
 			    </div>
 				<div class="info-row">
