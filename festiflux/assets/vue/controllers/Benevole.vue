@@ -1,32 +1,24 @@
 <script setup lang="ts">
 
-import {onMounted, ref} from 'vue';
-import {Benevole, Festival} from '../../scripts/types';
-import {Backend} from "../../scripts/Backend";
+import {ref} from 'vue';
+import {Benevole, Festival, Tache} from '../../scripts/types';
+import { calculCharge } from '../../scripts/utils';
+
 
 interface Props {
-  festID: number;
+  AllTachesBenevole : Tache[]
   benevole: Benevole
   affected: boolean
   charge: number
 }
 
-const {benevole, affected, charge, festID} = defineProps<Props>();
+const {benevole, affected, charge, AllTachesBenevole} = defineProps<Props>();
 
 let showChargeLine = ref(false);
 let chargeHeures = ref(0);
 
-const getCharge = async () => {
-  const res = await Backend.getCharge(festID, benevole.id);
-  if (res) {
-    chargeHeures.value = res;
-  }
-  return res;
-}
+chargeHeures.value = calculCharge(AllTachesBenevole);
 
-onMounted(async () => {
-  await getCharge();
-})
 
 </script>
 

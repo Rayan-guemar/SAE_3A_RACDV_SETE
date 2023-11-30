@@ -7,7 +7,7 @@ import TacheAffectations from './TacheAffectations.vue';
 
 
 interface Props {
-  festID: number;
+  AllTaches: Tache[],
   tache: Tache,
   position: number,
   total: number,
@@ -15,7 +15,7 @@ interface Props {
   benevoles: Benevole[],
 }
 
-const {tache, position, total, modeAffectation} = defineProps<Props>(); 
+const {tache, position, total, modeAffectation} = defineProps<Props>();
 
 
 const posteToColor = (poste:Poste) => {
@@ -117,7 +117,7 @@ window.addEventListener('click', (e) => {
         @close="() => showingAffectionMode = false" 
         :tache="tache"
         :benevoles="benevoles"
-        :festID = "festID"
+        :AllTaches = "AllTaches"
         @reloadBenevoles="() => $emit('reloadBenevoles')" 
       />
     </Modal>

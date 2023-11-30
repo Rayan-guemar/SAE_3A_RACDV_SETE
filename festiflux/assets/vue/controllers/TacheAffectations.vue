@@ -7,7 +7,7 @@ import Benevole from './Benevole.vue';
 import { emit } from 'process';
 
 interface Props {
-   festID: number
+   AllTaches: Tache[],
    tache : Tache
    benevoles : BenevoleType[]
 }
@@ -85,7 +85,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
                             :benevole="benevole"
-                            :festID = "festID"
+                            :AllTachesBenevole="AllTaches.filter(({tache}) => tache.benevoles.includes(benevole))"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                         />
@@ -97,7 +97,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of unaffectedBenevoles"
                             :benevole="benevole"
-                            :festID = "festID"
+                            :AllTachesBenevole="AllTaches.filter(({tache}) => tache.benevoles.includes(benevole))"
                             :affected="false"
                             :charge="benevole.charge"
                             @addBenevole="addBenevole(benevole)"

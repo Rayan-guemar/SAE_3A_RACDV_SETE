@@ -363,18 +363,4 @@ class UtilisateurController extends AbstractController
         }
     }
 
-    #[Route('/user/{id}/festival/{idFest}/charge', name: 'app_user_work_hours', options: ['expose' => true], methods: ['GET'])]
-    public function user_work_hours(#[MapEntity(id: 'id')] Utilisateur $utilisateur, #[MapEntity(id: 'idFest')] Festival $festival,UtilisateurUtils $utils): JsonResponse
-    {
-        $charge = 0;
-        if ($utils->isBenevole($utilisateur, $festival)) {
-            $taches = $utilisateur->getTaches();
-            foreach ($taches as $t) {
-                if ($t->getPoste()->getFestival() === $festival) {
-                    $charge += ($t->getCrenaux()->getDateFin()->getTimestamp() - $t->getCrenaux()->getDateDebut()->getTimestamp())/3600;
-                }
-            }
-        }
-        return new JsonResponse(round($charge), Response::HTTP_OK);
-    }
 }

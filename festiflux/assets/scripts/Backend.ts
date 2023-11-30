@@ -256,15 +256,4 @@ export class Backend {
 		}
 	}
 
-	static async getCharge(festId: number, utilisateurId: number): Promise<any> {
-		// @ts-ignore
-		const URL = Routing.generate('app_user_work_hours', { id:utilisateurId, idFest:festId,  });
-		try {
-			return await Backend.#get(URL);
-		} catch (error) {
-			console.log(error);
-		}
-
-	}
-
 }
