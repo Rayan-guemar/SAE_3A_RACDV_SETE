@@ -17,7 +17,6 @@ export const sortTachesByOverriding = (taches: Tache[]) => {
 			res.push({ tache: tache, position: j + 1, total: taches.length });
 		}
 	}
-
 	return res;
 };
 

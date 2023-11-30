@@ -12,7 +12,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const defaultPoste = {
-  id: null,
   nom: "",
   couleur: "#347deb",
   description: "",

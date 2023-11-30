@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block overhead %}
+<link
+	rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="{{asset('js/AllMapDetailFest.js')}}"></script>
+{% endblock %}
+
 {% block title %}festivals
 {% endblock %}
 
@@ -11,12 +19,17 @@
 		{% endif %}
 		<input type="submit" id="saf" value="">
 	{{ form_end(form) }}
-	<div class="fest-wrapper">
-		{% for festival in festivals %}
-			{% if festival.getIsArchive() != 1 %}
-				{{ include('festival/fest.html.twig',{'festival':festival}) }}
-			{% endif %}
-		{% endfor %}
+	<!-- Map All Festivals -->
+	<div class="index-wrapper">
+		<button class="map-btn">Cacher la carte</button>
+		<div id="map"></div>
+		<div class="fest-wrapper">
+			{% for festival in festivals %}
+				{% if festival.getIsArchive() != 1 %}
+					{{ include('festival/fest.html.twig',{'festival':festival}) }}
+				{% endif %}
+			{% endfor %}
+		</div>
 	</div>
 
 {% endblock %}

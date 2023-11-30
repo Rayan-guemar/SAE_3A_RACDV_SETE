@@ -118,7 +118,7 @@ const closePoste = () => {
             <h3 class="top-heading">Poste</h3>  
 
             <input type="text" class="poste-name" :class="{ 'missing-field': missingName, 'becoming-red': becomingRed }"
-                v-model="currentPoste.nom" placeholder="ex: Accuei artiste" @input="() => missingName = false" >
+                v-model="currentPoste.nom" placeholder="ex: Accueil artiste" @input="() => missingName = false" >
             <div class="color-wrapper">
                 <div>Couleur :</div>
                 <input type="color" v-model="currentPoste.couleur">
