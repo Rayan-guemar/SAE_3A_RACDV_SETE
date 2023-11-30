@@ -9,11 +9,9 @@ type Props = {
   festivalId: number;
   dateDebut: string;
   dateFin: string;
+  close: (c?: Creneau) => void
+  updatePlages: () => void
 }
-
-const emit = defineEmits<{
-  (event: 'close', tempCreneau?: Creneau, update?: Promise<any>): void
-}>()
 
 const props = defineProps<Props>();
 
@@ -57,6 +55,9 @@ const createCreneau = async (e: Event) => {
     return;
   }
   await Backend.addHeureDepartFin(props.festivalId, creneau.value);
+  props.close(creneau.value);
+  props.updatePlages();
+
 }
 
 </script>
@@ -73,7 +74,7 @@ const createCreneau = async (e: Event) => {
     </div>
     <div class="flex-column flex-align-center">
       <input type="submit" value="Ajouter">
-      <button id="cancel-creneau-btn" class="btn" @click="$emit('close')">Annuler</button>
+      <button id="cancel-creneau-btn" class="btn"  @click="close()">Annuler</button>
     </div>
   </form>
 </template>
