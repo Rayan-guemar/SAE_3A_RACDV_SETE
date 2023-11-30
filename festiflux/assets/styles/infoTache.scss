@@ -18,8 +18,8 @@
 .tache-info_nom {
   font-weight: bold;
   font-size: 1.2em;
-  margin-bottom: auto; 
-  text-align: center; 
+  margin-bottom: auto;
+  text-align: center;
 }
 
 .tache-info_desc,
@@ -28,4 +28,207 @@
 .tache-info_poste {
   margin-top: 8px;
   text-align: left;
+}
+
+.task-affectation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 20px 20px 80px;
+  gap: 20px;
+
+  .benevole-lists {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    overflow-y: hidden;
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: visible;
+      padding: 10px;
+    }
+
+    &>div {
+      width: 45%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      gap: 10px;
+    }
+
+    .benevole-element {
+      width: 100%;
+      padding: 10px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      position: relative;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      transition: all 0.5s ease-in-out;
+
+      &.expand {
+        height: 100px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .benevole-name {
+        font-weight: 500;
+      }
+
+      .pref-pastille {
+        padding: 5px;
+        outline: solid 2px;
+        border-radius: 500px;
+
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .btn {
+        cursor: pointer;
+        padding: 10px;
+
+        width: fit-content;
+
+        border-radius: 5px;
+
+        &.unaffect:hover {
+          color: $red-primary;
+        }
+
+        &.affect:hover {
+          color: $blue-primary;
+        }
+      }
+    }
+  }
+
+  .info-wrapper {
+    width: 90%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .select-sort {
+      border: none;
+      background-color: white;
+      font-size: 17px;
+      font-weight: 500;
+
+      &:focus {
+        outline: none;
+        border: none;
+      }
+
+      &:focus-within {
+        outline: none;
+        border: none;
+      }
+
+      &:focus-visible {
+        outline: none;
+        border: none;
+      }
+
+      option {
+        font-size: 17px;
+        font-weight: 500;
+        border: none;
+      }
+    }
+
+    &>div {
+
+      gap: 2px 10px;
+
+      display: flex;
+      flex-wrap: wrap;
+
+      .content {
+        text-wrap: wrap;
+      }
+    }
+
+    h5 {
+      font-size: 17px;
+    }
+  }
+}
+
+@keyframes appear {
+  from {
+    display: none;
+    opacity: 0;
+  }
+
+  1% {
+    display: flex;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.btn-close-modal {
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  font-size: 35px;
+  background-color: white;
+  border: none;
+  height: 20px;
+  width: 20px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.save-edits {
+  border-radius: 5%;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: $grey-primary;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &::before {
+    background-color: $blue-primary;
+    animation-duration: .5s;
+  }
+}
+
+.save-edits.clickable {
+  color: black;
+}
+
+.save-edits.clickable:hover {
+  color: $blue-primary;
+  cursor: pointer;
 }

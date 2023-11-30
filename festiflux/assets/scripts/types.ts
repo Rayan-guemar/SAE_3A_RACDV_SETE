@@ -1,12 +1,14 @@
+export type ID = string | number;
+
 export interface Tache {
-	id?: number;
+	id?: ID;
 	description: string;
 	nbBenevole: number;
-	benevoleAffecte: number;
+	benevoleAffecte?: number;
 	lieu?: string;
 	poste: Poste;
 	creneau: Creneau;
-	benevoles?: Benevole[];
+	benevoles?: ID[];
 }
 
 export interface TacheCreateData {
@@ -28,14 +30,14 @@ export interface Festival {
 }
 
 export interface Poste {
-	id: string | null;
+	id?: ID;
 	nom: string;
 	description: string;
 	couleur?: string;
 }
 
 export interface Creneau {
-	id?: number;
+	id?: ID;
 	debut: Date;
 	fin: Date;
 }
@@ -46,27 +48,26 @@ export interface Lieu {
 }
 
 export interface Benevole {
-	id: number;
+	id: ID;
 	nom: string;
 	prenom: string;
+	preferences: Preference[];
 }
 
-export interface Attribute {
-	name: string;
-	value: string;
+export interface Preference {
+	poste: ID;
+	degree: number;
+}
+export interface IndispoCreateData {
+	id: ID;
+	userID: number;
+	festID: number;
+	dateDebut: Date;
+	dateFin: Date;
 }
 
-export interface Input {
-	id: string;
-	name: string | null;
-	label: string | null;
-	value: string;
-	type: string;
-	attributes: Attribute[] | null;
-}
 
-export interface SubmitBtn {
-	id: string;
-	text: string;
-	attributes: Attribute[] | undefined;
+export interface SelectOption {
+	value: ID;
+	label: string;
 }
