@@ -15,7 +15,6 @@ const {benevole, affected, AllTachesBenevole} = defineProps<Props>();
 
 let showChargeLine = ref(false);
 let chargeHeures = ref(0);
-
 chargeHeures.value = calculCharge(AllTachesBenevole);
 
 

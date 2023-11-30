@@ -85,7 +85,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter((tache) => tache.benevoles?.includes(benevole))"
+                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                         />
@@ -97,7 +97,7 @@ const save = async () => {
                         <Benevole 
                             v-for="benevole of unaffectedBenevoles"
                             :benevole="benevole"
-                            :AllTachesBenevole="AllTaches.filter((tache) => tache.benevoles?.includes(benevole))"
+                            :AllTachesBenevole="AllTaches.filter((t) => t.benevoles?.map(b=>b.id).includes(benevole.id))"
                             :affected="false"
                             @addBenevole="addBenevole(benevole)"
                         />
