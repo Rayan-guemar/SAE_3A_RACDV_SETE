@@ -202,11 +202,13 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     }
 
     onMounted(async () => {
-        await getTaches();
-        await getPostes();
-        await getPlagesHoraires();
+        const promises = [];
+        promises.push(getTaches());
+        promises.push(getPostes());
+        promises.push(getPlagesHoraires());
+        promises.push(getBenevoles());
+        await Promise.all(promises);
         loading.value = false;
-        await getBenevoles();
     })
 
     const vuePerso = ref(false);
