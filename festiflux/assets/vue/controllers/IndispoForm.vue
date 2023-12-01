@@ -70,7 +70,7 @@ const createIndispo = async (e: Event) => {
     </div>
     <div class="flex-column flex-align-center">
       <label for="end-creneau">Fin du créneaux</label>
-      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerEnd" required>
+      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" required>
     </div>
     <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
       <input type="submit" value="Ajouter">

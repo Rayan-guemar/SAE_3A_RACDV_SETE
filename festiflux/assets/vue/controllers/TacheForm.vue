@@ -84,7 +84,7 @@ const createTache = async (e: Event) => {
 <template>
   <div class="planning-form">
     <form @submit.prevent="createTache">
-      <h2>Création d'un créneaux</h2 >
+      <h2>Création d'un créneau</h2 >
       <div class="flex-column flex-align-center">
         <label for="poste">Choisissez un poste</label>
         <select name="poste" id="creneau-poste-select">
@@ -92,20 +92,20 @@ const createTache = async (e: Event) => {
         </select>
       </div>
       <div class="flex-column flex-align-center">
-        <label for="description">Description</label>
+        <label for="description">Remarque</label>
         <input name="description" id="creneau-description" type="text">
       </div>
       <div class="flex-column flex-align-center">
-        <label for="nombre_benevole">Nombre de benevole nécessaire
+        <label for="nombre_benevole">Nombre de bénévoles nécessaires
         </label>
         <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
       </div>
       <div class="flex-column flex-align-center">
-        <label for="start-creneau">Debut du créneaux</label>
+        <label for="start-creneau">Debut du créneau</label>
         <input name="start" id="start-creneau" ref="startTache" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateDebut" @change="changeHandlerStart">
       </div>
       <div class="flex-column flex-align-center">
-        <label for="end-creneau">Fin du créneaux</label>
+        <label for="end-creneau">Fin du créneau</label>
         <input name="end" id="end-creneau" ref="endTache" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateFin" @change="changeHandlerEnd">
       </div>
 
@@ -115,7 +115,7 @@ const createTache = async (e: Event) => {
       </div>
 
       <div class="flex-column flex-align-center">
-        <label for="lieuTache">Addresse du Lieu (optionnelle) </label>
+        <label for="lieuTache">Adresse du lieu (optionnelle) </label>
         <input type='text' name='creneau-lieu-address' id="creneau-lieu-address" >
       </div>
 

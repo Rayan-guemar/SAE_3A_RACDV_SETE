@@ -22,12 +22,22 @@
 
   .my-fest__btn {
     padding: 15px 15px;
+
+    position: relative;
+
     background-color: black;
     border-radius:100px;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .notif {
+      top: 0;
+      left: 0;
+      transform: translate(-20%, -20%);
+      font-weight: 700;
+    }
 
     img {
       width: 20px;

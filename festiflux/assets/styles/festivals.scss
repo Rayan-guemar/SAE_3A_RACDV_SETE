@@ -15,6 +15,18 @@
   }
 }
 
+.tags-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .tag {
+
+  }
+
+}
+
 .fest {
   width: 450px;
   height: auto;
@@ -56,12 +68,21 @@
 }
 
 .tags-input-wrapper .tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
   background-color: $blue-primary;
+  width: fit-content;
   color: white;
-  border-radius: 40px;
-  padding: 0px 3px 0px 7px;
+  border-radius: 5px;
+  padding: 3px 7px;
   box-shadow: 0 5px 15px -2px $blue-primary;
-  margin: 2px;
+  margin: 0 5px;
+
+  a {
+    cursor: pointer;
+  }
 }
 
 #map {
@@ -79,6 +100,7 @@
   font-size: 20px;
   font-weight: bold;
   width: fit-content;
+  cursor: pointer;
 }
 
 .index-wrapper {
