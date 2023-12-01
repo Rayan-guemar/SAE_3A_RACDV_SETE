@@ -3,20 +3,25 @@
 
 {% block body %}
 
-    <div class="form-wrapper">
+    <div class="profil-box">
         <h1>Modifier votre profil</h1>
 
-        {{ form_start(form, {'attr': {'class': 'utilisateur-form'}}) }}
+        {{ form_start(form, {'attr': {'class': 'info-box-wrapper editing'}}) }}
 
-        {{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'utilisateur-form__input'}}) }}
-        {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'class': 'utilisateur-form__input'}}) }}
-        {{ form_row(form.email, {'label': 'Email', 'attr': {'class': 'utilisateur-form__input'}}) }}
-        {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'class': 'utilisateur-form__input'}}) }}
-        {{ form_row(form.description, {'label': 'Description', 'attr': {'class': 'utilisateur-form__input'}}) }}
-        {{ form_row(form.fichierPhotoProfil, {'label': 'Photo de profil', 'attr': {'class': 'utilisateur-form__input'}}) }}
+        <div class="info-box editing">
+            <div class="info-row editing">
+                {{ form_row(form.email, {'label': 'Email', 'attr': {'class': 'info-border editing'}}) }}
+                <div class="info-name-surname editing">
+                    {{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'info-border editing'}}) }}
+                    {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'class': 'info-border editing'}}) }}
+                </div>
+                {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'class': 'info-border editing'}}) }}
+                {{ form_row(form.description, {'label': 'Description', 'attr': {'class': 'info-border editing'}}) }}
+                {{ form_row(form.fichierPhotoProfil, {'label': 'Photo de profil', 'attr': {'class': 'info-border editing'}}) }}
+            </div>
+        </div>
 
-
-        {{ form_widget(form.demanderModificationProfil, {'label': 'Modifier', 'attr': {'class': 'utilisateur-form__checkbox'}}) }}
+        {{ form_widget(form.demanderModificationProfil, {'label': 'Modifier', 'attr': {'class': 'edit-button'}}) }}
 
         {{ form_end(form) }}
     </div>

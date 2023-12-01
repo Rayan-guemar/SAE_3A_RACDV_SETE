@@ -54,21 +54,7 @@ const showAffectionMode = () => {
   showingAffectionMode.value = true;
 };
 
-window.addEventListener("click", (e) => {
-  if (props.modeAffectation) {
-    return;
-  }
-  if (showingInfo.value) {
-    if (
-      (task.value && task.value.contains(e.target as Node)) ||
-      props.modeAffectation
-    ) {
-      showingInfo.value = true;
-    } else {
-      showingInfo.value = false;
-    }
-  }
-});
+const taskHover = ref(false);
 
 
 const nbDispo = computed(() => {
@@ -130,14 +116,17 @@ const nbLike = computed(() => {
         ? hexToBrighterHex(tache.poste.couleur)
         : `rgb(${posteToColorBright(tache.poste).join(',')})`,
       color: 'black', //`rgb(${posteToColor(tache.poste).join(',')})`,
-      zIndex: showingInfo ? 100 : 0,
+      zIndex: showingInfo ? 99 : 0,
+      overflow: showingInfo ? 'visible' : 'hidden',
     }"
     @click="() => (modeAffectation ? showAffectionMode() : showInfo())"
   >
     <div
+      @mouseover="() => (taskHover = true)"
+      @mouseleave="() => (taskHover = false)"
       class="task-text"
       :style="{
-        width: `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        width: taskHover || showingInfo ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
       }"
     >
       <div class="name">{{ tache.poste.nom }}</div>
@@ -150,17 +139,39 @@ const nbLike = computed(() => {
       </div>
       
     </div>
-    <div v-if="showingInfo && !modeAffectation" class="tache-info_wrapper">
-      <div class="tache-info_nom">{{ tache.poste.nom }}</div>
-      <div class="tache-info_desc">{{ tache.description }}</div>
-      <div class="tache-info_lieu">{{ tache.lieu }}</div>
-      <div class="tache-info_benevoles">
-        {{ tache.nbBenevole }} bénévoles requis
+
+    <Modal
+      v-if="showingInfo && !modeAffectation"
+      @close="() => (showingInfo = false)"
+    >
+      <!-- <div class="tache-info_wrapper">
+        <div class="tache-info_nom">{{ tache.poste.nom }}</div>
+        <div class="tache-info_desc">{{ tache.description }}</div>
+        <div class="tache-info_lieu">{{ tache.lieu }}</div>
+        <div class="tache-info_benevoles">
+          {{ tache.nbBenevole }} bénévoles requis
+        </div>
+        
+      </div> -->
+      <div class="info-wrapper">
+          <div>
+              <h5>Description :</h5>
+              <div class="content">{{ tache.poste.description || (tache.poste.description.length === 0 ? 'Il n\'y a pas de description' : tache.poste.description) }}</div>
+          </div>
+          <div>
+              <h5>Remarque :</h5>
+              <div class="content">{{ tache.description || (tache.description.length === 0 ? 'Il n\'y a pas de remarque' : tache.description) }}</div>
+          </div>
+          <div>
+              <h5 v-if="tache.lieu">Lieu :</h5>
+              <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
+          </div>
+          <div class="tache-info_benevoles">
+            {{ tache.benevoleAffecte }} bénévoles affectés
+          </div>
       </div>
-      <div class="tache-info_benevoles">
-        {{ tache.benevoleAffecte }} bénévoles affectés
-      </div>
-    </div>
+    </Modal>
+    
     <Modal
       v-if="showingAffectionMode && modeAffectation"
       @close="() => (showingAffectionMode = false)"
