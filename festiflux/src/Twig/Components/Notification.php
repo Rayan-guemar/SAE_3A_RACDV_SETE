@@ -34,7 +34,8 @@ class Notification
                 $res += count($fest->getDemandesBenevole());
             }
             return $res;
-        } if($this->festId != null) {
+        } 
+        if($this->festId != null) {
             $fest = $this->festRepo->find($this->festId);
             return count($fest->getDemandesBenevole());
         }

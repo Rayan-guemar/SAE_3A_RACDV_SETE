@@ -92,7 +92,10 @@ onMounted(async () => {
   <div class="poste-list-wrapper">
     <div class="poste-list" >
       <h3>Liste des postes</h3>
-      <div class="postes">
+      <div v-if="posteList.length === 0">
+        Il n'y a aucun poste pour le moment
+      </div>
+      <div v-else class="postes">
         <div
           v-for="poste in posteList"
           :style="{

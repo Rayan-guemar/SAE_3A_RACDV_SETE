@@ -85,6 +85,18 @@ const save = async () => {
     }
 }
 
+const affectedDispo = computed(() => {
+    return benevoleDisponibilites(props.tache, affectedBenevoles.value);
+})
+
+const unaffectedDispo = computed(() => {
+    return benevoleDisponibilites(props.tache, unaffectedBenevoles.value);
+})
+
+const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
+    return list.filter(b => b.indisponibilites.every(i => i.debut > t.creneau.fin || i.fin < t.creneau.debut))
+}
+
 </script>
 
 
@@ -125,7 +137,7 @@ const save = async () => {
                     <h4>Bénévoles affectés ({{ affectedBenevoles.length + ' / '  + tache.nbBenevole }})</h4>
                     <div class="list">
                         <Benevole 
-                            v-for="benevole of affectedBenevoles" 
+                            v-for="benevole of affectedDispo" 
                             :benevole="benevole"
                             :charge="chargesBenevole[benevole.id]"
                             :affected="true"
@@ -138,7 +150,7 @@ const save = async () => {
                     <h4>Bénévoles non affectés</h4>
                     <div class="list">
                         <Benevole 
-                            v-for="benevole of unaffectedBenevoles"
+                            v-for="benevole of unaffectedDispo"
                             :benevole="benevole"
                             :charge="chargesBenevole[benevole.id]"
                             :affected="false"

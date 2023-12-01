@@ -53,7 +53,7 @@ class DemandeFestival
     /**
      * @return Collection
      */
-    public function getTags(): string
+    public function getTags(): ?string
     {
         return $this->tags;
     }

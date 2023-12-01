@@ -273,7 +273,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
             
             <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper">
                 <div v-if="isOrgaOrResp" class="toggle-mode-affectation-wrapper btn flex-align-center">
-                    <div>Mode affectation :</div>
+                    <div>Mode affectation</div>
                     <div class="toggle-mode-affectation" :class="{on: modeAffectation}" @click="toggleModeAffectation">
                         <div class="toggle"></div>
                     </div>
@@ -336,6 +336,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         :festivalId="festID"
         :dateDebut="festival.dateDebut.toISOString()"
         :dateFin="festival.dateFin.toISOString()"
+        @close="stopAddIndispo"
     />
   </Modal>
 </template>

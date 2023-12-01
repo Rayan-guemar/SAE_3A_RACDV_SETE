@@ -21,8 +21,13 @@
 	{{ form_end(form) }}
 	<!-- Map All Festivals -->
 	<div class="index-wrapper">
-		<button class="map-btn">Cacher la carte</button>
-		<div id="map"></div>
+		<button class="map-btn">Afficher la carte</button>
+		<div id="map" style="display: none;"></div>
+		{% if festivals|length == 0 %}
+		<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
+			Aucun festival ne correspond à votre recherche
+		</div>
+		{% else %}
 		<div class="fest-wrapper">
 			{% for festival in festivals %}
 				{% if festival.getIsArchive() != 1 %}
@@ -30,6 +35,7 @@
 				{% endif %}
 			{% endfor %}
 		</div>
+			{% endif %}
 	</div>
 
 {% endblock %}

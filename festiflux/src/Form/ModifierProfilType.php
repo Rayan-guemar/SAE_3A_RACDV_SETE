@@ -20,8 +20,12 @@ class ModifierProfilType extends AbstractType
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
             ->add('email', EmailType::class)
-            ->add('adresse',TextType::class)
-            ->add('description',TextType::class)
+            ->add('adresse',TextType::class, [
+                'required' => false
+            ])
+            ->add('description',TextType::class, [
+                'required' => false
+            ])
             ->add('fichierPhotoProfil',FileType::class,[
                 "required"=>false,
                 "mapped"=>false,

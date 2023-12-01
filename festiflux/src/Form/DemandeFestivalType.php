@@ -63,6 +63,7 @@ class DemandeFestivalType extends AbstractType
                 ]
             ])
             ->add('tags', TextType::class, [
+                'required' => false,    
                 'label' => 'Tag',
             ])
             ->add('afficheFestival' , FileType::class, [

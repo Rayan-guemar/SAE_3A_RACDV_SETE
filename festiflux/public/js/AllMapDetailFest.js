@@ -1,16 +1,5 @@
 const btn = document.querySelector(".map-btn");
-const map = document.getElementById("map");
-
-btn.addEventListener('click', () => {
-    if (btn.innerText === "Afficher la carte") {
-        map.style.display = "block";
-        btn.innerText = "Cacher la carte"
-    }
-    else if (btn.innerText === "Cacher la carte") {
-        map.style.display = "none";
-        btn.innerText = "Afficher la carte"
-    }
-})
+var mapEl = document.getElementById("map");
 
 
 async function getAllFestival() {
@@ -49,5 +38,17 @@ async function getAllFestival() {
             data = {};
         }
     }
+
+    btn.addEventListener('click', () => {
+        if (btn.innerText === "Afficher la carte") {
+            mapEl.style.display = "block";
+            btn.innerText = "Cacher la carte"
+            map.invalidateSize();
+        }
+        else if (btn.innerText === "Cacher la carte") {
+            mapEl.style.display = "none";
+            btn.innerText = "Afficher la carte"
+        }
+    })
 }
 getAllFestival();

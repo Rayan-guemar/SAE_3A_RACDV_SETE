@@ -83,10 +83,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
     private Collection $posteUtilisateurPreferences;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

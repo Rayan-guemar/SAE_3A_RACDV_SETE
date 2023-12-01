@@ -84,6 +84,13 @@ class FestivalController extends AbstractController
                     'searched' => true,
                     'festivals' => ($allfest)
                 ]);
+            } else {
+                // $this->addFlash('error', 'Aucun festival ne correspond à votre recherche');
+                return $this->render('festival/index.html.twig', [
+                    'form' => $form->createView(),
+                    'searched' => true,
+                    'festivals' => []
+                ]);
             }
         }
 

@@ -7,7 +7,8 @@
 {% block body %}
     <input type="hidden" id="id_festival" value={{ idFest }}>
 
-    <h1>Liste des postulations de bénévoles</h1>
+    <!-- tochange -->
+    <h1 style="margin-top: 100px;">Liste des postulations de bénévoles</h1>
     <h2>vous {% if  demandes|length() == 1 %}  avez {{ demandes|length() }} postulation
         {% elseif demandes|length() > 1 %} avez {{ demandes|length() }} postulations
         {% else %} n'avez pas de postulations {% endif %}
