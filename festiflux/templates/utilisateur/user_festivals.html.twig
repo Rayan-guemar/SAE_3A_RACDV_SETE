@@ -26,7 +26,7 @@
 							<span>{{ festival.getNom() }}</span>
 						</div>
 						<div class="fest-dateEtLieux">
-							<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+							<span>{{ festival.getDateDebut()|date("d/m/Y") }} - {{ festival.getDateFin()|date("d/m/Y") }}</span>
 							<span>{# {{ festival.getLieuxVille() }} #}</span>
 						</div>
 					</div>
@@ -68,7 +68,7 @@
 									<span>{{ festival.getNom() }}</span>
 								</div>
 								<div class="fest-dateEtLieux">
-									<span>{{ festival.getDateDebut()|date("d/m/Y") }}-{{ festival.getDateFin()|date("d/m/Y") }}</span>
+									<span>{{ festival.getDateDebut()|date("d/m/Y") ~ ' - ' ~ festival.getDateFin()|date("d/m/Y") }}</span>
 									<span>{# {{ festival.getLieuxVille() }} #}</span>
 								</div>
 							</div>
