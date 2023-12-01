@@ -27,7 +27,7 @@ class IcalBuilder {
     }
 
     public function build() {
-        $file = fopen('festiflux/public/icals/' . $this->filename . '.ics', 'w');
+        $file = fopen('icals/' . $this->filename . '.ics', 'w');
         fwrite($file, "BEGIN:VCALENDAR\r\n");
         fwrite($file, "VERSION:2.0\r\n");
         fwrite($file, "CALSCALE:GREGORIAN\r\n");

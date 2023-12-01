@@ -248,6 +248,9 @@ export class Backend {
 		const URL = Routing.generate('app_icalLink', { idFest: festId });
 		try {
 			const resp = await fetch(URL);
+			if (!resp.ok) {
+				throw new Error(await resp.text());
+			}
 			const data = await resp.blob();
 			let a = document.createElement('a');
 			a.href = window.URL.createObjectURL(data);
