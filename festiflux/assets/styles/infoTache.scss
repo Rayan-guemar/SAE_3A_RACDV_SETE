@@ -165,6 +165,28 @@
   }
 }
 
+.pastille-benevole-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 10px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pastille-benevole {
+  padding: 5px;
+  outline: solid 2px;
+  border-radius: 500px;
+  
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .pref-pastille {
   padding: 5px;
   outline: solid 2px;
@@ -174,18 +196,18 @@
   
   font-size: 15px;
   font-weight: 600;
-  
-  &.pref-like {
-    color: #00C800;
-    outline-color: #00C800;
-    background-color: #CCF4CC;
-  }
-  
-  &.pref-dislike {
-    color: #CE1A1A;
-    outline-color: #CE1A1A;
-    background-color: #F4CCCC;
-  }
+}
+
+.pref-like {
+  color: #00C800;
+  outline-color: #00C800;
+  background-color: #CCF4CC;
+}
+
+.pref-dislike {
+  color: #CE1A1A;
+  outline-color: #CE1A1A;
+  background-color: #F4CCCC;
 }
 
 @keyframes appear {
@@ -213,6 +235,7 @@
   border: none;
   height: 20px;
   width: 20px;
+  cursor: pointer;
   
   img {
     width: 20px;

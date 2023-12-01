@@ -54,6 +54,8 @@ const showAffectionMode = () => {
   showingAffectionMode.value = true;
 };
 
+const taskHover = ref(false);
+
 window.addEventListener("click", (e) => {
   if (props.modeAffectation) {
     return;
@@ -135,9 +137,11 @@ const nbLike = computed(() => {
     @click="() => (modeAffectation ? showAffectionMode() : showInfo())"
   >
     <div
+      @mouseover="() => (taskHover = true)"
+      @mouseleave="() => (taskHover = false)"
       class="task-text"
       :style="{
-        width: `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        width: taskHover ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
       }"
     >
       <div class="name">{{ tache.poste.nom }}</div>

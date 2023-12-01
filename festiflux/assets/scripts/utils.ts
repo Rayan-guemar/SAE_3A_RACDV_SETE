@@ -19,7 +19,7 @@ export const getDateHours2Digits = (d: Date): string => {
 			minimumIntegerDigits: 2,
 			useGrouping: false
 		}) +
-		' h ' +
+		'h' +
 		d.getMinutes().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })
 	);
 };

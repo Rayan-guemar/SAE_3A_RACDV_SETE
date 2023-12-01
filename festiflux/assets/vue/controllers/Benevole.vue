@@ -30,28 +30,27 @@ interface Props {
     <div class="benevole-element">
         <!-- <input style="position: absolute;" type="color" v-model="color"> -->
         <div class="benevole-name">{{ benevole.nom }}</div>
-        <div class="pref-pastille" :style="{
-                backgroundColor: hexToBrighterHex(getColorHexByRatio(charge/30), 0.2),
-                color: getColorHexByRatio(charge/30),
-                outlineColor: getColorHexByRatio(charge/30)
-            }">
-        {{ charge }}h
-         </div>
-        <div v-if="pref === 1 || pref == -1" class="pref-pastille" :style="{
-                backgroundColor: hexToBrighterHex(colors[pref + 1], 0.2),
-                color: colors[pref + 1],
-                outlineColor: colors[pref + 1]
-            }">
-        </div>
-        <div 
-            v-if="pref === 1 || pref == -1" 
-            class="pref-pastille"
-            :class="{
-                'pref-like': pref === 1,
-                'pref-dislike': pref === -1
-            }"
-        >
-            {{ pref === 1 ? 'Aime' : 'N\'aime pas' }}
+        <div class="pastille-benevole-wrapper">
+            <div 
+                class="pastille-benevole" 
+                :style="{
+                    backgroundColor: hexToBrighterHex(getColorHexByRatio(charge/30), 0.2),
+                    color: 'black',
+                    outlineColor: getColorHexByRatio(charge/30)
+                }"
+            >
+                {{ charge }}h
+            </div>
+            <div 
+                v-if="pref === 1 || pref == -1" 
+                class="pastille-benevole"
+                :class="{
+                    'pref-like': pref === 1,
+                    'pref-dislike': pref === -1
+                }"
+            >
+                {{ pref === 1 ? 'Aime' : 'N\'aime pas' }}
+            </div>
         </div>
         <div v-if="!affected" class="btn affect" @click="() => $emit('addBenevole')">
             Affecter
