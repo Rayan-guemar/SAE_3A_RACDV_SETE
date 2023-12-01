@@ -563,7 +563,7 @@ class FestivalController extends AbstractController
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
 
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
 
