@@ -43,7 +43,7 @@ const sortedBenevoles = computed(() => {
         return [...props.benevoles].sort((a, b) => {
             const a_charge = props.chargesBenevole[a.id] || 0;
             const b_charge = props.chargesBenevole[b.id] || 0;
-            return b_charge - a_charge;
+            return a_charge - b_charge;
         })
     }
 
