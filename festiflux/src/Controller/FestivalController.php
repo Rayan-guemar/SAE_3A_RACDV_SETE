@@ -385,12 +385,7 @@ class FestivalController extends AbstractController
 
 
         $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
-            'controller_name' => 'FestivalController',
-            'demandes' => $festival->getDemandesBenevole(),
-            'idFest' => $id,
-            'benevoles' => $festival->getBenevoles()
-        ]);
+        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
