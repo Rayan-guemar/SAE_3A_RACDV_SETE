@@ -61,16 +61,17 @@ const createCreneau = async (e: Event) => {
 }
 
 </script>
+
 <template>
   <form class="planning-form" @submit.prevent="createCreneau">
     <h2>Ajout d'une plage horaire</h2>
     <div class="flex-column flex-align-center">
       <label for="start-creneau">Debut du créneaux</label>
-      <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart">
+      <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart" />
     </div>
     <div class="flex-column flex-align-center">
       <label for="end-creneau">Fin du créneaux</label>
-      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" >
+      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" />
     </div>
     <div class="flex-column flex-align-center">
       <input type="submit" value="Ajouter">

@@ -8,21 +8,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  label {
+    position: absolute;
+    left: 20px;
+    bottom: 100%;
+
+    font-weight: 500;
+  }
 }
 
 .info-box-wrapper {
   margin-top: 130px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  border: solid 4px #463BC3;
-  border-radius: 20px;
+
+  position: relative;
+
   width: 80%;
   height: 70%;
-  position: relative;
+
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 100px;
+  gap: 50px;
+
+  border: solid 4px #463BC3;
+  border-radius: 20px;
+
+  &.editing {
+    margin-top: 70px;
+    gap: 30px;
+    height: 80%;
+  }
+  
 
   img {
     max-width: 150px;
@@ -35,22 +53,29 @@
     flex-direction: column;
     gap: 30px;
     align-items: center;
+
+    &.editing {
+      width: 50%;
+      max-width: 500px;
+    }
   }
 }
 
 .image_profile {
-  margin-top: -110px;
-  background: white;
-  border-radius: 100px;
+  padding: 0 15px;
+
   position: absolute;
   left: 50%;
   top: 0;
-  transform: translate(-50%, 10%);
-  padding: 0 15px;
+  transform: translate(-50%, -60%);
+
+  background: white;
+  
+  border-radius: 100px;
 
 }
 
-.button-shortcut {
+.edit-button {
   color: white;
 }
 
@@ -65,14 +90,30 @@ h1 {
   gap: 20px;
   width: 100%;
   flex-direction: column;
-  margin-top: 40%;
+
+  &.editing {
+    gap: 50px;
+
+    div:has(input) {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
 }
 
 .info-border {
-  border-radius: 20px;
+  border-radius: 15px;
   border: 2px solid $grey-primary;
   padding: 15px;
   margin: 0 10px;
+
+  &.editing {
+    font-size: large;
+    font-weight: 700;
+  }
 }
 
 div.info-border:hover {
@@ -82,7 +123,15 @@ div.info-border:hover {
 div.info-name-surname {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-around;  
+
+  &.editing {
+    gap: 6%;
+  }
+
+  &.editing > div {
+    width: 47%;
+  }
 
   &>* {
     width: 50%;
@@ -113,7 +162,7 @@ div.biographie {
     font-size: 18px;
   }
 
-  .button-shortcut {
+  .edit-button {
     padding: 20px 35px;
     font-size: 18px;
   }
@@ -135,7 +184,18 @@ div.biographie {
     font-size: 11px;
   }
 
-  .button-shortcut {
+  .edit-button {
     font-size: 11px;
   }
+}
+
+.edit-button {
+  display: flex;
+  padding: 20px;
+  border-radius: 20px;
+  background: #000;
+  position: relative;
+  font-size: large;
+  font-weight: 700;
+  cursor: pointer;
 }
