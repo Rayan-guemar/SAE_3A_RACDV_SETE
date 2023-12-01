@@ -30,6 +30,15 @@ h2.poste-section {
     transition: filter 0.2s;
 }
 
+.poste-list-wrapper {
+    .pref-pastille {
+        right: 10px;
+        top: 50%;
+        transform: translatey(-50%);
+        font-size: 12px;
+    }
+}
+
 .pointer {
     cursor: pointer;
 }
@@ -170,7 +179,7 @@ h2.poste-section {
         color: $grey-primary;
     }
 
-    .delete-poste, .edit-poste, .create-poste, .cancel-poste {
+    .poste-action {
         position: relative;
         font-weight: 500;
         font-size: large;
@@ -194,6 +203,37 @@ h2.poste-section {
 
     .delete-poste::before {
         background-color: $red-primary;
+    }
+
+    .like-poste {
+        &:hover {
+            color: $like-color;
+        }
+        
+        &::before {
+            background-color: $like-color;
+        }
+    }
+    
+
+    .neutral-poste {
+        &:hover {
+            color: $neutral-color;
+        }
+        
+        &::before {
+            background-color: $grey-primary;
+        }
+    }
+
+    .dislike-poste {
+        &:hover {
+            color: $dislike-color;
+        }
+        
+        &::before {
+            background-color: $dislike-color;
+        }
     }
 
     textarea, input {

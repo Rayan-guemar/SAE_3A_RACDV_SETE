@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { dateDiff } from '../../scripts/utils';
+    import { calculCharge, dateDiff } from '../../scripts/utils';
     import { VNodeRef, ref, onMounted, computed } from 'vue';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau } from '../../scripts/types';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -32,6 +32,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         isOrgaOrResp: props.isOrgaOrResp,
     })
 
+    
+
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
     const days = Array.from({ length: numberOfDays }, (_, i) => new Date(festival.value.dateDebut.getFullYear(), festival.value.dateDebut.getMonth(), festival.value.dateDebut.getDate() + i));
     const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -45,6 +47,14 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
    
     const benevoles = ref<Benevole[]>([]);
+
+    const chargesBenevole = computed(() => {
+        const charges: Record<ID, number> = {};
+        for (const benevole of benevoles.value) {
+            charges[benevole.id] = calculCharge(benevole, taches.value);
+        }
+        return charges;
+    })
 
     const loading = ref(true);
     const creatingTache = ref(false);
@@ -85,9 +95,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     
     const getBenevoles = async () => {
         const res = await Backend.getBenevoles(festival.value.festID);
+        console.log(1, res);
+        
         if (res) {
             benevoles.value = res;
-        }
+        }                
     }
 
     const getPlagesHoraires = async () => {
@@ -190,11 +202,13 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     }
 
     onMounted(async () => {
-        await getTaches();
-        await getPostes();
-        await getPlagesHoraires();
+        const promises = [];
+        promises.push(getTaches());
+        promises.push(getPostes());
+        promises.push(getPlagesHoraires());
+        promises.push(getBenevoles());
+        await Promise.all(promises);
         loading.value = false;
-        await getBenevoles();
     })
 
     const vuePerso = ref(false);
@@ -206,6 +220,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const startCreatingPlage = () => {
         creatingPlage.value = true;
     }
+
+    console.log(props.isOrgaOrResp);
+    
 
 </script>
 
@@ -228,10 +245,11 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <PlageHoraire v-for="creneauWithPos of crx.filter((c) => (new Date(c.debut)).getDate() === day.getDate())" :creneau="creneauWithPos" />
                     <!-- <Tache /> -->
                     <Tache 
-                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())" 
+                        v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())"
+                        :chargesBenevole="chargesBenevole"
                         :benevoles="benevoles" 
-                        :tache="tacheWithPos.tache" 
-                        :modeAffectation="modeAffectation" 
+                        :tache="tacheWithPos.tache"
+                        :modeAffectation="modeAffectation"
                         :position="tacheWithPos.position" 
                         :total="tacheWithPos.total" 
                         @reloadBenevoles="async () => {

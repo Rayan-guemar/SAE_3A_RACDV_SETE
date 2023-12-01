@@ -30,7 +30,6 @@
   }
 }
 
-
 .fest-info {
   display: flex;
   flex-direction: column;
@@ -53,7 +52,6 @@
   gap: 10px;
 }
 
-
 .tags-input-wrapper .tag {
   background-color: $blue-primary;
   color: white;
@@ -62,7 +60,6 @@
   box-shadow: 0 5px 15px -2px $blue-primary;
   margin: 2px;
 }
-
 
 #map {
   width: 500px;
@@ -86,6 +83,7 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+}
 
 .fest {
 
@@ -104,6 +102,4 @@
   .fest-info span {
     font-size: 60%;
   }
-}
-
 }

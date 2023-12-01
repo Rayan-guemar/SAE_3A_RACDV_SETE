@@ -9,15 +9,18 @@ interface Props {
     askingForDelete: boolean,
     setAskingForDelete: (value: boolean) => void
     posteOpened: boolean,
-    setPosteOpened: (value: boolean) => void,
     currentPoste: Poste,
     setCurrentPoste: (value: Poste) => void,
     updateCurrentPoste: (f: (p: Poste) => void) => void,
     posteList: Poste[],
     setPosteList: (value: Poste[]) => void,
+    setPosteOpened: (value: boolean) => void,
+    isOrgaOrResp: boolean,
 }
 
 const props = defineProps<Props>();
+
+const emits = defineEmits(['close', 'reloadPostes']);
 
 const creating = ref(false);
 const updating = ref(false);
@@ -25,11 +28,14 @@ const deleting = ref(false);
 const missingName = ref(false);
 const sayingNo = ref(false);
 const becomingRed = ref(false);
+const liking = ref(false);
+const neutraling = ref(false);
+const disliking = ref(false);
 
 
 function editing() {
-    return props.currentPoste.id !== null;
-}
+    return !!props.currentPoste.id;
+}   
 
 const deletePoste = async () => {
     props.setAskingForDelete(false);
@@ -110,6 +116,30 @@ const closePoste = () => {
     props.setPosteOpened(false);
 }
 
+const like = async () => {
+    liking.value = true;
+    await Backend.addPrefDegree(props.currentPoste, 1);
+    liking.value = false;
+    emits('close');
+    emits('reloadPostes');
+}
+
+const neutral = async () => {
+    neutraling.value = true;
+    await Backend.addPrefDegree(props.currentPoste, 0);
+    neutraling.value = false;
+    emits('close');
+    emits('reloadPostes');
+}
+
+const dislike = async () => {
+    disliking.value = true;
+    await Backend.addPrefDegree(props.currentPoste, -1);
+    disliking.value = false;
+    emits('close');
+    emits('reloadPostes');
+}
+
 </script>
 
 <template>
@@ -117,24 +147,27 @@ const closePoste = () => {
         <div class="poste-form">
             <h3 class="top-heading">Poste</h3>  
 
-            <input type="text" class="poste-name" :class="{ 'missing-field': missingName, 'becoming-red': becomingRed }"
+            <input :readonly="!isOrgaOrResp" type="text" class="poste-name" :class="{ 'missing-field': missingName, 'becoming-red': becomingRed }"
                 v-model="currentPoste.nom" placeholder="ex: Accueil artiste" @input="() => missingName = false" >
-            <div class="color-wrapper">
+            <div v-if="isOrgaOrResp" class="color-wrapper">
                 <div>Couleur :</div>
                 <input type="color" v-model="currentPoste.couleur">
             </div>
-            <textarea v-model="currentPoste.description" placeholder="ex: Accueillir les artistes"></textarea>
+            <textarea :readonly="!isOrgaOrResp" v-model="currentPoste.description" :placeholder="isOrgaOrResp ? 'ex: Accueillir les artistes' : 'Il n\'y a pas de description pour ce poste'"></textarea>
 
-            <div v-if='editing()' class="pointer edit-poste" :class="{ loading: updating, 'saying-no': sayingNo }" @click="updatePoste">Modifier</div>
-            <div v-if='editing()' class="pointer delete-poste" :class="{ loading: deleting }"
+            <div v-if='isOrgaOrResp && editing()' class="pointer poste-action edit-poste" :class="{ loading: updating, 'saying-no': sayingNo }" @click="updatePoste">Modifier</div>
+            <div v-if='isOrgaOrResp && editing()' class="pointer poste-action delete-poste" :class="{ loading: deleting }"
                 @click="(e) => setAskingForDelete(true)">Supprimer</div>
-            <div v-else class="pointer create-poste"
-                :class="{ 'missing-field': currentPoste.nom === '', loading: creating, 'saying-no': sayingNo }" @click="createPoste">Créer</div>
+            <div v-else-if="isOrgaOrResp" class="pointer poste-action create-poste" :class="{ 'missing-field': currentPoste.nom === '', loading: creating, 'saying-no': sayingNo }" @click="createPoste">Créer</div>
 
-            <div class="pointer cancel-poste" @click="closePoste">Annuler</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action like-poste" :class="{ loading: liking }" @click="like">J'aime</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action neutral-poste" :class="{ loading: neutraling }" @click="neutral">Indifférent</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action dislike-poste" :class="{ loading: disliking }" @click="dislike">Je n'aime pas</div>
+
+            <div class="pointer poste-action cancel-poste" @click="closePoste">Annuler</div>
         </div>
 
-        <div class="task-preview-wrapper">
+        <div v-if="isOrgaOrResp" class="task-preview-wrapper">
             <h4 class="top-heading">Aperçu d'une tache</h4>
             <div class="task-preview" :style="{
                 'border-color': currentPoste.couleur,

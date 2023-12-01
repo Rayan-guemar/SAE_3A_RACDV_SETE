@@ -2,24 +2,27 @@
 import { onMounted, ref } from "vue";
 import { Backend } from "../../scripts/Backend";
 import PosteForm from "./PosteForm.vue";
-import { Poste } from "../../scripts/types";
+import { Poste, Preference } from "../../scripts/types";
 
 interface Props {
   festivalId: number;
   festivalName: string;
+  isOrgaOrResp: boolean;
 }
 
 const props = defineProps<Props>();
 
 const defaultPoste = {
+  id: undefined,
   nom: "",
   couleur: "#347deb",
   description: "",
 };
 
 const posteOpened = ref(false);
-const currentPoste = ref<Poste>(defaultPoste);
+const currentPoste = ref<Poste>({...defaultPoste});
 const posteList = ref<Poste[]>([]);
+const preferences = ref<Preference[]>([]);
 const askingForDelete = ref(false);
 
 const setAskingForDelete = (value: boolean) => {
@@ -59,9 +62,25 @@ const newPoste = () => {
   posteOpened.value = true;
 };
 
-onMounted(async () => {
+const getPreference = (p: Poste) => {
+  return preferences.value.find((pref) => pref.poste == p.id + "")?.degree || 0;
+};
+
+const getPostes = async () => {
   const listeOfPostes = await Backend.getPostes(props.festivalId);
   posteList.value = listeOfPostes;
+};
+
+const getPreferences = async () => {
+  const listeOfPreferences = await Backend.getPreferences(props.festivalId);
+  preferences.value = listeOfPreferences;
+};
+
+onMounted(async () => {
+  await getPostes();
+  if (!props.isOrgaOrResp)  {
+    await getPreferences();
+  }
 });
 </script>
 
@@ -79,15 +98,19 @@ onMounted(async () => {
           :style="{
             'border-color': poste.couleur,
             'background-color': poste.couleur + '1A',
+            'position': 'relative'
           }"
           class="poste pointer"
           @click="(e) => openPoste(poste)"
         >
           {{ poste.nom }}
+          <div v-if="getPreference(poste) == 1 || getPreference(poste) == -1" class="pref-pastille" :class="{'pref-like': getPreference(poste) == 1, 'pref-dislike': getPreference(poste) == -1}">
+            {{  getPreference(poste) == 1 ? 'J\'aime' : getPreference(poste) == -1 ? 'Je n\'aime pas' : '' }}
+          </div>
         </div>
       </div>
 
-      <div v-if="!posteOpened" class="new-poste-btn pointer" @click="newPoste">
+      <div v-if="isOrgaOrResp && !posteOpened" class="new-poste-btn pointer" @click="newPoste">
         Ajouter un poste
       </div>
     </div>
@@ -104,6 +127,9 @@ onMounted(async () => {
         :updateCurrentPoste="updateCurrentPoste"
         :posteList="posteList"
         :setPosteList="setPosteList"
+        :isOrgaOrResp="isOrgaOrResp"
+        @close="() => setPosteOpened(false)"
+        @reloadPostes="getPreferences"
     />
   </div>
 </template>

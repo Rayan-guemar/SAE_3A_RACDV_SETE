@@ -1,14 +1,15 @@
 <script setup lang="ts" >
 import { computed, ref } from 'vue';
-import { Benevole as BenevoleType, Tache, ID } from '../../scripts/types';
+import {Benevole as BenevoleType, Festival, Tache, ID} from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
-import { displayHoursMinutes } from '../../scripts/utils';
+import { calculCharge, displayHoursMinutes } from '../../scripts/utils';
 import Benevole from './Benevole.vue';
 import CustomSelect from './CustomSelect.vue';
 
 interface Props {
-   tache : Tache
-   benevoles : BenevoleType[]
+    chargesBenevole: Record<ID, number>,
+    tache : Tache
+    benevoles : BenevoleType[]
 }
 
 const getBenevoleFromID = (id:ID) => {
@@ -39,7 +40,11 @@ const sortedBenevoles = computed(() => {
     } 
     if (selectedSort.value == "charge") {
         // TODO
-        return [...props.benevoles];
+        return [...props.benevoles].sort((a, b) => {
+            const a_charge = props.chargesBenevole[a.id] || 0;
+            const b_charge = props.chargesBenevole[b.id] || 0;
+            return b_charge - a_charge;
+        })
     }
 
     return [...props.benevoles];
@@ -113,11 +118,6 @@ const save = async () => {
                         :selected="selectedSort"
                         @select="selectedSort = $event"
                     />
-                    <!-- <select class="select-sort" v-model="selectedSort">
-                        <option value="">Ne pas trier</option>
-                        <option value="charge">Trier par charge</option>
-                        <option value="preference">Trier par préférences</option>
-                    </select> -->
                 </div>
             </div>
             <div class="benevole-lists">
@@ -126,7 +126,8 @@ const save = async () => {
                     <div class="list">
                         <Benevole 
                             v-for="benevole of affectedBenevoles" 
-                            :benevole="benevole" 
+                            :benevole="benevole"
+                            :charge="chargesBenevole[benevole.id]"
                             :affected="true"
                             @removeBenevole="removeBenevole(benevole)"
                             :poste="tache.poste"
@@ -137,9 +138,10 @@ const save = async () => {
                     <h4>Bénévoles non affectés</h4>
                     <div class="list">
                         <Benevole 
-                            v-for="benevole of unaffectedBenevoles" 
-                            :benevole="benevole" 
-                            :affected="false" 
+                            v-for="benevole of unaffectedBenevoles"
+                            :benevole="benevole"
+                            :charge="chargesBenevole[benevole.id]"
+                            :affected="false"
                             @addBenevole="addBenevole(benevole)"
                             :poste="tache.poste"
                         />
