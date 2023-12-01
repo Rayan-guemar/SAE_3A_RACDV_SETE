@@ -178,13 +178,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     }
 
-    const stopCreatingPlage = async (tempCreneau?: Creneau, update?: Promise<any>) => {
+    const stopCreatingPlage = async (tempCreneau?: Creneau) => {
         creatingPlage.value = false;
-        if (tempCreneau && update) {
-            crx.value.push(tempCreneau as Creneau);
-            await update;
-            getPlagesHoraires(); 
-        }
     }
 
     const startAddIndispo = () => {
@@ -201,6 +196,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     const updateTaches = async () => {
         await getTaches();
+    }
+    const updatePlages = async () => {
+      await getPlagesHoraires();
     }
 
     onMounted(async () => {
@@ -316,28 +314,24 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         />
     </Modal>
   <Modal
-        v-if="creatingPlage"
-        id="add-plage"
-        title="Ajout des plages horaires"
-        :hideModal="stopCreatingPlage" >
+        v-if="creatingPlage" >
         <PlageHoraireForm 
             :festivalId="festID" 
             :dateDebut="festival.dateDebut.toISOString()"
-            :dateFin="festival.dateFin.toISOString()" 
-            @close="stopCreatingPlage" />
+            :dateFin="festival.dateFin.toISOString()"
+            :close="stopCreatingPlage"
+            :updatePlages="updatePlages"
+        />
         />
   </Modal>
 
   <Modal
       v-if="addIndispo"
-      id="add-indispo"
-      title="Ajout d'une indisponibilité'"
       >
     <IndispoForm
         :festivalId="festID"
         :dateDebut="festival.dateDebut.toISOString()"
-        :dateFin="festival.dateFin.toISOString()" 
-        @close="stopAddIndispo"
+        :dateFin="festival.dateFin.toISOString()"
     />
   </Modal>
 </template>

@@ -81,6 +81,7 @@ class FestivalController extends AbstractController
             if ($allfest != null) {
                 return $this->render('festival/index.html.twig', [
                     'form' => $form->createView(),
+                    'searched' => true,
                     'festivals' => ($allfest)
                 ]);
             }
@@ -384,12 +385,7 @@ class FestivalController extends AbstractController
 
 
         $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
-            'controller_name' => 'FestivalController',
-            'demandes' => $festival->getDemandesBenevole(),
-            'idFest' => $id,
-            'benevoles' => $festival->getBenevoles()
-        ]);
+        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
@@ -661,8 +657,8 @@ class FestivalController extends AbstractController
     }
 
 
-    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST', 'GET'], options: ["expose" => true])]
-    public function addDebutFinDay(#[MapEntity] Festival $f, int $d, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): Response
     {
         if ($f == null) {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
