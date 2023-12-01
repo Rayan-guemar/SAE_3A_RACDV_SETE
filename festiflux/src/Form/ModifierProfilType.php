@@ -23,6 +23,7 @@ class ModifierProfilType extends AbstractType
             ->add('adresse',TextType::class)
             ->add('description',TextType::class)
             ->add('fichierPhotoProfil',FileType::class,[
+                "required"=>false,
                 "mapped"=>false,
                 "constraints" =>[
                     new File(maxSize : '10M', extensions : ['jpg', 'png'], maxSizeMessage:'Fichier trop lourd',extensionsMessage: 'Format invalide')

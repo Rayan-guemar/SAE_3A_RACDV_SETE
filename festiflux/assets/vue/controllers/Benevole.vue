@@ -32,7 +32,7 @@ interface Props {
         <div class="benevole-name">{{ benevole.nom }}</div>
         <div class="pastille-benevole-wrapper">
             <div 
-                class="pastille-benevole" 
+                class="pastille-benevole charge" 
                 :style="{
                     backgroundColor: hexToBrighterHex(getColorHexByRatio(charge/30), 0.2),
                     color: 'black',

@@ -231,9 +231,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 <template>
     <div v-if="loading" id="loader"></div>
 
-    <h2 v-if="!loading" :class="{'blurred': creatingTache}">{{ title }}</h2>
+    <h2 v-if="!loading">{{ title }}</h2>
 
-    <div v-if="!loading" id="planning" :class="{'blurred': creatingTache}">
+    <div v-if="!loading" id="planning">
         <div class="hours">
             <div class="hour" v-for="i in parseInt('11')">{{ ((i * 2) < 10 ? '0' + (i * 2) : (i * 2)) + 'h00' }}</div>
         </div>
@@ -291,7 +291,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         </div>
     </div>
 
-    <div v-if="!loading" class="scroll-btn" :class="{'blurred': creatingTache}">
+    <div v-if="!loading" class="scroll-btn">
         <div id="scroll-btn-left" @click="scrollDaysLeft" >
             <img src="../../../public/icons/fleche-gauche.png" alt="Gauche">
         </div>
@@ -303,6 +303,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     <Modal
         v-if="creatingTache"
+        @close="stopCreatingTache"
      >
         <TacheForm
             :festID="festival.festID"
@@ -319,12 +320,12 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         v-if="creatingPlage"
         id="add-plage"
         title="Ajout des plages horaires"
-        :hideModal="stopCreatingPlage" >
+        @close="stopCreatingPlage" >
         <PlageHoraireForm 
             :festivalId="festID" 
             :dateDebut="festival.dateDebut.toISOString()"
             :dateFin="festival.dateFin.toISOString()" 
-            @close="stopCreatingPlage" />
+            @close="stopCreatingPlage"
         />
   </Modal>
 
@@ -332,7 +333,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
       v-if="addIndispo"
       id="add-indispo"
       title="Ajout d'une indisponibilité'"
-      >
+        @close="stopAddIndispo"
+    >
     <IndispoForm
         :festivalId="festID"
         :dateDebut="festival.dateDebut.toISOString()"

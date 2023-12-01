@@ -36,9 +36,9 @@
     display: none;
 
     @media (max-width: 1250px) {
-        display: flex;
-        flex-direction: row;
-        margin-top: 20px;
+        display: block;
+        // flex-direction: row;
+        // margin-top: 20px;
     }
 }
 
@@ -85,11 +85,11 @@ main {
 
 
 #menuToggle {
-    position: absolute;
-    left: 2%;
+    position: fixed;
+    top: 30px;
+    left: 20px;
     background: white;
     z-index: 1;
-
     -webkit-user-select: none;
     user-select: none;
 }
@@ -185,6 +185,11 @@ main {
          * And let's slide it in from the left
          */
 #menuToggle input:checked~.sidebar_mobile {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: white;
+
     display: flex;
 
     .sidebar__header {
