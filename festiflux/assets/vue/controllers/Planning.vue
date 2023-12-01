@@ -331,8 +331,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     <IndispoForm
         :festivalId="festID"
         :dateDebut="festival.dateDebut.toISOString()"
-        :dateFin="festival.dateFin.toISOString()" 
-        @close="stopAddIndispo"
+        :dateFin="festival.dateFin.toISOString()"
     />
   </Modal>
 </template>

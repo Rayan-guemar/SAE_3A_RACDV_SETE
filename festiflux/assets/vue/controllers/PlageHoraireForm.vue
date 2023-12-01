@@ -28,7 +28,7 @@ function changeHandlerStart() {
 
   if (start.value.value) {;
     end.value.setAttribute("min", start.value.value);
-  } else {    
+  } else {
     end.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
     end.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
   }
