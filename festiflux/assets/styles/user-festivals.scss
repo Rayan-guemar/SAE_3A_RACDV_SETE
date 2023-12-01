@@ -1,15 +1,37 @@
-.fest-button{
-  padding: 5px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 5px;
+.my-fest__title {
+  margin: 50px 0 0;
 }
-.button-shortcut{
+
+.my-fest__heading {
+  margin: 50px 0 10px;
+}
+
+.fest-wrapper.with-margin {
+  margin-bottom: 100px;
+}
+
+.my-fest__buttons {
+  margin: 10px 0;
+
+  width: 100%;
+
   display: flex;
-  padding: 28px 46px;
-  gap: 10px;
-  border-radius: 30px;
-  background: #000;
-  position: relative;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  .my-fest__btn {
+    padding: 15px 15px;
+    background-color: black;
+    border-radius:100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 20px;
+      aspect-ratio: 1/1;
+    }
+  }
 }

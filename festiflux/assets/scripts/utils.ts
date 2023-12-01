@@ -3,7 +3,7 @@
  * @param s - La chaîne de caractères à encoder.
  * @returns La chaîne de caractères encodée.
  */
-import {Benevole, Tache} from "./types";
+import { Benevole, ID, Tache } from './types';
 
 export const encodedStr = (s: string): string => (s + '').replace(/[\u00A0-\u9999<>\&]/g, i => '&#' + i.charCodeAt(0) + ';');
 
@@ -19,7 +19,7 @@ export const getDateHours2Digits = (d: Date): string => {
 			minimumIntegerDigits: 2,
 			useGrouping: false
 		}) +
-		' h ' +
+		'h' +
 		d.getMinutes().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })
 	);
 };
@@ -31,9 +31,13 @@ export const getDateHours2Digits = (d: Date): string => {
  */
 export const pause = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
-export const dateDiff = (date1: Date, date2: Date): { sec: number; min: number; hour: number; day: number } => {
-	const diff = {} as { sec: number; min: number; hour: number; day: number }; // Initialisation du retour
+export const dateDiff = (date1: Date, date2: Date) => {
+	date1 = new Date(date1);
+	date2 = new Date(date2);
+
+	const diff = {} as { sec: number; min: number; hour: number; day: number; milisecond: number }; // Initialisation du retour
 	let tmp = date2.getTime() - date1.getTime();
+	diff.milisecond = tmp;
 
 	tmp = Math.floor(tmp / 1000); // Nombre de secondes entre les 2 dates
 	diff.sec = tmp % 60; // Extraction du nombre de secondes
@@ -50,18 +54,24 @@ export const dateDiff = (date1: Date, date2: Date): { sec: number; min: number; 
 	return diff;
 };
 
-export const calculCharge = (taches: Tache[]): number => {
+export const calculCharge = (benevole: Benevole, taches: Tache[]): number => {
 	/* parcourir la liste de taches et incrementer une variable avec le calcul de la difference entre la date debut et la date de fin du creneau de la tache */
-	let charge = 0;
-	taches.forEach(tache => {
-		console.log(tache);
-		const diff = dateDiff(tache.creneau.debut, tache.creneau.fin);
-		charge += diff.hour + diff.min / 60;
-	});
-	//arrondir à l'entier supérieur
-	return Math.ceil(charge);
+	// let charge = 0;
+	// taches.forEach(tache => {
+	// 	console.log(tache);
+	// 	const diff = dateDiff(tache.creneau.debut, tache.creneau.fin);
+	// 	charge += diff.hour + diff.min / 60;
+	// });
+	// //arrondir à l'entier supérieur
+	// return Math.ceil(charge);
 
-}
+	const BenevoleTaches = taches.filter(tache => tache.benevoles?.includes(benevole.id));
+	console.log();
+
+	return BenevoleTaches.reduce((acc, tache) => {
+		return acc + dateDiff(tache.creneau.debut, tache.creneau.fin).hour;
+	}, 0);
+};
 
 /**
  * Compare deux dates. Renvoie 0 si elles sont égales, 1 si la première est plus grande que la seconde, -1 sinon.
@@ -120,4 +130,15 @@ export const displayHoursMinutes = (date: Date): string => {
 
 export const getDateForInputAttribute = (date: Date | string): string => {
 	return new Date(date).toISOString().split('.')[0];
+};
+
+export const getColorHexByRatio = (ratio: number) => {
+	if (ratio > 1) ratio = 1;
+	if (ratio < 0) ratio = 0;
+
+	if (ratio === 1) return '#dd0000';
+	if (ratio > 0.75) return '#dd6400';
+	if (ratio > 0.5) return '#dddd00';
+	if (ratio > 0.25) return '#64dd00';
+	return '#00dd00';
 };

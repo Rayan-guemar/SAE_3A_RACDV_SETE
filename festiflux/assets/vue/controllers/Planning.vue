@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { dateDiff } from '../../scripts/utils';
+    import { calculCharge, dateDiff } from '../../scripts/utils';
     import { VNodeRef, ref, onMounted, computed } from 'vue';
-    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau } from '../../scripts/types';
+    import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID } from '../../scripts/types';
     import { Backend } from '../../scripts/Backend';
     import Tache from './Tache.vue';
     import Modal from './Modal.vue';
@@ -32,6 +32,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         isOrgaOrResp: props.isOrgaOrResp,
     })
 
+    
+
     const numberOfDays = dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
     const days = Array.from({ length: numberOfDays }, (_, i) => new Date(festival.value.dateDebut.getFullYear(), festival.value.dateDebut.getMonth(), festival.value.dateDebut.getDate() + i));
     const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -45,6 +47,14 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
    
     const benevoles = ref<Benevole[]>([]);
+
+    const chargesBenevole = computed(() => {
+        const charges: Record<ID, number> = {};
+        for (const benevole of benevoles.value) {
+            charges[benevole.id] = calculCharge(benevole, taches.value);
+        }
+        return charges;
+    })
 
     const loading = ref(true);
     const creatingTache = ref(false);
@@ -168,13 +178,8 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     }
 
-    const stopCreatingPlage = async (tempCreneau?: Creneau, update?: Promise<any>) => {
+    const stopCreatingPlage = async (tempCreneau?: Creneau) => {
         creatingPlage.value = false;
-        if (tempCreneau && update) {
-            crx.value.push(tempCreneau as Creneau);
-            await update;
-            getPlagesHoraires(); 
-        }
     }
 
     const startAddIndispo = () => {
@@ -192,13 +197,18 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     const updateTaches = async () => {
         await getTaches();
     }
+    const updatePlages = async () => {
+      await getPlagesHoraires();
+    }
 
     onMounted(async () => {
-        await getTaches();
-        await getPostes();
-        await getPlagesHoraires();
+        const promises = [];
+        promises.push(getTaches());
+        promises.push(getPostes());
+        promises.push(getPlagesHoraires());
+        promises.push(getBenevoles());
+        await Promise.all(promises);
         loading.value = false;
-        await getBenevoles();
     })
 
     const vuePerso = ref(false);
@@ -219,9 +229,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 <template>
     <div v-if="loading" id="loader"></div>
 
-    <h2 v-if="!loading" :class="{'blurred': creatingTache}">{{ title }}</h2>
+    <h2 v-if="!loading">{{ title }}</h2>
 
-    <div v-if="!loading" id="planning" :class="{'blurred': creatingTache}">
+    <div v-if="!loading" id="planning">
         <div class="hours">
             <div class="hour" v-for="i in parseInt('11')">{{ ((i * 2) < 10 ? '0' + (i * 2) : (i * 2)) + 'h00' }}</div>
         </div>
@@ -236,7 +246,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
                     <!-- <Tache /> -->
                     <Tache 
                         v-for="tacheWithPos of displayTaches.filter(({tache}) => tache.creneau.debut.getDate() === day.getDate())"
-                        :AllTaches="taches"
+                        :chargesBenevole="chargesBenevole"
                         :benevoles="benevoles" 
                         :tache="tacheWithPos.tache"
                         :modeAffectation="modeAffectation"
@@ -279,7 +289,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
         </div>
     </div>
 
-    <div v-if="!loading" class="scroll-btn" :class="{'blurred': creatingTache}">
+    <div v-if="!loading" class="scroll-btn">
         <div id="scroll-btn-left" @click="scrollDaysLeft" >
             <img src="../../../public/icons/fleche-gauche.png" alt="Gauche">
         </div>
@@ -291,6 +301,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
     <Modal
         v-if="creatingTache"
+        @close="stopCreatingTache"
      >
         <TacheForm
             :festID="festival.festID"
@@ -305,27 +316,26 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
     </Modal>
   <Modal
         v-if="creatingPlage"
-        id="add-plage"
-        title="Ajout des plages horaires"
-        :hideModal="stopCreatingPlage" >
+        @close="stopCreatingPlage"
+    >
         <PlageHoraireForm 
             :festivalId="festID" 
             :dateDebut="festival.dateDebut.toISOString()"
-            :dateFin="festival.dateFin.toISOString()" 
-            @close="stopCreatingPlage" />
+            :dateFin="festival.dateFin.toISOString()"
+            :close="stopCreatingPlage"
+            :updatePlages="updatePlages"
+        />
         />
   </Modal>
 
   <Modal
       v-if="addIndispo"
-      id="add-indispo"
-      title="Ajout d'une indisponibilité'"
-      >
+    @close="stopAddIndispo"
+    >
     <IndispoForm
         :festivalId="festID"
         :dateDebut="festival.dateDebut.toISOString()"
-        :dateFin="festival.dateFin.toISOString()" 
-        @close="stopAddIndispo"
+        :dateFin="festival.dateFin.toISOString()"
     />
   </Modal>
 </template>

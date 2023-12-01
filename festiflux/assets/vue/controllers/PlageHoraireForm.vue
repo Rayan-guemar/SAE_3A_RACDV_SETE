@@ -9,11 +9,9 @@ type Props = {
   festivalId: number;
   dateDebut: string;
   dateFin: string;
+  close: (c?: Creneau) => void
+  updatePlages: () => void
 }
-
-const emit = defineEmits<{
-  (event: 'close', tempCreneau?: Creneau, update?: Promise<any>): void
-}>()
 
 const props = defineProps<Props>();
 
@@ -30,7 +28,7 @@ function changeHandlerStart() {
 
   if (start.value.value) {;
     end.value.setAttribute("min", start.value.value);
-  } else {    
+  } else {
     end.value?.setAttribute("min", getDateForInputAttribute(props.dateDebut));
     end.value?.setAttribute("max", getDateForInputAttribute(props.dateFin));
   }
@@ -57,23 +55,27 @@ const createCreneau = async (e: Event) => {
     return;
   }
   await Backend.addHeureDepartFin(props.festivalId, creneau.value);
+  props.close(creneau.value);
+  props.updatePlages();
+
 }
 
 </script>
+
 <template>
   <form class="planning-form" @submit.prevent="createCreneau">
     <h2>Ajout d'une plage horaire</h2>
     <div class="flex-column flex-align-center">
       <label for="start-creneau">Debut du créneaux</label>
-      <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart">
+      <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart" />
     </div>
     <div class="flex-column flex-align-center">
       <label for="end-creneau">Fin du créneaux</label>
-      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" >
+      <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" />
     </div>
     <div class="flex-column flex-align-center">
       <input type="submit" value="Ajouter">
-      <button id="cancel-creneau-btn" class="btn" @click="$emit('close')">Annuler</button>
+      <button id="cancel-creneau-btn" class="btn"  @click="close()">Annuler</button>
     </div>
   </form>
 </template>

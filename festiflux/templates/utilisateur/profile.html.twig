@@ -16,7 +16,6 @@
 			</h1>
 
 			<div class="info-box-wrapper">
-			<div class="info-box">
 				<div class="image_profile">
 				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
 						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
@@ -24,6 +23,7 @@
 						src="{{ asset("uploads/user/anonyme.png") }}"
 					 {% endif %}>
 			    </div>
+			<div class="info-box">
 				<div class="info-row">
 					<div class="info-border">
 						<strong>Email</strong>
@@ -58,14 +58,11 @@
 					</div>
 				</div>
 
-				<div class="fest-button">
-
-					<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
-						<div class="button-shortcut">
-							Modifier mon profil
-						</div>
-					</a>
-				</div>
+				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
+					<div class="edit-button">
+						Modifier mon profil
+					</div>
+				</a>
 			</div>
 		</div>
 

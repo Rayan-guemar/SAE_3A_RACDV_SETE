@@ -81,6 +81,7 @@ class FestivalController extends AbstractController
             if ($allfest != null) {
                 return $this->render('festival/index.html.twig', [
                     'form' => $form->createView(),
+                    'searched' => true,
                     'festivals' => ($allfest)
                 ]);
             }
@@ -328,7 +329,7 @@ class FestivalController extends AbstractController
             return $this->redirectToRoute('app_auth_login');
         }
 
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return $this->redirectToRoute('home');
         }
@@ -384,18 +385,12 @@ class FestivalController extends AbstractController
 
 
         $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
-            'controller_name' => 'FestivalController',
-            'demandes' => $festival->getDemandesBenevole(),
-            'idFest' => $id,
-            'benevoles' => $festival->getBenevoles()
-        ]);
+        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
     public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse
     {
-
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
@@ -413,14 +408,6 @@ class FestivalController extends AbstractController
 
         $em->persist($poste);
         $em->flush();
-
-        foreach ($festival->getBenevoles() as $benevole) {
-            $postePref = new PosteUtilisateurPreferences();
-            $postePref->setUtilisateurId($benevole);
-            $postePref->setPosteId($poste);
-            $em->persist($postePref);
-            $em->flush();
-        }
 
         return new JsonResponse([
             'success' => 'Le poste a bien été créé',
@@ -670,8 +657,8 @@ class FestivalController extends AbstractController
     }
 
 
-    #[Route('/festival/{id}/day/{d}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST', 'GET'], options: ["expose" => true])]
-    public function addDebutFinDay(#[MapEntity] Festival $f, int $d, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): Response
     {
         if ($f == null) {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
@@ -1023,7 +1010,7 @@ class FestivalController extends AbstractController
         return $this->render('utilisateur/liked_postes.html.twig', [
             'postes' => $postes,
             'utilisateur' => $u,
-            'preferences' => $pref,
+            'preferences' => $pref
         ]);
     }
 }
