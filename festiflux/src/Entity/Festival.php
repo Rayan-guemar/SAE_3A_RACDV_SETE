@@ -78,6 +78,15 @@ class Festival {
     #[ORM\ManyToMany(targetEntity: Creneaux::class)]
     private Collection $PlagesHoraires;
 
+    #[ORM\ManyToOne(inversedBy: 'festival')]
+    private ?DemandeValidation $demandeValidation = null;
+
+    #[ORM\Column]
+    private ?bool $open = null;
+
+    #[ORM\Column]
+    private ?bool $valid = null;
+
 
 
     public function __construct() {
@@ -429,6 +438,42 @@ class Festival {
     public function removePlagesHoraire(Creneaux $plagesHoraire): static
     {
         $this->PlagesHoraires->removeElement($plagesHoraire);
+
+        return $this;
+    }
+
+    public function getDemandeValidation(): ?DemandeValidation
+    {
+        return $this->demandeValidation;
+    }
+
+    public function setDemandeValidation(?DemandeValidation $demandeValidation): static
+    {
+        $this->demandeValidation = $demandeValidation;
+
+        return $this;
+    }
+
+    public function isOpen(): ?bool
+    {
+        return $this->open;
+    }
+
+    public function setOpen(bool $open): static
+    {
+        $this->open = $open;
+
+        return $this;
+    }
+
+    public function isValid(): ?bool
+    {
+        return $this->valid;
+    }
+
+    public function setValid(bool $valid): static
+    {
+        $this->valid = $valid;
 
         return $this;
     }
