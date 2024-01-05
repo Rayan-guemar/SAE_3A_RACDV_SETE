@@ -1020,4 +1020,19 @@ class FestivalController extends AbstractController
             'preferences' => $pref
         ]);
     }
+
+    
+    #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
+    public function gestion(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        }      
+
+        return $this->render('festival/gestionFest.html.twig', [
+            'festival' => $festival,
+        ]);
+
+    }
 }
