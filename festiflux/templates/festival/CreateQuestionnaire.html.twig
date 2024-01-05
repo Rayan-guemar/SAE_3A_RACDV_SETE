@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+{% block title %}creer un questionnaire sur votre festival{% endblock %}
+
+{% block body %}
+
+    <div class="form-wrapper">
+        <h1>creer un questionnaire sur votre festival</h1>
+        {% for question in questions %}
+            <div class="info-border">{{ question.label }}</div>
+        {% endfor %}
+        {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
+
+        {{ form_row(form.label, {'label': 'votre Question', 'attr': {'class': 'festival-form__input'}}) }}
+
+        {{ form_widget(form.addQuestion, {'label': 'Ajouter', 'attr': {'class': 'festival-form__checkbox'}}) }}
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

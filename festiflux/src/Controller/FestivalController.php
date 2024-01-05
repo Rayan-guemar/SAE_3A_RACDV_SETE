@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
-use App\Form\AjoutDebutFinType;
+use App\Entity\QuestionBenevole;
 use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
+use App\Form\QuestionBenevoleType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\QuestionBenevoleRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1019,5 +1021,47 @@ class FestivalController extends AbstractController
             'utilisateur' => $u,
             'preferences' => $pref
         ]);
+    }
+
+    #[Route('/festival/{id}/CreateQuestionnaire', name: 'app_festival_create_questionnaire')]
+    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response
+    {
+        $user = $this->getUser();
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+//        if ($festival->getOrganisateur() != $user) {
+//            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+//            return $this->redirectToRoute('home');
+//        } else {
+            if (!$festival) {
+                throw $this->createNotFoundException('Festival non trouvé.');
+            }
+
+
+            $questionBenevole = new QuestionBenevole();
+            $questionBenevole->setFestival($festival);
+            $form = $this->createForm(QuestionBenevoleType::class, $questionBenevole);
+
+            $form->handleRequest($request);
+
+            $questions = $repository->findBy(["festival" => $festival]);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $em->persist($questionBenevole);
+                $em->flush();
+                $this->addFlash('success', 'La question a été ajouté avec succès.');
+                return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
+
+            }
+
+            return $this->render('festival/CreateQuestionnaire.html.twig', [
+                'questions' => $questions,
+                'controller_name' => 'FestivalController',
+                'form' => $form->createView(),
+            ]);
+//        }
     }
 }
