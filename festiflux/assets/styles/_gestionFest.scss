@@ -1,0 +1,20 @@
+.planning-container {
+    padding: 3rem;
+    height: 100vh;
+}
+
+
+
+.cta-container {
+    width: 100%;
+    
+    .button {
+        margin: 0.5rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #000000;
+        text-align: center;
+        width: fit-content;
+        height: fit-content;
+    }
+}

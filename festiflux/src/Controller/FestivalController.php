@@ -1023,15 +1023,26 @@ class FestivalController extends AbstractController
 
     
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response
     {
 
+        $festival = $repository->find($id);
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }      
 
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+
         return $this->render('festival/gestionFest.html.twig', [
+            'controller_name' => 'FestivalController',
             'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
         ]);
 
     }
