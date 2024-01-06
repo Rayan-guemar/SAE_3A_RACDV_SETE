@@ -5,13 +5,15 @@ namespace App\Controller;
 use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
-use App\Form\AjoutDebutFinType;
+use App\Entity\QuestionBenevole;
 use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
+use App\Form\QuestionBenevoleType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\QuestionBenevoleRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1020,4 +1022,25 @@ class FestivalController extends AbstractController
             'preferences' => $pref
         ]);
     }
+
+    #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
+    public function trackingRequest(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response
+    {
+        $user = $this->getUser();
+        $festivals = $repository->findBy(['organisateur' => $user]);
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+       if ($festivals != null){
+           return $this->render('festival/trackingRequest.html.twig', [
+               'festivals' => $festivals,
+               'controller_name' => 'FestivalController',
+           ]);
+       }else{
+              $this->addFlash('error', 'Vous n\'avez pas de festival');
+              return $this->redirectToRoute('home');
+       }
+    }
+
 }
