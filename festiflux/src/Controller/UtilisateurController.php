@@ -341,4 +341,13 @@ class UtilisateurController extends AbstractController {
 
         return new JsonResponse(array(...$prefs), Response::HTTP_OK);
     }
+
+//    #[Route('/user/{id}/trakingBenevoleRequest', name: 'app_user_traking_benevole_request')]
+//    public function trakingBenevoleRequest([MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
+//
+//        if (!$utilisateur instanceof Utilisateur) {
+//            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+//        }
+//
+//    }
 }
