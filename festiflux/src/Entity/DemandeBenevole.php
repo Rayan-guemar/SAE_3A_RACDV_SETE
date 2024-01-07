@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\DemandesBenevoleRepository;
+use App\Repository\DemandeBenevoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DemandesBenevoleRepository::class)]
-class DemandesBenevole
+#[ORM\Entity(repositoryClass: DemandeBenevoleRepository::class)]
+class DemandeBenevole
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
