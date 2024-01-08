@@ -11,6 +11,7 @@ use App\Form\InscriptionType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierProfilType;
 use App\Repository\FestivalRepository;
+use App\Repository\HistoriquePostulationRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Entity\PosteUtilisateurPreferences;
@@ -342,12 +343,18 @@ class UtilisateurController extends AbstractController {
         return new JsonResponse(array(...$prefs), Response::HTTP_OK);
     }
 
-//    #[Route('/user/{id}/trakingBenevoleRequest', name: 'app_user_traking_benevole_request')]
-//    public function trakingBenevoleRequest([MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
-//
-//        if (!$utilisateur instanceof Utilisateur) {
-//            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-//        }
-//
-//    }
+    #[Route('/user/{id}/trakingBenevoleRequest', name: 'app_user_traking_benevole_request')]
+    public function trakingBenevoleRequest (#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
+        if (!$utilisateur instanceof Utilisateur) {
+            $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
+            return $this->redirectToRoute('home');
+        }else{
+            $demandePostulation = $historiquePostulationRepository->findBy(['id_utilisateur' => $utilisateur->getId()]);
+            return $this->render('utilisateur/trakingBenevoleRequest.html.twig', [
+                'controller_name' => 'UtilisateurController',
+                'demandes' => $demandePostulation,
+            ]);
+        }
+
+    }
 }

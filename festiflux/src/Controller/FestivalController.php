@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\HistoriquePostulation;
 use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
@@ -12,6 +13,7 @@ use App\Form\ModifierPosteType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\HistoriquePostulationRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -129,6 +131,14 @@ class FestivalController extends AbstractController
         ;
 
         $festival->addDemandesBenevole($u);
+        $historiquePostulation = new HistoriquePostulation();
+        $historiquePostulation->setIdFastival($festival);
+        $historiquePostulation->setIdUtilisateur($u);
+        $historiquePostulation->setStatut(0);
+        $historiquePostulation->setDateDemande(new DateTime());
+        $em->persist($historiquePostulation);
+        $festival->addHistoriquePostulation($historiquePostulation);
+
         $em->persist($festival);
         $em->flush();
 
@@ -349,7 +359,7 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
-    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em)
+    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
     {
 
         $festival = $repo->find($id);
@@ -363,7 +373,9 @@ class FestivalController extends AbstractController
         }
 
         $festival->addBenevole($demande);
+        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(1);
         $festival->removeDemandesBenevole($demande);
+
         $em->persist($festival);
         $em->flush();
 
@@ -372,7 +384,7 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo)
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
     {
 
 
@@ -385,6 +397,7 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
+        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(-1);
 
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
@@ -1020,4 +1033,6 @@ class FestivalController extends AbstractController
             'preferences' => $pref
         ]);
     }
+
+
 }
