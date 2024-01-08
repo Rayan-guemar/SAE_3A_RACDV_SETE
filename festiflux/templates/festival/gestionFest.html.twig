@@ -1,32 +1,10 @@
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			Planning
-		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
-		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
-		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-				
+{% extends 'base.html.twig' %}
 
-		{% block overhead %}{% endblock %}
-	</head>
+{% block title %}
+	Gestion du
+	{{festival.getNom()}}
+{% endblock %}
 
 {% block body %}
-
-	{{ encore_entry_script_tags('app') }}
-
-	<a id="back-button" href="{{ path('app_festival_all') }}">
-				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
-			</a>
-
-	<main {{ vue_component('GestionFest', { 'festID': festival.id,
-				'title': festival.nom,
-				'isOrgaOrResp': isOrgaOrResp,
-				'dateDebut': festival.dateDebut | date("m/d/Y"),
-				'dateFin': festival.dateFin | date("m/d/Y"),
-				'userId': userId, } ) }}></main>
-
-
+	<h1>test</h1>
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block overhead %}
-<link
+	<link
 	rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 	<!-- Make sure you put this AFTER Leaflet's CSS -->
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script defer src="{{asset('js/AllMapDetailFest.js')}}"></script>
+	<script defer src="{{asset('js/AllMapDetailFest.js')}}"></script>
 {% endblock %}
 
 {% block title %}festivals
@@ -13,29 +13,29 @@
 
 {% block body %}
 	{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
-		{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
-		{% if searched %}
-			<a id="cancel-research" href="{{ path('app_festival_all') }}" ><img src="{{ asset('icons/fermer.png') }}" alt="cross" id="cross"></a>
-		{% endif %}
-		<input type="submit" id="saf" value="">
+	{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
+	{% if searched %}
+		<a id="cancel-research" href="{{ path('app_festival_all') }}"><img src="{{ asset('icons/fermer.png') }}" alt="cross" id="cross"></a>
+	{% endif %}
+	<input type="submit" id="saf" value="">
 	{{ form_end(form) }}
 	<!-- Map All Festivals -->
 	<div class="index-wrapper">
 		<button class="map-btn">Afficher la carte</button>
 		<div id="map" style="display: none;"></div>
 		{% if festivals|length == 0 %}
-		<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
-			Aucun festival ne correspond à votre recherche
-		</div>
+			<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
+				Aucun festival ne correspond à votre recherche
+			</div>
 		{% else %}
-		<div class="fest-wrapper">
-			{% for festival in festivals %}
-				{% if festival.getIsArchive() != 1 %}
-					{{ include('festival/fest.html.twig',{'festival':festival}) }}
-				{% endif %}
-			{% endfor %}
-		</div>
-			{% endif %}
+			<div class="fest-wrapper">
+				{% for festival in festivals %}
+					{% if festival.getIsArchive() != 1 %}
+						{{ include('festival/fest.html.twig',{'festival':festival}) }}
+					{% endif %}
+				{% endfor %}
+			</div>
+		{% endif %}
 	</div>
 
 {% endblock %}
