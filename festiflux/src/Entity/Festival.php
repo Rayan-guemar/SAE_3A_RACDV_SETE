@@ -82,7 +82,7 @@ class Festival {
     private ?bool $open = null;
 
     #[ORM\Column]
-    private ?bool $valid = null;
+    private ?int $valid = null;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Validation::class, orphanRemoval: true)]
     private Collection $validations;
@@ -96,6 +96,7 @@ class Festival {
         $this->postes = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->isArchive = 0;
+        $this->valid = 0;
         $this->tags = new ArrayCollection();
         $this->questionBenevoles = new ArrayCollection();
         $this->PlagesHoraires = new ArrayCollection();
@@ -440,11 +441,11 @@ class Festival {
         return $this;
     }
 
-    public function isValid(): ?bool {
+    public function getValid(): ?int {
         return $this->valid;
     }
 
-    public function setValid(bool $valid): static {
+    public function setValid(int $valid): static {
         $this->valid = $valid;
 
         return $this;
