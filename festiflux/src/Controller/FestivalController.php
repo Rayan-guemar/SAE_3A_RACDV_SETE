@@ -16,6 +16,7 @@ use App\Repository\FestivalRepository;
 use App\Repository\QuestionBenevoleRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
+use App\Repository\ValidationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -1024,23 +1025,42 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
-    public function trackingRequest(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response
+    public function trackingRequest(ValidationRepository $validationRepository,FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse
     {
         $user = $this->getUser();
-        $festivals = $repository->findBy(['organisateur' => $user]);
+
         if (!$user || !$user instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_auth_login');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
-       if ($festivals != null){
-           return $this->render('festival/trackingRequest.html.twig', [
-               'festivals' => $festivals,
-               'controller_name' => 'FestivalController',
-           ]);
-       }else{
-              $this->addFlash('error', 'Vous n\'avez pas de festival');
-              return $this->redirectToRoute('home');
-       }
+
+        if ($festival == null) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }else if ($festival->getOrganisateur() != $user){
+                $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }else if ($festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival est archivé');
+            return new JsonResponse(['error' => 'Le festival est archivé'], 403);
+        }
+        else{
+            $statut = "";
+            if ($festival->getValid() == 1){
+                $statut = "Validé";
+            }else if ($festival->getValid() == 0){
+                $enAttente = $validationRepository->findBy(['festival' => $festival]);
+                if ($enAttente == null) {
+                    $statut = "En attente de votre demande de validation";
+                }else{
+                    $statut = "En cours de traitement";
+                }
+            }else{
+                $statut = "Rejeté";
+            }
+
+            return new JsonResponse(['statut' => $statut], 200);
+        }
     }
 
 }
