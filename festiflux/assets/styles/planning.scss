@@ -547,6 +547,39 @@ h2 {
     transition: opacity 0.5s;
 }
 
+@media screen and (max-width: 1254px) and (min-width: 516px) {
+    #planning {
+        height: 600px;
+    }
+    #planning .days {
+        max-width: 45vw;
+        min-width: 220px;
+    }
+    #planning .manage-interface {
+        margin-left: 10px;
+    }
+    #planning .manage-interface .btn {
+        padding: 5px;
+    }
+}
+@media screen and (max-width: 515px) {
+    #planning {
+        height: 600px;
+    }
+    #planning .manage-interface .btn {
+        padding: 5px;
+    }
+    #planning .hours {
+        width: 60px;
+    }
+    #planning .days {
+        max-width: 45vw;
+    }
+    #planning .manage-interface {
+        margin-left: 10px;
+    }
+}
+
 #add-poste {
     position: absolute;
     top: 50%;

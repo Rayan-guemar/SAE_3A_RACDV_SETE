@@ -227,6 +227,9 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 </script>
 
 <template>
+  <Teleport to="head">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </Teleport>
     <div v-if="loading" id="loader"></div>
 
     <h2 v-if="!loading">{{ title }}</h2>
@@ -287,7 +290,7 @@ type FromArray<T extends any[]> = T extends (infer U)[] ? U : never ;
 
           <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
         </div>
-    </div>
+      </div>
 
     <div v-if="!loading" class="scroll-btn">
         <div id="scroll-btn-left" @click="scrollDaysLeft" >
