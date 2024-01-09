@@ -1076,4 +1076,32 @@ class FestivalController extends AbstractController
         }
     }
 
+    #[Route('/festival/{id}/user/{idUser}/sendMotif', name: 'app_festival_sendMotif', options: ["expose" => true], methods: ['POST'])]
+    public function sendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
+    {
+        if ($festival == null) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }else if ($utilisateur == null){
+            $this->addFlash('error', 'L\'utilisateur n\'existe pas');
+            return new JsonResponse(['error' => 'L\'utilisateur n\'existe pas'], 403);
+        }else if (json_decode($request->getContent(), true) == null){
+            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            return new JsonResponse(['error' => 'Le motif ne peut pas être vide'], 400);
+        } else {
+            $historiquePostulation = $historiquePostulationRepository->findOneBy(['id_utilisateur' => $utilisateur, 'id_fastival' => $festival]);
+            if ($historiquePostulation == null) {
+                $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
+                return new JsonResponse(['error' => 'L\'utilisateur n\'a pas postulé à ce festival'], 400);
+            } else {
+                $motif = json_decode($request->getContent(), true)['motif'];
+                $historiquePostulation->setMotif($motif);
+                $em->persist($historiquePostulation);
+                $em->flush();
+                $this->addFlash('success', 'Le motif a bien été envoyé');
+                return new JsonResponse(['success' => 'Le motif a bien été envoyé'], 200);
+            }
+        }
+    }
+
 }

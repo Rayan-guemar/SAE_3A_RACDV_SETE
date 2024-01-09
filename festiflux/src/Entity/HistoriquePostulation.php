@@ -28,6 +28,9 @@ class HistoriquePostulation
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateDemande = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motif = null;
+
 
     public function getId(): ?int
     {
@@ -78,6 +81,18 @@ class HistoriquePostulation
     public function setDateDemande(\DateTimeInterface $dateDemande): static
     {
         $this->dateDemande = $dateDemande;
+
+        return $this;
+    }
+
+    public function getMotif(): ?string
+    {
+        return $this->motif;
+    }
+
+    public function setMotif(?string $motif): static
+    {
+        $this->motif = $motif;
 
         return $this;
     }
