@@ -2,18 +2,23 @@
 
 namespace App\Controller;
 
+use App\Entity\HistoriquePostulation;
 use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
-use App\Form\AjoutDebutFinType;
+use App\Entity\QuestionBenevole;
 use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
+use App\Form\QuestionBenevoleType;
 use App\Form\SearchType;
 use App\Model\SearchData;
 use App\Repository\FestivalRepository;
+use App\Repository\QuestionBenevoleRepository;
+use App\Repository\HistoriquePostulationRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
+use App\Repository\ValidationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -129,6 +134,14 @@ class FestivalController extends AbstractController
         ;
 
         $festival->addDemandesBenevole($u);
+        $historiquePostulation = new HistoriquePostulation();
+        $historiquePostulation->setIdFastival($festival);
+        $historiquePostulation->setIdUtilisateur($u);
+        $historiquePostulation->setStatut(0);
+        $historiquePostulation->setDateDemande(new DateTime());
+        $em->persist($historiquePostulation);
+        $festival->addHistoriquePostulation($historiquePostulation);
+
         $em->persist($festival);
         $em->flush();
 
@@ -349,7 +362,7 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
-    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em)
+    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
     {
 
         $festival = $repo->find($id);
@@ -363,7 +376,9 @@ class FestivalController extends AbstractController
         }
 
         $festival->addBenevole($demande);
+        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(1);
         $festival->removeDemandesBenevole($demande);
+
         $em->persist($festival);
         $em->flush();
 
@@ -372,7 +387,7 @@ class FestivalController extends AbstractController
     }
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, DemandeBenevoleRepository $demandeRepo)
+    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
     {
 
 
@@ -385,6 +400,7 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
+        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(-1);
 
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
@@ -1021,6 +1037,7 @@ class FestivalController extends AbstractController
         ]);
     }
 
+
     
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
     public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response
@@ -1045,5 +1062,44 @@ class FestivalController extends AbstractController
             'userId' => $u->getId(),
         ]);
 
+    }
+
+    #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
+    public function trackingRequest(ValidationRepository $validationRepository,FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse
+    {
+        $user = $this->getUser();
+
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }
+
+        if ($festival == null) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }else if ($festival->getOrganisateur() != $user){
+                $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+        }else if ($festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival est archivé');
+            return new JsonResponse(['error' => 'Le festival est archivé'], 403);
+        }
+        else{
+            $statut = "";
+            if ($festival->getValid() == 1){
+                $statut = "Validé";
+            }else if ($festival->getValid() == 0){
+                $enAttente = $validationRepository->findBy(['festival' => $festival]);
+                if ($enAttente == null) {
+                    $statut = "En attente de votre demande de validation";
+                }else{
+                    $statut = "En cours de traitement";
+                }
+            }else{
+                $statut = "Rejeté";
+            }
+
+            return new JsonResponse(['statut' => $statut], 200);
+        }
     }
 }
