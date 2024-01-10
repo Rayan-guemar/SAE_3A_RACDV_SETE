@@ -31,7 +31,12 @@
 		</div>
 		<div class="actions">
 			<h2>Demander la validation du festival</h2>
-			<a href="{{path('app_festival_validationRequest', {'id': festival.getId()})}}" class="gest_btn">Demander la validation</a>
+			<a href="{{path('app_festival_validationRequest', {'id': festival.getId()})}}" class="gest_btn" {% if festival.getValid()==1 %} id="griser" >
+				<span class="tooltiptext">Le festival est déjà validé</span>
+				{% else %}
+					>
+				{% endif %}
+					Demander la validation</a>
 		</div>
 		<div class="button-archive">
 			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
