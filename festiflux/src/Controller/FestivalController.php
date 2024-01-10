@@ -387,31 +387,7 @@ class FestivalController extends AbstractController
     }
 
 
-    #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande', options: ["expose" =>true])]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
-    {
 
-
-        $festival = $repo->find($id);
-        $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
-            return $u->getId() == $idUser;
-        });
-
-        if (!$demande) {
-            $this->addFlash('error', 'La demande n\'existe pas');
-            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
-        }
-        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(-1);
-
-
-        $festival->removeDemandesBenevole($demande);
-        $em->persist($festival);
-        $em->flush();
-
-
-        $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
-    }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
     public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse
