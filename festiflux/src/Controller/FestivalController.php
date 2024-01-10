@@ -387,30 +387,8 @@ class FestivalController extends AbstractController
         return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
-    #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
-    public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
-    {
 
 
-        $festival = $repo->find($id);
-        $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
-            return $u->getId() == $idUser;
-        });
-
-        if (!$demande) {
-            $this->addFlash('error', 'La demande n\'existe pas');
-            return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
-        }
-        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(-1);
-
-        $festival->removeDemandesBenevole($demande);
-        $em->persist($festival);
-        $em->flush();
-
-
-        $this->addFlash('success', 'La demande a bien été rejetée');
-        return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
-    }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
     public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse
@@ -1103,4 +1081,50 @@ class FestivalController extends AbstractController
             return new JsonResponse(['statut' => $statut], 200);
         }
     }
+
+    #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
+    public function rejectAndSendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
+    {
+        if ($festival == null) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+        }else if ($utilisateur == null){
+            $this->addFlash('error', 'L\'utilisateur n\'existe pas');
+            return new JsonResponse(['error' => 'L\'utilisateur n\'existe pas'], 403);
+        }else if (json_decode($request->getContent(), true) == null){
+            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            return new JsonResponse(['error' => 'Le motif ne peut pas être vide'], 400);
+        } else {
+            $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($utilisateur) {
+                return $u->getId() == $utilisateur->getId();
+            });
+
+            if (!$demande) {
+                $this->addFlash('error', 'La demande n\'existe pas');
+                return new JsonResponse(['error' => 'La demande n\'existe pas'], 403);
+            }
+            $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival])->setStatut(-1);
+
+            $festival->removeDemandesBenevole($demande);
+            $em->persist($festival);
+            $em->flush();
+
+
+            $this->addFlash('success', 'La demande a bien été rejetée');
+            $historiquePostulation = $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival]);
+            if ($historiquePostulation == null) {
+                $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
+                return new JsonResponse(['error' => 'L\'utilisateur n\'a pas postulé à ce festival'], 400);
+            } else {
+                $motif = json_decode($request->getContent(), true)['motif'];
+                $historiquePostulation->setMotif($motif);
+                $em->persist($historiquePostulation);
+                $em->flush();
+                $this->addFlash('success', 'Le motif a bien été envoyé');
+                return new JsonResponse(['success' => 'Le motif a bien été envoyé'], 200);
+            }
+        }
+    }
+
+      
 }
