@@ -28,8 +28,8 @@ use App\Service\UtilisateurUtils;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class ValidationController extends AbstractController {
-    #[Route('festival/{id}/validation', name: 'app_festival_validation_add', methods: ['POST', 'GET'])]
-    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils): Response {
+    #[Route('festival/{id}/validation', name: 'app_festival_validation_add')]
+    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException("Le festival n'existe pas");
@@ -49,21 +49,13 @@ class ValidationController extends AbstractController {
         $validations = $festival->getValidations();
 
 
-        if ($req->getMethod() === 'GET') {
-            // TODO: ajouter la page
-            return $this->render('festival/validations.html.twig', [
-                'festival' => $festival,
-                'validations' => $validations,
-            ]);
-        } else {
             if ($festival->getValid() == 1) {
                 $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
                 return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
             }
+            $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
 
-            if ($validations->filter(function (Validation $v) {
-                $v->getStatus() == 0;
-            })->count() > 0) {
+            if ($enAttente != null) {
                 $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
                 return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
             }
@@ -77,7 +69,6 @@ class ValidationController extends AbstractController {
             $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
 
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
-        }
     }
 
     // #[IsGranted("ROLE_ADMIN")]
