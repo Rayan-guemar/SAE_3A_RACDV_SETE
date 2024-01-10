@@ -34,8 +34,7 @@ document.addEventListener("keydown", function (e) {
 });
 
 submitBtn.addEventListener("click", async function (e) {
-    console.log("envoyer le motif : " + motif + " de l'utilisateur : " + idUtilisateur + " pour le festival : " + idFestival);
-    const URL = Routing.generate('app_festival_sendMotif', {
+    const URL = Routing.generate('app_festival_rejectAndSendMotif', {
         idUser: idUtilisateur,
         id: idFestival
     });
@@ -53,4 +52,6 @@ submitBtn.addEventListener("click", async function (e) {
         console.log(error);
     }
     closeModal();
+    window.location.reload();
+
 });

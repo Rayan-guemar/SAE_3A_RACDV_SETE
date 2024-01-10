@@ -386,7 +386,7 @@ class FestivalController extends AbstractController
         return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
-    #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande')]
+    #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande', options: ["expose" =>true])]
     public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
     {
 
@@ -1076,8 +1076,8 @@ class FestivalController extends AbstractController
         }
     }
 
-    #[Route('/festival/{id}/user/{idUser}/sendMotif', name: 'app_festival_sendMotif', options: ["expose" => true], methods: ['POST'])]
-    public function sendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
+    #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
+    public function rejectAndSendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
     {
         if ($festival == null) {
             $this->addFlash('error', 'Le festival n\'existe pas');
@@ -1089,6 +1089,22 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'Le motif ne peut pas être vide');
             return new JsonResponse(['error' => 'Le motif ne peut pas être vide'], 400);
         } else {
+            $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($utilisateur) {
+                return $u->getId() == $utilisateur->getId();
+            });
+
+            if (!$demande) {
+                $this->addFlash('error', 'La demande n\'existe pas');
+                return new JsonResponse(['error' => 'La demande n\'existe pas'], 403);
+            }
+            $historiquePostulationRepository->findOneBy(['id_utilisateur' => $utilisateur, 'id_fastival' => $festival])->setStatut(-1);
+
+            $festival->removeDemandesBenevole($demande);
+            $em->persist($festival);
+            $em->flush();
+
+
+            $this->addFlash('success', 'La demande a bien été rejetée');
             $historiquePostulation = $historiquePostulationRepository->findOneBy(['id_utilisateur' => $utilisateur, 'id_fastival' => $festival]);
             if ($historiquePostulation == null) {
                 $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
