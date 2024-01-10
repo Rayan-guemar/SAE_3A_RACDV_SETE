@@ -29,9 +29,9 @@
 			<p>Pour voir toutes les questions du formulaire</p>
 			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les questions</a>
 		</div>
-		<div class="actions">
+		<div class="actions" >
 			<h2>Demander la validation du festival</h2>
-			<a href="{{path('app_festival_validationRequest', {'id': festival.getId()})}}" class="gest_btn" {% if festival.getValid()==1 %} id="griser" >
+			<a href="{{path('app_festival_validationRequest', {'id': festival.getId()})}}" class="gest_btn tooltip" {% if festival.getValid()==1 %} id="griser" >
 				<span class="tooltiptext">Le festival est déjà validé</span>
 				{% else %}
 					>
