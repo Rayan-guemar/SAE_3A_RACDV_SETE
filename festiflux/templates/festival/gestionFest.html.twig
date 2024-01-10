@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Gestion du
+	{{festival.getNom()}}
+{% endblock %}
+
+{% block body %}
+	<section class='page-container	flex-column'>
+		<h1 class="page-title">Gestion du
+			{{festival.getNom()}}</h1>
+		<div class="actions">
+			<h2>Gestion du planning</h2>
+			<p>Pour ajouter des plages horaires ou des créneaux</p>
+			<a href="{{path('app_festival_planning', {'id': festival.getId()})}}" class="gest_btn">Gérer le planning</a>
+		</div>
+		<div class="actions">
+			<h2>Gestion des postes</h2>
+			<p>Pour ajouter ou modifier les postes</p>
+			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Gérer les postes</a>
+		</div>
+		<div class="actions">
+			<h2>Gestion des postulations</h2>
+			<p>Pour voir toutes les postulations du festival</p>
+			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les postulations</a>
+		</div>
+		<div class="actions">
+			<h2>Gestion du formulaire Bénévole</h2>
+			<p>Pour voir toutes les questions du formulaire</p>
+			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les questions</a>
+		</div>
+		<div class="button-archive">
+			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
+		</div>
+	</section>
+{% endblock %}

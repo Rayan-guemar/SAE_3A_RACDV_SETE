@@ -135,7 +135,7 @@ class FestivalController extends AbstractController
 
         $festival->addDemandesBenevole($u);
         $historiquePostulation = new HistoriquePostulation();
-        $historiquePostulation->setIdFastival($festival);
+        $historiquePostulation->setFestival($festival);
         $historiquePostulation->setIdUtilisateur($u);
         $historiquePostulation->setStatut(0);
         $historiquePostulation->setDateDemande(new DateTime());
@@ -376,7 +376,7 @@ class FestivalController extends AbstractController
         }
 
         $festival->addBenevole($demande);
-        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(1);
+        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(1);
         $festival->removeDemandesBenevole($demande);
 
         $em->persist($festival);
@@ -385,6 +385,7 @@ class FestivalController extends AbstractController
         $this->addFlash('success', 'La demande a bien été acceptée');
         return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
+
 
     #[Route('/festival/{id}/demandes/reject/{idUser}', name: 'app_festival_reject_demande', options: ["expose" =>true])]
     public function rejectDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository)
@@ -400,7 +401,8 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
-        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(-1);
+        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(-1);
+
 
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
@@ -1037,6 +1039,33 @@ class FestivalController extends AbstractController
         ]);
     }
 
+
+    
+    #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response
+    {
+
+        $festival = $repository->find($id);
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        }      
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+
+        return $this->render('festival/gestionFest.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
+        ]);
+
+    }
+
     #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
     public function trackingRequest(ValidationRepository $validationRepository,FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse
     {
@@ -1097,7 +1126,7 @@ class FestivalController extends AbstractController
                 $this->addFlash('error', 'La demande n\'existe pas');
                 return new JsonResponse(['error' => 'La demande n\'existe pas'], 403);
             }
-            $historiquePostulationRepository->findOneBy(['id_utilisateur' => $utilisateur, 'id_fastival' => $festival])->setStatut(-1);
+            $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival])->setStatut(-1);
 
             $festival->removeDemandesBenevole($demande);
             $em->persist($festival);
@@ -1105,7 +1134,7 @@ class FestivalController extends AbstractController
 
 
             $this->addFlash('success', 'La demande a bien été rejetée');
-            $historiquePostulation = $historiquePostulationRepository->findOneBy(['id_utilisateur' => $utilisateur, 'id_fastival' => $festival]);
+            $historiquePostulation = $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival]);
             if ($historiquePostulation == null) {
                 $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
                 return new JsonResponse(['error' => 'L\'utilisateur n\'a pas postulé à ce festival'], 400);
@@ -1120,4 +1149,5 @@ class FestivalController extends AbstractController
         }
     }
 
+      
 }

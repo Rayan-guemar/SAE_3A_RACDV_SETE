@@ -349,7 +349,7 @@ class UtilisateurController extends AbstractController {
             $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
             return $this->redirectToRoute('home');
         }else{
-            $demandePostulation = $historiquePostulationRepository->findBy(['id_utilisateur' => $utilisateur->getId()]);
+            $demandePostulation = $historiquePostulationRepository->findBy(['utilisateur' => $utilisateur->getId()]);
             return $this->render('utilisateur/trakingBenevoleRequest.html.twig', [
                 'controller_name' => 'UtilisateurController',
                 'demandes' => $demandePostulation,

@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
 		<script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
 		<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-				
+
 
 		{% block overhead %}{% endblock %}
 	</head>
@@ -20,16 +20,9 @@
 				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
 			</a>
 
-			<div class="planning-wrapper" {{ vue_component('Planning', {
-				'festID': festival.id,
-				'title': 'Planning du ' ~ festival.nom,
-				'isOrgaOrResp': isOrgaOrResp,
-				'dateDebut': festival.dateDebut | date("m/d/Y"),
-				'dateFin': festival.dateFin | date("m/d/Y"),
-				'userId': userId,
-			}) }} ></div>
+			<div class="planning-wrapper" {{ vue_component('Planning', { 'festID': festival.id, 'title': 'Planning du ' ~ festival.nom, 'isOrgaOrResp': isOrgaOrResp, 'dateDebut': festival.dateDebut | date("m/d/Y"), 'dateFin': festival.dateFin | date("m/d/Y"), 'userId': userId, } ) }}></div>
 
 		</main>
-		
+
 	</body>
 </html>

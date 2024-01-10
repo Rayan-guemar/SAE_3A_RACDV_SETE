@@ -16,11 +16,11 @@ class HistoriquePostulation
 
     #[ORM\ManyToOne(inversedBy: 'historiquePostulations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'historiquePostulations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Festival $id_fastival = null;
+    private ?Festival $festival = null;
 
     #[ORM\Column]
     private ?int $statut = null;
@@ -32,6 +32,7 @@ class HistoriquePostulation
     private ?string $motif = null;
 
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -39,25 +40,24 @@ class HistoriquePostulation
 
     public function getIdUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setIdUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->id_utilisateur = $id_utilisateur;
-
+        $this->utilisateur = $utilisateur;
         return $this;
     }
 
-    public function getIdFastival(): ?Festival
+
+    public function getFestival(): ?Festival
     {
-        return $this->id_fastival;
+        return $this->festival;
     }
 
-    public function setIdFastival(?Festival $id_fastival): static
+    public function setFestival(?Festival $festival): static
     {
-        $this->id_fastival = $id_fastival;
-
+        $this->festival = $festival;
         return $this;
     }
 
@@ -96,4 +96,5 @@ class HistoriquePostulation
 
         return $this;
     }
+
 }

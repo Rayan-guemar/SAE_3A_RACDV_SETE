@@ -7,7 +7,8 @@
 {% block overhead %}{% endblock %}
 
 {% block body %}
-    <h1>Suivi des demandes de festivals</h1>
+    <h1>Suivi des demandes de Postulation</h1>
+
     <table>
     <thead>
     <tr>
@@ -15,11 +16,12 @@
         <th>Date de votre demande</th>
         <th>Statut</th>
         <th>Motif</th>
+
     </tr>
     </thead>
     <tbody>
     {% for demande in demandes %}
-        <td> <a href="{{ path('app_festival_detail', {'id' : demande.getIdFastival().getId()}) }}"> {{ demande.getIdFastival().getNom() }} </a></td>
+        <td> <a href="{{ path('app_festival_detail', {'id' : demande.getFestival().getId()}) }}"> {{ demande.getFestival().getNom() }} </a></td>
         <td>{{ demande.dateDemande|date("m/d/Y") }}</td>
         {% if demande.statut()==1 %}
             <td>Votre demande est validée</td>
@@ -28,11 +30,13 @@
         {% else %}
             <td> Votre demande a été rejeté </td>
         {% endif %}
+        
         {% if demande.getMotif() is defined %}
         <td>{{ demande.getMotif() }}</td>
         {% else %}
         <td> Pas de motif spécifique </td>
         {% endif %}
+
     </tbody>
     {% endfor %}
 
