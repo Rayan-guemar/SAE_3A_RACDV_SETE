@@ -92,7 +92,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nomPhotoProfil = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_utilisateur', targetEntity: HistoriquePostulation::class)]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: HistoriquePostulation::class)]
     private Collection $historiquePostulations;
 
     public function __construct()

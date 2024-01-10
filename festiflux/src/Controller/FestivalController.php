@@ -136,7 +136,7 @@ class FestivalController extends AbstractController
 
         $festival->addDemandesBenevole($u);
         $historiquePostulation = new HistoriquePostulation();
-        $historiquePostulation->setIdFastival($festival);
+        $historiquePostulation->setFestival($festival);
         $historiquePostulation->setIdUtilisateur($u);
         $historiquePostulation->setStatut(0);
         $historiquePostulation->setDateDemande(new DateTime());
@@ -377,7 +377,7 @@ class FestivalController extends AbstractController
         }
 
         $festival->addBenevole($demande);
-        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(1);
+        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(1);
         $festival->removeDemandesBenevole($demande);
 
         $em->persist($festival);
@@ -401,7 +401,7 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'La demande n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
-        $historiquePostulationRepository->findOneBy(['id_utilisateur' => $idUser, 'id_fastival' => $id])->setStatut(-1);
+        $historiquePostulationRepository->findOneBy(['utilisateur' => $idUser, 'festival' => $id])->setStatut(-1);
 
         $festival->removeDemandesBenevole($demande);
         $em->persist($festival);
