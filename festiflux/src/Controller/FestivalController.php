@@ -1067,7 +1067,7 @@ class FestivalController extends AbstractController
             if ($festival->getValid() == 1){
                 $statut = "Validé";
             }else if ($festival->getValid() == 0){
-                $enAttente = $validationRepository->findBy(['festival' => $festival]);
+                $enAttente = $validationRepository->findBy(['festival' => $festival, 'statut' => 0]);
                 if ($enAttente == null) {
                     $statut = "En attente de votre demande de validation";
                 }else{
