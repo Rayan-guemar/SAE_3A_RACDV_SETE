@@ -45,6 +45,7 @@ use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Repository\TacheRepository;
 use DateTime;
+use Doctrine\DBAL\Query;
 use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -294,7 +295,7 @@ class FestivalController extends AbstractController
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
-
+ 
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
         $benevoles = $festival->getBenevoles();
         $responsables = $festival->getResponsables();

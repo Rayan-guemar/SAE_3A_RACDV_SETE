@@ -3,7 +3,7 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Liste des demandes de Festival</h1>
+	<h1>Liste des demandes de Validation</h1>
 	<table class="\" table\"">
 		<thead>
 			<tr>
@@ -17,18 +17,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for demande in demandes %}
+			{% for validation in validations %}
 				<tr>
 
-					<td>{{ demande.nomFestival }}</td>
-					<td>{{ demande.descriptionFestival }}</td>
-					<td>{{ demande.organisateurFestival.nom }}</td>
-					<td>{{ demande.dateDebutFestival | date("D/M/Y") }}</td>
-					<td>{{ demande.dateFinFestival | date("D/M/Y") }}</td>
-					<td>{{ demande.lieuFestival }}</td>
+					<td>{{ validation.getFestival().getNom() }}</td>
+					<td>{{ validation.getFestival().getDescription() }}</td>
+					<td>{{ validation.getFestival().getOrganisateur().getNom() }}</td>
+					<td>{{ validation.getFestival().getDateDebut()|date("d/m/Y") }}</td>
+					<td>{{ validation.getFestival().getDateFin()|date("d/m/Y") }}</td>
+					<td>{{ validation.getFestival().getLieu() }}</td>
 					<td>
-						<a href={{path("app_demandefestival_accept", {"id": demande.id} )}}>Accepter</a>
-						<a href={{path("app_demandefestival_reject", {"id": demande.id} )}}>Rejeter</a>
+						<a href={{path("app_validation_accept", {"id": validation.id} )}}>Accepter</a>
+						<a href={{path("app_validation_reject", {"id": validation.id} )}}>Rejeter</a>
 					</td>
 				</tr>
 			{% else %}

@@ -83,8 +83,7 @@ class ValidationController extends AbstractController {
             'status' => 0
         ]);
 
-        // TODO: ajouter la page
-        return $this->render('validation/index.html.twig', [
+        return $this->render('demande_festival/index.html.twig', [
             'validations' => $validations,
         ]);
     }
