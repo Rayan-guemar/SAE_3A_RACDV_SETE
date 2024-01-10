@@ -54,7 +54,6 @@ class HistoriquePostulation
     public function setIdFastival(?Festival $id_fastival): static
     {
         $this->id_fastival = $id_fastival;
-
         return $this;
     }
 

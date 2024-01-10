@@ -29,6 +29,10 @@
 			<p>Pour voir toutes les questions du formulaire</p>
 			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les questions</a>
 		</div>
+		<div class="actions">
+			<h2>Demander la validation du festival</h2>
+			<a href="{{path('app_festival_validationRequest', {'id': festival.getId()})}}" class="gest_btn">Demander la validation</a>
+		</div>
 		<div class="button-archive">
 			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
 		</div>

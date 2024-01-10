@@ -7,6 +7,7 @@ use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
 use App\Entity\QuestionBenevole;
+use App\Entity\Validation;
 use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
@@ -430,6 +431,10 @@ class FestivalController extends AbstractController
         $poste->setDescription('');
 
         $em->persist($poste);
+        $em->flush();
+
+        $festival->setValid(0);
+        $em->persist($festival);
         $em->flush();
 
         return new JsonResponse([
@@ -971,7 +976,7 @@ class FestivalController extends AbstractController
 
                 $festival->setAffiche($newFilename);
             }
-
+            $festival->setValid(0);
             $em->flush();
             $this->addFlash('success', 'Le festival a été modifié avec succès.');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
@@ -1100,6 +1105,50 @@ class FestivalController extends AbstractController
             }
 
             return new JsonResponse(['statut' => $statut], 200);
+        }
+    }
+
+    #[Route('/festival/{id}/validationRequest', name: 'app_festival_validationRequest')]
+    public function validationRequest(#[MapEntity] Festival $festival, ValidationRepository $validationRepository, EntityManagerInterface $em):Response
+    {
+        $user = $this->getUser();
+
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        if ($festival == null) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        }else if ($festival->getOrganisateur() != $user){
+                $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return $this->redirectToRoute('home');
+        }else if ($festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival est archivé');
+            return $this->redirectToRoute('home');
+        }
+        else{
+            if ($festival->getValid() == 1) {
+                $this->addFlash('error', 'Le festival est déjà validé');
+                return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+            }else {
+                $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
+                if ($enAttente == null) {
+                    $validation = new Validation();
+                    $validation->setFestival($festival);
+                    $em->persist($validation);
+                    $em->flush();
+                    $festival->setValid(0);
+                    $em->persist($festival);
+                    $em->flush();
+                    $this->addFlash('success', 'Votre demande de validation a bien été envoyée');
+                    return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+                }else{
+                    $this->addFlash('error', 'Votre demande de validation est en cours de traitement');
+                    return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+                }
+            }
         }
     }
 }
