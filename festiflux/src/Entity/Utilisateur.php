@@ -92,6 +92,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nomPhotoProfil = null;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: HistoriquePostulation::class)]
+    private Collection $historiquePostulations;
+
     public function __construct()
     {
         $this->festivals = new ArrayCollection();
@@ -102,6 +105,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->disponibilites = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->posteUtilisateurPreferences = new ArrayCollection();
+        $this->historiquePostulations = new ArrayCollection();
     }
 
     /**
@@ -477,6 +481,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($posteUtilisateurPreference->getUtilisateurId() === $this) {
                 $posteUtilisateurPreference->setUtilisateurId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistoriquePostulation>
+     */
+    public function getHistoriquePostulations(): Collection
+    {
+        return $this->historiquePostulations;
+    }
+
+    public function addHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
+    {
+        if (!$this->historiquePostulations->contains($historiquePostulation)) {
+            $this->historiquePostulations->add($historiquePostulation);
+            $historiquePostulation->setIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
+    {
+        if ($this->historiquePostulations->removeElement($historiquePostulation)) {
+            // set the owning side to null (unless already changed)
+            if ($historiquePostulation->getIdUtilisateur() === $this) {
+                $historiquePostulation->setIdUtilisateur(null);
             }
         }
 
