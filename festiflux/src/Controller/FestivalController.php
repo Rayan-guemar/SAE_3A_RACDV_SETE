@@ -1037,6 +1037,33 @@ class FestivalController extends AbstractController
         ]);
     }
 
+
+    
+    #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response
+    {
+
+        $festival = $repository->find($id);
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        }      
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+
+        return $this->render('festival/gestionFest.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
+        ]);
+
+    }
+
     #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
     public function trackingRequest(ValidationRepository $validationRepository,FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse
     {
@@ -1075,5 +1102,4 @@ class FestivalController extends AbstractController
             return new JsonResponse(['statut' => $statut], 200);
         }
     }
-
 }
