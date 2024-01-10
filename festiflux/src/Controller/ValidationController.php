@@ -47,51 +47,33 @@ class ValidationController extends AbstractController {
         }
 
         $validations = $festival->getValidations();
+
+
         if ($req->getMethod() === 'GET') {
             // TODO: ajouter la page
             return $this->render('festival/validations.html.twig', [
                 'festival' => $festival,
                 'validations' => $validations,
             ]);
-        }
+        } else {
 
-        return new JsonResponse([
-            'festival' => $festival->getId(),
-            'validations' => $validations->toArray(),
-        ]);
+            if ($validations->filter(function (Validation $v) {
+                $v->getStatus() == 0;
+            })->count() > 0) {
+                $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
+                return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+            }
 
-        if ($validations->filter(function (Validation $v) {
-            $v->getStatus() == 0;
-        })->count() > 0) {
-            $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
+            $v = new Validation();
+            $v->setFestival($festival);
+
+            $em->persist($v);
+            $em->flush();
+
+            $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
+
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
-
-        $v = new Validation();
-        $v->setFestival($festival);
-
-        // $em->persist($v);
-        // $em->flush();
-
-        $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
-
-        return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-    }
-
-    #[Route('festival/{id}/validation', name: 'app_festival_validation', methods: 'GET')]
-    public function getFestivalValidations(#[MapEntity] Festival $festival): Response {
-
-        if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
-        }
-
-        $validations = $festival->getValidations();
-
-
-        // TODO: ajouter la page
-        return $this->render('validation/index.html.twig', [
-            'validations' => $validations,
-        ]);
     }
 
     // #[IsGranted("ROLE_ADMIN")]
