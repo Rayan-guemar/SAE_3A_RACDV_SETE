@@ -56,12 +56,16 @@ class ValidationController extends AbstractController {
                 'validations' => $validations,
             ]);
         } else {
+            if ($festival->getValid() == 1) {
+                $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+                return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+            }
 
             if ($validations->filter(function (Validation $v) {
                 $v->getStatus() == 0;
             })->count() > 0) {
                 $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
-                return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+                return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
             }
 
             $v = new Validation();
@@ -72,7 +76,7 @@ class ValidationController extends AbstractController {
 
             $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
 
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
     }
 
