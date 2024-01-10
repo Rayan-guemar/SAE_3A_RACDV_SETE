@@ -20,6 +20,9 @@ class Validation {
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $status = 0;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motif = null;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -44,6 +47,17 @@ class Validation {
         return $this;
     }
 
+    public function getMotif(): ?string
+    {
+        return $this->motif;
+    }
+
+    public function setMotif(?string $motif): static
+    {
+        $this->motif = $motif;
+        return $this;
+    }
+    
     public function accept() {
         $this->setStatus(1);
     }
