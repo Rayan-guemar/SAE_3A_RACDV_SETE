@@ -87,7 +87,7 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Validation::class, orphanRemoval: true)]
     private Collection $validations;
 
-    #[ORM\OneToMany(mappedBy: 'id_fastival', targetEntity: HistoriquePostulation::class)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: HistoriquePostulation::class)]
     private Collection $historiquePostulations;
 
 

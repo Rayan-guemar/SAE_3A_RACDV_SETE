@@ -16,7 +16,7 @@ class HistoriquePostulation
 
     #[ORM\ManyToOne(inversedBy: 'historiquePostulations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'historiquePostulations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -36,12 +36,12 @@ class HistoriquePostulation
 
     public function getIdUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setIdUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
