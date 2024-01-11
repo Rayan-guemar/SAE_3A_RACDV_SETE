@@ -988,7 +988,9 @@ class FestivalController extends AbstractController {
 
 
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response
+    {
+        $statut = "";
 
         $festival = $repository->find($id);
         if (!$festival) {
@@ -999,6 +1001,26 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
+        }else if ($festival->getOrganisateur() != $u){
+            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return $this->redirectToRoute('home');
+        }else if ($festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival est archivé');
+            return $this->redirectToRoute('home');
+        }
+        else{
+            if ($festival->getValid() == 1){
+                $statut = "Validé mais pas ouvert aux postulations";
+            }else if ($festival->getValid() == 0){
+                $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
+                if ($enAttente == null) {
+                    $statut = "en attente de votre demande de validation";
+                }else{
+                    $statut = "en cours de traitement de validation";
+                }
+            }else{
+                $statut = "Rejeté";
+            }
         }
         $hasPendingValidation = count($validationRepository->findBy(['festival' => $festival, 'status' => 0])) > 0;
 
@@ -1008,10 +1030,14 @@ class FestivalController extends AbstractController {
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
             'userId' => $u->getId(),
+            'statut' => $statut,
             'hasPendingValidation' => $hasPendingValidation,
         ]);
     }
 
+    /*
+     * je laisse cette route au cas ou on veut ajouter le statut d'une demande de festival autre part
+     */
     #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
     public function trackingRequest(ValidationRepository $validationRepository, FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse {
         $user = $this->getUser();
@@ -1035,12 +1061,13 @@ class FestivalController extends AbstractController {
             if ($festival->getValid() == 1) {
                 $statut = "Validé";
             }else if ($festival->getValid() == 0){
-                $enAttente = $validationRepository->findBy(['festival' => $festival, 'statut' => 0]);
 
+                $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
-                    $statut = "En attente de votre demande de validation";
-                } else {
-                    $statut = "En cours de traitement";
+                    $statut = "en attente de votre demande de validation";
+                }else{
+                    $statut = "en cours de traitement de validation";
+
                 }
             } else {
                 $statut = "Rejeté";
