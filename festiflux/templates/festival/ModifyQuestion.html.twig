@@ -9,7 +9,7 @@
         {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
         {{ form_row(form.label, {'label': 'votre Question', 'attr': {'class': 'festival-form__input'}}) }}
-        {{ form_row(form.typeReponse) }}
+        {{ form_row(form.typeReponse, {'label': 'Type de reponse', 'attr': {'class': 'select'}}) }}
         {{  form_widget(form.modifyQuestion, {'attr': {'class': 'festival-form__checkbox'}}) }}
 
         {{ form_end(form) }}
