@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+{% block title %}modifier votre Question{% endblock %}
+
+{% block body %}
+
+    <div class="form-wrapper">
+        <h1>Modifier la question </h1>
+
+        {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
+
+        {{ form_row(form.label) }}
+        {{ form_row(form.typeReponse) }}
+        {{  form_widget(form.modifyQuestion, {'attr': {'class': 'festival-form__checkbox'}}) }}
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
