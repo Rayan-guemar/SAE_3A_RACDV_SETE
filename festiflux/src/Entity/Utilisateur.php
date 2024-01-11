@@ -92,6 +92,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nomPhotoProfil = null;
 
+
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: HistoriquePostulation::class)]
     private Collection $historiquePostulations;
 

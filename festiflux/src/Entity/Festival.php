@@ -495,6 +495,7 @@ class Festival {
         if (!$this->historiquePostulations->contains($historiquePostulation)) {
             $this->historiquePostulations->add($historiquePostulation);
             $historiquePostulation->setFestival($this);
+
         }
 
         return $this;
@@ -504,6 +505,7 @@ class Festival {
     {
         if ($this->historiquePostulations->removeElement($historiquePostulation)) {
             // set the owning side to null (unless already changed)
+
             if ($historiquePostulation->getFestival() === $this) {
                 $historiquePostulation->setFestival(null);
             }
