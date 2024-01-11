@@ -1030,7 +1030,7 @@ class FestivalController extends AbstractController {
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
             'userId' => $u->getId(),
-            'statut' => $statut
+            'statut' => $statut,
             'hasPendingValidation' => $hasPendingValidation,
         ]);
     }
