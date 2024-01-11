@@ -4,23 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Validation;
 use App\Repository\ValidationRepository;
-use App\Entity\DemandeFestival;
 use App\Entity\Festival;
-use App\Entity\Tag;
 use App\Entity\Utilisateur;
-use App\Form\DemandeFestivalType;
-use App\Repository\DemandeFestivalRepository;
-use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
@@ -28,8 +18,8 @@ use App\Service\UtilisateurUtils;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class ValidationController extends AbstractController {
-    #[Route('festival/{id}/validation', name: 'app_festival_validation_add', methods: ['POST', 'GET'])]
-    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils): Response {
+    #[Route('festival/{id}/validation', name: 'app_festival_validation_add')]
+    public function addFestivalValidation(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException("Le festival n'existe pas");
@@ -46,8 +36,11 @@ class ValidationController extends AbstractController {
             return $this->redirectToRoute('home');
         }
 
-        $validations = $festival->getValidations();
 
+        if ($festival->getValid() == 1) {
+            $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+        }
 
         if ($req->getMethod() === 'GET') {
             // TODO: ajouter la page
@@ -58,23 +51,22 @@ class ValidationController extends AbstractController {
 
         } else {
 
-            if ($validations->filter(function (Validation $v) {
-                $v->getStatus() == 0;
-            })->count() > 0) {
-                $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
-                return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-            }
+        $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
 
-            $v = new Validation();
-            $v->setFestival($festival);
-
-            $em->persist($v);
-            $em->flush();
-
-            $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
-
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        if ($enAttente != null) {
+            $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
+
+        $v = new Validation();
+        $v->setFestival($festival);
+
+        $em->persist($v);
+        $em->flush();
+
+        $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
+
+        return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
     }
 
     // #[IsGranted("ROLE_ADMIN")]
@@ -98,18 +90,8 @@ class ValidationController extends AbstractController {
             ->getResult();
 
         // TODO: ajouter la page
-        // return $this->render('validation/index.html.twig', [
-        //     'validations' => $validations,
-        // ]);
-
-        return new JsonResponse([
-            'validations' => array_map(function (Validation $v) {
-                return [
-                    'id' => $v->getId(),
-                    'status' => $v->getStatus(),
-                    'festival' => $v->getFestival()->getId(),
-                ];
-            }, $validations),
+        return $this->render('validation/index.html.twig', [
+            'validations' => $validations,
         ]);
     }
 
