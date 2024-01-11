@@ -55,6 +55,7 @@ class ValidationController extends AbstractController {
                 'festival' => $festival,
                 'validations' => $validations,
             ]);
+
         } else {
 
             if ($validations->filter(function (Validation $v) {
@@ -136,7 +137,7 @@ class ValidationController extends AbstractController {
 
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation/{id}/reject', name: 'app_validation_reject', methods: 'POST')]
-    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService, Request $req): Response {
 
         if (!$validation) {
             throw $this->createNotFoundException("La demande de validation n'existe pas");
@@ -146,6 +147,13 @@ class ValidationController extends AbstractController {
             throw new BadRequestException("La demande de validation n'est pas en attente");
         }
 
+        if (!$req->request->get('motif') ) {
+            throw new BadRequestException("Le message est manquant");
+            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            return $this->redirectToRoute('app_validation');
+        }
+
+        $validation->setMotif($req->request->get('motif'));
         $validation->reject();
 
         $em->persist($validation);
@@ -155,4 +163,5 @@ class ValidationController extends AbstractController {
 
         return $this->redirectToRoute('app_validation');
     }
+    
 }

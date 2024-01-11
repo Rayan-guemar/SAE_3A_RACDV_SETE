@@ -1085,15 +1085,16 @@ class FestivalController extends AbstractController
     #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
     public function rejectAndSendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
     {
+
         if ($festival == null) {
             $this->addFlash('error', 'Le festival n\'existe pas');
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+            return $this->redirectToRoute('app_festival_demandesBenevolat');
         }else if ($utilisateur == null){
             $this->addFlash('error', 'L\'utilisateur n\'existe pas');
-            return new JsonResponse(['error' => 'L\'utilisateur n\'existe pas'], 403);
-        }else if (json_decode($request->getContent(), true) == null){
+            return $this->redirectToRoute('app_festival_demandesBenevolat');
+        }else if ($request->request->get('motif') == null){
             $this->addFlash('error', 'Le motif ne peut pas être vide');
-            return new JsonResponse(['error' => 'Le motif ne peut pas être vide'], 400);
+            return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else {
             $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($utilisateur) {
                 return $u->getId() == $utilisateur->getId();
@@ -1101,7 +1102,7 @@ class FestivalController extends AbstractController
 
             if (!$demande) {
                 $this->addFlash('error', 'La demande n\'existe pas');
-                return new JsonResponse(['error' => 'La demande n\'existe pas'], 403);
+                return $this->redirectToRoute('app_festival_demandesBenevolat');
             }
             $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival])->setStatut(-1);
 
@@ -1114,14 +1115,14 @@ class FestivalController extends AbstractController
             $historiquePostulation = $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival]);
             if ($historiquePostulation == null) {
                 $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
-                return new JsonResponse(['error' => 'L\'utilisateur n\'a pas postulé à ce festival'], 400);
+                return $this->redirectToRoute('app_festival_demandesBenevolat');
             } else {
-                $motif = json_decode($request->getContent(), true)['motif'];
+                $motif = $request->request->get('motif');
                 $historiquePostulation->setMotif($motif);
                 $em->persist($historiquePostulation);
                 $em->flush();
                 $this->addFlash('success', 'Le motif a bien été envoyé');
-                return new JsonResponse(['success' => 'Le motif a bien été envoyé'], 200);
+                return $this->redirectToRoute('app_festival_demandesBenevolat');
             }
         }
     }
