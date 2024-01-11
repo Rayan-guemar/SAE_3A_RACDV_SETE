@@ -9,6 +9,7 @@
 	<section class='page-container	flex-column'>
 		<h1 class="page-title">Gestion du
 			{{festival.getNom()}}</h1>
+		<h2> Ce festival est {% if festival.isOpen() %}ouvert au postulation {% else %} {{ statut }}{% endif %}</h2>
 		<div class="actions">
 			<h2>Gestion du planning</h2>
 			<p>Pour ajouter des plages horaires ou des créneaux</p>
