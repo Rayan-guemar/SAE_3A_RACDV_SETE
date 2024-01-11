@@ -3,6 +3,8 @@
 {% endblock %}
 {% block overhead %}
     <script src="{{ asset('js/addResponsable.js') }}" defer></script>
+    <script src="{{ asset('js/modal.js') }}" defer></script>
+
 {% endblock %}
 {% block body %}
     <input type="hidden" id="id_festival" value={{ idFest }}>
@@ -25,6 +27,8 @@
         <tbody>
         {% if demandes|length()>0 %}
         {% for demande in demandes %}
+        <input type="hidden" id="id_utilisateur" value={{ demande.id }}>
+
         <tr>
             <td>{{ demande.nom }}</td>
             <td>{{ demande.prenom }}</td>
@@ -33,8 +37,24 @@
                 <a href="{{ path('app_festival_accept_demande', {'id' : idFest, 'idUser': demande.id}) }}">Accepter</a>
             </td>
             <td>
-                <a href="{{ path('app_festival_reject_demande', {'id' : idFest, 'idUser': demande.id}) }}">Refuser</a>
+            <td>
+                <section class="modal hidden">
+                    <div>
+                        <button class="btn-close">⨉</button>
+                        <h3 style="color: #0a0a0a">Ajouter un motif</h3>
+                        <p>
+                            dans la rubrique ci-dessous, ajouter un motif pour expliquer votre choix au candidat (en cas de non modification, le motif par défaut sera envoyé)
+                        </p>
+                    </div>
+
+                    <textarea name="motif" id="motif" cols="30" rows="10">Après examen, nous avons le regret de vous informer que votre candidature n'a pas été retenue</textarea>
+                    <button class="btn">envoyer au candidat </button>
+                </section>
+
+                <div class="overlay hidden"></div>
+                <button class="btn btn-open">Refuser</button>
             </td>
+
         </tbody>
         {% endfor %}
         {% endif %}

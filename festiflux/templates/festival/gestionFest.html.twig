@@ -30,6 +30,18 @@
 			<p>Pour voir toutes les questions du formulaire</p>
 			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les questions</a>
 		</div>
+		<div class="actions">
+			<h2>Demander la validation du festival</h2>
+			{% if festival.getValid()==1 %}
+				<span>Le festival est déjà validé</span>
+			{% elseif hasPendingValidation %}
+				<span>Votre demande de validation est en cours de traitement</span>
+			{% else %}
+				<a href="{{path('app_festival_validation_add', {'id': festival.getId()})}}" class="gest_btn tooltip">
+					Demander la validation</a>
+			{% endif %}
+
+		</div>
 		<div class="button-archive">
 			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
 		</div>
