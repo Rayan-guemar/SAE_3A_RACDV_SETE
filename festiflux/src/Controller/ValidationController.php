@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class ValidationController extends AbstractController {
     #[Route('festival/{id}/validation', name: 'app_festival_validation_add')]
-    public function addFestivalValidation(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException("Le festival n'existe pas");
@@ -44,12 +44,12 @@ class ValidationController extends AbstractController {
 
         if ($req->getMethod() === 'GET') {
             // TODO: ajouter la page
+            $validations = $festival->getValidations();
             return $this->render('festival/validations.html.twig', [
                 'festival' => $festival,
                 'validations' => $validations,
             ]);
-
-        } else {
+        }
 
         $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
 
@@ -129,7 +129,7 @@ class ValidationController extends AbstractController {
             throw new BadRequestException("La demande de validation n'est pas en attente");
         }
 
-        if (!$req->request->get('motif') ) {
+        if (!$req->request->get('motif')) {
             throw new BadRequestException("Le message est manquant");
             $this->addFlash('error', 'Le motif ne peut pas être vide');
             return $this->redirectToRoute('app_validation');
@@ -145,5 +145,4 @@ class ValidationController extends AbstractController {
 
         return $this->redirectToRoute('app_validation');
     }
-    
 }

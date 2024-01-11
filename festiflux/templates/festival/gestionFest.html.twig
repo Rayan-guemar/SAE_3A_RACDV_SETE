@@ -36,8 +36,9 @@
 			{% elseif hasPendingValidation %}
 				<span>Votre demande de validation est en cours de traitement</span>
 			{% else %}
-				<a href="{{path('app_festival_validation_add', {'id': festival.getId()})}}" class="gest_btn tooltip">
-					Demander la validation</a>
+				<form action="{{path('app_festival_validation_add', {'id': festival.getId()})}}" method="post">
+					<button name="" value="" class="gest_btn tooltip">Demander la validation</button>
+				</form>
 			{% endif %}
 
 		</div>
