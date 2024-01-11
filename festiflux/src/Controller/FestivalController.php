@@ -7,8 +7,6 @@ use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
 use App\Entity\QuestionBenevole;
-use App\Entity\Validation;
-use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierQuestionBenevoleType;
 use App\Form\QuestionBenevoleType;
@@ -45,8 +43,6 @@ use DateTime;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-
-use function PHPSTORM_META\map;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
