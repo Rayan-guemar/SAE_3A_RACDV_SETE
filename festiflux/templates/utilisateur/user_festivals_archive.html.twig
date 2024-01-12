@@ -5,12 +5,16 @@
 <section class="page-container">
     <h1 class="page-title">Vos festivals archivés</h1>
     <div class="flex-column">
+        <div class="flex-justify-between">
+            <h3> Nom </h3>
+            <h3> Lieu </h3>
+            <h3> Dates </h3>
+        </div>
         {% for fest in festivals %}
-            <div class='actions'>
-                {{fest.getNom()}}
-                {{fest.getNom()}}
-                {{fest.getNom()}}
-                {{fest.getNom()}}
+            <div class='actions flex-justify-between'>
+                <p class="para-title">{{fest.getNom()}} </p> 
+                <p class="para-title">{{fest.getLieu()}} </p> 
+                <p class="para-title">{{fest.getDateDebut()|date('d/m/Y')}} - {{fest.getDateFin()|date('d/m/Y')}}</p>
             </div>
         {% endfor %}
     </div>
