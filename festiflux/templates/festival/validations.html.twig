@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Gestion du
+	{{festival.getNom()}}
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des Validations</h1>
+
+	{% if validations is not empty %}
+		<table border="1">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Status</th>
+					<th>Motif</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for validation in validations %}
+					<tr>
+						<td>{{ validation.id }}</td>
+						<td>{{ validation.getStatusToString()  }}</td>
+						<td>{{ validation.status == -1 ? validation.motif : "/" }}</td>
+						<td>{{ validation.date | date("d/m/Y") }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>Aucune validation disponible.</p>
+	{% endif %}
+{% endblock %}
