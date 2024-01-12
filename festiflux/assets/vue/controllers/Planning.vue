@@ -255,7 +255,10 @@ console.log(props.isOrgaOrResp);
 </script>
 
 <template>
-  <div v-if="loading" id="loader"></div>
+  <Teleport to="head">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </Teleport>
+    <div v-if="loading" id="loader"></div>
 
   <h2 v-if="!loading">{{ title }}</h2>
 
@@ -367,16 +370,9 @@ console.log(props.isOrgaOrResp);
         {{ vuePerso ? "Planning général" : " Mon planning" }}
       </div>
 
-      <div
-        v-if="!isOrgaOrResp"
-        id="add-indispo-btn"
-        class="btn"
-        @click="startAddIndispo"
-      >
-        Prévenir d'une indisponibilité
-      </div>
+          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
+        </div>
     </div>
-  </div>
 
   <div v-if="!loading" class="scroll-btn">
     <div id="scroll-btn-left" @click="scrollDaysLeft">
