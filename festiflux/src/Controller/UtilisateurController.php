@@ -357,4 +357,20 @@ class UtilisateurController extends AbstractController {
         }
 
     }
+
+    #[Route(path: 'user/{id}/festivals/archive', name: 'app_user_all_archive', methods: ['GET'])]
+    public function getAllArchivedFest(#[MapEntity] Utilisateur $user, FestivalRepository $festRepo, FlashMessageService $fms){
+
+        if (!$user instanceof Utilisateur) {
+            $fms->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
+            return $this->redirectToRoute('home');
+        }
+
+        $festivals = $festRepo->findBy(['organisateur' => $user->getId(), 'isArchive' => true]);
+
+        return $this->render('utilisateur/user_festivals_archive.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'festivals' => $festivals,
+        ]);
+    }
 }

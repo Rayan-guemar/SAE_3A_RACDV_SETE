@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<section class="page-container">
+    <h1 class="page-title">Vos festivals archivés</h1>
+    <div class="flex-column">
+        {% for fest in festivals %}
+            <div class='actions'>
+                {{fest.getNom()}}
+                {{fest.getNom()}}
+                {{fest.getNom()}}
+                {{fest.getNom()}}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+    
+{% endblock %}

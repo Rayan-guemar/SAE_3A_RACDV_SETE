@@ -28,6 +28,7 @@
 							{% if app.user.getHistoriquePostulations().isEmpty()==false %}
 							<li><img src="{{ asset("icons/check.svg")}}" alt="Tracking volontary request icon"><a href="{{ path("app_user_traking_benevole_request", {id: app.user.id} ) }}">Suivi de vos Postulations</a></li>
 							{% endif %}
+							<li><img src="{{ asset("icons/archive.svg")}}" alt="Archives icon"><a href="{{ path("app_user_all_archive", {id: app.user.id} ) }}">Mes Archives</a></li>
 							{% if is_granted('ROLE_ADMIN')  %}
 								<li>
 									<img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon">
