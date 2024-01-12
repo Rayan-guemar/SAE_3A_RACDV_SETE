@@ -1,0 +1,59 @@
+.actions {
+    padding: 2rem;
+    border-top: solid .0625rem $grey-primary;
+
+    &:last-child {
+        border-bottom: solid .0625rem $grey-primary;
+    }
+    
+    p {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    & > * {
+        margin-bottom: 2rem;
+    }
+
+    .gest_btn {
+     
+        color: #fff;
+        text-decoration: none;
+        padding: 0.7rem;
+        border-radius: .3125rem;
+        background-color: #1e88e5;
+        transition: background-color 0.3s ease-in-out;
+
+        &:hover {
+            background-color: #1565c0;
+        }
+    }
+}
+
+.page-title {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+}
+
+#griser {
+    color: gray;
+    cursor: not-allowed;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

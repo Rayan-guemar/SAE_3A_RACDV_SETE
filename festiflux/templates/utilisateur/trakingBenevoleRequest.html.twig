@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Postes festival
+{% endblock %}
+
+{% block overhead %}{% endblock %}
+
+{% block body %}
+    <h1>Suivi des demandes de Postulation</h1>
+
+    <table>
+    <thead>
+    <tr>
+        <th>Festival</th>
+        <th>Date de votre demande</th>
+        <th>Statut</th>
+        <th>Motif</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for demande in demandes %}
+        <td> <a href="{{ path('app_festival_detail', {'id' : demande.getFestival().getId()}) }}"> {{ demande.getFestival().getNom() }} </a></td>
+        <td>{{ demande.dateDemande|date("m/d/Y") }}</td>
+        {% if demande.statut()==1 %}
+            <td>Votre demande est validée</td>
+        {% elseif demande.statut()==0 %}
+            <td> Votre demande est en cours de traitement</td>
+        {% else %}
+            <td> Votre demande a été rejeté </td>
+        {% endif %}
+        
+        {% if demande.getMotif() is defined %}
+        <td>{{ demande.getMotif() }}</td>
+        {% else %}
+        <td> Pas de motif spécifique </td>
+        {% endif %}
+
+    </tbody>
+    {% endfor %}
+
+{% endblock %}

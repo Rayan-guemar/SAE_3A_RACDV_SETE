@@ -78,6 +78,17 @@ class Festival {
     #[ORM\ManyToMany(targetEntity: Creneaux::class)]
     private Collection $PlagesHoraires;
 
+    #[ORM\Column]
+    private ?bool $open = null;
+
+    #[ORM\Column]
+    private ?int $valid = null;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Validation::class, orphanRemoval: true)]
+    private Collection $validations;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: HistoriquePostulation::class)]
+    private Collection $historiquePostulations;
 
 
     public function __construct() {
@@ -87,11 +98,13 @@ class Festival {
         $this->demandesBenevole = new ArrayCollection();
         $this->postes = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
-        $this->isArchive=0;
+        $this->isArchive = 0;
+        $this->valid = 0;
         $this->tags = new ArrayCollection();
         $this->questionBenevoles = new ArrayCollection();
         $this->PlagesHoraires = new ArrayCollection();
-
+        $this->validations = new ArrayCollection();
+        $this->historiquePostulations = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -343,14 +356,12 @@ class Festival {
         return $this;
     }
 
-    public function getIsArchive(): ?string
-    {
+    public function getIsArchive(): ?string {
 
         return $this->isArchive;
     }
 
-    public function setIsArchive(): void
-    {
+    public function setIsArchive(): void {
 
         $this->isArchive = 1;
     }
@@ -358,13 +369,11 @@ class Festival {
     /**
      * @return Collection<int, Tag>
      */
-    public function getTags(): Collection
-    {
+    public function getTags(): Collection {
         return $this->tags;
     }
 
-    public function addTag(Tag $tag): static
-    {
+    public function addTag(Tag $tag): static {
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
         }
@@ -372,8 +381,7 @@ class Festival {
         return $this;
     }
 
-    public function removeTag(Tag $tag): static
-    {
+    public function removeTag(Tag $tag): static {
         $this->tags->removeElement($tag);
 
         return $this;
@@ -382,13 +390,11 @@ class Festival {
     /**
      * @return Collection<int, QuestionBenevole>
      */
-    public function getQuestionBenevoles(): Collection
-    {
+    public function getQuestionBenevoles(): Collection {
         return $this->questionBenevoles;
     }
 
-    public function addQuestionBenevole(QuestionBenevole $questionBenevole): static
-    {
+    public function addQuestionBenevole(QuestionBenevole $questionBenevole): static {
         if (!$this->questionBenevoles->contains($questionBenevole)) {
             $this->questionBenevoles->add($questionBenevole);
             $questionBenevole->setFestival($this);
@@ -397,8 +403,7 @@ class Festival {
         return $this;
     }
 
-    public function removeQuestionBenevole(QuestionBenevole $questionBenevole): static
-    {
+    public function removeQuestionBenevole(QuestionBenevole $questionBenevole): static {
         if ($this->questionBenevoles->removeElement($questionBenevole)) {
             // set the owning side to null (unless already changed)
             if ($questionBenevole->getFestival() === $this) {
@@ -412,13 +417,11 @@ class Festival {
     /**
      * @return Collection<int, Creneaux>
      */
-    public function getPlagesHoraires(): Collection
-    {
+    public function getPlagesHoraires(): Collection {
         return $this->PlagesHoraires;
     }
 
-    public function addPlagesHoraire(Creneaux $plagesHoraire): static
-    {
+    public function addPlagesHoraire(Creneaux $plagesHoraire): static {
         if (!$this->PlagesHoraires->contains($plagesHoraire)) {
             $this->PlagesHoraires->add($plagesHoraire);
         }
@@ -426,13 +429,88 @@ class Festival {
         return $this;
     }
 
-    public function removePlagesHoraire(Creneaux $plagesHoraire): static
-    {
+    public function removePlagesHoraire(Creneaux $plagesHoraire): static {
         $this->PlagesHoraires->removeElement($plagesHoraire);
 
         return $this;
     }
 
+    public function isOpen(): ?bool {
+        return $this->open;
+    }
 
+    public function setOpen(bool $open): static {
+        $this->open = $open;
 
+        return $this;
+    }
+
+    public function getValid(): ?int {
+        return $this->valid;
+    }
+
+    public function setValid(int $valid): static {
+        $this->valid = $valid;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Validation>
+     */
+    public function getValidations(): Collection {
+        return $this->validations;
+    }
+
+    public function addValidation(Validation $validation): static {
+        if (!$this->validations->contains($validation)) {
+            $this->validations->add($validation);
+            $validation->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValidation(Validation $validation): static {
+        if ($this->validations->removeElement($validation)) {
+            // set the owning side to null (unless already changed)
+            if ($validation->getFestival() === $this) {
+                $validation->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistoriquePostulation>
+     */
+    public function getHistoriquePostulations(): Collection
+    {
+        return $this->historiquePostulations;
+    }
+
+    public function addHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
+    {
+        if (!$this->historiquePostulations->contains($historiquePostulation)) {
+            $this->historiquePostulations->add($historiquePostulation);
+            $historiquePostulation->setFestival($this);
+
+        }
+
+        return $this;
+    }
+
+    public function removeHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
+    {
+        if ($this->historiquePostulations->removeElement($historiquePostulation)) {
+            // set the owning side to null (unless already changed)
+
+            if ($historiquePostulation->getFestival() === $this) {
+                $historiquePostulation->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
 }
