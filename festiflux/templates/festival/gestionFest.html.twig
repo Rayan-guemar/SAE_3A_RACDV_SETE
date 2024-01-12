@@ -9,6 +9,7 @@
 	<section class='page-container	flex-column'>
 		<h1 class="page-title">Gestion du
 			{{festival.getNom()}}</h1>
+		<h2> Ce festival est {% if festival.isOpen() %}ouvert au postulation {% else %} {{ statut }}{% endif %}</h2>
 		<div class="actions">
 			<h2>Gestion du planning</h2>
 			<p>Pour ajouter des plages horaires ou des créneaux</p>
@@ -22,12 +23,12 @@
 		<div class="actions">
 			<h2>Gestion des postulations</h2>
 			<p>Pour voir toutes les postulations du festival</p>
-			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les postulations</a>
+			<a href="{{path('app_festival_demandesBenevolat', {'id': festival.getId()})}}" class="gest_btn">Voir les postulations</a>
 		</div>
 		<div class="actions">
 			<h2>Gestion du formulaire Bénévole</h2>
-			<p>Pour voir toutes les questions du formulaire</p>
-			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Voir les questions</a>
+			<p>Pour voir, modifié ou supprimer toutes les questions du formulaire</p>
+			<a href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}" class="gest_btn">formulaire Bénévole</a>
 		</div>
 		<div class="actions">
 			<h2>Demander la validation du festival</h2>
@@ -36,8 +37,9 @@
 			{% elseif hasPendingValidation %}
 				<span>Votre demande de validation est en cours de traitement</span>
 			{% else %}
-				<a href="{{path('app_festival_validation_add', {'id': festival.getId()})}}" class="gest_btn tooltip">
-					Demander la validation</a>
+				<form action="{{path('app_festival_validation_add', {'id': festival.getId()})}}" method="post">
+					<button name="" value="" class="gest_btn tooltip">Demander la validation</button>
+				</form>
 			{% endif %}
 
 		</div>

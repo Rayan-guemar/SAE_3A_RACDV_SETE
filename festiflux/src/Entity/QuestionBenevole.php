@@ -19,6 +19,9 @@ class QuestionBenevole
     #[ORM\ManyToOne(inversedBy: 'questionBenevoles')]
     private ?Festival $festival = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $typeReponse = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class QuestionBenevole
     public function setFestival(?Festival $festival): static
     {
         $this->festival = $festival;
+
+        return $this;
+    }
+
+    public function getTypeReponse(): ?string
+    {
+        return $this->typeReponse;
+    }
+
+    public function setTypeReponse(string $typeReponse): static
+    {
+        $this->typeReponse = $typeReponse;
 
         return $this;
     }

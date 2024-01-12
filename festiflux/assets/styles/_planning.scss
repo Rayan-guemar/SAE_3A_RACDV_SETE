@@ -433,7 +433,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     background-color: white;
     border-radius: 10px;
     border: solid 2px black;
@@ -441,9 +440,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-items: center;
     gap: 20px;
 
-    padding: 20px;
+    padding: 40px;
 
     &.visible {
         display: flex;
@@ -465,6 +465,7 @@
         font-weight: bold;
         width: fit-content;
         font-size: large;
+        margin-top: 11px;
     }
 
     .btn {
@@ -475,18 +476,21 @@
 
         font-weight: 700;
         cursor: pointer;
+        background-color: black;
+        color: white;
 
-        &:hover {
+   /*     &:hover {
             border-color: $blue-primary;
             color: $blue-primary;
-        }
+        }*/
     }
 
     input {
         margin: 5px;
         padding: 10px;
+        width: 100%;
         font-size: large;
-        border: solid 3px black;
+        border: 2px solid #9F9F9F;
         border-radius: 10px;
         text-align: center;
 
@@ -501,8 +505,79 @@
     }
 }
 
+select#creneau-poste-select {
+    margin: 3px;
+    border-radius: 10px;
+    height: 46px;
+    border: 2px solid #9F9F9F;
+    text-align: center;
+    font-size: 15px;
+    width: 98%;
+
+    &:focus {
+        outline: none;
+        border-color: $blue-primary;
+    }
+}
+
+.plage-horaire-ajout-btn {
+    background-color: black;
+    border: solid black;
+    color: white;
+}
+
+button.add-plage {
+    width: 120px;
+    font-size: 15px;
+}
+
+.creneau-container {
+    display: flex;
+}
+button#cancel-creneau-btn, button#create-creneau-btn {
+    width: 120px;
+    font-size: 15px;
+}
+
+h2 {
+    text-align: center;
+}
+
 #postes {
     transition: opacity 0.5s;
+}
+
+@media screen and (max-width: 1254px) and (min-width: 516px) {
+    #planning {
+        height: 600px;
+    }
+    #planning .days {
+        max-width: 45vw;
+        min-width: 220px;
+    }
+    #planning .manage-interface {
+        margin-left: 10px;
+    }
+    #planning .manage-interface .btn {
+        padding: 5px;
+    }
+}
+@media screen and (max-width: 515px) {
+    #planning {
+        height: 600px;
+    }
+    #planning .manage-interface .btn {
+        padding: 5px;
+    }
+    #planning .hours {
+        width: 60px;
+    }
+    #planning .days {
+        max-width: 45vw;
+    }
+    #planning .manage-interface {
+        margin-left: 10px;
+    }
 }
 
 #add-poste {
