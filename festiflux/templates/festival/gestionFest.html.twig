@@ -41,7 +41,21 @@
 					<button name="" value="" class="gest_btn tooltip">Demander la validation</button>
 				</form>
 			{% endif %}
+		</div>
 
+		<div class="actions">
+			<h2>Ouvrir le festival au postulation</h2>
+			<p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce festival</p>
+			<p>Attention! cette action est définitive est irréversible, aucune modification du festival du formulaire de postulation et de poste ne sera autorisée</p>
+			{% if festival.getValid()!=1 %}
+				<span>Le festival n'est pas encore validé</span>
+			{% elseif festival.isOpen() %}
+				<span>Le festival est déja ouvert</span>
+			{% else %}
+				<form action="{{path('app_festival_open', {'id': festival.getId()})}}" method="post">
+					<button name="" value="" class="gest_btn tooltip">Ouvrir</button>
+				</form>
+			{% endif %}
 		</div>
 		<div class="button-archive">
 			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
