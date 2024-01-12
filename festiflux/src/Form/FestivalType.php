@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\DemandeFestival;
+use App\Entity\Festival;
 use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,18 +19,18 @@ use Symfony\Component\Validator\Constraints\Date;
 
 
 
-class DemandeFestivalType extends AbstractType
+class FestivalType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomFestival' , TextType::class, [
+            ->add('nom' , TextType::class, [
                 'label' => 'Nom du festival',
                 'attr' => [
                     'placeholder' => 'Nom du festival'
                 ]
             ])
-            ->add('dateDebutFestival' , DateType::class, [
+            ->add('dateDebut' , DateType::class, [
                 'label' => 'Date de début du festival',
                 'widget' => 'single_text',
                 'data' => new \DateTimeImmutable(),
@@ -40,7 +41,7 @@ class DemandeFestivalType extends AbstractType
                 'input' => 'datetime_immutable',
                 
             ])
-            ->add('dateFinFestival' , DateType::class, [
+            ->add('dateFin' , DateType::class, [
                 'label' => 'Date de fin du festival',
                 'widget' => 'single_text',
                 'attr' => [
@@ -50,30 +51,31 @@ class DemandeFestivalType extends AbstractType
                 'input' => 'datetime_immutable',
                 
             ])
-            ->add('descriptionFestival' , TextareaType::class, [
+            ->add('description' , TextareaType::class, [
                 'label' => 'Description du festival',
                 'attr' => [
                     'placeholder' => 'Description du festival'
                 ]
             ])
-            ->add('lieuFestival' , TextType::class, [
+            ->add('lieu' , TextType::class, [
                 'label' => 'Lieu du festival',
                 'attr' => [
                     'placeholder' => 'Lieu du festival'
                 ]
             ])
             ->add('tags', TextType::class, [
-                'required' => false,    
+                'required' => false,
+                'mapped' => false,
                 'label' => 'Tag',
             ])
-            ->add('afficheFestival' , FileType::class, [
+            ->add('affiche' , FileType::class, [
                 'attr' => [
                     'placeholder' => 'Affiche du festival'
                 ]
             ])
             ->add('lat' , HiddenType::class)
             ->add('lon' , HiddenType::class)
-            ->add('demanderCreationFestival' , SubmitType::class, [
+            ->add('demanderCreation' , SubmitType::class, [
                 'label' => 'Demander la création'
             ])
         ;
@@ -82,7 +84,7 @@ class DemandeFestivalType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => DemandeFestival::class,
+            'data_class' => Festival::class,
         ]);
     }
 }

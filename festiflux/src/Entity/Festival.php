@@ -105,6 +105,7 @@ class Festival {
         $this->PlagesHoraires = new ArrayCollection();
         $this->validations = new ArrayCollection();
         $this->historiquePostulations = new ArrayCollection();
+        $this->open = false;
     }
 
     public function getId(): ?int {

@@ -1,5 +1,5 @@
 let containerElement = document.getElementById("box-adresses");
-let adresse = document.getElementById('demande_festival_lieuFestival');
+let adresse = document.getElementById('festival_lieu');
 var currentItems;
 
 function addressAutocomplete(containerElement) {

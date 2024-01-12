@@ -8,7 +8,7 @@ use App\Entity\Poste;
 use App\Entity\PosteUtilisateurPreferences;
 use App\Entity\QuestionBenevole;
 use App\Entity\Validation;
-use App\Form\DemandeFestivalType;
+use App\Form\FestivalType;
 use App\Form\ModifierFestivalType;
 use App\Form\ModifierPosteType;
 use App\Form\QuestionBenevoleType;

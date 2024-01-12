@@ -20,7 +20,7 @@
 			{% for demande in demandes %}
 				<tr>
 
-					<td>{{ demande.nomFestival }}</td>
+					<td>{{ demande.nom }}</td>
 					<td>{{ demande.descriptionFestival }}</td>
 					<td>{{ demande.organisateurFestival.nom }}</td>
 					<td>{{ demande.dateDebutFestival | date("D/M/Y") }}</td>
