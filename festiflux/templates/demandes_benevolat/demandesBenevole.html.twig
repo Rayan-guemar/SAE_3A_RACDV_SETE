@@ -36,9 +36,14 @@
             <td>
                 <a href="{{ path('app_festival_accept_demande', {'id' : idFest, 'idUser': demande.id}) }}">Accepter</a>
             </td>
+            
             <td>
-            <td>
-                <section class="modal hidden">
+                <button class="btn btn-open">Refuser</button>
+            </td>
+
+        </tbody>
+
+        <section class="modal hidden">
                     <div>
                         <button class="btn-close">⨉</button>
                         <h3 style="color: #0a0a0a">Ajouter un motif</h3>
@@ -47,18 +52,17 @@
                         </p>
                     </div>
 
-                    <textarea name="motif" id="motif" cols="30" rows="10">Après examen, nous avons le regret de vous informer que votre candidature n'a pas été retenue</textarea>
-                    <button class="btn">envoyer au candidat </button>
+                   <form action={{path("app_festival_rejectAndSendMotif", {"id": idFest, "idUser" : demande.id } )}} method="post">
+								<textarea name="motif" id="motif" cols="30" rows="10" placeholder="Ecrivez un motif..."> </textarea>
+								<button id='send-reject' class="">Envoyer</button>
+					</form>
                 </section>
 
                 <div class="overlay hidden"></div>
-                <button class="btn btn-open">Refuser</button>
-            </td>
-
-        </tbody>
         {% endfor %}
         {% endif %}
     </table>
+    
     <h1>Liste des bénévoles</h1>
     <h2>vous {% if  benevoles|length() > 0 %}  avez {{ benevoles|length() }} bénévoles
         {% else %} n'avez pas encore de bénévoles {% endif %}

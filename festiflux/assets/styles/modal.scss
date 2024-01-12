@@ -50,9 +50,14 @@ button {
   font-size: 1em;
 }
 
+.modal_top {
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem;
+}
+
 
 .btn-close {
-  transform: translate(190px, 0px);
   padding: 0.5rem 0.7rem;
   background: #eee;
   border-radius: 50%;

@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class ValidationController extends AbstractController {
     #[Route('festival/{id}/validation', name: 'app_festival_validation_add')]
-    public function addFestivalValidation(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
 
         if (!$festival) {
             throw $this->createNotFoundException("Le festival n'existe pas");
@@ -40,6 +40,15 @@ class ValidationController extends AbstractController {
         if ($festival->getValid() == 1) {
             $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+        }
+
+        if ($req->getMethod() === 'GET') {
+            // TODO: ajouter la page
+            $validations = $festival->getValidations();
+            return $this->render('festival/validations.html.twig', [
+                'festival' => $festival,
+                'validations' => $validations,
+            ]);
         }
 
         $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
@@ -67,8 +76,7 @@ class ValidationController extends AbstractController {
             'status' => 0
         ]);
 
-        // TODO: ajouter la page
-        return $this->render('validation/index.html.twig', [
+        return $this->render('demande_festival/index.html.twig', [
             'validations' => $validations,
         ]);
     }
@@ -111,7 +119,7 @@ class ValidationController extends AbstractController {
 
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation/{id}/reject', name: 'app_validation_reject', methods: 'POST')]
-    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService, Request $req): Response {
 
         if (!$validation) {
             throw $this->createNotFoundException("La demande de validation n'existe pas");
@@ -121,6 +129,13 @@ class ValidationController extends AbstractController {
             throw new BadRequestException("La demande de validation n'est pas en attente");
         }
 
+        if (!$req->request->get('motif')) {
+            throw new BadRequestException("Le message est manquant");
+            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            return $this->redirectToRoute('app_validation');
+        }
+
+        $validation->setMotif($req->request->get('motif'));
         $validation->reject();
 
         $em->persist($validation);
