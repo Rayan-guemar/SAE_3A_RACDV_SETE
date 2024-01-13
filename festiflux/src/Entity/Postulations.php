@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PostulationsRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Postulations {
+
+    public const STATUS_PENDING = 0;
+    public const STATUS_ACCEPTED = 1;
+    public const STATUS_REFUSED = 2;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -94,14 +99,12 @@ class Postulations {
     }
 
     public function statusToString(): string {
-        if ($this->status === 0) {
-            return 'En attente';
-        } else if ($this->status === 1) {
+        if ($this->status === self::STATUS_ACCEPTED) {
             return 'Acceptée';
-        } else if ($this->status === 2) {
+        } else if ($this->status === self::STATUS_REFUSED) {
             return 'Refusée';
         } else {
-            return '/';
+            return 'En attente';
         }
     }
 }
