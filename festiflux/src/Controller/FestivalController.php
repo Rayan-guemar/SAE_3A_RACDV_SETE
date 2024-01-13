@@ -374,6 +374,9 @@ class FestivalController extends AbstractController {
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
+        if (!$festival->isOpen()){
+            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
+        }
 
         $poste = new Poste();
         $poste->setFestival($festival);
@@ -449,6 +452,10 @@ class FestivalController extends AbstractController {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
 
+        if (!$f->isOpen()){
+            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
+        }
+
         $p->setNom($request->toArray()['nom']);
         $p->setCouleur($request->toArray()['couleur']);
         $p->setDescription($request->toArray()['description']);
@@ -483,6 +490,9 @@ class FestivalController extends AbstractController {
 
         if (!$p) {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
+        }
+        if (!$f->isOpen()){
+            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
         $em->remove($p);
@@ -894,7 +904,10 @@ class FestivalController extends AbstractController {
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
-
+        if (!$festival->isOpen()){
+            $this->addFlash('error', 'Le festival est deja ouvert');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
 
         $form = $this->createForm(ModifierFestivalType::class, $festival);
         $form->handleRequest($request);
@@ -1220,4 +1233,37 @@ class FestivalController extends AbstractController {
             }
         }
     }
+
+    #[Route('/festival/{id}/open', name: 'app_festival_open')]
+    public function openFest(#[MapEntity]Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response
+    {
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        } else if ($festival->getOrganisateur() != $u) {
+            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return $this->redirectToRoute('home');
+        }
+
+        if ($festival == null || $festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        } else if ($festival->getValid() != 1) {
+            $this->addFlash('error', 'Le festival n\'est pas validé');
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+        } else {
+            if ($festival->isOpen()) {
+                $this->addFlash('error', 'Le festival est déjà ouvert');
+                return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+            } else {
+                $festival->setOpen(true);
+                $em->persist($festival);
+                $em->flush();
+                $this->addFlash('success', 'Le festival a bien été ouvert aux postulations');
+                return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+            }
+        }
+    }
+      
 }
