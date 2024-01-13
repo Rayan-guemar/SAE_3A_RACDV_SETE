@@ -18,7 +18,7 @@ use App\Service\UtilisateurUtils;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class ValidationController extends AbstractController {
-    #[Route('festival/{id}/validation', name: 'app_festival_validation_add')]
+    #[Route('festival/{id}/validation', name: 'app_festival_validation')]
     public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
 
         if (!$festival) {

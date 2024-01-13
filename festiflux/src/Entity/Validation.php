@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ValidationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Validation {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,6 +23,9 @@ class Validation {
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $motif = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
     public function getId(): ?int {
         return $this->id;
@@ -47,22 +51,48 @@ class Validation {
         return $this;
     }
 
-    public function getMotif(): ?string
-    {
+    public function getMotif(): ?string {
         return $this->motif;
     }
 
-    public function setMotif(?string $motif): static
-    {
+    public function setMotif(?string $motif): static {
         $this->motif = $motif;
         return $this;
     }
-    
+
     public function accept() {
         $this->setStatus(1);
     }
 
     public function reject() {
         $this->setStatus(-1);
+    }
+
+    public function getStatusToString() {
+        switch ($this->getStatus()) {
+            case 0:
+                return "En attente";
+            case 1:
+                return "Accepté";
+            case -1:
+                return "Refusé";
+        }
+    }
+
+    public function getDate(): ?\DateTimeInterface {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function presetDate(): static {
+        $this->date = new \DateTimeImmutable();;
+
+        return $this;
     }
 }

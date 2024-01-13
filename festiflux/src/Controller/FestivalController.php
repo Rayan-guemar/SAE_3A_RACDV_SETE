@@ -275,7 +275,7 @@ class FestivalController extends AbstractController {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
- 
+
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
         $benevoles = $festival->getBenevoles();
         $responsables = $festival->getResponsables();
@@ -673,7 +673,6 @@ class FestivalController extends AbstractController {
         }
 
         return new JsonResponse(status: Response::HTTP_CREATED);
-
     }
 
     #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_get_DebutFinDay', methods: ['GET'], options: ["expose" => true])]
@@ -980,8 +979,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/CreateQuestionnaire', name: 'app_festival_create_questionnaire')]
-    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response
-    {
+    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -992,7 +990,7 @@ class FestivalController extends AbstractController {
         } else if ($festival->getOrganisateur() != $user) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return $this->redirectToRoute('home');
-        } else if ($festival->isOpen()){
+        } else if ($festival->isOpen()) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
             return $this->redirectToRoute('home');
         } else {
@@ -1010,7 +1008,6 @@ class FestivalController extends AbstractController {
                 $em->flush();
                 $this->addFlash('success', 'La question a été ajouté avec succès.');
                 return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
-
             }
 
             return $this->render('festival/CreateQuestionnaire.html.twig', [
@@ -1019,12 +1016,11 @@ class FestivalController extends AbstractController {
                 'form' => $form->createView(),
                 'festival' => $festival,
             ]);
-       }
+        }
     }
 
     #[Route('/festival/{id}/DeleteQuestion/{idQuestion}', name: 'app_festival_question_delete')]
-    public function deleteQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response
-    {
+    public function deleteQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -1035,7 +1031,7 @@ class FestivalController extends AbstractController {
         } else if ($festival->getOrganisateur() != $user) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return $this->redirectToRoute('home');
-        } else if ($festival->isOpen()){
+        } else if ($festival->isOpen()) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
             return $this->redirectToRoute('home');
         } else {
@@ -1052,8 +1048,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/ModifyQuestion/{idQuestion}', name: 'app_festival_question_modify')]
-    public function modifyQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response
-    {
+    public function modifyQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -1064,7 +1059,7 @@ class FestivalController extends AbstractController {
         } else if ($festival->getOrganisateur() != $user) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return $this->redirectToRoute('home');
-        } else if ($festival->isOpen()){
+        } else if ($festival->isOpen()) {
             $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
             return $this->redirectToRoute('home');
         } else {
@@ -1090,8 +1085,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response
-    {
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
         $statut = "";
 
         $festival = $repository->find($id);
@@ -1103,29 +1097,33 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
-        }else if ($festival->getOrganisateur() != $u){
+        } else if ($festival->getOrganisateur() != $u) {
             $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
             return $this->redirectToRoute('home');
-        }else if ($festival->getIsArchive()) {
+        } else if ($festival->getIsArchive()) {
             $this->addFlash('error', 'Le festival est archivé');
             return $this->redirectToRoute('home');
-        }
-        else{
-            if ($festival->getValid() == 1){
+        } else {
+            if ($festival->getValid() == 1) {
                 $statut = "Validé mais pas ouvert aux postulations";
-            }else if ($festival->getValid() == 0){
+            } else if ($festival->getValid() == 0) {
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
                     $statut = "en attente de votre demande de validation";
-                }else{
+                } else {
                     $statut = "en cours de traitement de validation";
                 }
-            }else{
+            } else {
                 $statut = "Rejeté";
             }
         }
-        $hasPendingValidation = count($validationRepository->findBy(['festival' => $festival, 'status' => 0])) > 0;
 
+        $validations = $validationRepository->findBy(['festival' => $festival]);
+
+        $hasValidations = count($validations) > 0;
+        $hasPendingValidation = count(array_filter($validations, function ($v) {
+            return $v->getStatus() == 0;
+        })) > 0;
 
         return $this->render('festival/gestionFest.html.twig', [
             'controller_name' => 'FestivalController',
@@ -1134,6 +1132,7 @@ class FestivalController extends AbstractController {
             'userId' => $u->getId(),
             'statut' => $statut,
             'hasPendingValidation' => $hasPendingValidation,
+            'hasValidations' => $hasValidations,
         ]);
     }
 
@@ -1162,14 +1161,13 @@ class FestivalController extends AbstractController {
             $statut = "";
             if ($festival->getValid() == 1) {
                 $statut = "Validé";
-            }else if ($festival->getValid() == 0){
+            } else if ($festival->getValid() == 0) {
 
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
                     $statut = "en attente de votre demande de validation";
-                }else{
+                } else {
                     $statut = "en cours de traitement de validation";
-
                 }
             } else {
                 $statut = "Rejeté";
@@ -1180,16 +1178,15 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
-    public function rejectAndSendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
-    {
+    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse {
 
         if ($festival == null) {
             $this->addFlash('error', 'Le festival n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
-        }else if ($utilisateur == null){
+        } else if ($utilisateur == null) {
             $this->addFlash('error', 'L\'utilisateur n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
-        }else if ($request->request->get('motif') == null){
+        } else if ($request->request->get('motif') == null) {
             $this->addFlash('error', 'Le motif ne peut pas être vide');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else {
@@ -1223,6 +1220,4 @@ class FestivalController extends AbstractController {
             }
         }
     }
-
-
 }
