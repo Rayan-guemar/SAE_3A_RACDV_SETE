@@ -1125,9 +1125,6 @@ class FestivalController extends AbstractController {
             return $v->getStatus() == 0;
         })) > 0;
 
-
-        //dd($hasValidations);
-
         return $this->render('festival/gestionFest.html.twig', [
             'controller_name' => 'FestivalController',
             'festival' => $festival,
