@@ -90,6 +90,9 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: HistoriquePostulation::class)]
     private Collection $historiquePostulations;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Postulations::class, orphanRemoval: true)]
+    private Collection $postulations;
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -105,6 +108,7 @@ class Festival {
         $this->PlagesHoraires = new ArrayCollection();
         $this->validations = new ArrayCollection();
         $this->historiquePostulations = new ArrayCollection();
+        $this->postulations = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -508,6 +512,36 @@ class Festival {
 
             if ($historiquePostulation->getFestival() === $this) {
                 $historiquePostulation->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Postulations>
+     */
+    public function getPostulations(): Collection
+    {
+        return $this->postulations;
+    }
+
+    public function addPostulation(Postulations $postulation): static
+    {
+        if (!$this->postulations->contains($postulation)) {
+            $this->postulations->add($postulation);
+            $postulation->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostulation(Postulations $postulation): static
+    {
+        if ($this->postulations->removeElement($postulation)) {
+            // set the owning side to null (unless already changed)
+            if ($postulation->getFestival() === $this) {
+                $postulation->setFestival(null);
             }
         }
 

@@ -374,7 +374,7 @@ class FestivalController extends AbstractController {
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
-        if (!$festival->isOpen()){
+        if (!$festival->isOpen()) {
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -452,7 +452,7 @@ class FestivalController extends AbstractController {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
 
-        if (!$f->isOpen()){
+        if (!$f->isOpen()) {
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -491,7 +491,7 @@ class FestivalController extends AbstractController {
         if (!$p) {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
-        if (!$f->isOpen()){
+        if (!$f->isOpen()) {
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -904,7 +904,7 @@ class FestivalController extends AbstractController {
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
-        if (!$festival->isOpen()){
+        if (!$festival->isOpen()) {
             $this->addFlash('error', 'Le festival est deja ouvert');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
@@ -1191,7 +1191,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
-    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse {
+    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): Response {
 
         if ($festival == null) {
             $this->addFlash('error', 'Le festival n\'existe pas');
@@ -1235,8 +1235,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/open', name: 'app_festival_open')]
-    public function openFest(#[MapEntity]Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response
-    {
+    public function openFest(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -1265,5 +1264,4 @@ class FestivalController extends AbstractController {
             }
         }
     }
-      
 }
