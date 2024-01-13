@@ -7,10 +7,8 @@ use App\Entity\Poste;
 
 use App\Entity\PosteUtilisateurPreferences;
 use App\Entity\QuestionBenevole;
-use App\Entity\Validation;
-use App\Form\DemandeFestivalType;
 use App\Form\ModifierFestivalType;
-use App\Form\ModifierPosteType;
+use App\Form\ModifierQuestionBenevoleType;
 use App\Form\QuestionBenevoleType;
 use App\Form\SearchType;
 use App\Model\SearchData;
@@ -20,7 +18,6 @@ use App\Repository\HistoriquePostulationRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\ValidationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,9 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Tache;
-use App\Form\ModifierTacheType;
 use App\Entity\Utilisateur;
-use App\Repository\DemandeFestivalRepository;
 use App\Service\ErrorService;
 use App\Service\FlashMessageService;
 use App\Service\UtilisateurUtils;
@@ -40,7 +35,6 @@ use App\Entity\Creneaux;
 use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Lieu;
-use App\Repository\DemandeBenevoleRepository;
 use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
@@ -51,8 +45,6 @@ use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-
-use function PHPSTORM_META\map;
 
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
@@ -283,7 +275,7 @@ class FestivalController extends AbstractController {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
- 
+
         $utilisateurUtils->isOrganisateur($this->getUser(), $festival);
         $benevoles = $festival->getBenevoles();
         $responsables = $festival->getResponsables();
@@ -999,11 +991,114 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    #[Route('/festival/{id}/CreateQuestionnaire', name: 'app_festival_create_questionnaire')]
+    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response {
+        $user = $this->getUser();
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        } else if ($festival->getOrganisateur() != $user) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        } else if ($festival->isOpen()) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            return $this->redirectToRoute('home');
+        } else {
+            $questionBenevole = new QuestionBenevole();
+            $questionBenevole->setFestival($festival);
+            $form = $this->createForm(QuestionBenevoleType::class, $questionBenevole);
 
+            $form->handleRequest($request);
+
+            $questions = $repository->findBy(["festival" => $festival]);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $em->persist($questionBenevole);
+                $em->flush();
+                $this->addFlash('success', 'La question a été ajouté avec succès.');
+                return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
+            }
+
+            return $this->render('festival/CreateQuestionnaire.html.twig', [
+                'questions' => $questions,
+                'controller_name' => 'FestivalController',
+                'form' => $form->createView(),
+                'festival' => $festival,
+            ]);
+        }
+    }
+
+    #[Route('/festival/{id}/DeleteQuestion/{idQuestion}', name: 'app_festival_question_delete')]
+    public function deleteQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
+        $user = $this->getUser();
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        } else if ($festival->getOrganisateur() != $user) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        } else if ($festival->isOpen()) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            return $this->redirectToRoute('home');
+        } else {
+            $question = $repository->find($idQuestion);
+            if (!$question) {
+                throw $this->createNotFoundException('Question non trouvé.');
+            } else {
+                $em->remove($question);
+                $em->flush();
+                $this->addFlash('success', 'La question a été supprimé avec succès.');
+                return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
+            }
+        }
+    }
+
+    #[Route('/festival/{id}/ModifyQuestion/{idQuestion}', name: 'app_festival_question_modify')]
+    public function modifyQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
+        $user = $this->getUser();
+        if (!$user || !$user instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+        if (!$festival) {
+            throw $this->createNotFoundException('Festival non trouvé.');
+        } else if ($festival->getOrganisateur() != $user) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        } else if ($festival->isOpen()) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            return $this->redirectToRoute('home');
+        } else {
+            $question = $repository->find($idQuestion);
+            if (!$question) {
+                throw $this->createNotFoundException('Question non trouvé.');
+            } else {
+                $form = $this->createForm(ModifierQuestionBenevoleType::class, $question);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em->persist($question);
+                    $em->flush();
+                    $this->addFlash('success', 'La question a été modifié avec succès.');
+                    return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
+                }
+                return $this->render('festival/ModifyQuestion.html.twig', [
+                    'controller_name' => 'FestivalController',
+                    'form' => $form->createView(),
+                    'festival' => $festival,
+                ]);
+            }
+        }
+    }
 
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response
-    {
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
         $statut = "";
 
         $festival = $repository->find($id);
@@ -1015,29 +1110,33 @@ class FestivalController extends AbstractController {
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
-        }else if ($festival->getOrganisateur() != $u){
+        } else if ($festival->getOrganisateur() != $u) {
             $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
             return $this->redirectToRoute('home');
-        }else if ($festival->getIsArchive()) {
+        } else if ($festival->getIsArchive()) {
             $this->addFlash('error', 'Le festival est archivé');
             return $this->redirectToRoute('home');
-        }
-        else{
-            if ($festival->getValid() == 1){
+        } else {
+            if ($festival->getValid() == 1) {
                 $statut = "Validé mais pas ouvert aux postulations";
-            }else if ($festival->getValid() == 0){
+            } else if ($festival->getValid() == 0) {
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
                     $statut = "en attente de votre demande de validation";
-                }else{
+                } else {
                     $statut = "en cours de traitement de validation";
                 }
-            }else{
+            } else {
                 $statut = "Rejeté";
             }
         }
-        $hasPendingValidation = count($validationRepository->findBy(['festival' => $festival, 'status' => 0])) > 0;
 
+        $validations = $validationRepository->findBy(['festival' => $festival]);
+
+        $hasValidations = count($validations) > 0;
+        $hasPendingValidation = count(array_filter($validations, function ($v) {
+            return $v->getStatus() == 0;
+        })) > 0;
 
         return $this->render('festival/gestionFest.html.twig', [
             'controller_name' => 'FestivalController',
@@ -1046,6 +1145,7 @@ class FestivalController extends AbstractController {
             'userId' => $u->getId(),
             'statut' => $statut,
             'hasPendingValidation' => $hasPendingValidation,
+            'hasValidations' => $hasValidations,
         ]);
     }
 
@@ -1074,14 +1174,13 @@ class FestivalController extends AbstractController {
             $statut = "";
             if ($festival->getValid() == 1) {
                 $statut = "Validé";
-            }else if ($festival->getValid() == 0){
+            } else if ($festival->getValid() == 0) {
 
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
                     $statut = "en attente de votre demande de validation";
-                }else{
+                } else {
                     $statut = "en cours de traitement de validation";
-
                 }
             } else {
                 $statut = "Rejeté";
@@ -1092,16 +1191,15 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
-    public function rejectAndSendMotif(#[MapEntity (id: 'id') ]Festival $festival, #[MapEntity (id: 'idUser') ] Utilisateur $utilisateur,EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse
-    {
+    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): JsonResponse {
 
         if ($festival == null) {
             $this->addFlash('error', 'Le festival n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
-        }else if ($utilisateur == null){
+        } else if ($utilisateur == null) {
             $this->addFlash('error', 'L\'utilisateur n\'existe pas');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
-        }else if ($request->request->get('motif') == null){
+        } else if ($request->request->get('motif') == null) {
             $this->addFlash('error', 'Le motif ne peut pas être vide');
             return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else {
