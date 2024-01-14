@@ -33,6 +33,9 @@ class Poste {
     #[ORM\OneToMany(mappedBy: 'posteId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
     private Collection $posteUtilisateurPreferences;
 
+    #[ORM\OneToMany(mappedBy: 'poste', targetEntity: Preference::class, orphanRemoval: true)]
+    private Collection $preferences;
+
     /**
      * @return string|null
      */
@@ -52,6 +55,7 @@ class Poste {
     public function __construct() {
         $this->taches = new ArrayCollection();
         $this->posteUtilisateurPreferences = new ArrayCollection();
+        $this->preferences = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -141,6 +145,36 @@ class Poste {
             // set the owning side to null (unless already changed)
             if ($posteUtilisateurPreference->getPosteId() === $this) {
                 $posteUtilisateurPreference->setPosteId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Preference>
+     */
+    public function getPreferences(): Collection
+    {
+        return $this->preferences;
+    }
+
+    public function addPreference(Preference $preference): static
+    {
+        if (!$this->preferences->contains($preference)) {
+            $this->preferences->add($preference);
+            $preference->setPoste($this);
+        }
+
+        return $this;
+    }
+
+    public function removePreference(Preference $preference): static
+    {
+        if ($this->preferences->removeElement($preference)) {
+            // set the owning side to null (unless already changed)
+            if ($preference->getPoste() === $this) {
+                $preference->setPoste(null);
             }
         }
 
