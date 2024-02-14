@@ -88,8 +88,6 @@ class PostulationController extends AbstractController {
             $postulation->setDate(new \DateTime());
             $postulation->setStatus(Postulations::STATUS_PENDING);
 
-            $em->persist($postulation);
-
             $formData = $req->request->all();
 
             foreach ($formData['responses'] as $questionId => $responseContent) {
@@ -108,11 +106,24 @@ class PostulationController extends AbstractController {
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
-        $question = $festival->getQuestionBenevoles();
+        $questions = $festival->getQuestionBenevoles();
+        if ($questions->isEmpty()) {
+
+            $postulation = new Postulations();
+            $postulation->setFestival($festival);
+            $postulation->setUtilisateur($u);
+            $postulation->setDate(new \DateTime());
+            $postulation->setStatus(Postulations::STATUS_PENDING);
+
+            $em->persist($postulation);
+
+            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
 
         return $this->render('postulations/form.html.twig', [
             'festival' => $festival,
-            'questions' => $question,
+            'questions' => $questions,
         ]);
     }
 }
