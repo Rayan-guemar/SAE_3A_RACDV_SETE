@@ -22,7 +22,8 @@
   border: 1px solid $blue-primary;
   background-color: $blue-primary;
   color: white;
-
+  pointer-events: none;
+  cursor: default;
 }
 
 .my-fest__buttons {
