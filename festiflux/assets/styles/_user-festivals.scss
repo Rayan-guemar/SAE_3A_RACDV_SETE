@@ -14,6 +14,17 @@
   gap: 1rem;
 }
 
+.active {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid $blue-primary;
+  background-color: $blue-primary;
+  color: white;
+
+}
+
 .my-fest__buttons {
   margin: 10px 0;
 
