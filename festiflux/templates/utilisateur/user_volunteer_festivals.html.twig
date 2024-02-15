@@ -1,0 +1,34 @@
+<h2 class="my-fest__heading">Les festivals auxquels je participe :</h2>
+
+<div class="fest-wrapper">
+	{% for festival in volunteerFestivals %}
+		<div class="fest">
+			<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+				<div class="affiche" style="background-image: url('{{ festival.getAffiche() != null ? asset(" uploads/" ~ festival.getaffiche()) : asset(" img/affiches/affiche-xx.jpg") }}')"></div>
+				<div class="fest-info">
+					<div class="fest-nom">
+						<span>{{ festival.getNom() }}</span>
+					</div>
+					<div class="fest-dateEtLieux">
+						<span>{{ festival.getDateDebut()|date("d/m/Y") }}
+							-
+							{{ festival.getDateFin()|date("d/m/Y") }}</span>
+						<span>{# {{ festival.getLieuxVille() }} #}</span>
+					</div>
+				</div>
+			</a>
+			<div class="my-fest__buttons">
+
+				<a class="my-fest__btn" href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+					<img src="{{ asset("icons/info.svg") }}" alt="more info icon">
+				</a>
+				<a class="my-fest__btn" href="{{ path('app_festival_postes', {'id' : festival.getId()}) }}">
+					<img src="{{ asset("icons/like.svg") }}" alt="manage liked job's icon">
+				</a>
+				<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
+					<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
+				</a>
+			</div>
+		</div>
+	{% endfor %}
+</div>

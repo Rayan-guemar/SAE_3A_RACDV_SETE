@@ -59,7 +59,7 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
-    public function user_festivals(FestivalRepository $festivalRepository): Response {
+    public function userFestivals(Request $request, FestivalRepository $festivalRepository): Response {
         $u = $this->getUser();
 
         if (!$u instanceof Utilisateur) {
@@ -73,12 +73,17 @@ class UtilisateurController extends AbstractController {
 
         $vfs = ($u->getEstBenevole())->getValues();
 
+
+        $userChoice = $request->query->get('userChoice', 'volunteer');
+
         return $this->render('utilisateur/user_festivals.html.twig', [
             'controller_name' => 'UtilisateurController',
             'festivals' => $ofs,
-            'volenteerFestivals' => $vfs,
+            'volunteerFestivals' => $vfs,
+            'userChoice' => $userChoice,
         ]);
     }
+
 
     #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'], options: ['expose' => true])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {

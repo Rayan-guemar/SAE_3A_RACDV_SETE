@@ -1,97 +1,19 @@
 {% extends "base.html.twig" %}
 
-
 {% block title %}Mes Festivals
 {% endblock %}
 
-
 {% block body %}
 	<h1 class="my-fest__title">Mes Festivals</h1>
-	
-	{% if volenteerFestivals|length != 0 %}
-		<h2 class="my-fest__heading">Les festivals auxquels je participe :</h2>
-	{% endif %}
 
-	<div class="fest-wrapper">
-		{% for festival in volenteerFestivals %}
-			<div class="fest">
-				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-					<div 
-						class="affiche" 
-						style="background-image: url('{{ festival.getAffiche() != null ? asset("uploads/" ~ festival.getAffiche()) : asset("img/affiches/affiche-XX.jpg") }}')"
-					>
-					</div>
-					<div class="fest-info">
-						<div class="fest-nom">
-							<span>{{ festival.getNom() }}</span>
-						</div>
-						<div class="fest-dateEtLieux">
-							<span>{{ festival.getDateDebut()|date("d/m/Y") }} - {{ festival.getDateFin()|date("d/m/Y") }}</span>
-							<span>{# {{ festival.getLieuxVille() }} #}</span>
-						</div>
-					</div>
-				</a>
-				<div class="my-fest__buttons">
-
-					<a class="my-fest__btn" href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-						<img src="{{ asset("icons/info.svg") }}" alt="more info icon">
-					</a>
-					<a class="my-fest__btn" href="{{ path('app_festival_postes', {'id' : festival.getId()}) }}">
-						<img src="{{ asset("icons/like.svg") }}" alt="manage liked job's icon">
-					</a>
-					<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
-						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
-					</a>
-				</div>
-			</div>
-		{% endfor %}
+	<div class="my-fest__btns ">
+		<a href="{{ path('app_user_festivals', {'userChoice': 'volunteer'}) }}" class="btn">Festivals en tant que bénévole</a>
+		<a href="{{ path('app_user_festivals', {'userChoice': 'owned'}) }}" class="btn">Festivals que j'organise</a>
 	</div>
 
-		
-	{% if festivals|length != 0 %}
-		<h2 class="my-fest__heading">Les festivals que j'organise :</h2>
+	{% if userChoice == 'volunteer' %}
+		{% include 'utilisateur/user_volunteer_festivals.html.twig' %}
+	{% else %}
+		{% include 'utilisateur/user_owned_festivals.html.twig' %}
 	{% endif %}
-
-	<div class="fest-wrapper with-margin">
-
-			{% for festival in festivals %}
-				{% if festival.getIsArchive() != 1 %}
-					<div class="fest">
-						<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-							<div 
-								class="affiche" 
-								style="background-image: url('{{ festival.getAffiche() != null ? asset("uploads/" ~ festival.getAffiche()) : asset("img/affiches/affiche-XX.jpg") }}')"
-							>
-							</div>
-							<div class="fest-info">
-								<div class="fest-nom">
-									<span>{{ festival.getNom() }}</span>
-								</div>
-								<div class="fest-dateEtLieux">
-									<span>{{ festival.getDateDebut()|date("d/m/Y") ~ ' - ' ~ festival.getDateFin()|date("d/m/Y") }}</span>
-									<span>{# {{ festival.getLieuxVille() }} #}</span>
-								</div>
-							</div>
-						</a>
-						<div class="my-fest__buttons">
-		
-							<a class="my-fest__btn" href="{{ path('app_festival_modifier', {'id' : festival.getId()}) }}">
-								<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
-							</a>
-							<a class="my-fest__btn" href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
-								<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">	
-								{{ component('Notification', { type : 'autre', userId : app.user.id, festId : festival.id}) }}
-							</a>
-							<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
-								<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
-							</a>
-							<a class="my-fest__btn" href="{{ path('app_festival_gestion', {'id' : festival.getId()}) }}">
-								<img src="{{ asset("icons/settingsIco.svg") }}" alt="settings icon">
-							</a>
-						</div>
-					</div>
-				{% endif %}
-			{% endfor %}
-	</div>
-
 {% endblock %}

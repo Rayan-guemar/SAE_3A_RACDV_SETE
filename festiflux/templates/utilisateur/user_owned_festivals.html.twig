@@ -1,0 +1,39 @@
+<h2 class="my-fest__heading">Les festivals que j'organise :</h2>
+
+<div class="fest-wrapper with-margin">
+
+	{% for festival in festivals %}
+		{% if festival.getIsArchive() != 1 %}
+			<div class="fest">
+				<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
+					<div class="affiche" style="background-image: url('{{ festival.getAffiche() != null ? asset(" uploads/" ~ festival.getaffiche()) : asset(" img/affiches/affiche-xx.jpg") }}')"></div>
+					<div class="fest-info">
+						<div class="fest-nom">
+							<span>{{ festival.getNom() }}</span>
+						</div>
+						<div class="fest-dateEtLieux">
+							<span>{{ festival.getDateDebut()|date("d/m/Y") ~ ' - ' ~ festival.getDateFin()|date("d/m/Y") }}</span>
+							<span>{# {{ festival.getLieuxVille() }} #}</span>
+						</div>
+					</div>
+				</a>
+				<div class="my-fest__buttons">
+
+					<a class="my-fest__btn" href="{{ path('app_festival_modifier', {'id' : festival.getId()}) }}">
+						<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
+					</a>
+					<a class="my-fest__btn" href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
+						<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
+						{{ component('Notification', { type : 'autre', userId : app.user.id, festId : festival.id}) }}
+					</a>
+					<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
+						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
+					</a>
+					<a class="my-fest__btn" href="{{ path('app_festival_gestion', {'id' : festival.getId()}) }}">
+						<img src="{{ asset("icons/settingsIco.svg") }}" alt="settings icon">
+					</a>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>
