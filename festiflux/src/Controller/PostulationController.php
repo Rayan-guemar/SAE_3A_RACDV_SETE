@@ -100,6 +100,7 @@ class PostulationController extends AbstractController {
                 $em->persist($response);
             }
 
+            $em->persist($postulation);
             $em->flush();
 
             $this->addFlash('success', 'Votre postulation a bien été prise en compte');
