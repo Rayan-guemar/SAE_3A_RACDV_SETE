@@ -17,8 +17,7 @@ use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
-{
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -44,9 +43,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Festival::class)]
     private Collection $festivals;
-
-    #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
-    private Collection $demandeFestivals;
 
     #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'benevoles')]
     #[JoinTable(name: 'est_benevole')]
@@ -105,10 +101,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Preference::class, orphanRemoval: true)]
     private Collection $preferences;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->festivals = new ArrayCollection();
-        $this->demandeFestivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
@@ -124,63 +118,54 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
-    public function getAdresse(): ?string
-    {
+    public function getAdresse(): ?string {
         return $this->adresse;
     }
 
     /**
      * @param string|null $adresse
      */
-    public function setAdresse(?string $adresse): void
-    {
+    public function setAdresse(?string $adresse): void {
         $this->adresse = $adresse;
     }
 
     /**
      * @return string|null
      */
-    public function getDescription(): ?string
-    {
+    public function getDescription(): ?string {
         return $this->description;
     }
 
     /**
      * @param string|null $description
      */
-    public function setDescription(?string $description): void
-    {
+    public function setDescription(?string $description): void {
         $this->description = $description;
     }
 
     /**
      * @return string|null
      */
-    public function getNomPhotoProfil(): ?string
-    {
+    public function getNomPhotoProfil(): ?string {
         return $this->nomPhotoProfil;
     }
 
     /**
      * @param string|null $nomPhotoProfil
      */
-    public function setNomPhotoProfil(?string $nomPhotoProfil): void
-    {
+    public function setNomPhotoProfil(?string $nomPhotoProfil): void {
         $this->nomPhotoProfil = $nomPhotoProfil;
     }
 
-    public function getId(): ?int
-    {
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getEmail(): ?string
-    {
+    public function getEmail(): ?string {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
-    {
+    public function setEmail(string $email): static {
         $this->email = $email;
 
         return $this;
@@ -191,16 +176,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
-    {
+    public function getUserIdentifier(): string {
         return (string) $this->email;
     }
 
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
-    {
+    public function getRoles(): array {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
@@ -208,8 +191,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
-    {
+    public function setRoles(array $roles): static {
         $this->roles = $roles;
 
         return $this;
@@ -218,13 +200,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
-    {
+    public function getPassword(): string {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
-    {
+    public function setPassword(string $password): static {
         $this->password = $password;
 
         return $this;
@@ -233,14 +213,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials(): void
-    {
+    public function eraseCredentials(): void {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
-    {
+    public function getNom(): ?string {
         return $this->nom;
     }
 
@@ -248,20 +226,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @return string|null
      */
 
-    public function setNom(string $nom): static
-    {
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
-    {
+    public function getPrenom(): ?string {
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): static
-    {
+    public function setPrenom(string $prenom): static {
         $this->prenom = $prenom;
 
         return $this;
@@ -271,13 +246,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Festival>
      */
-    public function getFestivals(): Collection
-    {
+    public function getFestivals(): Collection {
         return $this->festivals;
     }
 
-    public function addFestival(Festival $festival): static
-    {
+    public function addFestival(Festival $festival): static {
         if (!$this->festivals->contains($festival)) {
             $this->festivals->add($festival);
             $festival->setOrganisateur($this);
@@ -286,8 +259,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeFestival(Festival $festival): static
-    {
+    public function removeFestival(Festival $festival): static {
         if ($this->festivals->removeElement($festival)) {
             // set the owning side to null (unless already changed)
             if ($festival->getOrganisateur() === $this) {
@@ -299,45 +271,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, DemandeFestival>
-     */
-    public function getDemandeFestivals(): Collection
-    {
-        return $this->demandeFestivals;
-    }
-
-    public function addDemandeFestival(DemandeFestival $demandeFestival): static
-    {
-        if (!$this->demandeFestivals->contains($demandeFestival)) {
-            $this->demandeFestivals->add($demandeFestival);
-            $demandeFestival->setOrganisateurFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDemandeFestival(DemandeFestival $demandeFestival): static
-    {
-        if ($this->demandeFestivals->removeElement($demandeFestival)) {
-            // set the owning side to null (unless already changed)
-            if ($demandeFestival->getOrganisateurFestival() === $this) {
-                $demandeFestival->setOrganisateurFestival(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Festival>
      */
-    public function getEstBenevole(): Collection
-    {
+    public function getEstBenevole(): Collection {
         return $this->estBenevole;
     }
 
-    public function addEstBenevole(Festival $estBenevole): static
-    {
+    public function addEstBenevole(Festival $estBenevole): static {
         if (!$this->estBenevole->contains($estBenevole)) {
             $this->estBenevole->add($estBenevole);
         }
@@ -345,8 +285,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeEstBenevole(Festival $estBenevole): static
-    {
+    public function removeEstBenevole(Festival $estBenevole): static {
         $this->estBenevole->removeElement($estBenevole);
 
         return $this;
@@ -355,13 +294,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Festival>
      */
-    public function getEstResponsable(): Collection
-    {
+    public function getEstResponsable(): Collection {
         return $this->estResponsable;
     }
 
-    public function addEstResponsable(Festival $estResponsable): static
-    {
+    public function addEstResponsable(Festival $estResponsable): static {
         if (!$this->estResponsable->contains($estResponsable)) {
             $this->estResponsable->add($estResponsable);
         }
@@ -369,8 +306,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeEstResponsable(Festival $estResponsable): static
-    {
+    public function removeEstResponsable(Festival $estResponsable): static {
         $this->estResponsable->removeElement($estResponsable);
 
         return $this;
@@ -379,13 +315,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Festival>
      */
-    public function getDemandesBenevolat(): Collection
-    {
+    public function getDemandesBenevolat(): Collection {
         return $this->demandesBenevolat;
     }
 
-    public function addDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function addDemandesBenevolat(Festival $demandesBenevolat): static {
         if (!$this->demandesBenevolat->contains($demandesBenevolat)) {
             $this->demandesBenevolat->add($demandesBenevolat);
             $demandesBenevolat->addDemandesBenevole($this);
@@ -396,13 +330,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Disponibilite>
      */
-    public function getDisponibilites(): Collection
-    {
+    public function getDisponibilites(): Collection {
         return $this->disponibilites;
     }
 
-    public function addDisponibilite(Disponibilite $disponibilite): static
-    {
+    public function addDisponibilite(Disponibilite $disponibilite): static {
         if (!$this->disponibilites->contains($disponibilite)) {
             $this->disponibilites->add($disponibilite);
             $disponibilite->setUtilisateur($this);
@@ -412,13 +344,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     /* @return Collection<int, Tache>
      */
-    public function getTaches(): Collection
-    {
+    public function getTaches(): Collection {
         return $this->taches;
     }
 
-    public function addTache(Tache $tache): static
-    {
+    public function addTache(Tache $tache): static {
         if (!$this->taches->contains($tache)) {
             $this->taches->add($tache);
             $tache->addBenevoleAffecte($this);
@@ -427,8 +357,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeTache(Tache $tache): static
-    {
+    public function removeTache(Tache $tache): static {
         if ($this->taches->removeElement($tache)) {
             $tache->removeBenevoleAffecte($this);
         }
@@ -436,16 +365,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeDemandesBenevolat(Festival $demandesBenevolat): static
-    {
+    public function removeDemandesBenevolat(Festival $demandesBenevolat): static {
         if ($this->demandesBenevolat->removeElement($demandesBenevolat)) {
             $demandesBenevolat->removeDemandesBenevole($this);
         }
         return $this;
     }
 
-    public function removeDisponibilite(Disponibilite $disponibilite): static
-    {
+    public function removeDisponibilite(Disponibilite $disponibilite): static {
         if ($this->disponibilites->removeElement($disponibilite)) {
             // set the owning side to null (unless already changed)
             if ($disponibilite->getUtilisateur() === $this) {
@@ -457,13 +384,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
-    public function isVerified(): bool
-    {
+    public function isVerified(): bool {
         return $this->isVerified;
     }
 
-    public function setIsVerified(bool $isVerified): static
-    {
+    public function setIsVerified(bool $isVerified): static {
         $this->isVerified = $isVerified;
 
         return $this;
@@ -473,13 +398,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, PosteUtilisateurPreferences>
      */
-    public function getPosteUtilisateurPreferences(): Collection
-    {
+    public function getPosteUtilisateurPreferences(): Collection {
         return $this->posteUtilisateurPreferences;
     }
 
-    public function addPosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
-    {
+    public function addPosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static {
         if (!$this->posteUtilisateurPreferences->contains($posteUtilisateurPreference)) {
             $this->posteUtilisateurPreferences->add($posteUtilisateurPreference);
             $posteUtilisateurPreference->setUtilisateurId($this);
@@ -488,8 +411,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static
-    {
+    public function removePosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static {
         if ($this->posteUtilisateurPreferences->removeElement($posteUtilisateurPreference)) {
             // set the owning side to null (unless already changed)
             if ($posteUtilisateurPreference->getUtilisateurId() === $this) {
@@ -503,13 +425,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, HistoriquePostulation>
      */
-    public function getHistoriquePostulations(): Collection
-    {
+    public function getHistoriquePostulations(): Collection {
         return $this->historiquePostulations;
     }
 
-    public function addHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
-    {
+    public function addHistoriquePostulation(HistoriquePostulation $historiquePostulation): static {
         if (!$this->historiquePostulations->contains($historiquePostulation)) {
             $this->historiquePostulations->add($historiquePostulation);
             $historiquePostulation->setIdUtilisateur($this);
@@ -518,8 +438,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeHistoriquePostulation(HistoriquePostulation $historiquePostulation): static
-    {
+    public function removeHistoriquePostulation(HistoriquePostulation $historiquePostulation): static {
         if ($this->historiquePostulations->removeElement($historiquePostulation)) {
             // set the owning side to null (unless already changed)
             if ($historiquePostulation->getIdUtilisateur() === $this) {
@@ -533,13 +452,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Postulations>
      */
-    public function getPostulations(): Collection
-    {
+    public function getPostulations(): Collection {
         return $this->postulations;
     }
 
-    public function addPostulation(Postulations $postulation): static
-    {
+    public function addPostulation(Postulations $postulation): static {
         if (!$this->postulations->contains($postulation)) {
             $this->postulations->add($postulation);
             $postulation->setUtilisateur($this);
@@ -548,8 +465,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePostulation(Postulations $postulation): static
-    {
+    public function removePostulation(Postulations $postulation): static {
         if ($this->postulations->removeElement($postulation)) {
             // set the owning side to null (unless already changed)
             if ($postulation->getUtilisateur() === $this) {
@@ -563,13 +479,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Reponse>
      */
-    public function getReponses(): Collection
-    {
+    public function getReponses(): Collection {
         return $this->reponses;
     }
 
-    public function addReponse(Reponse $reponse): static
-    {
+    public function addReponse(Reponse $reponse): static {
         if (!$this->reponses->contains($reponse)) {
             $this->reponses->add($reponse);
             $reponse->setUtilisateur($this);
@@ -578,8 +492,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeReponse(Reponse $reponse): static
-    {
+    public function removeReponse(Reponse $reponse): static {
         if ($this->reponses->removeElement($reponse)) {
             // set the owning side to null (unless already changed)
             if ($reponse->getUtilisateur() === $this) {
@@ -593,13 +506,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Preference>
      */
-    public function getPreferences(): Collection
-    {
+    public function getPreferences(): Collection {
         return $this->preferences;
     }
 
-    public function addPreference(Preference $preference): static
-    {
+    public function addPreference(Preference $preference): static {
         if (!$this->preferences->contains($preference)) {
             $this->preferences->add($preference);
             $preference->setUtilisateur($this);
@@ -608,8 +519,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePreference(Preference $preference): static
-    {
+    public function removePreference(Preference $preference): static {
         if ($this->preferences->removeElement($preference)) {
             // set the owning side to null (unless already changed)
             if ($preference->getUtilisateur() === $this) {
