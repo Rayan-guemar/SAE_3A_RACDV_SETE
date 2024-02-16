@@ -63,22 +63,30 @@ class PostulationController extends AbstractController {
     }
 
     #[Route('festival/{id}/postulations/form', name: 'app_postulations_form')]
-    public function postulationForm(#[MapEntity] Festival $festival, Request $req, UtilisateurUtils $utilisateurUtils, QuestionBenevoleRepository $questionBenevoleRepository, EntityManagerInterface $em): Response {
+    public function postulationForm(#[MapEntity] Festival $festival, Request $req, UtilisateurUtils $utilisateurUtils, QuestionBenevoleRepository $questionBenevoleRepository, EntityManagerInterface $em, PostulationsRepository $postulationRepository): Response {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
-        // if ($utilisateurUtils->isOrganisateur($u, $festival)) {
-        //     $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
-        //     return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        // };
 
-        // if ($utilisateurUtils->isBenevole($u, $festival)) {
-        //     $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
-        //     return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        // }
+        if ($utilisateurUtils->isOrganisateur($u, $festival)) {
+            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        };
+
+        if ($utilisateurUtils->isBenevole($u, $festival)) {
+            $this->addFlash('error', 'Vous participez déjà à ce festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
+
+        $postulation =  $postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
+
+        if ($postulation) {
+            $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
 
         if ($req->isMethod('POST')) {
 
