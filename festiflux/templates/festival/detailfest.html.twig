@@ -68,7 +68,7 @@
 				</div>
 			{% endif %}
 
-			{% if not(isBenevole or isOrganisateur or isResponsable) %}
+			{% if not(isBenevole or isOrganisateur or isResponsable) and (festival.isOpen()) %}
 				<div class="button-benevole">
 					<a href={{ path('app_festival_apply_volunteer', {'id': festival.getId()} ) }} class="btn btn-primary">Postuler</a>
 				</div>

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Vos postulation
+{% endblock %}
+
+{% block body %}
+	<h1>Vos Postulations</h1>
+
+	{% if postulations is not empty %}
+		<table border="1">
+			<thead>
+				<tr>
+					<th>festival</th>
+					<th>date de votre demande</th>
+					<th>status</th>
+					<th>motif</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for postulation in postulations %}
+					<tr>
+						<td>
+							<a href="{{path('app_festival_detail', {'id' : postulation.festival.getId()} ) }}">
+								{{ postulation.festival.nom }}
+							</a>
+						</td>
+						<td>{{ postulation.date | date('d/m/Y') }}</td>
+						<td>{{ postulation.statusToString() }}</td>
+						<td>{{ postulation.motif ? postulation.motif : '/' }}</td>
+					</tr>
+				</tbody>
+			</tbody>
+		</tr>
+	{% endfor %}
+</tbody></table>{% else %}<p>Aucune postulations disponible.</p>{% endif %}{% endblock %}

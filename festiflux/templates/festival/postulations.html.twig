@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Vos postulation
+{% endblock %}
+
+{% block body %}
+	<h1>Postulations pour
+		{{festival.nom}}</h1>
+
+	{% if postulations is not empty %}
+		<table border="1">
+			<thead>
+				<tr>
+					<th>nom</th>
+					<th>prénom</th>
+					<th>date de la demande</th>
+					<th>détail</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for postulation in postulations %}
+					<tr>
+						<td>
+							{{ postulation.utilisateur.nom}}
+						</td>
+						<td>
+							{{ postulation.utilisateur.prenom}}
+						</td>
+						<td>
+							{{ postulation.date | date("d/m/Y") }}
+						</td>
+						<td>
+							<a href="{{path('app_postulations_postulation', {id: postulation.id})}}">
+								lien
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</tbody>
+		</tr>
+	{% endfor %}
+</tbody></table>{% else %}<p>Aucune postulations disponible.</p>{% endif %}{% endblock %}

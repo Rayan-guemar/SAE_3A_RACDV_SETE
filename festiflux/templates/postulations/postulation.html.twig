@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postulation de
+	{{ postulation.utilisateur.nom }}
+	{{ postulation.utilisateur.prenom  }}
+{% endblock %}
+
+{% block body %}
+	<h1>Postulation de
+		{{ postulation.utilisateur.nom}}
+		{{ postulation.utilisateur.prenom }}
+	</h1>
+{% endblock %}
