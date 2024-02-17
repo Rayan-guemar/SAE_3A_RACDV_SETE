@@ -27,18 +27,25 @@ const loading = ref(false);
 const emits = defineEmits(['close', 'reloadBenevoles']);
 
 let defaultAffected = getBenevoleFromIDs(props.tache.benevoles || []);
-const selectedSort = ref<"preference" | "charge" | "">("");
+const selectedSort = ref<"preference ascendante" | "charge ascendante" | "charge descendante" | "preference descendante">("charge ascendante");
 
 const sortedBenevoles = computed(() => {
 
-    if (selectedSort.value == "preference") {
+    if (selectedSort.value == "preference descendante") {
         return [...props.benevoles].sort((a, b) => {
             const a_degree = a.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
             const b_degree = b.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
             return b_degree - a_degree;
         });
-    } 
-    if (selectedSort.value == "charge") {
+    }
+    if (selectedSort.value == "preference ascendante") {
+      return [...props.benevoles].sort((b, a) => {
+        const a_degree = a.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
+        const b_degree = b.preferences.find((p) => p.poste == (props.tache.poste.id + ""))?.degree || 0;
+        return b_degree - a_degree;
+      });
+    }
+  if (selectedSort.value == "charge ascendante") {
         // TODO
         return [...props.benevoles].sort((a, b) => {
             const a_charge = props.chargesBenevole[a.id] || 0;
@@ -46,7 +53,14 @@ const sortedBenevoles = computed(() => {
             return a_charge - b_charge;
         })
     }
-
+    if (selectedSort.value == "charge descendante") {
+      // TODO
+      return [...props.benevoles].sort((b, a) => {
+        const a_charge = props.chargesBenevole[a.id] || 0;
+        const b_charge = props.chargesBenevole[b.id] || 0;
+        return a_charge - b_charge;
+      })
+    }
     return [...props.benevoles];
 })
 
@@ -109,11 +123,11 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
             <div class="info-wrapper">
                 <div>
                     <h5>Description :</h5>
-                    <div class="content">{{ tache.poste.description }}</div>
+                    <div class="content">{{ (tache.poste.description.length === 0 ? 'Il n\'y a pas de description' : tache.poste.description) }}</div>
                 </div>
                 <div>
                     <h5>Remarque :</h5>
-                    <div class="content">{{ tache.description }}</div>
+                    <div class="content">{{ (tache.description.length === 0 ? 'Il n\'y a pas de remarque' : tache.description) }}</div>
                 </div>
                 <div>
                     <h5 v-if="tache.lieu">Lieu :</h5>
@@ -123,13 +137,15 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
                     <CustomSelect
                         class="select-sort"
                         :options="[
-                            {label: 'Ne pas trier', value: ''},
-                            {label: 'Trier par charge', value: 'charge'},
-                            {label: 'Trier par préférences', value: 'preference'},
+                            {label: 'Trier par charge ascendante', value: 'charge ascendante'},
+                            {label: 'Trier par charge descendante', value: 'charge descendante'},
+                            {label: 'Trier par préférences ascendante', value: 'preference ascendante'},
+                            {label: 'Trier par préférences descendante', value: 'preference descendante'},
                         ]"
                         :selected="selectedSort"
                         @select="selectedSort = $event"
                     />
+
                 </div>
             </div>
             <div class="benevole-lists">
