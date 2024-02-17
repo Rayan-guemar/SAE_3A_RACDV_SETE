@@ -43,9 +43,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Festival::class)]
     private Collection $festivals;
 
-    #[ORM\OneToMany(mappedBy: 'organisateurFestival', targetEntity: DemandeFestival::class)]
-    private Collection $demandeFestivals;
-
     #[ORM\ManyToMany(targetEntity: Festival::class, inversedBy: 'benevoles')]
     #[JoinTable(name: 'est_benevole')]
     #[JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id')]
@@ -102,7 +99,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
     public function __construct() {
         $this->festivals = new ArrayCollection();
-        $this->demandeFestivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
         $this->estResponsable = new ArrayCollection();
         $this->demandesBenevolat = new ArrayCollection();
@@ -263,33 +259,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($festival->getOrganisateur() === $this) {
                 $festival->setOrganisateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, DemandeFestival>
-     */
-    public function getDemandeFestivals(): Collection {
-        return $this->demandeFestivals;
-    }
-
-    public function addDemandeFestival(DemandeFestival $demandeFestival): static {
-        if (!$this->demandeFestivals->contains($demandeFestival)) {
-            $this->demandeFestivals->add($demandeFestival);
-            $demandeFestival->setOrganisateurFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDemandeFestival(DemandeFestival $demandeFestival): static {
-        if ($this->demandeFestivals->removeElement($demandeFestival)) {
-            // set the owning side to null (unless already changed)
-            if ($demandeFestival->getOrganisateurFestival() === $this) {
-                $demandeFestival->setOrganisateurFestival(null);
             }
         }
 
@@ -502,6 +471,32 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
+    /**
+     * @return Collection<int, Reponse>
+     */
+    public function getReponses(): Collection {
+        return $this->reponses;
+    }
+
+    public function addReponse(Reponse $reponse): static {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses->add($reponse);
+            $reponse->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): static {
+        if ($this->reponses->removeElement($reponse)) {
+            // set the owning side to null (unless already changed)
+            if ($reponse->getUtilisateur() === $this) {
+                $reponse->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, Preference>

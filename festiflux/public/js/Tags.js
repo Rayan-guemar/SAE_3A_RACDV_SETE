@@ -167,7 +167,7 @@
 })();
 
 var tagInput1 = new TagsInput({
-    selector: 'demande_festival_tags',
+    selector: 'festival_tags',
     duplicate : false,
     max : 10
 });

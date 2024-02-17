@@ -2,22 +2,23 @@
 
 namespace App\Twig\Components;
 
-use App\Repository\DemandeFestivalRepository;
 use App\Repository\FestivalRepository;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
 class Notification
 {
-    private DemandeFestivalRepository $demandeRepo;
+//    private DemandeFestivalRepository $demandeRepo;
     private FestivalRepository $festRepo;
     public ?int $userId;
     public string $type;
     public ?int $festId;
 
-    public function __construct(DemandeFestivalRepository $demandeRepo, FestivalRepository $festRepo)
+    public function __construct(
+        //FestivalRepository $demandeRepo, //
+        FestivalRepository $festRepo)
     {
-        $this->demandeRepo = $demandeRepo;
+       // $this->demandeRepo = $demandeRepo;
         $this->festRepo = $festRepo;
     }
 
@@ -25,7 +26,7 @@ class Notification
     {
         if($this->type == "demandeFestival"){
 
-            return count($this->demandeRepo->findAll());
+            return count($this->festRepo->findAll());
             
         } else if ($this->type == "allDemandesBenevolat" && $this->userId != null){ 
             

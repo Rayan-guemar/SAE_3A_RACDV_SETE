@@ -1,5 +1,5 @@
-debut = document.getElementById("demande_festival_dateDebutFestival");
-fin = document.getElementById("demande_festival_dateFinFestival");
+debut = document.getElementById("festival_dateDebut");
+fin = document.getElementById("festival_dateFin");
 debut.addEventListener("change", function() {
         debut.setAttribute("value", debut.value);
         fin.setAttribute("min", debut.value);
