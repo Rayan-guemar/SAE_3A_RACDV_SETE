@@ -472,33 +472,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     }
 
     /**
-     * @return Collection<int, Reponse>
-     */
-    public function getReponses(): Collection {
-        return $this->reponses;
-    }
-
-    public function addReponse(Reponse $reponse): static {
-        if (!$this->reponses->contains($reponse)) {
-            $this->reponses->add($reponse);
-            $reponse->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReponse(Reponse $reponse): static {
-        if ($this->reponses->removeElement($reponse)) {
-            // set the owning side to null (unless already changed)
-            if ($reponse->getUtilisateur() === $this) {
-                $reponse->setUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Preference>
      */
     public function getPreferences(): Collection {
