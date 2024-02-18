@@ -11,12 +11,9 @@ use App\Repository\QuestionBenevoleRepository;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Service\UtilisateurUtils;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,15 +80,15 @@ class PostulationController extends AbstractController {
             return $this->redirectToRoute('app_auth_login');
         }
 
-        // if ($utilisateurUtils->isOrganisateur($u, $festival)) {
-        //     $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
-        //     return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        // };
+        if ($utilisateurUtils->isOrganisateur($u, $festival)) {
+            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        };
 
-        // if ($utilisateurUtils->isBenevole($u, $festival)) {
-        //     $this->addFlash('error', 'Vous participez déjà à ce festival');
-        //     return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        // }
+        if ($utilisateurUtils->isBenevole($u, $festival)) {
+            $this->addFlash('error', 'Vous participez déjà à ce festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
 
         $postulation =  $postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
 
@@ -222,80 +219,6 @@ class PostulationController extends AbstractController {
         return $this->render('postulations/refuse.html.twig', [
             'festival' => $festival,
             'postulation' => $postulation,
-        ]);
-    }
-
-    #[Route('festival/{id}/postulations/form', name: 'app_postulations_form')]
-    public function postulationForm(#[MapEntity] Festival $festival, Request $req, UtilisateurUtils $utilisateurUtils, QuestionBenevoleRepository $questionBenevoleRepository, EntityManagerInterface $em, PostulationsRepository $postulationRepository): Response {
-
-        $u = $this->getUser();
-        if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        if ($utilisateurUtils->isOrganisateur($u, $festival)) {
-            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        };
-
-        if ($utilisateurUtils->isBenevole($u, $festival)) {
-            $this->addFlash('error', 'Vous participez déjà à ce festival');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        }
-
-        $postulation =  $postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
-
-        if ($postulation) {
-            $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        }
-
-        if ($req->isMethod('POST')) {
-
-            $postulation = new Postulations();
-            $postulation->setFestival($festival);
-            $postulation->setUtilisateur($u);
-            $postulation->setDate(new \DateTime());
-            $postulation->setStatus(Postulations::STATUS_PENDING);
-
-            $formData = $req->request->all();
-
-            foreach ($formData['responses'] as $questionId => $responseContent) {
-                $response = new Reponse();
-                $question = $questionBenevoleRepository->find($questionId);
-                $response
-                    ->setQuestion($question)
-                    ->setContenue($responseContent);
-                $response->setPostulation($postulation);
-                $em->persist($response);
-            }
-
-            $em->persist($postulation);
-            $em->flush();
-
-            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        }
-
-        $questions = $festival->getQuestionBenevoles();
-        if ($questions->isEmpty()) {
-
-            $postulation = new Postulations();
-            $postulation->setFestival($festival);
-            $postulation->setUtilisateur($u);
-            $postulation->setDate(new \DateTime());
-            $postulation->setStatus(Postulations::STATUS_PENDING);
-
-            $em->persist($postulation);
-
-            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        }
-
-        return $this->render('postulations/form.html.twig', [
-            'festival' => $festival,
-            'questions' => $questions,
         ]);
     }
 }
