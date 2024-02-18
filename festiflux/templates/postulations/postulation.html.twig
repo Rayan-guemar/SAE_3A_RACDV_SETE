@@ -3,12 +3,98 @@
 {% block title %}
 	Postulation de
 	{{ postulation.utilisateur.nom }}
-	{{ postulation.utilisateur.prenom  }}
+	{{ postulation.utilisateur.prenom }}
 {% endblock %}
 
 {% block body %}
-	<h1>Postulation de
-		{{ postulation.utilisateur.nom}}
-		{{ postulation.utilisateur.prenom }}
-	</h1>
+	<div class="postulation-page">
+		<h1>Postulation de
+			{{ postulation.utilisateur.nom }}
+			{{ postulation.utilisateur.prenom }}</h1>
+		<div>
+			<div class="user-info-container">
+				<div class="user-image">
+					<img id="" {% if postulation.utilisateur.nomphotoprofil == true %} src="{{ asset("uploads/user/" ~ postulation.utilisateur.nomPhotoProfil ~ "") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+				</div>
+				<div class="user-details">
+					<div>
+						<strong>Email</strong>:
+						{{ postulation.utilisateur.email }}
+					</div>
+					<div>
+						<strong>Nom</strong>:
+						{{ postulation.utilisateur.nom }}
+					</div>
+					<div>
+						<strong>Prénom</strong>:
+						{{ postulation.utilisateur.prenom }}
+					</div>
+					<div>
+						<strong>Adresse</strong>:
+						{{ postulation.utilisateur.adresse }}
+					</div>
+					<div>
+						<strong>Biographie</strong>:
+						{{ postulation.utilisateur.description }}
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- Fin de l'intégration des informations utilisateur -->
+		<div class="postulation-container">
+			{% for reponse in postulation.reponses %}
+				{% set question = reponse.question %}
+				<div>
+					<label>{{ question.label }}</label>
+					{% if question.typeReponse == 'boolean' %}
+						<div class="radio-group">
+							<div>
+								{% if reponse.contenue == "true" %}
+									<input type="radio" checked disabled>
+								{% else %}
+									<input type="radio" disabled>
+								{% endif %}
+								<label>Oui</label>
+							</div>
+							<div>
+								{% if reponse.contenue == "false" %}
+									<input type="radio" checked disabled>
+								{% else %}
+									<input type="radio" disabled>
+								{% endif %}
+								<label>Non</label>
+							</div>
+						</div>
+					{% else %}
+						<input type="text" id="response_{{ question.id }}" name="responses[{{ question.id }}]" value="{{reponse.contenue}}" disabled>
+					{% endif %}
+				</div>
+			{% endfor %}
+			{% if postulation.status == 0 %}
+				<div class="buttons-container">
+					<form action="{{path("app_postulations_accept", {id: postulation.getId()})}}" method="post">
+						<button class="accept" type="submit">Accepter</button>
+					</form>
+					<form action="{{path("app_postulations_refuse", {id: postulation.getId()})}}" method="get">
+						<button class="refuse" type="submit">Refuser</button>
+					</form>
+				</div>
+			{% elseif postulation.status == 1 %}
+				<div class="status-container">
+					<p>status:
+						<span class="accepted">Accepté</span>
+					</p>
+				</div>
+			{% else %}
+				<div class="status-container">
+					<p>Status:
+						<span class="refused">Refusé</span>
+					</p>
+					<p>Motif:
+						{{postulation.motif}}</p>
+				</div>
+			{% endif %}
+		</div>
+	</div>
 {% endblock %}
