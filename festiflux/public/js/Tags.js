@@ -24,7 +24,7 @@
         this.arr = [];
         this.wrapper = document.createElement('div');
         this.input = document.createElement('input');
-        this.input.placeholder = 'Ajouter des Tags';
+        this.input.placeholder = 'Ajouter des tags';
         init(this);
         initEvents(this);
 
