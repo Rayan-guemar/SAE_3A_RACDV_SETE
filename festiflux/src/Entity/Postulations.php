@@ -41,8 +41,7 @@ class Postulations {
     #[ORM\OneToMany(mappedBy: 'postulation', targetEntity: Reponse::class, orphanRemoval: true)]
     private Collection $reponses;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->reponses = new ArrayCollection();
     }
 
@@ -87,7 +86,7 @@ class Postulations {
         return $this;
     }
 
-    public function isStatus(): ?int {
+    public function getStatus(): ?int {
         return $this->status;
     }
 
@@ -121,13 +120,11 @@ class Postulations {
     /**
      * @return Collection<int, Reponse>
      */
-    public function getReponses(): Collection
-    {
+    public function getReponses(): Collection {
         return $this->reponses;
     }
 
-    public function addReponse(Reponse $reponse): static
-    {
+    public function addReponse(Reponse $reponse): static {
         if (!$this->reponses->contains($reponse)) {
             $this->reponses->add($reponse);
             $reponse->setPostulation($this);
@@ -136,8 +133,7 @@ class Postulations {
         return $this;
     }
 
-    public function removeReponse(Reponse $reponse): static
-    {
+    public function removeReponse(Reponse $reponse): static {
         if ($this->reponses->removeElement($reponse)) {
             // set the owning side to null (unless already changed)
             if ($reponse->getPostulation() === $this) {
