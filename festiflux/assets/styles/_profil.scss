@@ -88,7 +88,7 @@ h1 {
 .info-row {
   display: flex;
   gap: 20px;
-  width: 100%;
+  width: 110%;
   flex-direction: column;
 
   &.editing {
@@ -103,10 +103,11 @@ h1 {
     }
   }
 }
+.pen {
+  margin-left: 10px;
+}
 
 .info-border {
-  border-radius: 15px;
-  border: 2px solid $grey-primary;
   padding: 15px;
   margin: 0 10px;
 

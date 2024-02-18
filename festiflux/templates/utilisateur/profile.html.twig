@@ -29,40 +29,44 @@
 						<strong>Email</strong>
 						:
 						{{ utilisateur.email }}
-
+						<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
 				    </div>
 						<div class="info-name-surname">
 							<div class="info-border">
 								<strong>Nom</strong>
 								:
 								{{ utilisateur.nom }}
+								<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
 							</div>
 
 							<div class="info-border">
 								<strong>Prénom</strong>
 								:
 								{{ utilisateur.prenom }}
+								<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
 							</div>		
 						</div>	
             <div class="info-border">
 					<strong>Adresse</strong>
 					:
 					{{ utilisateur.adresse }}
+				<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
 
 				</div>
 						<div class="info-border biographie">
 								<strong>Biographie</strong>
 								:
 								{{ utilisateur.description }}
+							<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
 						</div>
 					</div>
 				</div>
 
-				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
-					<div class="edit-button">
-						Modifier mon profil
-					</div>
-				</a>
+{#				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">#}
+{#					<div class="edit-button">#}
+{#						Modifier mon profil#}
+{#					</div>#}
+{#				</a>#}
 			</div>
 		</div>
 
