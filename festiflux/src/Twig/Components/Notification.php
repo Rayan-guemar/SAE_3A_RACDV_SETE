@@ -18,17 +18,16 @@ class Notification
     public function __construct(ValidationRepository $validRepo, FestivalRepository $festRepo)
     {
         $this->validRepo = $validRepo;
-        $this->festRepo = $festRepo;
     }
 
     function renderNombre(): int
     {
         if($this->type == "demandeFestival"){
-
+          
             $validations = $this->validRepo->findBy(['status' => 0]);
 
-            return count($validations);
-            
+            return count($validations);   
+          
         } else if ($this->type == "allDemandesBenevolat" && $this->userId != null){ 
             
             $res = 0;
