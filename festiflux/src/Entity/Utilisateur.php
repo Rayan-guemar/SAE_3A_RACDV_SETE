@@ -12,7 +12,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -95,9 +94,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Postulations::class)]
     private Collection $postulations;
 
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Reponse::class, orphanRemoval: true)]
-    private Collection $reponses;
-
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Preference::class, orphanRemoval: true)]
     private Collection $preferences;
 
@@ -111,7 +107,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->posteUtilisateurPreferences = new ArrayCollection();
         $this->historiquePostulations = new ArrayCollection();
         $this->postulations = new ArrayCollection();
-        $this->reponses = new ArrayCollection();
         $this->preferences = new ArrayCollection();
     }
 
@@ -470,33 +465,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($postulation->getUtilisateur() === $this) {
                 $postulation->setUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Reponse>
-     */
-    public function getReponses(): Collection {
-        return $this->reponses;
-    }
-
-    public function addReponse(Reponse $reponse): static {
-        if (!$this->reponses->contains($reponse)) {
-            $this->reponses->add($reponse);
-            $reponse->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReponse(Reponse $reponse): static {
-        if ($this->reponses->removeElement($reponse)) {
-            // set the owning side to null (unless already changed)
-            if ($reponse->getUtilisateur() === $this) {
-                $reponse->setUtilisateur(null);
             }
         }
 

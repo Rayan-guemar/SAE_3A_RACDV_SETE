@@ -6,8 +6,7 @@ use App\Repository\ReponseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReponseRepository::class)]
-class Reponse
-{
+class Reponse {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -17,50 +16,46 @@ class Reponse
     #[ORM\JoinColumn(nullable: false)]
     private ?QuestionBenevole $question = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reponses')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(length: 255)]
     private ?string $contenue = null;
 
-    public function getId(): ?int
-    {
+    #[ORM\ManyToOne(inversedBy: 'reponses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Postulations $postulation = null;
+
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getQuestion(): ?QuestionBenevole
-    {
+    public function getQuestion(): ?QuestionBenevole {
         return $this->question;
     }
 
-    public function setQuestion(?QuestionBenevole $question): static
-    {
+    public function setQuestion(?QuestionBenevole $question): static {
         $this->question = $question;
 
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
+    public function getContenue(): ?string {
+        return $this->contenue;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
-    {
-        $this->utilisateur = $utilisateur;
+    public function setContenue(string $contenue): static {
+        $this->contenue = $contenue;
 
         return $this;
     }
 
-    public function getContenue(): ?string
+    public function getPostulation(): ?Postulations
     {
-        return $this->contenue;
+        return $this->postulation;
     }
 
-    public function setContenue(string $contenue): static
+    public function setPostulation(?Postulations $postulation): static
     {
-        $this->contenue = $contenue;
+        $this->postulation = $postulation;
 
         return $this;
     }
