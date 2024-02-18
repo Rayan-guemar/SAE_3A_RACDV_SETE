@@ -168,7 +168,7 @@ const dislike = async () => {
         </div>
 
         <div v-if="isOrgaOrResp" class="task-preview-wrapper">
-            <h4 class="top-heading">Aperçu d'une tache</h4>
+            <h4 class="top-heading">Aperçu d'une tâche</h4>
             <div class="task-preview" :style="{
                 'border-color': currentPoste.couleur,
                 'background-color': currentPoste.couleur + '1A',

@@ -125,6 +125,7 @@ class Postulations {
     }
 
     public function addReponse(Reponse $reponse): static {
+
         if (!$this->reponses->contains($reponse)) {
             $this->reponses->add($reponse);
             $reponse->setPostulation($this);
@@ -134,6 +135,7 @@ class Postulations {
     }
 
     public function removeReponse(Reponse $reponse): static {
+
         if ($this->reponses->removeElement($reponse)) {
             // set the owning side to null (unless already changed)
             if ($reponse->getPostulation() === $this) {

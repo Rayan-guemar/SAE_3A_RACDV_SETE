@@ -27,7 +27,7 @@
 							</li>
 							{% if app.user.getHistoriquePostulations().isEmpty()==false %}
 								<li>
-                  <img src="{{ asset("icons/check.svg")}}" alt="Tracking volontary request icon"><a href="{{ path("app_postulations") }}">Suivi de vos Postulations</a>
+                  <img src="{{ asset("icons/check.svg")}}" alt="Tracking volontary request icon"><a href="{{ path("app_postulations") }}">Suivi de vos postulations</a>
 								</li>
 							{% endif %}
 							{% if is_granted('ROLE_ADMIN')  %}
