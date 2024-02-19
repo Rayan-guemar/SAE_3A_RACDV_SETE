@@ -18,6 +18,7 @@ class Notification
     public function __construct(ValidationRepository $validRepo, FestivalRepository $festRepo)
     {
         $this->validRepo = $validRepo;
+        $this->festRepo = $festRepo;
     }
 
     function renderNombre(): int
