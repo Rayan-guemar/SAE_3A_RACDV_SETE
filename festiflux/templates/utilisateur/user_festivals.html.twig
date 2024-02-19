@@ -23,7 +23,8 @@
 			{% if festival.getIsArchive() != 1 %}
 				<div class="fest">
 					<a href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
-						<div class="affiche" style="background-image: url('{{ festival.getAffiche() != null ? asset(" uploads/" ~ festival.getaffiche()) : asset(" img/affiches/affiche-xx.jpg") }}')"></div>
+
+						<div class="affiche" style="background-image: url('{{ (festival.getAffiche()) != null ? asset("uploads/" ~ festival.getaffiche()) : asset("img/affiches/affiche-xx.jpg") }}')"></div>
 						<div class="fest-info">
 							<div class="fest-nom">
 								<span>{{ festival.getNom() }}</span>
