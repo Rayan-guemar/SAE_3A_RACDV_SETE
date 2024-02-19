@@ -1,73 +1,72 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Profil de
-	{{utilisateur.nom}}
-	{{utilisateur.prenom}}
+    Profil de
+    {{ utilisateur.nom }}
+    {{ utilisateur.prenom }}
+{% endblock %}
+{% block overhead %}
+    <script src="{{ asset('js/profileInput.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
 
-		<div class="profil-box">
-			<h1>
-				Profil de
-				{{ utilisateur.nom }}
-				{{ utilisateur.prenom }}
-			</h1>
+    <div class="profil-box">
+        <h1>
+            Profil de
+            {{ utilisateur.nom }}
+            {{ utilisateur.prenom }}
+        </h1>
 
-			<div class="info-box-wrapper">
-				<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
-						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
-					 {% else %}
-						src="{{ asset("uploads/user/anonyme.png") }}"
-					 {% endif %}>
-			    </div>
-			<div class="info-box">
-				<div class="info-row">
-					<div class="info-border">
-						<strong>Email</strong>
-						:
-						{{ utilisateur.email }}
-						<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
-				    </div>
-						<div class="info-name-surname">
-							<div class="info-border">
-								<strong>Nom</strong>
-								:
-								{{ utilisateur.nom }}
-								<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
-							</div>
+        <div class="info-box-wrapper">
+            <div class="image_profile">
+                <img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+                    src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+                {% else %}
+                    src="{{ asset("uploads/user/anonyme.png") }}"
+                        {% endif %}>
+            </div>
+            <div class="info-box">
+                <div class="info-row">
+                    <div class="info-border" contenteditable="false">
+                        <strong>Email</strong>
+                        :
+                        <input class="input-profile" disabled value="{{ utilisateur.email }}">
+                        <a class="pen">🖉</a>
+                    </div>
+                    <div class="info-name-surname">
+                        <div class="info-border">
+                            <strong>Nom</strong>
+                            :
+                            <input class="input-profile" disabled value="{{ utilisateur.nom }}">
+                            <a class="pen">🖉</a></div>
 
-							<div class="info-border">
-								<strong>Prénom</strong>
-								:
-								{{ utilisateur.prenom }}
-								<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
-							</div>		
-						</div>	
-            <div class="info-border">
-					<strong>Adresse</strong>
-					:
-					{{ utilisateur.adresse }}
-				<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
+                        <div class="info-border">
+                            <strong>Prénom</strong>
+                            :
+                            <input class="input-profile" disabled value="{{ utilisateur.prenom }}">
+                            <a class="pen">🖉</a></div>
+                    </div>
+                    <div class="info-border">
+                        <strong>Adresse</strong>
+                        :
+                        <input class="input-profile" disabled value="{{ utilisateur.adresse }}">
+                        <a class="pen">🖉</a>
+                    </div>
+                    <div class="info-border biographie">
+                        <strong>Biographie</strong>
+                        :
+                        <textarea class="input-profile">{{ utilisateur.description }}</textarea>
+                        <a class="pen">🖉</a>
+                    </div>
+                </div>
+            </div>
 
-				</div>
-						<div class="info-border biographie">
-								<strong>Biographie</strong>
-								:
-								{{ utilisateur.description }}
-							<a class="pen" href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">🖉</a>
-						</div>
-					</div>
-				</div>
-
-{#				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">#}
-{#					<div class="edit-button">#}
-{#						Modifier mon profil#}
-{#					</div>#}
-{#				</a>#}
-			</div>
-		</div>
-
+            <a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
+                <div class="edit-button">
+                    Modifier mon profil
+                </div>
+            </a>
+        </div>
+    </div>
 {% endblock %}

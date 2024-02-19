@@ -141,6 +141,13 @@ div.info-name-surname {
 
 div.biographie {
   min-height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+textarea {
+  padding: 8px;
+  margin-left: 5px;
 }
 
 @media screen and (max-width: 768px) {
@@ -190,8 +197,24 @@ div.biographie {
   }
 }
 
+.input-profile {
+  font-size: 18px;
+  border: solid black 1px;
+  background: white;
+  font-weight: 600;
+  color: black;
+}
+
+.input-profile:disabled {
+  font-size: 18px;
+  border: none;
+  background: white;
+  font-weight: 600;
+  color: black;
+}
+
 .edit-button {
-  display: flex;
+  display: none;
   padding: 20px;
   border-radius: 20px;
   background: #000;
