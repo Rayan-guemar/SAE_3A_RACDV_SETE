@@ -7,28 +7,26 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Liste des demandes de Validation</h1>
-	<table class="\" table\"">
+	<h1 style="margin-top: 100px ">Liste des demandes de Validation</h1>
+	<table class="liste_fest">
 		<thead>
 			<tr>
-				<th>Nom festival</th>
-				<th>Description</th>
+				<th>Festival</th>
 				<th>Organisateur</th>
-				<th>Date de début</th>
-				<th>Date de fin</th>
-				<th>Lieu</th>
+				<th>Postes</th>
+				<th>Plages du planning</th>
+				<th>formulaire postulation</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for validation in validations %}
 				<tr>
-					<td>{{ validation.getFestival().getNom() }}</td>
-					<td>{{ validation.getFestival().getDescription() }}</td>
-					<td>{{ validation.getFestival().getOrganisateur().getNom() }}</td>
-					<td>{{ validation.getFestival().getDateDebut()|date("d/m/Y") }}</td>
-					<td>{{ validation.getFestival().getDateFin()|date("d/m/Y") }}</td>
-					<td>{{ validation.getFestival().getLieu() }}</td>
+					<td><a href="{{ path('app_festival_detail', {'id' : validation.getFestival().getId() }) }}">{{ validation.getFestival().getNom() }}</a></td>
+					<td><a href="{{ path('app_user_profile', {'id' : validation.getFestival().getOrganisateur().getId() }) }}">{{ validation.getFestival().getOrganisateur().getNom() }}</a></td>
+					<td><a href="{{ path('app_festival_postes', {'id' : validation.getFestival().getId() }) }}">Voir les postes </a></td>
+					<td><a href="blank">Voir les plages</a></td>
+					<td><a href="blank">formulaire postulation</a></td>
 					<td>
 						<form action={{path("app_validation_accept", {"id": validation.id} )}} method="post">
 							<button class="">Accepter</button>
