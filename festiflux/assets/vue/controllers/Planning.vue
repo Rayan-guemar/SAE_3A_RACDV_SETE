@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { calculCharge, dateDiff } from "../../scripts/utils";
+import { calculCharge, dateDiff, displayHoursMinutes } from "../../scripts/utils";
 import { VNodeRef, ref, onMounted, computed } from "vue";
 import {
   Tache as TacheType,
@@ -92,6 +92,7 @@ const chargesBenevole = computed(() => {
 });
 
 const loading = ref(true);
+const wantsToCreateTache = ref(false);
 const creatingTache = ref(false);
 const creatingPlage = ref(false);
 const addIndispo = ref(false);
@@ -117,6 +118,10 @@ const modeAffectation = ref(false);
 const toggleModeAffectation = () => {
   modeAffectation.value = !modeAffectation.value;
 };
+
+const newTacheName = ref("");
+const newTacheStart = ref(new Date());
+const newTacheEnd = ref(new Date());
 
 const getTaches = async () => {
   const res = await Backend.getTaches(festival.value.festID);
@@ -179,8 +184,42 @@ const scrollDaysRight = () => {
   });
 };
 
-const startCreatingTache = () => {
+const startWantingToCreateTache = () => {
+  wantsToCreateTache.value = true;
+};
+
+const stopWantingToCreateTache = () => {
+  wantsToCreateTache.value = false;
+}; 
+
+const startCreatingTache = (e: MouseEvent, d: Date) => {
+  if (!wantsToCreateTache.value) return;
+
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const mouseYWithOffset = e.clientY - divY;
+  
+  const nbOfQuarters = Math.floor(mouseYWithOffset / divH * 96);
+  const startDate = new Date(d);
+  const endDate = new Date(startDate);
+  startDate.setHours(Math.floor(nbOfQuarters / 4));
+  if (startDate.getHours() >= 23) {
+    startDate.setHours(22);
+    startDate.setMinutes(30);
+    endDate.setHours(23);
+    endDate.setMinutes(30);
+  } else {
+    startDate.setMinutes((nbOfQuarters % 4) * 15);
+    endDate.setHours(startDate.getHours() + 1);
+    endDate.setMinutes(startDate.getMinutes());
+  }
+  console.log(startDate, endDate);
+  newTacheStart.value = startDate;
+  newTacheEnd.value = endDate;
   creatingTache.value = true;
+  wantsToCreateTache.value = false;
 };
 
 const stopCreatingTache = (tache?: TacheCreateData) => {
@@ -269,7 +308,7 @@ console.log(props.isOrgaOrResp);
       </div>
     </div>
     <div class="days" ref="daysDiv">
-      <div class="day" v-for="day of days" ref="truc">
+      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => startCreatingTache(e, day) } : {}">
         <div class="day">
           <div class="heading">
             {{
@@ -310,6 +349,24 @@ console.log(props.isOrgaOrResp);
               }
             "
           />
+          <div
+            v-if="creatingTache && day.getDay() === newTacheStart.getDay()" 
+            class="task new-task"
+            :style="{
+              top: (newTacheStart.getHours() * 4 + newTacheStart.getMinutes() / 15) / (4 * 24) * 100 + '%',
+              height: ((newTacheEnd.getHours() - newTacheStart.getHours()) * 4 + (newTacheEnd.getMinutes() - newTacheStart.getMinutes()) / 15) / (4 * 24) * 100 + '%'
+            }"
+          >
+            <div @mousedown="() => { console.log('caca') }" id="change-date-btn-down" class="change-date-btn"></div>
+            <div id="change-date-btn-up" class="change-date-btn"></div>
+            <div
+              class="task-text"
+              style="width: 100%"
+            >
+              <div class="name">Aucun poste</div>
+              <div class="tache">{{ displayHoursMinutes(newTacheStart) + ' - ' + displayHoursMinutes(newTacheEnd) }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -354,12 +411,20 @@ console.log(props.isOrgaOrResp);
         </div>
       </div>
       <div
-        v-if="isOrgaOrResp"
+        v-if="isOrgaOrResp && !wantsToCreateTache"
         id="add-creneau-btn"
         class="btn"
-        @click="startCreatingTache"
+        @click="startWantingToCreateTache"
       >
         Ajouter un créneau
+      </div>
+      <div
+        v-if="isOrgaOrResp && wantsToCreateTache"
+        id="add-creneau-btn"
+        class="disabled btn"
+        @click="startWantingToCreateTache"
+      >
+        Cliquez à l'endroit de votre choix
       </div>
 
       <div id="add-ics-btn" class="btn" @click="askForICS">
@@ -383,8 +448,9 @@ console.log(props.isOrgaOrResp);
     </div>
   </div>
 
-  <Modal v-if="creatingTache" @close="stopCreatingTache">
+  <Modal v-if="false" @close="stopCreatingTache">
     <TacheForm
+      class="tache-form"
       :festID="festival.festID"
       :title="festival.title"
       :dateDebut="festival.dateDebut"
@@ -402,7 +468,6 @@ console.log(props.isOrgaOrResp);
       :dateFin="festival.dateFin"
       :close="stopCreatingPlage"
       :updatePlages="updatePlages"
-    />
     />
   </Modal>
 

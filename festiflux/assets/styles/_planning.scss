@@ -164,7 +164,6 @@
                 cursor: pointer;
                 z-index: 99 !important;
                 width: 98% !important;
-                left: 0% !important;
             }
         }
         .plage{
@@ -684,4 +683,24 @@ h2 {
         background-color: green;
         color: black;
     }
+}
+
+
+.change-date-btn {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background-color: rgb(125, 179, 255);
+    left: 50%;
+    border-radius: 50%;
+}
+
+#change-date-btn-down {
+    bottom: 0;
+    transform: translate(-50%, -50%);
+}
+
+#change-date-btn-up {
+    top: 0;
+    transform: translate(-50%, 50%);
 }
