@@ -344,17 +344,30 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/{id}/trakingBenevoleRequest', name: 'app_user_traking_benevole_request')]
-    public function trakingBenevoleRequest (#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
+    public function trakingBenevoleRequest(#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
         if (!$utilisateur instanceof Utilisateur) {
             $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
             return $this->redirectToRoute('home');
-        }else{
+        } else {
             $demandePostulation = $historiquePostulationRepository->findBy(['utilisateur' => $utilisateur->getId()]);
             return $this->render('utilisateur/trakingBenevoleRequest.html.twig', [
                 'controller_name' => 'UtilisateurController',
                 'demandes' => $demandePostulation,
             ]);
         }
+    }
 
+    #[Route('/user/contacts', name: 'app_user_contacts')]
+    public function contacts(#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
+        if (!$utilisateur instanceof Utilisateur) {
+            $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('utilisateur/contacts.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'utilisateur' => $utilisateur,
+            'contacts' => $utilisateur->getContacts(),
+        ]);
     }
 }

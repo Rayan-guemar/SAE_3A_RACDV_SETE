@@ -40,7 +40,7 @@
     gap: 30px;
     height: 80%;
   }
-  
+
 
   img {
     max-width: 150px;
@@ -70,7 +70,7 @@
   transform: translate(-50%, -60%);
 
   background: white;
-  
+
   border-radius: 100px;
 
 }
@@ -123,13 +123,13 @@ div.info-border:hover {
 div.info-name-surname {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;  
+  justify-content: space-around;
 
   &.editing {
     gap: 6%;
   }
 
-  &.editing > div {
+  &.editing>div {
     width: 47%;
   }
 
@@ -198,4 +198,47 @@ div.biographie {
   font-size: large;
   font-weight: 700;
   cursor: pointer;
+}
+
+.contact-section {
+  margin: 20px;
+
+  .contact-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    h3 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    p {
+      margin-bottom: 0;
+      color: #333333;
+    }
+
+    // Style pour les boutons de modification ou suppression
+    .action-buttons {
+      margin-top: 10px;
+
+      button {
+        border: none;
+        background-color: transparent;
+        color: #007bff;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #0056b3;
+        }
+
+        &:not(:last-child) {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
 }
