@@ -33,19 +33,19 @@
 				</a>
 				<div class="my-fest__buttons">
 					<div class="tooltip">
-					<span id="tooltipText">Présentation du festival</span>
+					<span class="tooltipText">Présentation du festival</span>
 					<a class="my-fest__btn" href="{{ path('app_festival_detail', {'id' : festival.getId()}) }}">
 						<img src="{{ asset("icons/info.svg") }}" alt="more info icon">
 					</a>
 					</div>
 					<div class="tooltip">
-					<span id="tooltipText">Ajouter ses préférences</span>
+					<span class="tooltipText">Ajouter ses préférences</span>
 					<a class="my-fest__btn" href="{{ path('app_festival_postes', {'id' : festival.getId()}) }}">
 						<img src="{{ asset("icons/like.svg") }}" alt="manage liked job's icon">
 					</a>
 					</div>
 					<div class="tooltip">
-					<span id="tooltipText">Visualiser le planning</span>
+					<span class="tooltipText">Visualiser le planning</span>
 					<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
 						<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
 					</a>
@@ -83,14 +83,14 @@
 						</a>
 						<div class="my-fest__buttons">
 							<div class="tooltip">
-								<span id="tooltipText">Modifier votre festival</span>
+								<span class="tooltipText">Modifier votre festival</span>
 								<a class="my-fest__btn" href="{{ path('app_festival_modifier', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/modifier.svg") }}" alt="Modify icon">
 								</a>
 							</div>
 
 							<div class="tooltip">
-								<span id="tooltipText">Gérer les postulations</span>
+								<span class="tooltipText">Gérer les postulations</span>
 								<a class="my-fest__btn" href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
 									{{ component('Notification', { type : 'autre', userId : app.user.id, festId : festival.id}) }}
@@ -98,14 +98,14 @@
 							</div>
 
 							<div class="tooltip">
-								<span id="tooltipText">Visualiser/Gérer le planning</span>
+								<span class="tooltipText">Visualiser/Gérer le planning</span>
 								<a class="my-fest__btn" href="{{ path('app_festival_planning', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/planning.svg") }}" alt="planning icon">
 								</a>
 							</div>
 
 							<div class="tooltip">
-								<span id="tooltipText">Gérer votre festival</span>
+								<span class="tooltipText">Gérer votre festival</span>
 								<a class="my-fest__btn" href="{{ path('app_festival_gestion', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/settingsIco.svg") }}" alt="settings icon">
 								</a>

@@ -52,7 +52,7 @@
     cursor: pointer;
 }
 
-#tooltipText{
+.tooltipText{
     position: absolute;
     top: -70%;
     left: 50%;
@@ -68,7 +68,7 @@
     transition: opacity .3s ease;
 }
 
-#tooltipText::before{
+.tooltipText::before{
     content: '';
     position: absolute;
     top: 100%;
@@ -78,7 +78,7 @@
     border-top-color: black;
 }
 
-.tooltip:hover #tooltipText{
+.tooltip:hover .tooltipText{
     visibility: visible;
     opacity: 1;
 }
