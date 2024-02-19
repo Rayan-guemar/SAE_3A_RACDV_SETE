@@ -96,7 +96,7 @@ class FestivalController extends AbstractController {
         }
 
         //get les festivals qui ne sont pas archivés
-        $festivals = $repository->findBy(['isArchive' => 0, 'valid' => 0]);
+        $festivals = $repository->findBy(['isArchive' => 0, 'open' => 1]);
         $cards = $paginator->paginate(
             $festivals,
             $request->query->getInt('page', 1),
