@@ -8,6 +8,7 @@ interface Props {
   festivalId: number;
   festivalName: string;
   isOrgaOrResp: boolean;
+  status: boolean;
 }
 
 const props = defineProps<Props>();
@@ -112,8 +113,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-
-      <div v-if="isOrgaOrResp && !posteOpened" class="new-poste-btn pointer" @click="newPoste">
+      <div v-if="isOrgaOrResp && !posteOpened && !status" class="new-poste-btn pointer" @click="newPoste">
         Ajouter un poste
       </div>
     </div>

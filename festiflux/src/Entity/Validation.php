@@ -62,10 +62,12 @@ class Validation {
 
     public function accept() {
         $this->setStatus(1);
+        $this->festival->setValid(1);
     }
 
     public function reject() {
         $this->setStatus(-1);
+        $this->festival->setValid(0);
     }
 
     public function getStatusToString() {
