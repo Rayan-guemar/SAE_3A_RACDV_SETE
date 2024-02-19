@@ -30,12 +30,12 @@
 		{% else %}
 			<div class="fest-wrapper">
 				{% for festival in festivals %}
-					{% if festival.getIsArchive() != 1 %}
-						{{ include('festival/fest.html.twig',{'festival':festival}) }}
-					{% endif %}
+					{{ include('festival/fest.html.twig',{'festival':festival}) }}
 				{% endfor %}
 			</div>
 		{% endif %}
 	</div>
-
+	<div class="pagination">
+		{{ knp_pagination_render(festivals) }}
+	</div>
 {% endblock %}
