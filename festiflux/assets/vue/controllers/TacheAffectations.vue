@@ -59,12 +59,18 @@ const unaffectedBenevoles = computed(() => {
     return sortedBenevoles.value.filter(b => !props.tache.benevoles?.includes(b.id)) || [];
 })
 
-const addBenevole = (benevole: BenevoleType) => {
-    props.tache.benevoles?.push(benevole.id);
+const addBenevole = (benevoleID: ID) => {
+  if (typeof benevoleID === "string") {
+    console.log('add benevole', benevoleID);
+    props.tache.benevoles?.push(parseInt(benevoleID));
+  }
 }
 
-const removeBenevole = (benevole: BenevoleType) => {
-    props.tache.benevoles = props.tache.benevoles?.filter(id => id != benevole.id);
+const removeBenevole = (benevoleID: ID) => {
+  if (typeof benevoleID === "string") {
+    console.log('remove benevole', benevoleID);
+    props.tache.benevoles = props.tache.benevoles?.filter(id => id != parseInt(benevoleID));
+  }
 }
 
 const clickable = computed(() => {
@@ -96,6 +102,25 @@ const unaffectedDispo = computed(() => {
 const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
     return list.filter(b => b.indisponibilites.every(i => i.debut > t.creneau.fin || i.fin < t.creneau.debut))
 }
+
+const startDrag = (event, item) => {
+  console.log('start drag', item);
+  event.dataTransfer.dropEffect = 'move';
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('itemID', item.id);
+}
+
+const onDrop = (event, bool) => {
+  const itemID = event.dataTransfer.getData('itemID');
+  if(bool){
+    console.log(itemID);
+    addBenevole(itemID);
+  } else {
+    removeBenevole(itemID);
+  }
+
+}
+
 
 </script>
 
@@ -133,7 +158,11 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
                 </div>
             </div>
             <div class="benevole-lists">
-                <div class="affected">
+                <div class="affected"
+                    @drop="onDrop($event, true)"
+                     @dragenter.prevent
+                     @dragover.prevent
+                >
                     <h4>Bénévoles affectés ({{ affectedBenevoles.length + ' / '  + tache.nbBenevole }})</h4>
                     <div class="list">
                         <Benevole 
@@ -141,12 +170,17 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
                             :benevole="benevole"
                             :charge="chargesBenevole[benevole.id]"
                             :affected="true"
-                            @removeBenevole="removeBenevole(benevole)"
+                            @removeBenevole="removeBenevole(benevole.id)"
                             :poste="tache.poste"
+                            @dragstart="startDrag($event, benevole)"
                         />
                     </div>
                 </div>
-                <div class="unaffected">
+                <div class="unaffected"
+                     @drop="onDrop($event, false)"
+                     @dragenter.prevent
+                     @dragover.prevent
+                >
                     <h4>Bénévoles non affectés</h4>
                     <div class="list">
                         <Benevole 
@@ -154,8 +188,9 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
                             :benevole="benevole"
                             :charge="chargesBenevole[benevole.id]"
                             :affected="false"
-                            @addBenevole="addBenevole(benevole)"
+                            @addBenevole="addBenevole(benevole.id)"
                             :poste="tache.poste"
+                            @dragstart="startDrag($event, benevole)"
                         />
                     </div>
                 </div>
@@ -171,4 +206,7 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
     </Teleport>
     
 </template>
+<style>
+
+</style>
 
