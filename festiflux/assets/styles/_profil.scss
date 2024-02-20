@@ -16,6 +16,8 @@
 
     font-weight: 500;
   }
+
+  
 }
 
 .info-box-wrapper {
@@ -198,47 +200,4 @@ div.biographie {
   font-size: large;
   font-weight: 700;
   cursor: pointer;
-}
-
-.contact-section {
-  margin: 20px;
-
-  .contact-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-
-    h3 {
-      margin-top: 0;
-      font-size: 18px;
-    }
-
-    p {
-      margin-bottom: 0;
-      color: #333333;
-    }
-
-    // Style pour les boutons de modification ou suppression
-    .action-buttons {
-      margin-top: 10px;
-
-      button {
-        border: none;
-        background-color: transparent;
-        color: #007bff;
-        cursor: pointer;
-        transition: color 0.3s ease;
-
-        &:hover {
-          color: #0056b3;
-        }
-
-        &:not(:last-child) {
-          margin-right: 10px;
-        }
-      }
-    }
-  }
 }

@@ -1,0 +1,7 @@
+<div class="contact-element">
+    <img class="contact-logo" src="{{ asset('/img/contacts/' ~ contact.name ~ '.png') }}" alt="{{ contact.name }}">
+    <span class="contact-text">{{ contact.value }}</span>
+    <a href="{{contact.link}}" class="arrow-icon">
+        <img src="{{asset("/img/contacts/external-link.png")}}" alt="">
+    </a>
+</div>

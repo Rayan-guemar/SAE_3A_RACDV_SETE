@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\Creneaux;
 use App\Entity\Disponibilite;
 use App\Entity\Festival;
@@ -15,7 +16,9 @@ use App\Repository\HistoriquePostulationRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Entity\PosteUtilisateurPreferences;
+use App\Repository\ContactRepository;
 use App\Repository\TacheRepository;
+use App\Repository\TypeContactRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
 use App\Service\Ical\Event;
@@ -356,18 +359,59 @@ class UtilisateurController extends AbstractController {
             ]);
         }
     }
-
-    #[Route('/user/contacts', name: 'app_user_contacts')]
-    public function contacts(#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
-        if (!$utilisateur instanceof Utilisateur) {
+    
+    #[Route('/user/contacts/add', name: 'app_user_contacts_add', methods: ['POST'])]
+    public function contactsAdd(FlashMessageService $flashMessageService, Request $req, ContactRepository $contactRepository, TypeContactRepository $typeContactRepository, EntityManagerInterface $em): Response {
+        $u = $this->getUser();
+        if (!$u instanceof Utilisateur) {
             $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
             return $this->redirectToRoute('home');
         }
 
+        
+        
+        $value = $req->request->get('value');
+        $type = $req->request->get('type');
+
+        if (!$value || !$type) {
+            $flashMessageService->add(FlashMessageType::ERROR, "Veuillez remplir tous les champs");
+            return $this->redirectToRoute('app_user_contacts');
+        }
+        
+        $typeContact = $typeContactRepository->findOneBy(['name' => $type]);
+        if (!$typeContact) {
+            $flashMessageService->add(FlashMessageType::ERROR, "Le type de contact n'existe pas");
+            return $this->redirectToRoute('app_user_contacts');
+        }
+
+        $c = new Contact();
+        $c->setUtilisateur($u);
+        $c->setType($typeContact);
+        $c->setValue($value);
+
+        $em->persist($c);
+        $em->flush();
+
+        $flashMessageService->add(FlashMessageType::SUCCESS, "Contact ajouté avec succès");
+        return $this->redirectToRoute('app_user_contacts');
+    }
+
+    #[Route('/user/contacts', name: 'app_user_contacts', methods: ['GET'])]
+    public function contacts(FlashMessageService $flashMessageService, Request $req, ContactRepository $contactRepository, TypeContactRepository $typeContactRepository, EntityManagerInterface $em): Response {
+        $u = $this->getUser();
+        if (!$u instanceof Utilisateur) {
+            $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
+            return $this->redirectToRoute('home');
+        }
+
+        $typeContacts = $typeContactRepository->findAll();
+
         return $this->render('utilisateur/contacts.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'utilisateur' => $utilisateur,
-            'contacts' => $utilisateur->getContacts(),
+            'utilisateur' => $u,
+            'contacts' => $u->getContacts(),
+            'typeContacts' => $typeContacts,
         ]);
     }
+
 }

@@ -1,0 +1,94 @@
+.contact-section {
+    margin-top: 20px;
+
+    .contact-element {
+        display: flex;
+        align-items: center;
+        width: 300px; // Taille fixe pour l'élément
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    
+        img {
+            width: 20px; // Ajustez la taille de l'image selon vos besoins
+            height: 20px; // Ajustez la hauteur de l'image selon vos besoins
+        }
+    
+        .contact-logo {
+            margin-right: 10px;
+      
+        }
+    
+        .contact-text {
+            flex-grow: 1; // Permet au texte de prendre autant d'espace que possible
+            font-size: 16px;
+        }
+    
+        .arrow-icon{
+            // centrer l'element a l'interieur
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10%;
+            width: 25px;
+            height: 25px;
+            transition: background-color 0.3s ease;
+    
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+    
+}
+
+.add-contact-form {
+    margin-top: 20px;
+
+    form {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding: 20px;
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type='text'],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+
+            &:focus {
+                border-color: $blue-primary;
+                outline: none;
+            }
+        }
+
+        button[type='submit'] {
+            background-color: $blue-primary;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: $blue-primary-hover;
+            }
+        }
+    }
+}
+
+

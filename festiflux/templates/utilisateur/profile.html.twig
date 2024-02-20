@@ -61,25 +61,22 @@
 			</a>
 		</div>
 		<!-- Section des moyens de contact -->
-		<div class="contact-section">
-			<h2>Mes moyens de contact</h2>
-
-			<!-- Carte pour l'e-mail -->
-			<div class="contact-card">
-				<h3>E-mail</h3>
-				<p>john.doe@example.com</p>
-				<!-- Boutons pour modifier ou supprimer le contact -->
-			</div>
-
-			<!-- Carte pour le numéro de téléphone -->
-			<div class="contact-card">
-				<h3>Téléphone</h3>
-				<p>+1234567890</p>
-				<!-- Boutons pour modifier ou supprimer le contact -->
-			</div>
-
-			<!-- Vous pouvez ajouter plus de cartes pour d'autres moyens de contact -->
-		</div>
+		 <div class="contact-section">
+		{% set contacts = utilisateur.getContacts() %}
+        {% if contacts is not empty %}        
+            {% for contact in contacts %}
+                {% include 'utilisateur/contact.html.twig' with {
+                    contact: {
+                        value: contact.value ,
+                        name: contact.type.name ,
+                        link: contact.getLink() 
+                    }
+                }%}
+            {% endfor %}
+        {% else %}
+            <p>Aucun moyen de contact n'a été ajouté.</p>
+        {% endif %}
+    </div>
 	</div>
 
 {% endblock %}
