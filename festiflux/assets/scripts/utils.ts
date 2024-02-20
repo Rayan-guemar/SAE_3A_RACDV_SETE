@@ -129,7 +129,14 @@ export const displayHoursMinutes = (date: Date): string => {
 };
 
 export const getDateForInputAttribute = (date: Date | string): string => {
-	return new Date(date).toISOString().split('.')[0];
+	if (typeof date === 'string') date = new Date(date);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+
+	return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
 export const getColorHexByRatio = (ratio: number) => {
