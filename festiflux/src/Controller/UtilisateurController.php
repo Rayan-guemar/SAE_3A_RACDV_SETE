@@ -186,13 +186,13 @@ class UtilisateurController extends AbstractController {
 
 
         if ($this->getUser() != $t->getPoste()->getFestival()->getOrganisateur() && !$t->getPoste()->getFestival()->getResponsables()->contains($this->getUser())) {
-            throw $this->createNotFoundException("Vous n'avez pas les droits pour ajouter un bénévole à cette tache");
+            throw $this->createNotFoundException("Vous n'avez pas les droits pour ajouter un bénévole à cette tâche");
         }
 
         if (!$u)
             throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$t)
-            throw $this->createNotFoundException("La tache n'existe pas");
+            throw $this->createNotFoundException("La tâche n'existe pas");
 
         // TODO : faire une vérification sur les dispo / pref de l'utilisateur
 
@@ -251,13 +251,13 @@ class UtilisateurController extends AbstractController {
         $t = $tache->find($idTask);
 
         if ($this->getUser() != $t->getPoste()->getFestival()->getOrganisateur() && !$t->getPoste()->getFestival()->getResponsables()->contains($this->getUser())) {
-            throw $this->createNotFoundException("Vous n'avez pas les droits pour supprimer un bénévole à cette tache");
+            throw $this->createNotFoundException("Vous n'avez pas les droits pour supprimer un bénévole à cette tâche");
         }
 
         if (!$u)
             throw $this->createNotFoundException("L'utilisateur n'existe pas");
         if (!$t)
-            throw $this->createNotFoundException("La tache n'existe pas");
+            throw $this->createNotFoundException("La tâche n'existe pas");
 
         $u->removeTache($t);
         $em->persist($u);

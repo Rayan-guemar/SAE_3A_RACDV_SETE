@@ -7,8 +7,8 @@ import { getDateForInputAttribute } from "../../scripts/utils";
 
 type Props = {
   festivalId: number;
-  dateDebut: string;
-  dateFin: string;
+  dateDebut: Date;
+  dateFin: Date;
   close: (c?: Creneau) => void
   updatePlages: () => void
 }
@@ -67,7 +67,7 @@ const createCreneau = async (e: Event) => {
   <form class="planning-form" @submit.prevent="createCreneau">
     <h2>Ajout d'une plage horaire</h2>
     <div class="flex-column flex-align-center">
-      <label for="start-creneau">Debut du créneau</label>
+      <label for="start-creneau">Début du créneau</label>
       <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)"
         :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart" />
     </div>

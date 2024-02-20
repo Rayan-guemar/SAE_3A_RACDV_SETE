@@ -7,8 +7,8 @@ import { getDateFromLocale, getDateForInputAttribute } from '../../scripts/utils
 type Props = {
   festID: number;
   title: string;
-  dateDebut: string;
-  dateFin: string;
+  dateDebut: Date;
+  dateFin: Date;
   isOrgaOrResp: boolean;
   postes: Poste[];
   updateTaches: () => void
@@ -105,7 +105,7 @@ const createTache = async (e: Event) => {
       </div>
       <div class="creneau-container">
         <div class="flex-column flex-align-center">
-          <label for="start-creneau">Debut du créneau</label>
+          <label for="start-creneau">Début du créneau</label>
           <input name="start" id="start-creneau" ref="startTache" type="datetime-local"
             :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)"
             :value="festival.dateDebut" @change="changeHandlerStart">

@@ -24,7 +24,7 @@
         this.arr = [];
         this.wrapper = document.createElement('div');
         this.input = document.createElement('input');
-        this.input.placeholder = 'Ajouter des Tags';
+        this.input.placeholder = 'Ajouter des tags';
         init(this);
         initEvents(this);
 
@@ -167,7 +167,7 @@
 })();
 
 var tagInput1 = new TagsInput({
-    selector: 'demande_festival_tags',
+    selector: 'festival_tags',
     duplicate : false,
     max : 10
 });

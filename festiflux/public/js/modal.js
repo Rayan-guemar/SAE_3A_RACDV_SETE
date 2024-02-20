@@ -1,27 +1,46 @@
-const modal = document.querySelector(".modal");
 const overlay = document.querySelector(".overlay");
 const openModalBtns = document.querySelectorAll(".btn-open");
-const closeModalBtn = document.querySelector(".btn-close");
+const closeModalBtns = document.querySelectorAll(".btn-close");
+const modals = document.querySelectorAll(".modal");
 
-const openModal = function () {
+const openModal = function (modalId) {
+    const modal = document.getElementById(`modal-${modalId}`);
     modal.classList.remove("hidden");
     overlay.classList.remove("hidden");
 };
 
-const closeModal = function () {
+const closeModal = function (modalId) {
+    const modal = document.getElementById(`modal-${modalId}`);
     modal.classList.add("hidden");
     overlay.classList.add("hidden");
 };
 
-
-openModalBtns.forEach(btn => btn.addEventListener("click", openModal));
-closeModalBtn.addEventListener("click", closeModal);
-overlay.addEventListener("click", closeModal);
-
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-        modalClose();
-    }
+openModalBtns.forEach(btn => {
+    btn.addEventListener("click", function () {
+        const modalId = this.getAttribute('data-validation-id');
+        openModal(modalId);
+    });
 });
 
+closeModalBtns.forEach(btn => {
+    btn.addEventListener("click", function () {
+        const modalId = this.closest('.modal').getAttribute('id').replace('modal-', '');
+        closeModal(modalId);
+    });
+});
 
+overlay.addEventListener("click", function () {
+    modals.forEach(modal => {
+        const modalId = modal.getAttribute('id').replace('modal-', '');
+        closeModal(modalId);
+    });
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        modals.forEach(modal => {
+            const modalId = modal.getAttribute('id').replace('modal-', '');
+            closeModal(modalId);
+        });
+    }
+});
