@@ -59,7 +59,15 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
-    public function user_festivals(FestivalRepository $festivalRepository): Response {
+    public function userFestivals(Request $request, FestivalRepository $festivalRepository): Response {
+
+        $filter = $request->query->get('filter');
+
+        if ($filter !== 'volunteer' && $filter !== 'owned') {
+            return $this->redirectToRoute('app_user_festivals', ['filter' => 'volunteer']);
+        }
+
+
         $u = $this->getUser();
 
         if (!$u instanceof Utilisateur) {
@@ -67,18 +75,23 @@ class UtilisateurController extends AbstractController {
             return $this->redirectToRoute('app_auth_login');
         }
 
-        $ofs = $festivalRepository->findBy([
-            'organisateur' => $u->getId()
-        ]);
 
-        $vfs = ($u->getEstBenevole())->getValues();
+        $festivals = [];
+        if ($filter === 'volunteer') {
+            $festivals = $u->getEstBenevole();
+        } else {
+            $festivals = $festivalRepository->findBy([
+                'organisateur' => $u->getId()
+            ]);
+        }
 
         return $this->render('utilisateur/user_festivals.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'festivals' => $ofs,
-            'volenteerFestivals' => $vfs,
+            'festivals' => $festivals,
+            'filter' => $filter,
         ]);
     }
+
 
     #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'], options: ['expose' => true])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {
@@ -344,17 +357,16 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/{id}/trakingBenevoleRequest', name: 'app_user_traking_benevole_request')]
-    public function trakingBenevoleRequest (#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
+    public function trakingBenevoleRequest(#[MapEntity] Utilisateur $utilisateur,  FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, EntityManagerInterface $em, UtilisateurUtils $user): Response {
         if (!$utilisateur instanceof Utilisateur) {
             $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
             return $this->redirectToRoute('home');
-        }else{
+        } else {
             $demandePostulation = $historiquePostulationRepository->findBy(['utilisateur' => $utilisateur->getId()]);
             return $this->render('utilisateur/trakingBenevoleRequest.html.twig', [
                 'controller_name' => 'UtilisateurController',
                 'demandes' => $demandePostulation,
             ]);
         }
-
     }
 }
