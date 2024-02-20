@@ -387,8 +387,8 @@ console.log(props.isOrgaOrResp);
     <TacheForm
       :festID="festival.festID"
       :title="festival.title"
-      :dateDebut="festival.dateDebut.toISOString()"
-      :dateFin="festival.dateFin.toISOString()"
+      :dateDebut="festival.dateDebut"
+      :dateFin="festival.dateFin"
       :isOrgaOrResp="festival.isOrgaOrResp"
       :postes="postes"
       :update-taches="updateTaches"
@@ -398,8 +398,8 @@ console.log(props.isOrgaOrResp);
   <Modal v-if="creatingPlage" @close="stopCreatingPlage">
     <PlageHoraireForm
       :festivalId="festID"
-      :dateDebut="festival.dateDebut.toISOString()"
-      :dateFin="festival.dateFin.toISOString()"
+      :dateDebut="festival.dateDebut"
+      :dateFin="festival.dateFin"
       :close="stopCreatingPlage"
       :updatePlages="updatePlages"
     />
@@ -409,8 +409,8 @@ console.log(props.isOrgaOrResp);
   <Modal v-if="addIndispo" @close="stopAddIndispo">
     <IndispoForm
       :festivalId="festID"
-      :dateDebut="festival.dateDebut.toISOString()"
-      :dateFin="festival.dateFin.toISOString()"
+      :dateDebut="festival.dateDebut"
+      :dateFin="festival.dateFin"
       @close="stopAddIndispo"
     />
   </Modal>
