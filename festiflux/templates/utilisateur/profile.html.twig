@@ -17,12 +17,12 @@
 
 			<div class="info-box-wrapper">
 				<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
+					<img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
 						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
-					 {% else %}
+					{% else %}
 						src="{{ asset("uploads/user/anonyme.png") }}"
-					 {% endif %}>
-			    </div>
+							{% endif %}>
+				</div>
 			<div class="info-box">
 				<div class="info-row">
 					<div class="info-border">

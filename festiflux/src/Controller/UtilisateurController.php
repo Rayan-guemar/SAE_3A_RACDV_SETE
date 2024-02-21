@@ -160,10 +160,10 @@ class UtilisateurController extends AbstractController {
 
 
         $form = $this->createForm(ModifierProfilType::class, $utilisateur);
+        //dd($form);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $photoProfil = $form["fichierPhotoProfil"]->getData();
             $utilisateurManager->processNewUtilisateur($utilisateur, $photoProfil);
             $em->flush();

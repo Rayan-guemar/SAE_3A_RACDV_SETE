@@ -1,25 +1,47 @@
 {% extends "base.html.twig" %}
-{% block title %}modifier votre profil{% endblock %}
-
+{% block title %}
+    Profil de
+    {{ utilisateur.nom }}
+    {{ utilisateur.prenom }}
+{% endblock %}{% block overhead %}
+    <script src="{{ asset('js/profileDynamic.js') }}" defer></script>
+{% endblock %}
 {% block body %}
 
     <div class="profil-box">
-        <h1>Modifier votre profil</h1>
+    <h1>
+        Profil de
+        {{ utilisateur.nom }}
+        {{ utilisateur.prenom }}
+    </h1>
 
-        {{ form_start(form, {'attr': {'class': 'info-box-wrapper editing'}}) }}
+    <div class="info-box-wrapper">
+        <div class="image_profile">
+            <img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+                src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+            {% else %}
+                src="{{ asset("uploads/user/anonyme.png") }}"
+                    {% endif %}>
+        </div>
+
+        {{ form_start(form, {'attr': {'class': 'form-edit editing'}}) }}
 
         <div class="info-box editing">
             <div class="info-row editing">
-                {{ form_row(form.email, {'label': 'Email', 'attr': {'class': 'info-border editing'}}) }}
-                <div class="info-name-surname editing">
-                    {{ form_row(form.nom, {'label': 'Nom', 'attr': {'class': 'info-border editing'}}) }}
-                    {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'class': 'info-border editing'}}) }}
-                </div>
-                {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'class': 'info-border editing'}}) }}
-                {{ form_row(form.description, {'label': 'Description', 'attr': {'class': 'info-border editing'}}) }}
-                {{ form_row(form.fichierPhotoProfil, {'label': 'Photo de profil', 'attr': {'class': 'info-border editing'}}) }}
+                <div class="df">{{ form_row(form.email, {'label': 'Email', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }} <a class="pen">🖉</a></div>
+                    <div class="df"> {{ form_row(form.nom, {'label': 'Nom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                        <a class="pen"> 🖉 </a></div>
+                    <div class="df"> {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                        <a class="pen">🖉</a></div>
+                <div class="df"> {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen">🖉</a></div>
+                <div class="df"> {{ form_row(form.description, {'label': 'Description', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen">🖉</a></div>
+                <div class="df">{{ form_row(form.fichierPhotoProfil, {'label': 'Photo de profil', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen">🖉</a></div>
             </div>
         </div>
+        {{ dump(form) }}
 
         {{ form_widget(form.demanderModificationProfil, {'label': 'Modifier', 'attr': {'class': 'edit-button'}}) }}
 
