@@ -1,0 +1,48 @@
+.public-profile__container {
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    .public-profile__header {
+        height: 10rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        border-bottom: solid 1px $grey-primary;
+
+        &--image {
+            img {
+                width: 7.5rem;
+                height: 7.5rem;
+                border-radius: 99999px;
+            }
+        }
+
+        &--name {
+            margin-left: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+    }
+
+    .public-profile__infos {
+        padding: 3rem;
+
+        &--title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        &--bio {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            width: 45%;
+            text-align: justify;
+        }
+    }
+
+}
