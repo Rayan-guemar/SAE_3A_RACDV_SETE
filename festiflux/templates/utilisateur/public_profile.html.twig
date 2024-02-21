@@ -1,7 +1,21 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ user.nom }}{% endblock %}
+{% block title %}
+	{{ user.nom }}
+{% endblock %}
 
 {% block body %}
-<div>prout porut</div>
+	<div class="public-profile__container">
+		<div class="public-profile__header">
+			<div class="public-profile__header--image">
+				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+			</div>
+            <div class="public-profile__header--name"> {{user.nom ~ " " ~ user.prenom }} </div>
+		</div>
+        <div class="public-profile__infos">
+            <div class="public-profile__infos--title">Biographie : </div>
+            <div class="public-profile__infos--bio">    
+                {{ user.description }}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias enim illum nobis dolores sequi optio amet earum in repudiandae placeat itaque odio undeazerazer azerazerazer dee aazaz</div>
+	</div>
 {% endblock %}
