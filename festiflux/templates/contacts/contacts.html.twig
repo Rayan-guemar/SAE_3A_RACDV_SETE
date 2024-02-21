@@ -11,13 +11,18 @@
     <div class="contact-section">
         {% if contacts is not empty %}        
             {% for contact in contacts %}
-                {% include 'utilisateur/contact.html.twig' with {
+            <div>
+                {% include 'contacts/contact.html.twig' with {
                     contact: {
                         value: contact.value ,
                         name: contact.type.name ,
                         link: contact.getLink() 
                     }
                 }%}
+                <form type="submit" method="GET" action="{{path('app_user_contacts_delete', {id: contact.getId()})}}"  >
+                    <button class="delete-btn"><img src="{{asset("/img/contacts/trash.png")}}" alt=""></button>
+                </form>
+            </div>
             {% endfor %}
         {% else %}
             <p>Aucun moyen de contact n'a été ajouté.</p>

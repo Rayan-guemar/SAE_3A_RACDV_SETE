@@ -1,31 +1,39 @@
 .contact-section {
     margin-top: 20px;
 
+    div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
     .contact-element {
         display: flex;
         align-items: center;
-        width: 300px; // Taille fixe pour l'élément
-        padding: 10px;
+        width: 300px;
         border: 1px solid #e0e0e0;
         border-radius: 5px;
-        margin-bottom: 10px;
-    
+        
+
+
         img {
-            width: 20px; // Ajustez la taille de l'image selon vos besoins
-            height: 20px; // Ajustez la hauteur de l'image selon vos besoins
+            width: 20px;
+            height: 20px;
         }
-    
+
         .contact-logo {
             margin-right: 10px;
-      
+
         }
-    
+
         .contact-text {
-            flex-grow: 1; // Permet au texte de prendre autant d'espace que possible
+            flex-grow: 1;
             font-size: 16px;
+            overflow: scroll;
         }
-    
-        .arrow-icon{
+
+        .arrow-icon {
             // centrer l'element a l'interieur
             display: flex;
             align-items: center;
@@ -34,13 +42,41 @@
             width: 25px;
             height: 25px;
             transition: background-color 0.3s ease;
-    
+
             &:hover {
                 background-color: #e0e0e0;
             }
         }
     }
-    
+
+    .delete-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background-color: #de2222;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        margin-left: 10px;
+        font-size: 16px;
+        height: 100%;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #a31d1d;
+        }
+
+        img {
+            background-color: inherit;
+            width: 20px; // Ajustez la taille de l'image selon vos besoins
+            height: 20px; // Ajustez la hauteur de l'image selon vos besoins
+        }
+
+    }
+
 }
 
 .add-contact-form {
@@ -90,5 +126,3 @@
         }
     }
 }
-
-

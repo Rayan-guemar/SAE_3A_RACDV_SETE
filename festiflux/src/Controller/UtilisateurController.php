@@ -359,59 +359,6 @@ class UtilisateurController extends AbstractController {
             ]);
         }
     }
-    
-    #[Route('/user/contacts/add', name: 'app_user_contacts_add', methods: ['POST'])]
-    public function contactsAdd(FlashMessageService $flashMessageService, Request $req, ContactRepository $contactRepository, TypeContactRepository $typeContactRepository, EntityManagerInterface $em): Response {
-        $u = $this->getUser();
-        if (!$u instanceof Utilisateur) {
-            $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
-            return $this->redirectToRoute('home');
-        }
 
-        
-        
-        $value = $req->request->get('value');
-        $type = $req->request->get('type');
-
-        if (!$value || !$type) {
-            $flashMessageService->add(FlashMessageType::ERROR, "Veuillez remplir tous les champs");
-            return $this->redirectToRoute('app_user_contacts');
-        }
-        
-        $typeContact = $typeContactRepository->findOneBy(['name' => $type]);
-        if (!$typeContact) {
-            $flashMessageService->add(FlashMessageType::ERROR, "Le type de contact n'existe pas");
-            return $this->redirectToRoute('app_user_contacts');
-        }
-
-        $c = new Contact();
-        $c->setUtilisateur($u);
-        $c->setType($typeContact);
-        $c->setValue($value);
-
-        $em->persist($c);
-        $em->flush();
-
-        $flashMessageService->add(FlashMessageType::SUCCESS, "Contact ajouté avec succès");
-        return $this->redirectToRoute('app_user_contacts');
-    }
-
-    #[Route('/user/contacts', name: 'app_user_contacts', methods: ['GET'])]
-    public function contacts(FlashMessageService $flashMessageService, Request $req, ContactRepository $contactRepository, TypeContactRepository $typeContactRepository, EntityManagerInterface $em): Response {
-        $u = $this->getUser();
-        if (!$u instanceof Utilisateur) {
-            $flashMessageService->add(FlashMessageType::ERROR, "L'utilisateur n'existe pas");
-            return $this->redirectToRoute('home');
-        }
-
-        $typeContacts = $typeContactRepository->findAll();
-
-        return $this->render('utilisateur/contacts.html.twig', [
-            'controller_name' => 'UtilisateurController',
-            'utilisateur' => $u,
-            'contacts' => $u->getContacts(),
-            'typeContacts' => $typeContacts,
-        ]);
-    }
 
 }

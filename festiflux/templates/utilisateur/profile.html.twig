@@ -61,22 +61,27 @@
 			</a>
 		</div>
 		<!-- Section des moyens de contact -->
-		 <div class="contact-section">
-		{% set contacts = utilisateur.getContacts() %}
-        {% if contacts is not empty %}        
-            {% for contact in contacts %}
-                {% include 'utilisateur/contact.html.twig' with {
-                    contact: {
-                        value: contact.value ,
-                        name: contact.type.name ,
-                        link: contact.getLink() 
-                    }
-                }%}
-            {% endfor %}
-        {% else %}
-            <p>Aucun moyen de contact n'a été ajouté.</p>
-        {% endif %}
-    </div>
+		<div class="contact-section">
+			{% set contacts = utilisateur.getContacts() %}
+			{% if contacts is not empty %}        
+				{% for contact in contacts %}
+					{% include 'contacts/contact.html.twig' with {
+						contact: {
+							value: contact.value ,
+							name: contact.type.name ,
+							link: contact.getLink() 
+						}
+					}%}
+				{% endfor %}
+			{% else %}
+				<p>Aucun moyen de contact n'a été ajouté.</p>
+			{% endif %}
+				<a class="manage-contact-button" href={{path("app_user_contacts")}}>
+					<span>
+						Gérer mes contacts
+					</span>
+				</a>
+		</div>
 	</div>
 
 {% endblock %}
