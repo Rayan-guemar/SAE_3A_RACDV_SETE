@@ -7,8 +7,8 @@ import { getDateForInputAttribute } from "../../scripts/utils";
 
 type Props = {
   festivalId: number;
-  dateDebut: string;
-  dateFin: string;
+  dateDebut: Date;
+  dateFin: Date;
   close: (c?: Creneau) => void
   updatePlages: () => void
 }

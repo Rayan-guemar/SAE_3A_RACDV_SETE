@@ -62,7 +62,15 @@ class UtilisateurController extends AbstractController {
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
-    public function user_festivals(FestivalRepository $festivalRepository): Response {
+    public function userFestivals(Request $request, FestivalRepository $festivalRepository): Response {
+
+        $filter = $request->query->get('filter');
+
+        if ($filter !== 'volunteer' && $filter !== 'owned') {
+            return $this->redirectToRoute('app_user_festivals', ['filter' => 'volunteer']);
+        }
+
+
         $u = $this->getUser();
 
         if (!$u instanceof Utilisateur) {
@@ -70,18 +78,23 @@ class UtilisateurController extends AbstractController {
             return $this->redirectToRoute('app_auth_login');
         }
 
-        $ofs = $festivalRepository->findBy([
-            'organisateur' => $u->getId()
-        ]);
 
-        $vfs = ($u->getEstBenevole())->getValues();
+        $festivals = [];
+        if ($filter === 'volunteer') {
+            $festivals = $u->getEstBenevole();
+        } else {
+            $festivals = $festivalRepository->findBy([
+                'organisateur' => $u->getId()
+            ]);
+        }
 
         return $this->render('utilisateur/user_festivals.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'festivals' => $ofs,
-            'volenteerFestivals' => $vfs,
+            'festivals' => $festivals,
+            'filter' => $filter,
         ]);
     }
+
 
     #[Route('/icalLink/{idFest}', name: 'app_icalLink', methods: ['GET'], options: ['expose' => true])]
     public function testeventical(int $idFest, PosteRepository $posteRepository, FestivalRepository $festivalRepository, TacheRepository $tacheRepository, UtilisateurUtils $utilisateurUtils, MailerInterface $mailer): Response {

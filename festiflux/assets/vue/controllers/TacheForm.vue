@@ -7,8 +7,8 @@ import { getDateFromLocale, getDateForInputAttribute } from '../../scripts/utils
 type Props = {
   festID: number;
   title: string;
-  dateDebut: string;
-  dateFin: string;
+  dateDebut: Date;
+  dateFin: Date;
   isOrgaOrResp: boolean;
   postes: Poste[];
   updateTaches: () => void

@@ -84,3 +84,15 @@ tbody a {
     color: white;
 }
 
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid $blue-primary;
+
+    &:hover {
+        background-color: $blue-primary;
+        color: white;
+    }
+}

@@ -12,6 +12,7 @@
         "doctrine/orm": "^2.16",
         "easycorp/easyadmin-bundle": "^4.7",
         "friendsofsymfony/jsrouting-bundle": "*",
+        "knplabs/knp-paginator-bundle": "^6.3",
         "opsway/doctrine-dbal-postgresql": "^1.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.24",

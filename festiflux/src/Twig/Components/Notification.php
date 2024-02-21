@@ -2,32 +2,33 @@
 
 namespace App\Twig\Components;
 
+use App\Repository\ValidationRepository;
 use App\Repository\FestivalRepository;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
 class Notification
-{
-//    private DemandeFestivalRepository $demandeRepo;
+{   
+    private ValidationRepository $validRepo;
     private FestivalRepository $festRepo;
     public ?int $userId;
     public string $type;
     public ?int $festId;
 
-    public function __construct(
-        //FestivalRepository $demandeRepo, //
-        FestivalRepository $festRepo)
+    public function __construct(ValidationRepository $validRepo, FestivalRepository $festRepo)
     {
-       // $this->demandeRepo = $demandeRepo;
+        $this->validRepo = $validRepo;
         $this->festRepo = $festRepo;
     }
 
     function renderNombre(): int
     {
         if($this->type == "demandeFestival"){
+          
+            $validations = $this->validRepo->findBy(['status' => 0]);
 
-            return count($this->festRepo->findAll());
-            
+            return count($validations);   
+          
         } else if ($this->type == "allDemandesBenevolat" && $this->userId != null){ 
             
             $res = 0;
