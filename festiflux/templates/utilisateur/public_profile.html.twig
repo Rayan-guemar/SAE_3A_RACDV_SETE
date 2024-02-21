@@ -17,5 +17,12 @@
             <div class="public-profile__infos--bio">    
                 {{ user.description }}
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias enim illum nobis dolores sequi optio amet earum in repudiandae placeat itaque odio undeazerazer azerazerazer dee aazaz</div>
+            </div>
+            <div class="public-profile__infos--contacts">
+                <div class="public-profile__infos--title">Contacts : </div>
+                {% for contact in user.getContacts() %}
+                    <div class="">contact : {{contact}}</div>
+                {% endfor %}
+            </div>
 	</div>
 {% endblock %}
