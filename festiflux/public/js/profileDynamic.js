@@ -20,3 +20,10 @@ for (let div of divs) {
         }
     })
 }
+
+btn[0].addEventListener('click', () => {
+    for (let div of divs) {
+        const input = div.querySelector('input')
+        input.disabled = false
+    }
+})

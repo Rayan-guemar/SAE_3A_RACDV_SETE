@@ -30,7 +30,7 @@
             <div class="info-row editing">
                 <div class="df">{{ form_row(form.email, {'label': 'Email', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }} <a class="pen">🖉</a></div>
                     <div class="df"> {{ form_row(form.nom, {'label': 'Nom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
-                        <a class="pen"> 🖉 </a></div>
+                        <a class="pen">🖉</a></div>
                     <div class="df"> {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                         <a class="pen">🖉</a></div>
                 <div class="df"> {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
@@ -41,10 +41,7 @@
                     <a class="pen">🖉</a></div>
             </div>
         </div>
-        {{ dump(form) }}
-
         {{ form_widget(form.demanderModificationProfil, {'label': 'Modifier', 'attr': {'class': 'edit-button'}}) }}
-
         {{ form_end(form) }}
     </div>
 
