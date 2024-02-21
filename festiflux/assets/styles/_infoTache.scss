@@ -89,6 +89,7 @@
   }
 
   .benevole-lists {
+    min-height: 400px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -330,4 +331,7 @@
 
 .benevole-element:hover .charge-line {
   display: block;
+}
+.drag-el{
+  cursor: grab;
 }

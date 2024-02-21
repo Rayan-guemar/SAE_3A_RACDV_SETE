@@ -1,13 +1,29 @@
 .my-fest__title {
-  margin: 50px 0 0;
+  padding: 1rem;
 }
 
 .my-fest__heading {
-  margin: 50px 0 10px;
+  padding: 2rem;
 }
 
-.fest-wrapper.with-margin {
-  margin-bottom: 100px;
+.my-fest__btns {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.active {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid $blue-primary;
+  background-color: $blue-primary;
+  color: white;
+  pointer-events: none;
+  cursor: default;
 }
 
 .my-fest__buttons {
@@ -44,4 +60,41 @@
       aspect-ratio: 1/1;
     }
   }
+}
+
+.tooltip{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltipText{
+    position: absolute;
+    top: -70%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    white-space: nowrap;
+    padding: 5px 10px;
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.tooltipText::before{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: black;
+}
+
+.tooltip:hover .tooltipText{
+    visibility: visible;
+    opacity: 1;
 }

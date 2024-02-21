@@ -18,13 +18,13 @@ class ModifierTacheType extends AbstractType {
         $builder
             ->add('remarque', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Nom de la tache...'
+                    'placeholder' => 'Nom de la tâche...'
                 ],
                 'required' => true,
             ])
             ->add('lieu', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Lieu de la tache...'
+                    'placeholder' => 'Lieu de la tâche...'
                 ],
                 'required' => true,
                 'mapped' => false
@@ -38,13 +38,13 @@ class ModifierTacheType extends AbstractType {
               ])
               ->add('poste', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Poste relié à la tache...'
+                    'placeholder' => 'Poste relié à la tâche...'
                 ],
                 'required' => true,
                 'mapped' => false
             ])
             ->add('modifTache', SubmitType::class, [
-                'label' => 'Modifier la tache'
+                'label' => 'Modifier la tâche'
             ]);
     }
 

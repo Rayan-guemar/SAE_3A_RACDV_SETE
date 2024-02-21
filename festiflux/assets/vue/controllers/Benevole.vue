@@ -27,7 +27,7 @@ interface Props {
 </script>
 
 <template>
-    <div class="benevole-element">
+    <div class="benevole-element drag-el" draggable="true">
         <!-- <input style="position: absolute;" type="color" v-model="color"> -->
         <div class="benevole-name">{{ benevole.nom }}</div>
         <div class="pastille-benevole-wrapper">

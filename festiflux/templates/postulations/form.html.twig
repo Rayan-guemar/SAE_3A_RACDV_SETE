@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postuler pour
+	{{ festival.nom }}
+{% endblock %}
+
+{% block styles %}
+	<link rel="stylesheet" href="{{ asset('build/postulation.css') }}">
+{% endblock %}
+
+{% block body %}
+	<div class="postulation-form">
+
+		<h1>Postuler pour
+			{{ festival.nom }}</h1>
+
+		<form method="post">
+			{% for question in questions %}
+				<div>
+					<label for="response_{{ question.id }}">{{ question.label }}</label>
+					{% if question.typeReponse == 'integer' %}
+						<input type="number" id="response_{{ question.id }}" name="responses[{{ question.id }}]" required>
+					{% elseif question.typeReponse == 'boolean' %}
+						<div class="radio-group">
+							<div>
+								<input type="radio" id="response_{{ question.id }}_true" name="responses[{{ question.id }}]" value="true" required>
+								<label for="response_{{ question.id }}_true">Oui</label>
+							</div>
+							<div>
+								<input type="radio" id="response_{{ question.id }}_false" name="responses[{{ question.id }}]" value="false" required>
+								<label for="response_{{ question.id }}_false">Non</label>
+							</div>
+						</div>
+					{% else %}
+						<input type="text" id="response_{{ question.id }}" name="responses[{{ question.id }}]" required>
+					{% endif %}
+				</div>
+			{% endfor %}
+
+			<button type="submit">Submit</button>
+		</form>
+	</div>
+{% endblock %}

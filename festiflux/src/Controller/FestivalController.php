@@ -21,6 +21,7 @@ use App\Repository\HistoriquePostulationRepository;
 use App\Repository\TagRepository;
 use App\Repository\UtilisateurRepository;
 use App\Repository\ValidationRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -57,7 +58,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/all', name: 'app_festival_all')]
-    public function all(FestivalRepository $repository, TagRepository $tagRepository, Request $request, FlashMessageService $flashMessageService): Response {
+    public function all(FestivalRepository $repository, TagRepository $tagRepository, Request $request, FlashMessageService $flashMessageService, PaginatorInterface $paginator): Response {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
         $form->handleRequest($request);
@@ -94,11 +95,17 @@ class FestivalController extends AbstractController {
             }
         }
 
-        $festivals = $repository->findAll();
+        //get les festivals qui ne sont pas archivés
+        $festivals = $repository->findBy(['isArchive' => 0, 'open' => 1]);
+        $cards = $paginator->paginate(
+            $festivals,
+            $request->query->getInt('page', 1),
+            6
+        );
 
         return $this->render('festival/index.html.twig', [
             'form' => $form->createView(),
-            'festivals' => $festivals,
+            'festivals' => $cards,
             'searched' => false
         ]);
     }

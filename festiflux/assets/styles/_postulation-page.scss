@@ -1,0 +1,65 @@
+.postulation-page {
+
+
+    h1 {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    form {
+        background-color: #fff;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        div {
+            margin-bottom: 20px;
+
+            label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+                /* Ajouter un espace entre le label et les boutons */
+            }
+
+            input[type='number'],
+            input[type='text'] {
+                width: 100%;
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+
+            .radio-group {
+                div {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+                }
+            }
+
+            input[type='radio'] {
+                margin-right: 5px;
+            }
+        }
+
+        button[type='submit'] {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: $blue-primary;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: $blue-primary-hover;
+            }
+        }
+    }
+}

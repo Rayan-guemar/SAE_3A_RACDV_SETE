@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postulation de
+	{{ postulation.utilisateur.nom }}
+	{{ postulation.utilisateur.prenom  }}
+{% endblock %}
+
+{% block body %}
+	<div class="postulation-page">
+		<h1>Postulation de
+			{{ postulation.utilisateur.nom }}
+			{{ postulation.utilisateur.prenom  }}
+		</h1>
+
+		<div class="postulation-container">
+			<form action="{{path("app_postulations_refuse", {id: postulation.getId()})}}" method="post">
+				<div>
+					<label for="motif">Motif de refus</label>
+					<textarea id="motif" name="motif" placeholder="Entrez votre motif de refus"></textarea>
+				</div>
+				<div class="buttons-container">
+					<button class="_button refuse" type="submit">Refuser</button>
+				</div>
+			</form>
+		</div>
+		<div>
+			<a class="_button cancel" type="submit" href="{{path("app_postulations_postulation", {id: postulation.getId()})}}">Annuler</a>
+		</div>
+
+	</div>
+{% endblock %}

@@ -1,69 +1,60 @@
 {% extends "base.html.twig" %}
-{% block title %}Liste des demandes
-{% endblock %}
+{% block title %}Liste des demandes{% endblock %}
 
 {% block overhead %}
-	<script src="{{ asset('js/modal.js') }}" defer></script>
+    <script src="{{ asset('js/modal.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
-	<h1>Liste des demandes de Validation</h1>
-	<table class="\" table\"">
-		<thead>
-			<tr>
-				<th>Nom Festival</th>
-				<th>Description</th>
-				<th>Organisateur</th>
-				<th>Date Début</th>
-				<th>Date Fin</th>
-				<th>Lieu</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for validation in validations %}
-				<tr>
-					<td>{{ validation.getFestival().getNom() }}</td>
-					<td>{{ validation.getFestival().getDescription() }}</td>
-					<td>{{ validation.getFestival().getOrganisateur().getNom() }}</td>
-					<td>{{ validation.getFestival().getDateDebut()|date("d/m/Y") }}</td>
-					<td>{{ validation.getFestival().getDateFin()|date("d/m/Y") }}</td>
-					<td>{{ validation.getFestival().getLieu() }}</td>
-					<td>
-						<form action={{path("app_validation_accept", {"id": validation.id} )}} method="post">
-							<button class="">Accepter</button>
-						</form>
-						<button class="btn btn-open">Refuser</button>
-					</td>
-				</tr>
-  
-				<section class="modal hidden">
-					<div>
-						<div class="flex-row modal_top">
-							<h3 style="color: #0a0a0a">Ajouter un motif</h3>
-							<button class="btn-close">⨉</button>
-						</div>
-						<p>
-							Dans la rubrique ci-dessous, ajouter un motif pour expliquer votre choix.
-						</p>
-					</div>
+    <h1>Liste des demandes de Validation</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom festival</th>
+                <th>Description</th>
+                <th>Organisateur</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Lieu</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for validation in validations %}
+                <tr>
+                    <td>{{ validation.getFestival().getNom() }}</td>
+                    <td>{{ validation.getFestival().getDescription() }}</td>
+                    <td>{{ validation.getFestival().getOrganisateur().getNom() }}</td>
+                    <td>{{ validation.getFestival().getDateDebut()|date("d/m/Y") }}</td>
+                    <td>{{ validation.getFestival().getDateFin()|date("d/m/Y") }}</td>
+                    <td>{{ validation.getFestival().getLieu() }}</td>
+                    <td>
+                        <form action="{{ path('app_validation_accept', {'id': validation.id}) }}" method="post">
+                            <button class="">Accepter</button>
+                        </form>
+                        <button class="btn-open" data-validation-id="{{ validation.id }}">Refuser</button>
+                    </td>
+                </tr>
 
-					<form action={{path("app_validation_reject", {"id": validation.id} )}} method="post">
-						<textarea name="motif" id="motif" cols="30" rows="10" placeholder="Ecrivez un motif..."></textarea>
-						<button class="">Envoyer</button>
-					</form>
-				</section>
+                <div class="modal hidden" id="modal-{{ validation.id }}">
+                    <div>
+                        <div class="flex-row modal_top">
+                            <h3 style="color: #0a0a0a">Ajouter un motif</h3>
+                            <button class="btn-close">⨉</button>
+                        </div>
+                        <p>
+                            Dans la rubrique ci-dessous, ajouter un motif pour expliquer votre choix.
+                        </p>
+                    </div>
 
+                    <form action="{{ path('app_validation_reject', {'id': validation.id}) }}" method="post">
+                        <textarea name="motif" id="motif" cols="30" rows="10" placeholder="Ecrivez un motif..."></textarea>
+                        <button class="">Envoyer</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </tbody>
+    </table>
 
-				<div class="overlay hidden"></div>
-			{% else %}
-				<tr>
-					<td colspan="\" 8\"">Aucune demande trouvée</td>
-				</tr>
-
-
-			{% endfor %}
-		</tbody>
-
-	</table>
+    <div class="overlay hidden"></div>
 {% endblock %}
