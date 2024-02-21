@@ -52,12 +52,13 @@ class UtilisateurController extends AbstractController {
 
         $loggedInUser = $this->getUser();
 
-        $isCurrentUser = $u->getId() === $loggedInUser->getUserIdentifier();
+        $isCurrentUser = $loggedInUser instanceof Utilisateur && $loggedInUser->getId() === $u->getId();
 
+        
         if (!$isCurrentUser) {
             return $this->render('utilisateur/public_profile.html.twig', [
                 'controller_name' => 'UtilisateurController',
-                'utilisateur' => $u
+                'user' => $u
             ]);
         }
 

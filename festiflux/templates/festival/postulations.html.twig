@@ -12,10 +12,10 @@
 		<table border="1">
 			<thead>
 				<tr>
-					<th>nom</th>
-					<th>prénom</th>
-					<th>date de la demande</th>
-					<th>consulter</th>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Date de la demande</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -32,7 +32,10 @@
 						</td>
 						<td>
 							<a href="{{path('app_postulations_postulation', {id: postulation.id})}}">
-								lien
+								Détails
+							</a>
+							<a href="{{path('app_user_profile', {id: postulation.utilisateur.id})}}">
+								Voir le profil
 							</a>
 						</td>
 					</tr>
