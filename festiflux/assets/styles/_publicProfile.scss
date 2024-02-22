@@ -12,12 +12,13 @@
         align-items: center;
         flex-direction: row;
         border-bottom: solid 1px $grey-primary;
+        margin-bottom: 1.5rem;
 
         &--image {
             img {
                 width: 7.5rem;
                 height: 7.5rem;
-                border-radius: 99999px;
+                border-radius: 100%;
             }
         }
 
@@ -29,20 +30,43 @@
     }
 
     .public-profile__infos {
-        padding: 3rem;
+        padding: 1.5rem;
+        border-bottom: solid .5px $grey-primary;
 
         &--title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            
         }
 
         &--bio {
+            font-size: 1rem;
+            width: 45%;
+            text-align: justify;
+        }
+    }
+
+    .public-profile__contacts {
+
+        padding: 1.5rem;
+        border-bottom: 1px;
+
+        &--title {
+            
+        }
+
+        &--contacts {
             font-size: 1rem;
             margin-bottom: 1.5rem;
             width: 45%;
             text-align: justify;
         }
+    
+    }
+
+    .sub-title {
+        color: rgba(58, 51, 78, 0.521);
+        font-size: 1.1rem;
+        margin-bottom: .5rem;
+        font-weight: 700;
     }
 
 }

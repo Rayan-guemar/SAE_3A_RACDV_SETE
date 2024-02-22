@@ -43,6 +43,19 @@ use DateTime;
 
 class UtilisateurController extends AbstractController {
 
+
+    #[Route('/user/me', name: 'app_user_me')]
+    public function me(): Response {
+        $u = $this->getUser();
+        
+    
+        return $this->render('utilisateur/profile.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'utilisateur' => $u
+        ]);
+        
+    }
+
     #[Route('/user/profile/{id}', name: 'app_user_profile')]
     public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
 
@@ -50,22 +63,11 @@ class UtilisateurController extends AbstractController {
         if (!$u)
             throw $this->createNotFoundException("L'utilisateur n'existe pas");
 
-        $loggedInUser = $this->getUser();
-
-        $isCurrentUser = $loggedInUser instanceof Utilisateur && $loggedInUser->getId() === $u->getId();
-
-        
-        if (!$isCurrentUser) {
-            return $this->render('utilisateur/public_profile.html.twig', [
-                'controller_name' => 'UtilisateurController',
-                'user' => $u
-            ]);
-        }
-
-        return $this->render('utilisateur/profile.html.twig', [
+        return $this->render('utilisateur/public_profile.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'utilisateur' => $u
+            'user' => $u
         ]);
+        
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]

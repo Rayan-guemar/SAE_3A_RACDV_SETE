@@ -8,21 +8,37 @@
 	<div class="public-profile__container">
 		<div class="public-profile__header">
 			<div class="public-profile__header--image">
-				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~user.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
 			</div>
             <div class="public-profile__header--name"> {{user.nom ~ " " ~ user.prenom }} </div>
 		</div>
         <div class="public-profile__infos">
-            <div class="public-profile__infos--title">Biographie : </div>
+            <div class="public-profile__infos--title sub-title">biographie</div>
             <div class="public-profile__infos--bio">    
                 {{ user.description }}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias enim illum nobis dolores sequi optio amet earum in repudiandae placeat itaque odio undeazerazer azerazerazer dee aazaz</div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias enim illum nobis dolores sequi optio amet earum in repudiandae placeat itaque odio undeazerazer azerazerazer dee aazaz
             </div>
-            <div class="public-profile__infos--contacts">
-                <div class="public-profile__infos--title">Contacts : </div>
-                {% for contact in user.getContacts() %}
-                    <div class="">contact : {{contact}}</div>
-                {% endfor %}
+        </div>
+        <div class="public-profile__contacts">
+            <div class="public-profile__contacts--title sub-title">contacts</div>
+            <div class="contact-section">
+                {% set contacts = user.getContacts() %}
+                {% if contacts is not empty %}        
+                    {% for contact in contacts %}
+                        <div>
+                            {% include 'contacts/contact.html.twig' with {
+                                contact: {
+                                    value: contact.value ,
+                                    name: contact.type.name ,
+                                    link: contact.getLink() 
+                                }
+                            }%}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Aucun moyen de contact n'a été ajouté.</p>
+                {% endif %}
             </div>
+        </div>
 	</div>
 {% endblock %}
