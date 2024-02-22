@@ -31,10 +31,13 @@
 
     .public-profile__infos {
         padding: 1.5rem;
-        border-bottom: solid .5px $grey-primary;
+        // border-bottom: solid .5px $grey-primary;
 
         &--title {
-            
+            color: rgb(0, 0, 0);
+            font-size: 1.1rem;
+            margin-bottom: .5rem;
+            font-weight: 700;
         }
 
         &--bio {
@@ -50,7 +53,10 @@
         border-bottom: 1px;
 
         &--title {
-            
+            color: rgb(0, 0, 0);
+            font-size: 1.1rem;
+            margin-bottom: .5rem;
+            font-weight: 700;
         }
 
         &--contacts {
@@ -60,13 +66,6 @@
             text-align: justify;
         }
     
-    }
-
-    .sub-title {
-        color: rgba(58, 51, 78, 0.521);
-        font-size: 1.1rem;
-        margin-bottom: .5rem;
-        font-weight: 700;
     }
 
 }
