@@ -4,7 +4,8 @@ const skillsContainer = document.querySelector('.skills')
 addButton.addEventListener('click', () => {
     const skill = document.createElement('div')
     skill.classList.add('skills-div')
-    skill.innerHTML = ` <input class="skills-inputs nom" placeholder="Nom">
+    skill.innerHTML = `<div class="bar"></div>
+                    <input class="skills-inputs nom" placeholder="Nom">
                     <input class="skills-inputs degre" placeholder="Niveau de maîtrise">
                     <div class="croix">X</div>`
 
