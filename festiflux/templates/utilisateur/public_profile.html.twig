@@ -12,22 +12,50 @@
             </div>
             <div class="public-profile__side--infos">
                 <div class="public-profile__side--infos-address">
+                     <h3>Adresse :</h3>
+                   <div class="contact-section">
+                    {{user.adresse}}
+                    </div>
+
                 </div>
                 <div class="public-profile__side--infos-contacts">
+                    <h3>Contacts :</h3>
+                    <div class="contact-section">
+                        {% set contacts = user.getContacts() %}
+                        {% if contacts is not empty %}        
+                            {% for contact in contacts %}
+                                <div>
+                                    {% include 'contacts/contact.html.twig' with {
+                                        contact: {
+                                            value: contact.value ,
+                                            name: contact.type.name ,
+                                            link: contact.getLink() 
+                                        }
+                                    }%}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Aucun moyen de contact n'a été ajouté.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
         <div class="public-profile__main">
             <div class="public-profile__main--header">
                 <div class="public-profile__main--header-name">
+                    {{user.nom ~ " " ~ user.prenom }} 
                 </div>
                 <div class="public-profile__main--header-bio">
+                    {{ user.description }}
                 </div>
             </div>
             <div class="public-profile__main--body">
                 <div class="public-profile__main--body-skills">
+                    <h3>Compétences :</h3>
                 </div>
                 <div class="public-profile__main--body-fest">
+                    <h3>Expérience :</h3>
                 </div>
             </div>
         </div>

@@ -4,17 +4,22 @@
   
     height: 100%;
     width: 100%;
-    background: green;
+
+    h3 {
+        margin: 1rem 0;
+    }
+
 }
 
 .public-profile__side {
     flex: 1;
     display: flex;
-    background: red;    
-    justify-content: center;
+    flex-direction: column; 
+    align-items: center;
+   
 
     &--img {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 
     img {
@@ -28,21 +33,34 @@
     display: flex;
     flex-direction: column;
     flex: 3;
-    background: black;
 
     &--header {
         display: flex;
+        flex-direction: column;
         flex: 1;
-        justify-content: space-between;
-        align-items: center;
 
-        background: yellow;
+        &-name {
+            margin: 2rem 0;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        &-bio {
+            font-size: 1.125rem;
+            text-align: justify;
+            width: 50%;
+        }
+       
+        border-bottom: 1px solid $grey-primary;
+
+ 
     }
 
     &--body {
         display: flex;
+        flex-direction: column;
         flex: 2;
 
-        background: blue;
+
     }
 }
