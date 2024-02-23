@@ -6,7 +6,36 @@
 
 {% block body %}
 	<div class="public-profile__container">
-		<div class="public-profile__header">
+		<div class="public-profile__side">
+            <div class="public-profile__side--img">
+                <img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+            </div>
+            <div class="public-profile__side--infos">
+                <div class="public-profile__side--infos-address">
+                </div>
+                <div class="public-profile__side--infos-contacts">
+                </div>
+            </div>
+        </div>
+        <div class="public-profile__main">
+            <div class="public-profile__main--header">
+                <div class="public-profile__main--header-name">
+                </div>
+                <div class="public-profile__main--header-bio">
+                </div>
+            </div>
+            <div class="public-profile__main--body">
+                <div class="public-profile__main--body-skills">
+                </div>
+                <div class="public-profile__main--body-fest">
+                </div>
+            </div>
+        </div>
+	</div>
+{% endblock %}
+
+{# 
+<div class="public-profile__header">
 			<div class="public-profile__header--image">
 				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
 			</div>
@@ -39,6 +68,4 @@
                     <p>Aucun moyen de contact n'a été ajouté.</p>
                 {% endif %}
             </div>
-        </div>
-	</div>
-{% endblock %}
+        </div> #}

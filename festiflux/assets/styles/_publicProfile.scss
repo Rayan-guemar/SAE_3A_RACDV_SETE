@@ -1,71 +1,48 @@
 .public-profile__container {
-    padding: 5rem;
+    padding: 3rem;
     display: flex;
-    flex-direction: column;
+  
     height: 100%;
     width: 100%;
+    background: green;
+}
 
-    .public-profile__header {
-        height: 10rem;
-        width: 100%;
+.public-profile__side {
+    flex: 1;
+    display: flex;
+    background: red;    
+    justify-content: center;
+
+    &--img {
+        padding: 1rem;
+    }
+
+    img {
+
+        width: 15rem;
+        height: 15rem;
+    }
+}
+
+.public-profile__main {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    background: black;
+
+    &--header {
         display: flex;
+        flex: 1;
+        justify-content: space-between;
         align-items: center;
-        flex-direction: row;
-        border-bottom: solid 1px $grey-primary;
-        margin-bottom: 1.5rem;
 
-        &--image {
-            img {
-                width: 7.5rem;
-                height: 7.5rem;
-                border-radius: 100%;
-            }
-        }
-
-        &--name {
-            margin-left: 2rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
+        background: yellow;
     }
 
-    .public-profile__infos {
-        padding: 1.5rem;
-        // border-bottom: solid .5px $grey-primary;
+    &--body {
+        display: flex;
+        flex: 2;
 
-        &--title {
-            color: rgb(0, 0, 0);
-            font-size: 1.1rem;
-            margin-bottom: .5rem;
-            font-weight: 700;
-        }
-
-        &--bio {
-            font-size: 1rem;
-            width: 45%;
-            text-align: justify;
-        }
+        background: blue;
     }
-
-    .public-profile__contacts {
-
-        padding: 1.5rem;
-        border-bottom: 1px;
-
-        &--title {
-            color: rgb(0, 0, 0);
-            font-size: 1.1rem;
-            margin-bottom: .5rem;
-            font-weight: 700;
-        }
-
-        &--contacts {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            width: 45%;
-            text-align: justify;
-        }
-    
-    }
-
 }
