@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% block title %}ajouter votre festival{% endblock %}
+{% block title %}{{ 'title'|trans({},'addfest') }}{% endblock %}
 {% block overhead %}
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -11,25 +11,27 @@
 {% block body %}
 
 	<div class="form-wrapper">
-		<h1>Demande de création de festival</h1>
+		<h1>{{ 'title'|trans({},'addfest') }}</h1>
 
 		{{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
-		{{ form_row(form.nom, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Nom du festival'}}) }}
-		{{ form_row(form.description, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Description du festival'}}) }}
+		{{ form_row(form.nom, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'name'|trans({},'addfest')  }}) }}
+		{{ form_row(form.description, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'description'|trans({},'addfest') }}) }}
 
 		<div class="form-row" >
 			{{ form_widget(form.dateDebut, {'label': 'Date de début'}) }}
 			{{ form_widget(form.dateFin, {'label': 'Date de fin'}) }}
 		</div>
 		<div id="box-adresses">
-		{{ form_row(form.lieu, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'Lieu du festival'}}) }}
+		{{ form_row(form.lieu, {'label': false, 'attr': {'class': 'festival-form__input', 'placeholder': 'localisation'|trans({},'addfest') }}) }}
 			{{ form_row(form.lat,{'attr':{'id':'lat'}}) }}
 			{{ form_row(form.lon,{'attr':{'id':'lon'}}) }}
 		</div>
-		{{ form_row(form.affiche, {'label': 'Choisir une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du festival'}}) }}
-		{{ form_row(form.tags, {'label':false, 'attr': {'name':'tags', 'class': 'festival-form__input'} })  }}
-		{{ form_widget(form.demanderCreation, {'label': 'Demander création', 'attr': {'class': 'festival-form__checkbox'} }) }}
+		{{ form_row(form.affiche, {'label': 'poster'|trans({},'addfest'), 'attr': {'class': 'festival-form__input', 'placeholder': 'poster'|trans({},'addfest') }}) }}
+
+		{{ form_row(form.tags, {'label':false, 'attr': {'name':'tags'|trans({},'addfest'), 'class': 'festival-form__input', 'placeholder': 'tags'|trans({},'addfest') } })  }}
+
+		{{ form_widget(form.demanderCreation, {'label': 'button'|trans({},'addfest'), 'attr': {'class': 'festival-form__checkbox'} }) }}
 
 		{{ form_end(form) }}
 	</div>

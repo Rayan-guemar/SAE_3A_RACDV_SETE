@@ -28,7 +28,7 @@
 			</div>
 			<div class="fest-description">
 				<div class="title">
-					DESCRIPTION
+					{{ 'titles.desc'|trans({}, 'detailfest') }}
 				</div>
 				<div class="main-desc">
 					{{ festival.description() }}
@@ -36,7 +36,7 @@
 
 				{% if festival.getTags() is not empty %}
 					<div class="title">
-						TAGS
+						{{ 'titles.tag'|trans({}, 'detailfest') }}
 					</div>
 					<div>
 						{% for tag in festival.getTags() %}
@@ -46,7 +46,7 @@
 				{% endif %}
 
 				<div class="title">
-					LOCALISATION
+					{{ 'titles.locali'|trans({}, 'detailfest') }}
 				</div>
 				<input id="lat" type="hidden" value="{{ festival.lat() }}">
 				<input id="lon" type="hidden" value="{{ festival.lon() }}">
@@ -58,19 +58,19 @@
 		<div class="btn-container">
 			{% if isOrganisateur %}
 				<div class="button-benevole">
-					<a href={{ path("app_festival_gestion", {'id' : festival.getId()} ) }} class="btn btn-primary">Gestion du festival</a>
+					<a href={{ path("app_festival_gestion", {'id' : festival.getId()} ) }} class="btn btn-primary">{{ 'buttons.gestion'|trans({},'detailfest') }}</a>
 				</div>
 			{% endif %}
 			{% if isBenevole or isOrganisateur or isResponsable %}
 
 				<div class="button-benevole">
-					<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">Planning du festival</a>
+					<a href={{ path("app_festival_planning", {'id' : festival.getId()} ) }} class="btn btn-primary">{{ 'buttons.planning'|trans({},'detailfest') }}</a>
 				</div>
 			{% endif %}
 
 			{% if not(isBenevole or isOrganisateur or isResponsable)  %}
 				<div class="button-benevole">
-					<a href={{ path('app_postulations_form', {'id': festival.getId()} ) }} class="btn btn-primary">Postuler</a>
+					<a href={{ path('app_postulations_form', {'id': festival.getId()} ) }} class="btn btn-primary">{{ 'buttons.postuler'|trans({},'detailfest') }}</a>
 				</div>
 			{% endif %}
 		</div>

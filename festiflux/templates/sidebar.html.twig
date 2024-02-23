@@ -14,26 +14,26 @@
 			<div class="sidebar__actions">
 
 				<div class="sidebar__actions__menu">
-					<h3>MENU</h3>
+					<h3>{{ 'sidebar.menu.header'|trans({},'sidebar') }}</h3>
 					<ul>
-						<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a href="{{ path("home") }}">Accueil</a>
+						<li><img src="{{ asset("icons/house.svg") }}" alt="House icon"><a href="{{ path("home") }}">{{ 'sidebar.menu.home'|trans({},'sidebar') }}</a>
 						</li>
 						{% if is_granted('ROLE_USER')  %}
 							<li>
-								<img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a href={{path("app_user_festivals")}}>Mes festivals</a>
+								<img src="{{ asset("icons/myFest.svg") }}" alt="My festival icon"><a href={{path("app_user_festivals")}}>{{ 'sidebar.menu.my_festivals'|trans({},'sidebar') }}</a>
 								{{ component('Notification', { type : 'allDemandesBenevolat', userId : app.user.id}) }}
 							</li>
-							<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_festival_add") }}">Ajouter un festival</a>
+							<li><img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon"><a href="{{ path("app_festival_add") }}">{{ 'sidebar.menu.add_festival'|trans({},'sidebar') }}</a>
 							</li>
 							{% if app.user.getHistoriquePostulations().isEmpty()==false %}
 								<li>
-                  <img src="{{ asset("icons/check.svg")}}" alt="Tracking volontary request icon"><a href="{{ path("app_postulations") }}">Suivi de vos postulations</a>
+									<img src="{{ asset("icons/check.svg")}}" alt="Tracking volontary request icon"><a href="{{ path("app_postulations") }}">{{ 'sidebar.menu.tracking_postulations'|trans({},'sidebar') }}</a>
 								</li>
 							{% endif %}
 							{% if is_granted('ROLE_ADMIN')  %}
 								<li>
 									<img src="{{ asset("icons/addFest.svg") }}" alt="add a festival icon">
-									<a href="{{ path("app_validation") }}">Toutes les demandes</a>
+									<a href="{{ path("app_validation") }}">{{ 'sidebar.menu.all_requests'|trans({},'sidebar') }}</a>
 									{{ component('Notification', { type : 'demandeFestival'}) }}
 								</li>
 							{% endif %}
@@ -42,15 +42,15 @@
 				</div>
 
 				<div class="sidebar__actions__account">
-					<h3>COMPTE</h3>
+					<h3>{{ 'sidebar.account.header'|trans({},'sidebar') }}</h3>
 					<ul>
 						{% if is_granted('ROLE_USER')  %}
 							<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_user_profile", {id: app.user.id} )}}>{{ app.user.prenom }}</a>
 							</li>
-							<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a href={{path("app_auth_logout")}}>Se déconnecter</a>
+							<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a href={{path("app_auth_logout")}}>{{ 'sidebar.account.logout'|trans({},'sidebar') }}</a>
 							</li>
 						{% else %}
-							<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_auth_login")}}>Se connecter</a>
+							<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_auth_login")}}>{{ 'sidebar.account.login'|trans({},'sidebar') }}</a>
 							</li>
 						{% endif %}
 					</ul>

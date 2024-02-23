@@ -6,7 +6,7 @@
 parameters:
   poster_directory: "%kernel.project_dir%/public/uploads/"
   dossier_photo_profil: "%kernel.project_dir%/public/uploads/user"
-
+  app.supported_locales: 'fr|en'
 
 services:
   # default configuration for services in *this* file

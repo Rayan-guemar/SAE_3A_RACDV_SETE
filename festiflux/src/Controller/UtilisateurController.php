@@ -38,6 +38,7 @@ use App\Service\UtilisateurManagerInterface;
 use PHPUnit\Util\Json;
 use DateTime;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class UtilisateurController extends AbstractController {
 
     #[Route('/user/profile/{id}', name: 'app_user_profile')]

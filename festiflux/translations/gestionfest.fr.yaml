@@ -1,0 +1,41 @@
+ici: 'ici'
+titles:
+  pageTitle: 'Gestion du '
+  status: 'Ce festival est '
+  open: 'ouvert aux postulations'
+subtitles:
+  planning:
+    title: 'Gestion du planning'
+    p: 'Pour ajouter des plages horaires ou des créneaux'
+    a: 'Gérer le planning'
+  post:
+    title: 'Gestion des postes'
+    p: 'Pour ajouter ou modifier les postes'
+    a: 'Gérer les postes'
+  postulation:
+    title: 'Gestion des postulations'
+    p: 'Pour voir toutes les postulations au festival'
+    a: 'Voir les postulations'
+  questionnaire:
+    title: 'Gestion du formulaire bénévole'
+    p: 'Pour voir, modifier ou supprimer toutes les questions du formulaire'
+    a: 'formulaire bénévole'
+  open:
+    p: 'Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce festival'
+    pp: 'Attention! cette action est définitive est irréversible, aucune modification du festival du formulaire de postulation et de poste ne sera autorisée'
+actions:
+  valid: 'Demander la validation du festival'
+  open: 'Ouvrir le festival au postulations'
+  archiver: 'Archiver le festival'
+
+response:
+  valid: 'Le festival est déjà validé'
+  pending: 'Votre demande de validation est en cours de traitement, consulter vos demandes'
+  validations: 'consulter vos précédentes demandes'
+  open: 'Le festival est déjà ouvert aux postulations'
+  not_valid: "Le festival n'est pas validé"
+messages:
+  valid_not_open: 'Validé mais pas ouvert aux postulations'
+  valid_pending: "en attente de votre demande de validation"
+  valid_analyse : 'en cours de traitement de validation'
+  valid_rejected: 'Rejeté'

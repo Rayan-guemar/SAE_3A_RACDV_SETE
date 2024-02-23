@@ -50,7 +50,10 @@ use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+
+#[Route('{_locale<%app.supported_locales%>}')]
 class FestivalController extends AbstractController {
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
@@ -1172,7 +1175,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository, TranslatorInterface $translator): Response {
         $statut = "";
 
         $festival = $repository->find($id);
@@ -1192,16 +1195,16 @@ class FestivalController extends AbstractController {
             return $this->redirectToRoute('home');
         } else {
             if ($festival->getValid() == 1) {
-                $statut = "Validé mais pas ouvert aux postulations";
+                $statut = $translator->trans('messages.valid_not_open', [], 'gestionfest', $translator->getLocale());
             } else if ($festival->getValid() == 0) {
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
-                    $statut = "en attente de votre demande de validation";
+                    $statut = $translator->trans('messages.valid_pending', [], 'gestionfest', $translator->getLocale());
                 } else {
-                    $statut = "en cours de traitement de validation";
+                    $statut = $translator->trans('messages.valid_analyse', [], 'gestionfest', $translator->getLocale());
                 }
             } else {
-                $statut = "Rejeté";
+                $statut = $translator->trans('messages.valid_rejected', [], 'gestionfest', $translator->getLocale());
             }
         }
 
