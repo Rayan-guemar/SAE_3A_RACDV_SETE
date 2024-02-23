@@ -19,6 +19,9 @@ class Competences
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $niveau = null;
 
+    #[ORM\ManyToOne(inversedBy: 'competences')]
+    private ?Utilisateur $autheur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,4 +50,17 @@ class Competences
 
         return $this;
     }
+
+    public function getAutheur(): ?Utilisateur
+    {
+        return $this->autheur;
+    }
+
+    public function setAutheur(?Utilisateur $autheur): static
+    {
+        $this->autheur = $autheur;
+
+        return $this;
+    }
+
 }

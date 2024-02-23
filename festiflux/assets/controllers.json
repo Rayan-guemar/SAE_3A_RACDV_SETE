@@ -1,6 +1,6 @@
 {
     "controllers": {
-        "@symfony/ux-vue": {
+        "@qsymfony/ux-vue": {
             "vue": {
                 "enabled": true,
                 "fetch": "eager"

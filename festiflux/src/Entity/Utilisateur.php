@@ -97,6 +97,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Preference::class, orphanRemoval: true)]
     private Collection $preferences;
 
+    #[ORM\OneToMany(mappedBy: 'autheur', targetEntity: Competences::class)]
+    private Collection $competences;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
@@ -108,6 +111,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->historiquePostulations = new ArrayCollection();
         $this->postulations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
+        $this->competences = new ArrayCollection();
     }
 
     /**
@@ -492,6 +496,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($preference->getUtilisateur() === $this) {
                 $preference->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Competences>
+     */
+    public function getCompetences(): Collection
+    {
+        return $this->competences;
+    }
+
+    public function addCompetence(Competences $competence): static
+    {
+        if (!$this->competences->contains($competence)) {
+            $this->competences->add($competence);
+            $competence->setAutheur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetence(Competences $competence): static
+    {
+        if ($this->competences->removeElement($competence)) {
+            // set the owning side to null (unless already changed)
+            if ($competence->getAutheur() === $this) {
+                $competence->setAutheur(null);
             }
         }
 
