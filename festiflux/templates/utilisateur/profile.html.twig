@@ -1,69 +1,81 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Profil de
-	{{utilisateur.nom}}
-	{{utilisateur.prenom}}
+    Profil de
+    {{ utilisateur.nom }}
+    {{ utilisateur.prenom }}
 {% endblock %}
-
+{% block overhead %}
+    <script src="{{ asset('js/addSkillsProfile.js') }}" defer></script>
+{% endblock %}
 {% block body %}
 
-		<div class="profil-box">
-			<h1>
-				Profil de
-				{{ utilisateur.nom }}
-				{{ utilisateur.prenom }}
-			</h1>
+    <div class="profil-box">
+        <h1>
+            Profil de
+            {{ utilisateur.nom }}
+            {{ utilisateur.prenom }}
+        </h1>
 
-			<div class="info-box-wrapper">
-				<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} 
-						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
-					 {% else %}
-						src="{{ asset("uploads/user/anonyme.png") }}"
-					 {% endif %}>
-			    </div>
-			<div class="info-box">
-				<div class="info-row">
-					<div class="info-border">
-						<strong>Email</strong>
-						:
-						{{ utilisateur.email }}
+        <div class="info-box-wrapper">
+            <div class="image_profile">
+                <img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+                    src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+                {% else %}
+                    src="{{ asset("uploads/user/anonyme.png") }}"
+                        {% endif %}>
+            </div>
+            <div class="info-box">
+                <div class="info-row">
+                    <div class="info-border">
+                        <strong>Email</strong>
+                        :
+                        {{ utilisateur.email }}
 
-				    </div>
-						<div class="info-name-surname">
-							<div class="info-border">
-								<strong>Nom</strong>
-								:
-								{{ utilisateur.nom }}
-							</div>
+                    </div>
+                    <div class="info-name-surname">
+                        <div class="info-border">
+                            <strong>Nom</strong>
+                            :
+                            {{ utilisateur.nom }}
+                        </div>
 
-							<div class="info-border">
-								<strong>Prénom</strong>
-								:
-								{{ utilisateur.prenom }}
-							</div>		
-						</div>	
-            <div class="info-border">
-					<strong>Adresse</strong>
-					:
-					{{ utilisateur.adresse }}
+                        <div class="info-border">
+                            <strong>Prénom</strong>
+                            :
+                            {{ utilisateur.prenom }}
+                        </div>
+                    </div>
+                    <div class="info-border">
+                        <strong>Adresse</strong>
+                        :
+                        {{ utilisateur.adresse }}
 
-				</div>
-						<div class="info-border biographie">
-								<strong>Biographie</strong>
-								:
-								{{ utilisateur.description }}
-						</div>
-					</div>
-				</div>
+                    </div>
+                    <div class="info-border biographie">
+                        <strong>Biographie</strong>
+                        :
+                        {{ utilisateur.description }}
+                    </div>
+                    <div class="skills-title">Compétences</div>
+                    <div class="skills">
+                        <div class="skills-div">
+                            <input class="skills-inputs nom" placeholder="Nom">
+                            <input class="skills-inputs degre" placeholder="Niveau de maîtrise">
+                        </div>
+                    </div>
+                    <div class="competences">
+                        <button class="btn-add-skills">Ajouter</button>
+                    </div>
+                </div>
+            </div>
 
-				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
-					<div class="edit-button">
-						Modifier mon profil
-					</div>
-				</a>
-			</div>
-		</div>
+            <a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
+                <div class="edit-button">
+                    Modifier mon profil
+                </div>
+            </a>
+        </div>
+    </div>
 
 {% endblock %}
