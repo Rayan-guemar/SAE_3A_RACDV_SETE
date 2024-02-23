@@ -8,7 +8,7 @@
 	<div class="public-profile__container">
 		<div class="public-profile__side">
             <div class="public-profile__side--img">
-                <img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+                <img {% if user.nomPhotoProfil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
             </div>
             <div class="public-profile__side--infos">
                 <div class="public-profile__side--infos-address">
