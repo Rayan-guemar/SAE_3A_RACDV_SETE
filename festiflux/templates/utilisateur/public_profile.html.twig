@@ -8,7 +8,7 @@
 	<div class="public-profile__container">
 		<div class="public-profile__header">
 			<div class="public-profile__header--image">
-				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~user.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
 			</div>
             <div class="public-profile__header--name"> {{user.nom ~ " " ~ user.prenom }} </div>
 		</div>

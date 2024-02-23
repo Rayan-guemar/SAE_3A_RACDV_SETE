@@ -34,16 +34,17 @@ class Notification
           
         } else if ($this->type == "allDemandesBenevolat" && $this->userId != null){ 
             
-            $res = 0;
-            foreach($this->festRepo->findBy(['organisateur' => $this->userId]) as $fest){
-                $res += count($fest->getPostulations());
-            }
-            return $res;
+            $postulations = $this->postRepo->findBy(['status' => 0, 'utilisateur' => $this->userId]);
+            return count($postulations);
+            
         } 
 
         if($this->festId != null) {
             $fest = $this->festRepo->find($this->festId);
-            return count($fest->getPostulations());
+            $postulations = $fest->getPostulations()->filter(function(Postulations $post) {
+                return $post->getStatus() == 0;
+            });
+            return count($postulations);
         }
 
         return 0;
