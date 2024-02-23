@@ -1,20 +1,16 @@
 const addButton = document.querySelector('.btn-add-skills')
-const skill =
-    `<div class="skills-div">
-        <input class="skills-inputs nom" placeholder="Nom">
-        <input class="skills-inputs degre" placeholder="Niveau de maîtrise">
-     </div>`
-
 const skillsContainer = document.querySelector('.skills')
-const skill_div = document.querySelectorAll('.skills-div')
 
 addButton.addEventListener('click', () => {
-    skillsContainer.innerHTML += skill;
+    const skill = document.createElement('div')
+    skill.classList.add('skills-div')
+    skill.innerHTML = ` <input class="skills-inputs nom" placeholder="Nom">
+                    <input class="skills-inputs degre" placeholder="Niveau de maîtrise">
+                    <div class="croix">X</div>`
+
+    skillsContainer.appendChild(skill);
+    const croix = skill.querySelector('.croix');
+    croix.addEventListener('click', () => {
+        croix.parentElement.remove();
+    });
 })
-
-
-for (let div of skill_div)  {
-    div.addEventListener('click', () => {
-        div.remove()
-    })
-}
