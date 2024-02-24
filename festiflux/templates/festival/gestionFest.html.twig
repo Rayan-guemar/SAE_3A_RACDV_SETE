@@ -1,92 +1,121 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Gestion du
-	{{festival.getNom()}}
+    Gestion du
+    {{ festival.getNom() }}
 {% endblock %}
 
 {% block body %}
-	<section class='page-container	flex-column'>
-		<h1 class="page-title">Gestion du
-			{{festival.getNom()}}</h1>
-		<h2>
-			Ce festival est
-			{% if festival.isOpen() %}ouvert aux postulations
-			{% else %}
-				{{ statut }}
-			{% endif %}
-		</h2>
-		<div class="manage-container">
-		<div class="actions">
-			<a class="action-div" href="{{path('app_festival_planning', {'id': festival.getId()})}}">
-			<div><h2>Gestion du planning</h2>
-				<p>Pour ajouter des plages horaires ou des créneaux</p>
-			</div>
-			<div class="background"><img class="img-size" src="{{ asset("icons/planning-manage.svg") }}" alt="manage user icon"></div>
-			</a>
-		</div>
-		<div class="actions">
-			<a class="action-div" href="{{path('app_festival_postes', {'id': festival.getId()})}}">
-				<div><h2>Gestion des postes</h2>
-				<p>Pour ajouter ou modifier les postes</p>
-				</div>
-				<div class="background"><img class="img-size" src="{{ asset("icons/assignment-manage.svg") }}" alt="manage user icon"></div>
-			</a>
-		</div>
-		<div class="actions">
-			<a class="action-div" href="{{path('app_festival_postulations', {'id': festival.getId()})}}">
-				<div><h2>Gestion des postulations</h2>
-					<p>Pour voir toutes les postulations du festival</p>
-				</div>
-				<div class="background"><img class="img-size" src="{{ asset("icons/postule-manage.svg") }}" alt="manage user icon"></div>
-			</a>
-		</div>
-		<div class="actions">
-			<a class="action-div" href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}">
-				<div>
-					<h2>Gestion du formulaire bénévole</h2>
-					<p>Pour voir, modifier ou supprimer toutes les questions du formulaire</p>
-				</div>
-				<div class="background"><img class="img-size" src="{{ asset("icons/form-manage.svg") }}" alt="manage user icon"></div>
-			</a>
-		</div>
-		<div class="actions">
-			<h2>Demander la validation du festival</h2>
-			{% if festival.getValid()==1 %}
-				<span>Le festival est déjà validé</span>
-			{% elseif hasPendingValidation %}
-				<span>Votre demande de validation est en cours de traitement, consulter vos demandes
-					<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{path('app_festival_validation', {'id': festival.getId()})}}">ici</a>
+    <section class='page-container	flex-column'>
+        <h1 class="page-title">Gestion du
+            {{ festival.getNom() }}</h1>
+        <h2>
+            Ce festival est
+            {% if festival.isOpen() %}ouvert aux postulations
+            {% else %}
+                {{ statut }}
+            {% endif %}
+        </h2>
+        <div class="manage-container">
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_planning', {'id': festival.getId()}) }}">
+                    <div><h2>Gestion du planning</h2>
+                        <p>Pour ajouter des plages horaires ou des créneaux</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/planning-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_postes', {'id': festival.getId()}) }}">
+                    <div><h2>Gestion des postes</h2>
+                        <p>Pour ajouter ou modifier les postes</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/assignment-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_postulations', {'id': festival.getId()}) }}">
+                    <div><h2>Gestion des postulations</h2>
+                        <p>Pour voir toutes les postulations du festival</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/postule-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_create_questionnaire', {'id': festival.getId()}) }}">
+                    <div>
+                        <h2>Gestion du formulaire bénévole</h2>
+                        <p>Pour voir, modifier ou supprimer toutes les questions du formulaire</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/form-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <div class="action-div">
+                    <div>
+                        <h2>Demander la validation du festival</h2>
+                        {% if festival.getValid()==1 %}
+                        <span>Le festival est déjà validé</span>
+                        {% elseif hasPendingValidation %}
+                        <span>Votre demande de validation est en cours de traitement, consulter vos demandes
+					<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;"
+                       href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
 				</span>
-			{% else %}
-				<form action="{{path('app_festival_validation', {'id': festival.getId()})}}" method="post">
-					<button name="" value="" class="gest_btn tooltip">Demander la validation</button>
-				</form>
-				{% if hasValidations %}
-					<span>consulter vos précédentes demandes
-						<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{path('app_festival_validation', {'id': festival.getId()})}}">ici</a>
+                        {% else %}
+                        <form action="{{ path('app_festival_validation', {'id': festival.getId()}) }}" method="post">
+                            <button name="" value="" class="gest_btn tooltip">Demander la validation</button>
+                        </form>
+                        {% if hasValidations %}
+                        <span>consulter vos précédentes demandes
+						<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;"
+                           href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
 					</span>
-				{% endif %}
-			{% endif %}
-		</div>
-		</div>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/checked-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+            <div class="actions">
+                <div class="action-div-reverse">
+                    <div class="background"><img class="img-size" src="{{ asset("icons/post-manage.svg") }}" alt="manage user icon"></div>
 
-		<div class="actions">
-			<h2>Ouvrir le festival au postulation</h2>
-			<p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce festival</p>
-			<p>Attention! cette action est définitive est irréversible, aucune modification du festival du formulaire de postulation et de poste ne sera autorisée</p>
-			{% if festival.getValid()!=1 %}
-				<span>Le festival n'est pas encore validé</span>
-			{% elseif festival.isOpen() %}
-				<span>Le festival est déjà ouvert</span>
-			{% else %}
-				<form action="{{path('app_festival_open', {'id': festival.getId()})}}" method="post">
-					<button name="" value="" class="gest_btn tooltip">Ouvrir</button>
-				</form>
-			{% endif %}
-		</div>
-		<div class="button-archive">
-			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">Archiver le festival</a>
-		</div>
-	</section>
+                    <div>
+                <h2>Ouvrir le festival au postulation</h2>
+                <p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce festival</p>
+                <p>Attention! cette action est définitive est irréversible, aucune modification du festival du
+                    formulaire de
+                    postulation et de poste ne sera autorisée</p>
+                    </div>
+
+                    {% if festival.getValid()!=1 %}
+                    <div>
+                        <span>Le festival n'est pas encore validé</span>
+                    </div>
+
+                {% elseif festival.isOpen() %}
+                    <div>
+                        <span>Le festival est déjà ouvert</span>
+                    </div>
+
+                {% else %}
+                    <div>
+                    <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
+                        <button name="" value="" class="gest_btn tooltip">Ouvrir</button>
+                    </form>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-archive">
+            <a class="a-archive" href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} >Archiver le festival</a>
+        </div>
+    </section>
 {% endblock %}
