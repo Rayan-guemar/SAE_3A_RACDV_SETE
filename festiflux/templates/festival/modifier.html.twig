@@ -1,15 +1,15 @@
 {% extends "base.html.twig" %}
-{% block title %}modifier votre festival{% endblock %}
+{% block title %}{{ 'title'|trans({},'modifyfest') }}{% endblock %}
 
 {% block body %}
 
     <div class="form-wrapper">
-        <h1>Modifier le festival</h1>
+        <h1>{{ 'title'|trans({},'modifyfest') }}</h1>
 
         {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
-        {{ form_row(form.nom, {'label': 'Nom du festival', 'attr': {'class': 'festival-form__input'}}) }}
-        {{ form_row(form.description, {'label': 'Description du festival', 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.nom, {'label': 'name'|trans({},'addfest'), 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.description, {'label': 'description'|trans({},'addfest'), 'attr': {'class': 'festival-form__input'}}) }}
 
         <div class="form-row">
             {{ form_widget(form.dateDebut, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'}}) }}
@@ -20,9 +20,9 @@
             {{ form_row(form.lat,{'attr':{'id':'lat'}}) }}
             {{ form_row(form.lon,{'attr':{'id':'lon'}}) }}
         </div>
-        {{ form_row(form.affiche, {'label': 'Choisissez une affiche', 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
+        {{ form_row(form.affiche, {'label': 'poster'|trans({},'addfest'), 'attr': {'class': 'festival-form__input', 'placeholder': 'Affiche du Festival'}}) }}
 
-        {{ form_widget(form.demanderModificationFestival, {'label': 'Modifier', 'attr': {'class': 'festival-form__checkbox'}}) }}
+        {{ form_widget(form.demanderModificationFestival, {'label': 'modify'|trans({},'modifyfest'), 'attr': {'class': 'festival-form__checkbox'}}) }}
 
         {{ form_end(form) }}
     </div>

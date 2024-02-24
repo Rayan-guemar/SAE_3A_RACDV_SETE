@@ -1,0 +1,7 @@
+title: "Follow-up of Volunteering Requests"
+date: 'Request date'
+status: 'Status'
+valid: 'Your request has been validated'
+pending: 'Your request is being processed'
+rejected: 'Your request has been rejected'
+motif: 'no specific reason specified'

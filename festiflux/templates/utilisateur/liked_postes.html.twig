@@ -1,16 +1,16 @@
 {% extends "base.html.twig" %}
-{% block title %}Liste des demandes
+{% block title %}{{ 'title'|trans('likejob') }}
 {% endblock %}
 {% block overhead %}
     <script src="{{ asset('js/addLikePost.js') }}" defer></script>
 {% endblock %}
 {% block body %}
-<h1>Liste des Postes</h1>
-<table>
+    <h1>{{ 'title'|trans('likejob') }}</h1>
+    <table>
     <thead>
     <tr>
-        <th>Nom</th>
-        <th>préférences</th>
+        <th>{{ 'nom'|trans('likejob') }}</th>
+        <th>{{ 'appreciation'|trans('likejob') }}</th>
     </tr>
     </thead>
     {% if postes|length() > 0 %}
@@ -21,13 +21,13 @@
         <td>{{ poste.nom }}</td>
         <td>
             <div class="wrapper">
-                <label for="yes_radio{{ poste.id }}" id="yes-lbl">j'aime pas</label><input type="radio" value="-1" name="choice_radio{{ poste.id }}" id="yes_radio{{ poste.id }}"
+                <label for="yes_radio{{ poste.id }}" id="yes-lbl">{{ 'hate'|trans('likejob') }}</label><input type="radio" value="-1" name="choice_radio{{ poste.id }}" id="yes_radio{{ poste.id }}"
                         {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==-1 %} checked="checked" {% endif %}    {% endfor %}
                 >
-                <label for="maybe_radio{{ poste.id }}" id="maybe-lbl">j'aime</label><input type="radio" value="0" name="choice_radio{{ poste.id }}" id="maybe_radio{{ poste.id }}"
+                <label for="maybe_radio{{ poste.id }}" id="maybe-lbl">{{ 'like'|trans('likejob') }}</label><input type="radio" value="0" name="choice_radio{{ poste.id }}" id="maybe_radio{{ poste.id }}"
                         {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==0 %} checked="checked" {% endif %}{% endfor %}
                 >
-                <label for="no_radio{{ poste.id }}" id="no-lbl">j'adore</label><input type="radio" value="1" name="choice_radio{{ poste.id }}" id="no_radio{{ poste.id }}"
+                <label for="no_radio{{ poste.id }}" id="no-lbl">{{ 'love'|trans('likejob') }}</label><input type="radio" value="1" name="choice_radio{{ poste.id }}" id="no_radio{{ poste.id }}"
                         {% for pref in preferences %}{% if pref.getPosteId()==poste and pref.getPreferencesDegree()==1 %} checked="checked" {% endif %}{% endfor %}
                 >
 

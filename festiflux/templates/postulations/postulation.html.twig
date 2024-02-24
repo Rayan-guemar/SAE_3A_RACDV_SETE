@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Postulation de
+	{{ 'title'|trans({},'postulation') }}
 	{{ postulation.utilisateur.nom }}
 	{{ postulation.utilisateur.prenom }}
 {% endblock %}
 
 {% block body %}
 	<div class="postulation-page">
-		<h1>Postulation de
+		<h1>	{{ 'title'|trans({},'postulation') }}
+
 			{{ postulation.utilisateur.nom }}
 			{{ postulation.utilisateur.prenom }}</h1>
 		<div>
@@ -18,23 +19,28 @@
 				</div>
 				<div class="user-details">
 					<div>
-						<strong>Email</strong>:
+						<strong>	{{ 'email'|trans({},'postulation') }}
+						</strong>:
 						{{ postulation.utilisateur.email }}
 					</div>
 					<div>
-						<strong>Nom</strong>:
+						<strong>	{{ 'surname'|trans({},'postulation') }}
+						</strong>:
 						{{ postulation.utilisateur.nom }}
 					</div>
 					<div>
-						<strong>Prénom</strong>:
+						<strong>	{{ 'name'|trans({},'postulation') }}
+						</strong>:
 						{{ postulation.utilisateur.prenom }}
 					</div>
 					<div>
-						<strong>Adresse</strong>:
+						<strong>	{{ 'address'|trans({},'postulation') }}
+						</strong>:
 						{{ postulation.utilisateur.adresse }}
 					</div>
 					<div>
-						<strong>Biographie</strong>:
+						<strong>	{{ 'bio'|trans({},'postulation') }}
+						</strong>:
 						{{ postulation.utilisateur.description }}
 					</div>
 				</div>
@@ -55,7 +61,7 @@
 								{% else %}
 									<input type="radio" disabled>
 								{% endif %}
-								<label>Oui</label>
+								<label>{{ 'yes'|trans({},'postulation') }}</label>
 							</div>
 							<div>
 								{% if reponse.contenue == "false" %}
@@ -63,7 +69,7 @@
 								{% else %}
 									<input type="radio" disabled>
 								{% endif %}
-								<label>Non</label>
+								<label>{{ 'no'|trans({},'postulation') }}</label>
 							</div>
 						</div>
 					{% else %}
@@ -74,24 +80,26 @@
 			{% if postulation.status == 0 %}
 				<div class="buttons-container">
 					<form action="{{path("app_postulations_accept", {id: postulation.getId()})}}" method="post">
-						<button class="accept" type="submit">Accepter</button>
+						<button class="accept" type="submit">	{{ 'accept'|trans({},'postulation') }}
+						</button>
 					</form>
 					<form action="{{path("app_postulations_refuse", {id: postulation.getId()})}}" method="get">
-						<button class="refuse" type="submit">Refuser</button>
+						<button class="refuse" type="submit">	{{ 'reject'|trans({},'postulation') }}
+						</button>
 					</form>
 				</div>
 			{% elseif postulation.status == 1 %}
 				<div class="status-container">
-					<p>status:
-						<span class="accepted">Accepté</span>
+					<p>{{ 'status'|trans({},'postulation') }}
+						<span class="accepted">{{ 'accept'|trans({},'postulation') }}</span>
 					</p>
 				</div>
 			{% else %}
 				<div class="status-container">
-					<p>Status:
-						<span class="refused">Refusé</span>
+					<p>{{ 'status'|trans({},'postulation') }}
+						<span class="refused">{{ 'reject'|trans({},'postulation') }}</span>
 					</p>
-					<p>Motif:
+					<p>{{ 'motif'|trans({},'postulation') }}
 						{{postulation.motif}}</p>
 				</div>
 			{% endif %}

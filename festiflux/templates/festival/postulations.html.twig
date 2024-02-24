@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Vos postulation
+	{{ 'title'|trans({}, 'mypostulation') }}
 {% endblock %}
 
 {% block body %}
-	<h1>Postulations pour
+	<h1>{{ 'h1'|trans({}, 'mypostulation') }}
 		{{festival.nom}}</h1>
 
 	{% if postulations is not empty %}
 		<table border="1">
 			<thead>
 				<tr>
-					<th>nom</th>
-					<th>prénom</th>
-					<th>date de la demande</th>
-					<th>consulter</th>
+					<th>{{ 'surname'|trans({}, 'mypostulation') }}</th>
+					<th>{{ 'name'|trans({}, 'mypostulation') }}</th>
+					<th>{{ 'date'|trans({}, 'mypostulation') }}</th>
+					<th>{{ 'status'|trans({}, 'mypostulation') }}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -32,7 +32,7 @@
 						</td>
 						<td>
 							<a href="{{path('app_postulations_postulation', {id: postulation.id})}}">
-								lien
+								{{ 'link'|trans({}, 'mypostulation') }}
 							</a>
 						</td>
 					</tr>
@@ -40,4 +40,4 @@
 			</tbody>
 		</tr>
 	{% endfor %}
-</tbody></table>{% else %}<p>Aucune postulations disponible.</p>{% endif %}{% endblock %}
+</tbody></table>{% else %}<p>{{ 'void'|trans({}, 'mypostulation') }}</p>{% endif %}{% endblock %}

@@ -1,0 +1,21 @@
+title: 'List of volunteer applications'
+you: 'you'
+have: 'have'
+resquest: 'application'
+resquests: 'applications'
+void: "don't have any applications"
+this: 'for this festival'
+surname: 'Last Name'
+name: 'First Name'
+mail: 'Email Address'
+response: 'Response'
+accept: 'Accept'
+reject: 'Reject'
+addmotif: 'Add a reason'
+writemotif: 'Write a reason...'
+modiftxt: "In the field below, add a reason to explain your choice to the candidate (if you don't modify, the default reason will be sent)"
+send: 'Send'
+titlevolunteer: 'List of volunteers'
+volunteer : 'volunteers'
+voidvol: "don't have any volunteers yet"
+resp: 'Manager'

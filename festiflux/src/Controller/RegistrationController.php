@@ -18,6 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Service\UtilisateurManagerInterface;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;

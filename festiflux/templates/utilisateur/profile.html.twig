@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Profil de
+	{{ 'title'|trans({},'profil') }}
 	{{utilisateur.nom}}
 	{{utilisateur.prenom}}
 {% endblock %}
@@ -10,7 +10,7 @@
 
 		<div class="profil-box">
 			<h1>
-				Profil de
+				{{ 'title'|trans({},'profil') }}
 				{{ utilisateur.nom }}
 				{{ utilisateur.prenom }}
 			</h1>
@@ -26,32 +26,37 @@
 			<div class="info-box">
 				<div class="info-row">
 					<div class="info-border">
-						<strong>Email</strong>
+						<strong>	{{ 'email'|trans({},'profil') }}
+						</strong>
 						:
 						{{ utilisateur.email }}
 
 				    </div>
 						<div class="info-name-surname">
 							<div class="info-border">
-								<strong>Nom</strong>
+								<strong>	{{ 'surname'|trans({},'profil') }}
+								</strong>
 								:
 								{{ utilisateur.nom }}
 							</div>
 
 							<div class="info-border">
-								<strong>Prénom</strong>
+								<strong>	{{ 'name'|trans({},'profil') }}
+								</strong>
 								:
 								{{ utilisateur.prenom }}
 							</div>		
 						</div>	
             <div class="info-border">
-					<strong>Adresse</strong>
+					<strong>	{{ 'address'|trans({},'profil') }}
+					</strong>
 					:
 					{{ utilisateur.adresse }}
 
 				</div>
 						<div class="info-border biographie">
-								<strong>Biographie</strong>
+								<strong>	{{ 'bio'|trans({},'profil') }}
+								</strong>
 								:
 								{{ utilisateur.description }}
 						</div>
@@ -60,7 +65,8 @@
 
 				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
 					<div class="edit-button">
-						Modifier mon profil
+						{{ 'button'|trans({},'profil') }}
+
 					</div>
 				</a>
 			</div>

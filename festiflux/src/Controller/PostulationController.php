@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class PostulationController extends AbstractController {
     #[Route('/festival/{id}/postulations', name: 'app_festival_postulations')]
     public function festivalPostulations(#[MapEntity] Festival $festival, PostulationsRepository $postulationRepository): Response {

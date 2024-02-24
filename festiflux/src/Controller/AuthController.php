@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class AuthController extends AbstractController {
 
 

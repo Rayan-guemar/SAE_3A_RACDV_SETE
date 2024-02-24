@@ -1,11 +1,11 @@
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}
-    Error 500
+    {{ 'title'|trans({},'500') }}
 {% endblock %}
 
 {% block body %}
-    <h1 class="error_title">Je ne vais pas bien en ce moment :( </h1>
-    <h1 class="error_title">Repassez plus tard svp</h1>
-    <p class="error_desc">Erreur 500- Erreur interne du serveur</p>
+    <h1 class="error_title">{{ 'h1'|trans({},'500') }}</h1>
+    <h1 class="error_title">{{ 'h2'|trans({},'500') }}</h1>
+    <p class="error_desc">{{ 'h3'|trans({},'500') }}</p>
 {% endblock %}

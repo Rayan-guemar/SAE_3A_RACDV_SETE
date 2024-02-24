@@ -1,0 +1,7 @@
+title: "Suivi des demandes de Postulation"
+date: 'Date de la demande'
+status: 'Statut'
+valid: 'Votre demande a été validée'
+pending: 'Votre demande est en cours de traitement'
+rejected: 'Votre demande a été rejetée'
+motif: 'pas de motif spécifié'

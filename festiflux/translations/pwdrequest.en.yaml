@@ -1,0 +1,5 @@
+title: 'Reset your password'
+h1 : 'Reset your password'
+div: 'Enter your email address and we will send you a link to reset your password.'
+btn: 'Send email'
+button: 'Reset'

@@ -17,6 +17,7 @@ use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class ValidationController extends AbstractController {
     #[Route('festival/{id}/validation', name: 'app_festival_validation')]
     public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {

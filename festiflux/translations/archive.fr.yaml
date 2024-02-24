@@ -1,0 +1,5 @@
+title: 'Archiver'
+h1: 'Attention, cette action sera irreversible. Si vous archivez {{ festival.getNom() }} vous et les autres utilisateurs ne pourrez plus le voir apparaitre mais les données seront conservées'
+cancel: 'Annuler'
+submit: 'Archiver'
+
