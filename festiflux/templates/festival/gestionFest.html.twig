@@ -16,25 +16,39 @@
 				{{ statut }}
 			{% endif %}
 		</h2>
+		<div class="manage-container">
 		<div class="actions">
-			<h2>Gestion du planning</h2>
-			<p>Pour ajouter des plages horaires ou des créneaux</p>
-			<a href="{{path('app_festival_planning', {'id': festival.getId()})}}" class="gest_btn">Gérer le planning</a>
+			<a class="action-div" href="{{path('app_festival_planning', {'id': festival.getId()})}}">
+			<div><h2>Gestion du planning</h2>
+				<p>Pour ajouter des plages horaires ou des créneaux</p>
+			</div>
+			<div class="background"><img class="img-size" src="{{ asset("icons/planning-manage.svg") }}" alt="manage user icon"></div>
+			</a>
 		</div>
 		<div class="actions">
-			<h2>Gestion des postes</h2>
-			<p>Pour ajouter ou modifier les postes</p>
-			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">Gérer les postes</a>
+			<a class="action-div" href="{{path('app_festival_postes', {'id': festival.getId()})}}">
+				<div><h2>Gestion des postes</h2>
+				<p>Pour ajouter ou modifier les postes</p>
+				</div>
+				<div class="background"><img class="img-size" src="{{ asset("icons/assignment-manage.svg") }}" alt="manage user icon"></div>
+			</a>
 		</div>
 		<div class="actions">
-			<h2>Gestion des postulations</h2>
-			<p>Pour voir toutes les postulations du festival</p>
-			<a href="{{path('app_festival_postulations', {'id': festival.getId()})}}" class="gest_btn">Voir les postulations</a>
+			<a class="action-div" href="{{path('app_festival_postulations', {'id': festival.getId()})}}">
+				<div><h2>Gestion des postulations</h2>
+					<p>Pour voir toutes les postulations du festival</p>
+				</div>
+				<div class="background"><img class="img-size" src="{{ asset("icons/postule-manage.svg") }}" alt="manage user icon"></div>
+			</a>
 		</div>
 		<div class="actions">
-			<h2>Gestion du formulaire bénévole</h2>
-			<p>Pour voir, modifier ou supprimer toutes les questions du formulaire</p>
-			<a href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}" class="gest_btn">formulaire bénévole</a>
+			<a class="action-div" href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}">
+				<div>
+					<h2>Gestion du formulaire bénévole</h2>
+					<p>Pour voir, modifier ou supprimer toutes les questions du formulaire</p>
+				</div>
+				<div class="background"><img class="img-size" src="{{ asset("icons/form-manage.svg") }}" alt="manage user icon"></div>
+			</a>
 		</div>
 		<div class="actions">
 			<h2>Demander la validation du festival</h2>
@@ -54,6 +68,7 @@
 					</span>
 				{% endif %}
 			{% endif %}
+		</div>
 		</div>
 
 		<div class="actions">
