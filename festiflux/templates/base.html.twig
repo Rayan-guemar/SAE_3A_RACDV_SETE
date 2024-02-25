@@ -46,14 +46,14 @@
 					</a>
 				</div>
 		</div>
-		<div class="badge-language">
+		<main style="position: relative;">
+			<div class="badge-language">
 				{% if app.request.locale == 'fr' %}
 					<a class="link_lang" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({_locale: 'en'})) }}"> {{ 'lang_en'|trans({}, 'base') }}</a>
 				{% elseif app.request.locale == 'en' %}
 					<a class="link_lang" href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({_locale: 'fr'})) }}"> {{ 'lang_fr'|trans({}, 'base') }}</a>
 				{% endif %}
-		</div>
-		<main style="position: relative;">
+			</div>
 			{% block body %}{% endblock %}
 		</main>
 		<footer style="display: none;">
