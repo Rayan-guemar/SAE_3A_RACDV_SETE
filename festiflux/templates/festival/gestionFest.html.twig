@@ -37,7 +37,7 @@
 			<a href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}" class="gest_btn">{{ 'subtitles.questionnaire.a'|trans({},'gestionfest')  }}</a>
 		</div>
 		<div class="actions">
-			<h2>{{ 'actions.demande_valid'|trans({}, 'gestionfest') }}</h2>
+			<h2>{{ 'actions.valid'|trans({}, 'gestionfest') }}</h2>
 			{% if festival.getValid()==1 %}
 				<span>{{ 'response.valid'|trans({}, 'gestionfest') }}</span>
 			{% elseif hasPendingValidation %}
@@ -46,7 +46,7 @@
 				</span>
 			{% else %}
 				<form action="{{path('app_festival_validation', {'id': festival.getId()})}}" method="post">
-					<button name="" value="" class="gest_btn tooltip">{{ 'actions.demande_valid'|trans({}, 'gestionfest') }}</button>
+					<button name="" value="" class="gest_btn tooltip">{{ 'actions.valid'|trans({}, 'gestionfest') }}</button>
 				</form>
 				{% if hasValidations %}
 					<span>

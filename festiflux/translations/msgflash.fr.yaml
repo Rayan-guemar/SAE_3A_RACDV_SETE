@@ -1,0 +1,85 @@
+festival:
+  success:
+    demande: 'Demande de festival acceptée'
+    volunRequestSent: 'Demande de bénévolat envoyée'
+    modified: 'Festival modifié'
+    open: 'Festival ouvert'
+
+  error:
+    notFound: 'Festival non trouvé'
+    notValid: 'Festival non valide'
+    alreadyOpen: 'Le festival est déjà ouvert'
+    upload: "Erreur lors de l'upload de l'affiche"
+    date: 'Les dates de votre festival ne sont pas conforme !'
+    demande: 'Erreur lors de la demande de festival'
+    suppression: 'Erreur lors de la suppression du festival'
+    modification: 'Erreur lors de la modification du festival'
+    validation: 'Erreur lors de la validation du festival'
+    refus: 'Erreur lors du refus du festival'
+    annulation: "Erreur lors de l'annulation"
+    archived: 'Ce festival est archivé'
+
+user:
+  success:
+    manager: 'Cet utilisateur est maintenant Responsable'
+    notManager: "Cet utilisateur n'est plus Responsable"
+    affect: 'Utilisateur affecté'
+  error:
+    noRequest: 'Aucune demande de bénévolat'
+    notFound: 'Utilisateur non trouvé'
+    notConnected: 'Vous devez être connecté pour effectuer cette action'
+    notVolunteer: "Cet utilisateur n'est pas bénévole"
+    alreadyMember: 'Vous êtes déjà membre de ce festival'
+    permissionDenied: "Vous n'avez pas les droits pour effectuer cette action"
+
+demande:
+  success:
+    demande: 'Demande de bénévolat acceptée'
+    demandeRefus: 'Demande de bénévolat refusée'
+  error:
+    notFound: 'Demande non trouvée'
+    demande: 'Erreur lors de la demande de bénévolat'
+    suppression: 'Erreur lors de la suppression de la demande'
+    validation: 'Erreur lors de la validation de la demande'
+    refus: 'Erreur lors du refus de la demande'
+    rejected: 'Vous avez déjà été refusé pour ce festival'
+
+poste:
+  success:
+    created: 'Poste créé'
+    modified: 'Poste modifié'
+    deleted: 'Poste supprimé'
+  error:
+    notFound: 'Poste non trouvé'
+
+tache:
+  success:
+    created: 'Tâche créée'
+    modified: 'Tâche modifiée'
+    deleted: 'Tâche supprimée'
+  error:
+    notFound: 'Tâche non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+date:
+  notValid: 'Date non valide'
+  begin: 'La date de début doit être antérieure à la date de fin'
+  end: 'La date de fin doit être postérieure à la date de début'
+
+data:
+  notValid: 'Données non valides'
+
+question:
+  success:
+    created: 'Question créée'
+    modified: 'Question modifiée'
+    deleted: 'Question supprimée'
+  error:
+    notFound: 'Question non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+motif:
+  success:
+    sent: 'Motif envoyé'
+  error:
+    void: 'Le motif ne peut pas être vide'
