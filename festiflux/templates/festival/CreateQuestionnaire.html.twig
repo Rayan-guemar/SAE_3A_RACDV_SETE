@@ -3,36 +3,47 @@
 
 {% block body %}
 
-    <div class="form-wrapper">
+    <div class="create-questionnaire">
         <h1>{{ 'title'|trans({},'volunteerform') }}</h1>
-        {% for question in questions %}
-        <div id="box-question">
-            <div class="info-border">{{ question.label }}</div>
-            {% if question.typeReponse=='string' %}
-            <div class="info-border">{{ 'txt'|trans({},'volunteerform') }}</div>
-            {% elseif question.typeReponse=='integer' %}
-            <div class="info-border">{{ 'num'|trans({},'volunteerform') }}</div>
-            {% elseif question.typeReponse=='email' %}
-                <div class="info-border">{{ 'mail'|trans({},'volunteerform') }}</div>
-            {% elseif question.typeReponse=='date' %}
-                <div class="info-border">{{ 'date'|trans({},'volunteerform') }}</div>
-            {% elseif question.typeReponse=='boolean' %}
-               <div class="info-border">{{ 'bool'|trans({},'volunteerform') }}</div>
-            {% endif %}
-            <a href="{{ path('app_festival_question_modify', {'id' : festival.getId(), 'idQuestion' : question.id}) }}">
-                <img src="{{ asset("icons/modify.svg") }}" alt="Modify icon">
-            </a>
-            <a href="{{ path('app_festival_question_delete', {'id' : festival.getId(), 'idQuestion' : question.id}) }}">
-                <img src="{{ asset("icons/delete.svg") }}" alt="Delete icon">
-            </a>
+
+        <div class="questions">
+            <h3>Questions :</h3>
+            {% for question in questions %}
+                <div class="box-question">
+                    <div>
+                        {{ question.label }}
+                        (
+                        {% if question.typeReponse=='string' %}
+                            {{ 'txt'|trans({},'volunteerform') }}
+                        {% elseif question.typeReponse=='integer' %}
+                            {{ 'num'|trans({},'volunteerform') }}
+                        {% elseif question.typeReponse=='email' %}
+                            {{ 'mail'|trans({},'volunteerform') }}
+                        {% elseif question.typeReponse=='date' %}
+                            {{ 'date'|trans({},'volunteerform') }}
+                        {% elseif question.typeReponse=='boolean' %}
+                            {{ 'bool'|trans({},'volunteerform') }}
+                        {% endif %}
+                        )
+                    </div>
+
+                    <div class="btns">
+                        <a href="{{ path('app_festival_question_modify', {'id' : festival.getId(), 'idQuestion' : question.id}) }}">
+                            <img src="{{ asset("icons/modify.svg") }}" alt="Modify icon">
+                        </a>
+                        <a href="{{ path('app_festival_question_delete', {'id' : festival.getId(), 'idQuestion' : question.id}) }}">
+                            <img src="{{ asset("icons/delete.svg") }}" alt="Delete icon">
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
 
-        {% endfor %}
         {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
-        {{ form_row(form.label, {'label': 'votre Question', 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.label, {'label': 'Votre question', 'attr': {'class': 'festival-form__input'}}) }}
 
-        {{ form_row(form.typeReponse, {'label': 'Type de reponse', 'attr': {'class': 'select'}}) }}
+        {{ form_row(form.typeReponse, {'label': 'Type de reponse'}) }}
 
         {{ form_widget(form.addQuestion, {'label': 'Ajouter', 'attr': {'class': 'festival-form__checkbox'}}) }}
 
