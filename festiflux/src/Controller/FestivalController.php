@@ -389,6 +389,32 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    #[Route('/festival/{id}/plages', name: 'app_festival_plages')]
+    public function plagesHoraire(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+        $festival = $repository->find($id);
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/plages.html.twig', [
+            'controller_name' => 'FestivalController',
+            'festival' => $festival,
+            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'userId' => $u->getId(),
+        ]);
+    }
+
     #[Route('/festival/{id}/postes', name: 'app_festival_postes')]
     public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
