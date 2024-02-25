@@ -5,6 +5,14 @@ for (let div of divs) {
     const pen = div.querySelector('.pen')
     const input = div.querySelector('input')
     pen.addEventListener('click', () => {
+        const image = pen.querySelector('.pen-img')
+        if (image.attributes.src.value === "/icons/pen-black.svg") {
+            image.attributes.src.value = "/icons/pen-green.svg"
+        }
+        else {
+            image.attributes.src.value = "/icons/pen-black.svg"
+        }
+
         if (input.disabled) {
             input.classList.add('edit-hover')
             pen.classList.add('pen-hover')
