@@ -59,63 +59,64 @@
                     <div>
                         <h2>Demander la validation du festival</h2>
                         {% if festival.getValid()==1 %}
-                        <span>Le festival est déjà validé</span>
+                            <span>Le festival est déjà validé</span>
                         {% elseif hasPendingValidation %}
-                        <span>Votre demande de validation est en cours de traitement, consulter vos demandes
-					<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;"
-                       href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
-				</span>
+                            <span>Votre demande de validation est en cours de traitement, consulter vos demandes
+					            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
+				            </span>
                         {% else %}
-                        <form action="{{ path('app_festival_validation', {'id': festival.getId()}) }}" method="post">
-                            <button name="" value="" class="gest_btn tooltip">Demander la validation</button>
-                        </form>
+                            <form action="{{ path('app_festival_validation', {'id': festival.getId()}) }}"
+                                  method="post">
+                                <button name="" value="" class="gest_btn tooltip">Demander la validation</button>
+                            </form>
+                        {% endif %}
                         {% if hasValidations %}
                         <span>consulter vos précédentes demandes
-						<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;"
-                           href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
-					</span>
+                            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
+                        </span>
+                        {% endif %}
                     </div>
                     <div class="background"><img class="img-size" src="{{ asset("icons/checked-manage.svg") }}"
                                                  alt="manage user icon"></div>
                 </div>
-                {% endif %}
-                {% endif %}
             </div>
             <div class="actions">
                 <div class="action-div-reverse">
-                    <div class="background"><img class="img-size" src="{{ asset("icons/post-manage.svg") }}" alt="manage user icon"></div>
-
+                    <div class="background"><img class="img-size" src="{{ asset("icons/post-manage.svg") }}"
+                                                 alt="manage user icon"></div>
                     <div>
-                <h2>Ouvrir le festival au postulation</h2>
-                <p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce festival</p>
-                <p>Attention! cette action est définitive est irréversible, aucune modification du festival du
-                    formulaire de
-                    postulation et de poste ne sera autorisée</p>
+                        <h2>Ouvrir le festival au postulation</h2>
+                        <p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce
+                            festival</p>
+                        <p>Attention! cette action est définitive est irréversible, aucune modification du festival du
+                            formulaire de
+                            postulation et de poste ne sera autorisée</p>
                     </div>
 
                     {% if festival.getValid()!=1 %}
-                    <div>
-                        <span>Le festival n'est pas encore validé</span>
-                    </div>
+                        <div>
+                            <span>Le festival n'est pas encore validé</span>
+                        </div>
 
-                {% elseif festival.isOpen() %}
-                    <div>
-                        <span>Le festival est déjà ouvert</span>
-                    </div>
+                    {% elseif festival.isOpen() %}
+                        <div>
+                            <span>Le festival est déjà ouvert</span>
+                        </div>
 
-                {% else %}
-                    <div>
-                    <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
-                        <button name="" value="" class="gest_btn tooltip">Ouvrir</button>
-                    </form>
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <div>
+                            <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
+                                <button name="" value="" class="gest_btn tooltip">Ouvrir</button>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <div class="btn-archive">
-            <a class="a-archive" href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} >Archiver le festival</a>
+            <a class="a-archive" href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }}>Archiver le
+                festival</a>
         </div>
     </section>
 {% endblock %}
