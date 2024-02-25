@@ -334,6 +334,7 @@ class FestivalController extends AbstractController {
                 'nom' => $festival->getNom(),
                 'latitude' => $festival->getLat(),
                 'longitude' => $festival->getLon(),
+                'open' => $festival->isOpen()
             ];
         }
         return new JsonResponse($tab, 200);
