@@ -78,11 +78,12 @@
 					}%}
 				{% endfor %}
 			{% else %}
-				<p>Aucun moyen de contact n'a été ajouté.</p>
+				<p>	{{ 'void'|trans({},'profil') }}
+				</p>
 			{% endif %}
 				<a class="manage-contact-button" href={{path("app_user_contacts")}}>
 					<span>
-						Gérer mes contacts
+							{{ 'managecontact'|trans({},'profil') }}
 					</span>
 				</a>
 		</div>

@@ -6,3 +6,5 @@ address: 'Adresse'
 bio: 'Biographie'
 button: 'Modifier votre profil'
 pp: 'Photo de profil'
+void: "Aucun moyen de contact n'a été ajouté."
+managecontact: "Gérer mes moyens de contact"

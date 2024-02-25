@@ -6,3 +6,5 @@ address: 'Address'
 bio: 'Biography'
 button: 'Edit your profile'
 pp: 'Profile picture'
+void: "No contact method has been added."
+managecontact: "Manage my contact methods"
