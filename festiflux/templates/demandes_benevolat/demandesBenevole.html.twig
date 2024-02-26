@@ -10,7 +10,7 @@
     <input type="hidden" id="id_festival" value={{ idFest }}>
 
     <!-- tochange -->
-    <h1 style="margin-top: 100px;">Liste des postulations de bénévoles</h1>
+    <h1 style="margin-top: 100px;"> {{ 'title'|trans({},'demandesBenevole') }}</h1>
     <h2>{{ 'you'|trans({},'demandesBenevole') }} {% if  demandes|length() == 1 %}  {{ 'have'|trans({},'demandesBenevole') }} {{ demandes|length() }} {{ 'request'|trans({},'demandesBenevole') }}
         {% elseif demandes|length() > 1 %} {{ 'have'|trans({},'demandesBenevole') }} {{ demandes|length() }} {{ 'requests'|trans({},'demandesBenevole') }}
         {% else %} {{ 'void'|trans({},'demandesBenevole') }} {% endif %}

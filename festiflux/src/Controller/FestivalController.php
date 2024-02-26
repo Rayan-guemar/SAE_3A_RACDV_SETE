@@ -55,11 +55,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('{_locale<%app.supported_locales%>}')]
 class FestivalController extends AbstractController {
+    /**
+     * pour afficher les festivals
+     */
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
         return $this->redirectToRoute('app_festival_all');
     }
 
+    /**
+     * pour afficher les festivals sur la page d'acceuil
+     */
     #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository, TagRepository $tagRepository, Request $request, FlashMessageService $flashMessageService, PaginatorInterface $paginator): Response {
         $searchData = new SearchData();
@@ -113,6 +119,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour ajouter un festival
+     */
     #[Route('/festival/add', name: 'app_festival_add', methods: ['GET', 'POST'])]
     public function add(TagRepository $tagRepository, Request $req, EntityManagerInterface $em, SluggerInterface $slugger, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
         $festivals = new Festival();
@@ -176,7 +185,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-
+    /**
+     * pour postuler à un festival {id}
+     */
     #[Route('/festival/{id}/apply', name: 'app_festival_apply_volunteer')]
     public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, TranslatorInterface $translator, ErrorService $errorService, MailerInterface $mailer): Response {
 
@@ -225,6 +236,9 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
 
+    /**
+     * pour ajouter un responsable à un festival
+     */
     #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true])]
     public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService, TranslatorInterface $translator): Response {
 
@@ -260,6 +274,9 @@ class FestivalController extends AbstractController {
         }
     }
 
+    /**
+     * pour retirer un responsable à un festival
+     */
     #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true])]
     public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService, TranslatorInterface $translator): Response {
 
@@ -295,6 +312,9 @@ class FestivalController extends AbstractController {
         }
     }
 
+    /**
+     * pour afficher les détails d'un festival
+     */
     #[Route('/festival/{id}', name: 'app_festival_detail', options: ["expose" => true])]
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
@@ -328,6 +348,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour les maps
+     */
     #[Route('/festival/all/coordinate', name: 'app_all_festival', methods: ['GET'], options: ['expose' => true])]
     public function allCoordinatesFest(FestivalRepository $repository): JsonResponse {
         $festivals = $repository->findAll();
@@ -343,6 +366,9 @@ class FestivalController extends AbstractController {
         return new JsonResponse($tab, 200);
     }
 
+    /**
+     * pour afficher les demandes de bénévolat d'un festival {id}
+     */
     #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
     public function showDemandes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
@@ -367,6 +393,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher le planning d'un festival {id}
+     */
     #[Route('/festival/{id}/planning', name: 'app_festival_planning')]
     public function planning(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
@@ -393,6 +422,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher les postes d'un festival {id}
+     */
     #[Route('/festival/{id}/postes', name: 'app_festival_postes')]
     public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
@@ -419,6 +451,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour accepter une demande de bénévolat d'un user dans un festival
+     */
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
     public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository, TranslatorInterface $translator): Response {
 

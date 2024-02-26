@@ -4,11 +4,16 @@ festival:
     volunRequestSent: 'Demande de bénévolat envoyée'
     modified: 'Festival modifié'
     open: 'Festival ouvert'
+    validationSent: 'Demande de validation envoyée'
+    validationAccepted: 'Festival validé'
+    validationRefused: 'Festival refusé'
 
   error:
     notFound: 'Festival non trouvé'
     notValid: 'Festival non valide'
     alreadyOpen: 'Le festival est déjà ouvert'
+    alreadyValid: 'Le festival est déjà validé'
+    pending: 'Le festival est en attente de validation'
     upload: "Erreur lors de l'upload de l'affiche"
     date: 'Les dates de votre festival ne sont pas conforme !'
     demande: 'Erreur lors de la demande de festival'
@@ -24,6 +29,7 @@ user:
     manager: 'Cet utilisateur est maintenant Responsable'
     notManager: "Cet utilisateur n'est plus Responsable"
     affect: 'Utilisateur affecté'
+    modified: 'Utilisateur modifié'
   error:
     noRequest: 'Aucune demande de bénévolat'
     notFound: 'Utilisateur non trouvé'
@@ -37,6 +43,7 @@ demande:
     demande: 'Demande de bénévolat acceptée'
     demandeRefus: 'Demande de bénévolat refusée'
   error:
+    notPending: 'Aucune demande en attente'
     notFound: 'Demande non trouvée'
     demande: 'Erreur lors de la demande de bénévolat'
     suppression: 'Erreur lors de la suppression de la demande'
@@ -83,3 +90,58 @@ motif:
     sent: 'Motif envoyé'
   error:
     void: 'Le motif ne peut pas être vide'
+
+field:
+  success:
+    created: 'Champ créé'
+    modified: 'Champ modifié'
+    deleted: 'Champ supprimé'
+  error:
+    notComplete: "Veillez à bien remplir tous les champs"
+    notFound: "Champ non trouvé"
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+contact:
+  success:
+    add: 'Contact ajouté'
+    created: 'Contact créé'
+    modified: 'Contact modifié'
+    deleted: 'Contact supprimé'
+  error:
+    notFound: 'Contact non trouvé'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+    notComplete: "Veillez à bien remplir tous les champs"
+
+postulation:
+  success:
+    created: 'Postulation créée'
+    modified: 'Postulation modifiée'
+    deleted: 'Postulation supprimée'
+    accepted: 'Postulation acceptée'
+    isVolunteer: 'est maintenant bénévole'
+    refused: 'Postulation refusée'
+  error:
+    alreadyTraited: 'Postulation déjà traitée'
+    alreadyApplied: 'Vous avez déjà postulé à ce festival'
+    yours: 'Vous ne pouvez pas postuler à votre propre festival'
+    notFound: 'Postulation non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+email:
+  confirm: 'Veuillez confirmer votre adresse mail'
+  verified: 'Adresse mail vérifiée'
+
+rein:
+  req: 'Demande de réinitialisation'
+
+fav:
+    success:
+        add: 'Préference ajouté'
+        deleted: 'Préference supprimé'
+    error:
+        notFound: 'Préference non trouvé'
+        already: 'Préference déjà créé'
+        notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+hours:
+  notValid: 'Heure non valide'
