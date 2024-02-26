@@ -100,6 +100,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Contact::class, orphanRemoval: true)]
     private Collection $contacts;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Skills::class)]
+    private Collection $skills;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
@@ -112,6 +115,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->postulations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->skills = new ArrayCollection();
     }
 
     /**
@@ -526,6 +530,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($contact->getUtilisateur() === $this) {
                 $contact->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skills>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skills $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skills $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            // set the owning side to null (unless already changed)
+            if ($skill->getUser() === $this) {
+                $skill->setUser(null);
             }
         }
 
