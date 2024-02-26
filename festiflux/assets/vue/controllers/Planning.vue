@@ -308,7 +308,7 @@ console.log(props.isOrgaOrResp);
       </div>
     </div>
     <div class="days" ref="daysDiv">
-      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => startCreatingTache(e, day) } : {}">
+      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => {console.log('coucou'); startCreatingTache(e, day)} } : {}">
         <div class="day">
           <div class="heading">
             {{
@@ -350,6 +350,7 @@ console.log(props.isOrgaOrResp);
             "
           />
           <div
+            @mousedown="() => console.log('test')"
             v-if="creatingTache && day.getDay() === newTacheStart.getDay()" 
             class="task new-task"
             :style="{
