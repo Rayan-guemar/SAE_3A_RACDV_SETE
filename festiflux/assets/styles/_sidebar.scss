@@ -1,319 +1,213 @@
-@import "_variables";
-
 .sidebar {
-    color: #000000;
-    height: 100vh;
-    width: 300px;
+  color: #000000;
+  height: 100vh;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  .sidebar__content {
+    height: 80%;
+    width: 100%;
+    border-right: $grey-secondary solid 1px;
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    align-items: center;
+    gap: 100px;
 
-    .sidebar__content {
-        height: 80%;
-        width: 100%;
-        border-right: $grey-primary-2 solid 1px;
+    ul {
+      margin-top: 20px;
+      font-weight: 600;
+
+      li {
+        margin-top: 10px;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 100px;
-
-        ul {
-            margin-top: 20px;
-            font-weight: 600;
-
-            li {
-                margin-top: 10px;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-        }
+        gap: 5px;
+      }
     }
+  }
 }
 
+.sidebar__title {
+  h1 {
+    color: black;
+    font-size: 36px;
+    font-weight: 500;
+  }
 
-.header_menu {
+  div {
+    color: $blue-primary;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  @media (max-width: 1250px) {
     display: none;
-
-    @media (max-width: 1250px) {
-        display: block;
-        // flex-direction: row;
-        // margin-top: 20px;
-    }
-}
-
-
-.sidebar__title {
-    @media (max-width: 1250px) {
-        /*  position: absolute;
-        left: 40%;
-        z-index: 1;*/
-        display: none;
-    }
-}
-
-body {
-    @media (max-width: 1250px) {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-/*
-main {
-    @media (max-width: 1250px) {
-        height: 70vh;
-        margin-top: 30vh;
-    }
-}
-*/
-#menuToggle input:checked~.main {
-    filter: blur(4px);
-}
-
-
-/*
-         * Made by Erik Terwan
-         * 24th of November 2015
-         * MIT License
-         *
-         *
-         * If you are thinking of using this in
-         * production code, beware of the browser
-         * prefixes.
-         */
-
-
-#menuToggle {
-    position: fixed;
-    top: 30px;
-    left: 20px;
-    background: white;
-    z-index: 1;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-#menuToggle a {
-    text-decoration: none;
-    color: #232323;
-
-    transition: color 0.3s ease;
-}
-
-#menuToggle a:hover {
-    color: $blue-primary ;
-}
-
-
-#menuToggle input {
-    display: block;
-    width: 40px;
-    height: 32px;
-    position: absolute;
-    top: -7px;
-    left: -5px;
-
-    cursor: pointer;
-
-    opacity: 0;
-    /* hide this */
-    z-index: 2;
-    /* and place it over the hamburger */
-
-    -webkit-touch-callout: none;
-}
-
-/*
-         * Just a quick hamburger
-         */
-#menuToggle span {
-    display: block;
-    width: 33px;
-    height: 4px;
-    margin-bottom: 5px;
-    position: relative;
-
-    background: #cdcdcd;
-    border-radius: 3px;
-
-    z-index: 1;
-
-    transform-origin: 4px 0px;
-
-    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
-        background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
-        opacity 0.55s ease;
-}
-
-#menuToggle span:first-child {
-    transform-origin: 0% 0%;
-}
-
-#menuToggle span:nth-last-child(2) {
-    transform-origin: 0% 100%;
-}
-
-/*
-         * Transform all the slices of hamburger
-         * into a crossmark.
-         */
-#menuToggle input:checked~span {
-    opacity: 1;
-    transform: rotate(45deg) translate(-2px, -1px);
-    background: #232323;
-}
-
-/*
-         * But let's hide the middle one.
-         */
-#menuToggle input:checked~span:nth-last-child(3) {
-    opacity: 0;
-    transform: rotate(0deg) scale(0.2, 0.2);
-}
-
-/*
-         * Ohyeah and the last one should go the other direction
-         */
-#menuToggle input:checked~span:nth-last-child(2) {
-    transform: rotate(-45deg) translate(0, -1px);
-}
-
-
-
-/*
-         * And let's slide it in from the left
-         */
-#menuToggle input:checked~.sidebar_mobile {
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color: white;
-
-    display: flex;
-
-    .sidebar__header {
-        display: none;
-    }
-
-    .sidebar__actions {
-        //position: absolute;
-        //width: 300px;
-        margin: -30px 0px 0px 200px;
-        //padding: 50px;
-        //padding-top: 125px;
-        //
-        //background: #333333;
-        //
-        //list-style-type: none;
-        //-webkit-font-smoothing: antialiased;
-        ///* to stop flickering of text in safari */
-
-        transform-origin: 0% 0%;
-        transform: translate(-100%, 0);
-
-        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
-    }
-}
-
-
-
-
-@media (max-width: 1250px) {
-    .sidebar_desktop {
-        display: none;
-    }
-
-    .sidebar_mobile {
-        display: none;
-    }
-
-}
-
-.sidebar {
-    height: 100vh;
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-
-    .sidebar__content {
-        height: 80%;
-        width: 100%;
-        border-right: $grey-primary-2 solid 1px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 100px;
-
-        ul {
-            margin-top: 20px;
-            font-weight: 600;
-
-            li {
-                margin-top: 10px;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-        }
-    }
-}
-
-.sidebar__title {
-
-    h1 {
-        color: black;
-        font-size: 36px;
-        font-weight: 500;
-    }
-
-    div {
-        color: $blue-primary;
-        font-size: 16px;
-        font-weight: bold;
-    }
+  }
 }
 
 .sidebar__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+
+  h3 {
+    color: $grey-primary;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .sidebar__actions__menu {
+    li {
+      position: relative;
+    }
+  }
+}
+
+.header_menu {
+  display: none;
+
+  @media (max-width: 1250px) {
+    display: block;
+  }
+}
+
+body {
+  @media (max-width: 1250px) {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+  }
+}
 
-    h3 {
-        color: $grey-primary;
-        font-size: 20px;
-        font-weight: bold;
-    }
+#menuToggle input:checked ~ .main {
+  filter: blur(4px);
+}
 
-    .sidebar__actions__menu {
+#menuToggle {
+  position: fixed;
+  top: 30px;
+  left: 20px;
+  background: white;
+  z-index: 1;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-        li {
-            position: relative;
-        }
-    }
+#menuToggle a {
+  text-decoration: none;
+  color: #232323;
 
+  transition: color 0.3s ease;
+}
+
+#menuToggle a:hover {
+  color: $blue-primary;
+}
+
+#menuToggle input {
+  display: block;
+  width: 40px;
+  height: 32px;
+  position: absolute;
+  top: -7px;
+  left: -5px;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 2;
+  -webkit-touch-callout: none;
+}
+
+#menuToggle span {
+  display: block;
+  width: 33px;
+  height: 4px;
+  margin-bottom: 5px;
+  position: relative;
+
+  background: #cdcdcd;
+  border-radius: 3px;
+
+  z-index: 1;
+
+  transform-origin: 4px 0px;
+
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+    background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
+}
+
+#menuToggle span:first-child {
+  transform-origin: 0% 0%;
+}
+
+#menuToggle span:nth-last-child(2) {
+  transform-origin: 0% 100%;
+}
+
+#menuToggle input:checked ~ span {
+  opacity: 1;
+  transform: rotate(45deg) translate(-2px, -1px);
+  background: #232323;
+}
+
+#menuToggle input:checked ~ span:nth-last-child(3) {
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+
+#menuToggle input:checked ~ span:nth-last-child(2) {
+  transform: rotate(-45deg) translate(0, -1px);
+}
+
+#menuToggle input:checked ~ .sidebar_mobile {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: white;
+
+  display: flex;
+
+  .sidebar__header {
+    display: none;
+  }
+
+  .sidebar__actions {
+    margin: -30px 0px 0px 200px;
+
+    transform-origin: 0% 0%;
+    transform: translate(-100%, 0);
+
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
+  }
+}
+
+@media (max-width: 1250px) {
+  .sidebar_desktop {
+    display: none;
+  }
+
+  .sidebar_mobile {
+    display: none;
+  }
 }
 
 .menu-button .bar {
-    width: 25px;
-    height: 3px;
-    background-color: #333;
-    margin: 6px 0;
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  margin: 6px 0;
 }
 
-
-
 .notif {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-    background-color: rgb(255, 85, 85);
-    border-radius: 50%;
-    font-size: 12px;
-    position: absolute;
-    top: -5px;
-    left: -10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(255, 85, 85);
+  border-radius: 50%;
+  font-size: 12px;
+  position: absolute;
+  top: -5px;
+  left: -10px;
 }
