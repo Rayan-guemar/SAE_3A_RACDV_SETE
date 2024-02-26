@@ -7,18 +7,18 @@
 {% block body %}
     <h1>Compétences de {{ utilisateur.nom }} {{ utilisateur.prenom }}</h1>
 
-    <!-- Affichage des moyens de contact sous forme de cartes -->
+    <!-- Affichage des compétences sous forme de cartes -->
     <div class="contact-section">
         {% if skills is not empty %}        
             {% for skill in skills %}
             <div>
                 {% include 'skills/skill.html.twig' with {
                     skill: {
-                        name: skill.name ,
-                        level: skill.level ,
+                        name: skill.name,
+                        level: skill.getLevelName()
                     }
                 }%}
-                <form type="submit" method="GET" action="{{path('app_user_contacts_delete', {id: contact.getId()})}}"  >
+                <form type="submit" method="GET" action="{{path('app_user_skills_delete', {id: skill.getId()})}}"  >
                     <button class="delete-btn"><img src="{{asset("/img/contacts/trash.png")}}" alt=""></button>
                 </form>
             </div>
@@ -29,23 +29,20 @@
     </div>
 
 
-
-
-
-    <!-- Formulaire pour ajouter un nouveau moyen de contact -->
+    <!-- Formulaire pour ajouter une nouvelle compétence -->
     <div class="add-contact-form">
-        <h2>Ajouter un moyen de contact</h2>
-        <form action="{{path('app_user_contacts_add')}}" method="post">
-            <label for="type">Type de contact :</label>
-            <select id="type" name="type">
+        <h2>Ajouter une compétence</h2>
+        <form action="{{path('app_user_skills_add')}}" method="post">
+            <label for="level">Niveau de la compétence :</label>
+            <select id="type" name="level">
                 <!-- Ajoutez d'autres options si nécessaire -->
-                {% for typeContact in typeContacts %}
-                    <option value="{{ typeContact.name }}">{{ typeContact.label }}</option>
-                {% endfor %}
+                <option value="0">Débutant</option>
+                <option value="1">Avancé</option>
+                <option value="2">Expert</option>
             </select>
 
-            <label for="value">Valeur :</label>
-            <input type="text" id="value" name="value" placeholder="Entrez...">
+            <label for="name">Compétence :</label>
+            <input type="text" id="value" name="name" placeholder="Exemple : Chant...">
 
             <button type="submit">Ajouter</button>
         </form>

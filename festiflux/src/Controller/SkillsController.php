@@ -35,7 +35,7 @@ class SkillsController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('contacts/contacts.html.twig', [
+        return $this->render('skills/index.html.twig', [
             'controller_name' => 'UtilisateurController',
             'utilisateur' => $u,
             'skills' => $u->getSkills(),
@@ -51,17 +51,17 @@ class SkillsController extends AbstractController
             return $this->redirectToRoute('home');
         }
         
-        $value = $req->request->get('value');
+        $name = $req->request->get('name');
         $level = $req->request->get('level');
 
-        if (!$value || !$level) {
+        if (!$name || !$level) {
             $this->flashMessageService->add(FlashMessageType::ERROR, "Veuillez remplir tous les champs");
             return $this->redirectToRoute('app_user_skills');
         }
         
         $skill = new Skills();
         $skill->setUser($u);
-        $skill->setName($value);
+        $skill->setName($name);
         $skill->setLevel($level);
 
         $this->em->persist($skill);
@@ -72,8 +72,8 @@ class SkillsController extends AbstractController
     }
 
 
-    #[Route('/user/skills/{id}/delete', name: 'app_user_contacts_delete', methods: ['GET'])]
-    public function contactsDelete(#[MapEntity] Skills $skill): Response {
+    #[Route('/user/skills/{id}/delete', name: 'app_user_skills_delete', methods: ['GET'])]
+    public function skillsDelete(#[MapEntity] Skills $skill): Response {
         $u = $this->getUser();
         
         if (!$u instanceof Utilisateur) {
@@ -89,7 +89,7 @@ class SkillsController extends AbstractController
         $this->em->remove($skill);
         $this->em->flush();
 
-        $this->flashMessageService->add(FlashMessageType::SUCCESS, "Contact supprimé avec succès");
+        $this->flashMessageService->add(FlashMessageType::SUCCESS, "Compétence supprimé avec succès");
         return $this->redirectToRoute('app_user_skills');
     }
 }
