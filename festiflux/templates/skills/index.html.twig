@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Compétences de {{ utilisateur.nom }} {{ utilisateur.prenom }}
+{% endblock %}
+
+{% block body %}
+    <h1>Compétences de {{ utilisateur.nom }} {{ utilisateur.prenom }}</h1>
+
+    <!-- Affichage des moyens de contact sous forme de cartes -->
+    <div class="contact-section">
+        {% if skills is not empty %}        
+            {% for skill in skills %}
+            <div>
+                {% include 'skills/skill.html.twig' with {
+                    skill: {
+                        name: skill.name ,
+                        level: skill.level ,
+                    }
+                }%}
+                <form type="submit" method="GET" action="{{path('app_user_contacts_delete', {id: contact.getId()})}}"  >
+                    <button class="delete-btn"><img src="{{asset("/img/contacts/trash.png")}}" alt=""></button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucun moyen de contact n'a été ajouté.</p>
+        {% endif %}
+    </div>
+
+
+
+
+
+    <!-- Formulaire pour ajouter un nouveau moyen de contact -->
+    <div class="add-contact-form">
+        <h2>Ajouter un moyen de contact</h2>
+        <form action="{{path('app_user_contacts_add')}}" method="post">
+            <label for="type">Type de contact :</label>
+            <select id="type" name="type">
+                <!-- Ajoutez d'autres options si nécessaire -->
+                {% for typeContact in typeContacts %}
+                    <option value="{{ typeContact.name }}">{{ typeContact.label }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="value">Valeur :</label>
+            <input type="text" id="value" name="value" placeholder="Entrez...">
+
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
+{% endblock %}

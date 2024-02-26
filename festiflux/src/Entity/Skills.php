@@ -8,6 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SkillsRepository::class)]
 class Skills
 {
+
+    public const LEVEL_BEGINNER = 0;
+    public const LEVEL_ADVANCED = 1;
+    public const LEVEL_EXPERT = 2;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -62,5 +67,15 @@ class Skills
         $this->level = $level;
 
         return $this;
+    }
+
+    public function getLevelName(): string
+    {
+        return match ($this->level) {
+            self::LEVEL_BEGINNER => "Débutant",
+            self::LEVEL_ADVANCED => "Avancé",
+            self::LEVEL_EXPERT => "Expert",
+            default => "Inconnu",
+        };
     }
 }
