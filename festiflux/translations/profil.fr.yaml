@@ -8,3 +8,5 @@ button: 'Modifier votre profil'
 pp: 'Photo de profil'
 void: "Aucun moyen de contact n'a été ajouté."
 managecontact: "Gérer mes moyens de contact"
+competanceVoid: "Aucune compétence n'a été ajoutée."
+managecompetance: "Gérer mes compétences"
