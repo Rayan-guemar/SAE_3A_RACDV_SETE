@@ -160,18 +160,15 @@ class UtilisateurController extends AbstractController {
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
-
-
         $form = $this->createForm(ModifierProfilType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $photoProfil = $form["fichierPhotoProfil"]->getData();
             $utilisateurManager->processNewUtilisateur($utilisateur, $photoProfil);
             $em->flush();
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
-            return $this->redirectToRoute('app_user_profile', ['id' => $utilisateur->getId()]);
+            return $this->redirectToRoute('app_profile_edit', ['id' => $utilisateur->getId()]);
         }
 
         return $this->render('utilisateur/modifierProfil.html.twig', [

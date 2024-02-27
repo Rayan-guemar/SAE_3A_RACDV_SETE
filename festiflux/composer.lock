@@ -1079,6 +1079,7 @@
         },
         {
             "name": "doctrine/orm",
+
             "version": "2.18.1",
             "source": {
                 "type": "git",
@@ -9128,6 +9129,7 @@
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
                 "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.17"
+
             },
             "funding": [
                 {
