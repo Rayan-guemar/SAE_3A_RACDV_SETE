@@ -7,6 +7,7 @@
 
     h3 {
         margin: 1rem 0;
+        position: relative;
     }
 
 }
@@ -20,19 +21,21 @@
 
     &--img {
         padding: 0.5rem;
-    }
-
-    img {
+        
+        img {
 
         width: 17rem;
         height: 17rem;
+        }
     }
+
+    
 }
 
 .public-profile__main {
     display: flex;
     flex-direction: column;
-    flex: 3;
+    flex: 3; 
 
     &--header {
         display: flex;
@@ -53,10 +56,7 @@
        
         border-bottom: 1px solid $grey-primary;
 
-        .settings-ico {
-            width: 2rem;
-            height: 2rem;
-        }
+        
  
     }
 
@@ -104,3 +104,11 @@
 
 
 }
+
+
+.settings-ico {
+    width: 1.2rem;
+    height: 1.2rem;
+    
+}
+

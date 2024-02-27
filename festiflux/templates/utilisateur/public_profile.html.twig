@@ -12,13 +12,23 @@
             </div>
             <div class="public-profile__side--infos">
                 <div class="public-profile__side--infos-address">
-                    <h3>Adresse :</h3>
+                    <h3>Adresse </h3>
                     <div class="contact-section">
                         {{user.adresse}}
                     </div>
                 </div>
                 <div class="public-profile__side--infos-contacts">
-                    <h3>Contacts :</h3>
+                    <div class="public-profile-title">
+                        <h3>Contacts </h3>
+                        <div class="tooltip">
+                            <span class="tooltipText">Gérer les contacts</span>
+                            <a href="{{path('app_profile_edit', {'id': user.getId()})}}">
+                                <img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
+                            </a>
+                        </div>
+                        
+						
+                    </div>
                     <div class="contact-section">
                         {% set contacts = user.getContacts() %}
                         {% if contacts is not empty %}
@@ -44,7 +54,7 @@
             <div class="public-profile__main--header">
                 <div class="public-profile__main--header-name">
                     <div class="">{{user.nom ~ " " ~ user.prenom }}</div>
-                    <a href="{{path('app_profile_edit', {'id': user.getId()})}}"><img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings"></a>
+                    
                 </div>
                 <div class="public-profile__main--header-bio">
                     {{ user.description }}
@@ -52,7 +62,16 @@
             </div>
             <div class="public-profile__main--body">
                 <div class="public-profile__main--body-skills">
-                    <h3>Compétences :</h3>
+                    <div class="public-profile-title">
+                        <h3>Compétences </h3>
+                        <div class="tooltip">
+                            <span class="tooltipText">Gérer les compétences</span>
+                            <a href="{{path('app_profile_edit', {'id': user.getId()})}}">
+                                <img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
+                            </a>
+						</div>
+                    </div>
+                   
                     <div class="skills-section">
                         {% set skills = user.getSkills() %}
                         {% if skills is not empty %}
@@ -73,7 +92,7 @@
                 </div>
 
                 <div class="public-profile__main--body-fest">
-                    <h3>Expérience :</h3>
+                    <h3>Expérience </h3>
                     
                 </div>
             </div>
