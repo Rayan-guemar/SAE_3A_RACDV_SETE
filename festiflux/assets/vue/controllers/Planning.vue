@@ -18,240 +18,288 @@ import { sortTachesByOverriding } from "../../scripts/tache";
 import PlageHoraireForm from "./PlageHoraireForm.vue";
 import PlageHoraire from "./PlageHoraire.vue";
 import IndispoForm from "./IndispoForm.vue";
+/////////////translate///////////////
 
-type FromArray<T extends any[]> = T extends (infer U)[] ? U : never;
-
-type Props = {
-  festID: number;
-  title: string;
-  dateDebut: string;
-  dateFin: string;
-  isOrgaOrResp: boolean;
-  userId: number;
-};
-
-const props = defineProps<Props>();
-
-const festival = ref<Festival>({
-  festID: props.festID,
-  title: props.title,
-  dateDebut: new Date(props.dateDebut),
-  dateFin: new Date(props.dateFin),
-  isOrgaOrResp: props.isOrgaOrResp,
-});
-
-const numberOfDays =
-  dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
-const days = Array.from(
-  { length: numberOfDays },
-  (_, i) =>
-    new Date(
-      festival.value.dateDebut.getFullYear(),
-      festival.value.dateDebut.getMonth(),
-      festival.value.dateDebut.getDate() + i
-    )
-);
-const dayNames = [
-  "Dimanche",
-  "Lundi",
-  "Mardi",
-  "Mercredi",
-  "Jeudi",
-  "Vendredi",
-  "Samedi",
-];
-const monthNames = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
-const daysDiv = ref<HTMLDivElement>();
-
-const taches = ref<TacheType[]>([]);
-const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
-const postes = ref<Poste[]>([]);
-const crx = ref<Creneau[]>([]);
-
-const benevoles = ref<Benevole[]>([]);
-
-const chargesBenevole = computed(() => {
-  const charges: Record<ID, number> = {};
-  for (const benevole of benevoles.value) {
-    charges[benevole.id] = calculCharge(benevole, taches.value);
+let lang = document.getElementById('app').getAttribute('data-locale');
+if (lang ==='null') {
+  lang = 'fr';
+}
+function translate(key: string) {
+  if (lang === 'fr') {
+    switch (key) {
+      case 'add-plage-btn':
+        return 'Ajouter les plages horaires';
+      case 'filter-btn':
+        return 'Filtrer par :';
+      case 'all-postes':
+        return 'Tous les postes';
+      case 'add-creneau-btn':
+        return 'Ajouter un créneau';
+      case 'add-ics-btn':
+        return 'Demander un fichier ics';
+      case 'affect-switch':
+        return 'Mode affectation';
+      case 'add-indispo-btn':
+        return "Prévenir d'une indisponibilité";
+      default:
+        return key;
+    }
+  } else {
+    switch (key) {
+      case 'add-plage-btn':
+        return 'add time slots for festival';
+      case 'filter-btn':
+          return 'Filter by :';
+      case 'all-postes':
+        return 'All jobs';
+      case 'add-creneau-btn':
+        return 'Add a time job';
+      case 'add-ics-btn':
+        return 'Ask for an ics file';
+      case 'affect-switch':
+        return 'Affectation mode';
+      case 'add-indispo-btn':
+        return 'Warn of unavailability';
+      default:
+        return key;
+    }
   }
-  return charges;
-});
+}
+////////////////////////////
+  type FromArray<T extends any[]> = T extends (infer U)[] ? U : never;
 
-const loading = ref(true);
-const creatingTache = ref(false);
-const creatingPlage = ref(false);
-const addIndispo = ref(false);
-
-const filterByPoste = ref("");
-
-const displayTaches = computed(() => {
-  const filters: ((tache: TacheType) => unknown)[] = [];
-  if (vuePerso.value)
-    filters.push((tache) => tache.benevoles?.includes(props.userId));
-  if (filterByPoste.value)
-    filters.push((tache) => tache.poste.id == filterByPoste.value);
-
-  let tachesToDisplay = [...taches.value];
-  for (const filter of filters) {
-    tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache));
-  }
-
-  return sortTachesByOverriding(tachesToDisplay);
-});
-const modeAffectation = ref(false);
-
-const toggleModeAffectation = () => {
-  modeAffectation.value = !modeAffectation.value;
-};
-
-const getTaches = async () => {
-  const res = await Backend.getTaches(festival.value.festID);
-
-  if (res) {
-    taches.value = res;
-  }
-};
-
-const getBenevoles = async () => {
-  const res = await Backend.getBenevoles(festival.value.festID);
-  console.log(1, res);
-
-  if (res) {
-    benevoles.value = res;
-  }
-};
-
-const getPlagesHoraires = async () => {
-  const res = await Backend.getPlagesHoraires(festival.value.festID);
-  if (res) {
-    crx.value = res;
-  }
-};
-
-const getPostes = async () => {
-  const res = await Backend.getPostes(festival.value.festID);
-  if (res) {
-    postes.value = res;
-  }
-};
-
-const scrollDaysLeft = () => {
-  let div = daysDiv.value;
-  if (!div) return;
-  let daysWidth = div.getBoundingClientRect().width;
-  let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
-  let scroll = div.scrollLeft - Math.floor(daysWidth / dayWidth) * dayWidth;
-  if (scroll < 0) {
-    scroll = 0;
-  }
-  div.scrollTo({
-    left: scroll,
-    behavior: "smooth",
-  });
-};
-
-const scrollDaysRight = () => {
-  let div = daysDiv.value;
-  if (!div) return;
-  let daysWidth = div.getBoundingClientRect().width;
-  let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
-  let scroll = div.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
-  if (scroll > div.scrollWidth) {
-    scroll = div.scrollWidth;
-  }
-  div.scrollTo({
-    left: scroll,
-    behavior: "smooth",
-  });
-};
-
-const startCreatingTache = () => {
-  creatingTache.value = true;
-};
-
-const stopCreatingTache = (tache?: TacheCreateData) => {
-  creatingTache.value = false;
-  if (!tache) return;
-  const poste = postes.value.find((p) => {
-    return p.id == tache.poste_id;
-  });
-  if (!poste) {
-    throw new Error("pas de poste trouvé");
-  }
-
-  const t: TacheType = {
-    description: tache.description,
-    nbBenevole: tache.nombre_benevole,
-    poste: poste,
-    creneau: {
-      debut: tache.date_debut,
-      fin: tache.date_fin,
-    },
-    benevoleAffecte: 0,
-    lieu: tache.lieu,
+  type Props = {
+    festID: number;
+    title: string;
+    dateDebut: string;
+    dateFin: string;
+    isOrgaOrResp: boolean;
+    userId: number;
   };
 
-  taches.value.push(t);
-};
+  const props = defineProps<Props>();
 
-const stopCreatingPlage = async (tempCreneau?: Creneau) => {
-  creatingPlage.value = false;
-};
+  const festival = ref<Festival>({
+    festID: props.festID,
+    title: props.title,
+    dateDebut: new Date(props.dateDebut),
+    dateFin: new Date(props.dateFin),
+    isOrgaOrResp: props.isOrgaOrResp,
+  });
 
-const startAddIndispo = () => {
-  addIndispo.value = true;
-};
+  const numberOfDays =
+      dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
+  const days = Array.from(
+      {length: numberOfDays},
+      (_, i) =>
+          new Date(
+              festival.value.dateDebut.getFullYear(),
+              festival.value.dateDebut.getMonth(),
+              festival.value.dateDebut.getDate() + i
+          )
+  );
+  const dayNames = [
+    "Dimanche",
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+  ];
+  const monthNames = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+  const daysDiv = ref<HTMLDivElement>();
 
-const stopAddIndispo = () => {
-  addIndispo.value = false;
-};
+  const taches = ref<TacheType[]>([]);
+  const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
+  const postes = ref<Poste[]>([]);
+  const crx = ref<Creneau[]>([]);
 
-const askForICS = () => {
-  Backend.getICS(festival.value.festID);
-};
+  const benevoles = ref<Benevole[]>([]);
 
-const updateTaches = async () => {
-  await getTaches();
-};
-const updatePlages = async () => {
-  await getPlagesHoraires();
-};
+  const chargesBenevole = computed(() => {
+    const charges: Record<ID, number> = {};
+    for (const benevole of benevoles.value) {
+      charges[benevole.id] = calculCharge(benevole, taches.value);
+    }
+    return charges;
+  });
 
-onMounted(async () => {
-  const promises = [];
-  promises.push(getTaches());
-  promises.push(getPostes());
-  promises.push(getPlagesHoraires());
-  promises.push(getBenevoles());
-  await Promise.all(promises);
-  loading.value = false;
-});
+  const loading = ref(true);
+  const creatingTache = ref(false);
+  const creatingPlage = ref(false);
+  const addIndispo = ref(false);
 
-const vuePerso = ref(false);
+  const filterByPoste = ref("");
 
-const toggleVuePerso = async () => {
-  vuePerso.value = !vuePerso.value;
-};
+  const displayTaches = computed(() => {
+    const filters: ((tache: TacheType) => unknown)[] = [];
+    if (vuePerso.value)
+      filters.push((tache) => tache.benevoles?.includes(props.userId));
+    if (filterByPoste.value)
+      filters.push((tache) => tache.poste.id == filterByPoste.value);
 
-const startCreatingPlage = () => {
-  creatingPlage.value = true;
-};
+    let tachesToDisplay = [...taches.value];
+    for (const filter of filters) {
+      tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache));
+    }
 
-console.log(props.isOrgaOrResp);
+    return sortTachesByOverriding(tachesToDisplay);
+  });
+  const modeAffectation = ref(false);
+
+  const toggleModeAffectation = () => {
+    modeAffectation.value = !modeAffectation.value;
+  };
+
+  const getTaches = async () => {
+    const res = await Backend.getTaches(festival.value.festID);
+
+    if (res) {
+      taches.value = res;
+    }
+  };
+
+  const getBenevoles = async () => {
+    const res = await Backend.getBenevoles(festival.value.festID);
+    console.log(1, res);
+
+    if (res) {
+      benevoles.value = res;
+    }
+  };
+
+  const getPlagesHoraires = async () => {
+    const res = await Backend.getPlagesHoraires(festival.value.festID);
+    if (res) {
+      crx.value = res;
+    }
+  };
+
+  const getPostes = async () => {
+    const res = await Backend.getPostes(festival.value.festID);
+    if (res) {
+      postes.value = res;
+    }
+  };
+
+  const scrollDaysLeft = () => {
+    let div = daysDiv.value;
+    if (!div) return;
+    let daysWidth = div.getBoundingClientRect().width;
+    let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
+    let scroll = div.scrollLeft - Math.floor(daysWidth / dayWidth) * dayWidth;
+    if (scroll < 0) {
+      scroll = 0;
+    }
+    div.scrollTo({
+      left: scroll,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollDaysRight = () => {
+    let div = daysDiv.value;
+    if (!div) return;
+    let daysWidth = div.getBoundingClientRect().width;
+    let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
+    let scroll = div.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
+    if (scroll > div.scrollWidth) {
+      scroll = div.scrollWidth;
+    }
+    div.scrollTo({
+      left: scroll,
+      behavior: "smooth",
+    });
+  };
+
+  const startCreatingTache = () => {
+    creatingTache.value = true;
+  };
+
+  const stopCreatingTache = (tache?: TacheCreateData) => {
+    creatingTache.value = false;
+    if (!tache) return;
+    const poste = postes.value.find((p) => {
+      return p.id == tache.poste_id;
+    });
+    if (!poste) {
+      throw new Error("pas de poste trouvé");
+    }
+
+    const t: TacheType = {
+      description: tache.description,
+      nbBenevole: tache.nombre_benevole,
+      poste: poste,
+      creneau: {
+        debut: tache.date_debut,
+        fin: tache.date_fin,
+      },
+      benevoleAffecte: 0,
+      lieu: tache.lieu,
+    };
+
+    taches.value.push(t);
+  };
+
+  const stopCreatingPlage = async (tempCreneau?: Creneau) => {
+    creatingPlage.value = false;
+  };
+
+  const startAddIndispo = () => {
+    addIndispo.value = true;
+  };
+
+  const stopAddIndispo = () => {
+    addIndispo.value = false;
+  };
+
+  const askForICS = () => {
+    Backend.getICS(festival.value.festID);
+  };
+
+  const updateTaches = async () => {
+    await getTaches();
+  };
+  const updatePlages = async () => {
+    await getPlagesHoraires();
+  };
+
+  onMounted(async () => {
+    const promises = [];
+    promises.push(getTaches());
+    promises.push(getPostes());
+    promises.push(getPlagesHoraires());
+    promises.push(getBenevoles());
+    await Promise.all(promises);
+    loading.value = false;
+  });
+
+  const vuePerso = ref(false);
+
+  const toggleVuePerso = async () => {
+    vuePerso.value = !vuePerso.value;
+  };
+
+  const startCreatingPlage = () => {
+    creatingPlage.value = true;
+  };
+
+  console.log(props.isOrgaOrResp);
+
 </script>
 
 <template>
@@ -303,6 +351,7 @@ console.log(props.isOrgaOrResp);
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            :lang="lang"
             @reloadBenevoles="
               async () => {
                 await getTaches();
@@ -320,18 +369,18 @@ console.log(props.isOrgaOrResp);
         class="btn"
         @click="startCreatingPlage"
       >
-        Ajouter les plages horaires des jours du festival
+        {{ translate("add-plage-btn") }}
       </div>
 
       <div>
-        <label for="poste_filter">Filtrer par:</label>
+        <label for="poste_filter">{{ translate("filter-btn") }}</label>
         <select
           name="poste_filter"
           class="btn"
           id="poste_filter"
           v-model="filterByPoste"
         >
-          <option selected="true" value="">Tous les postes</option>
+          <option selected="true" value="">{{ translate("all-postes") }}</option>
           <option v-for="poste of postes" :value="poste.id">
             {{ poste.nom }}
           </option>
@@ -343,7 +392,7 @@ console.log(props.isOrgaOrResp);
           v-if="isOrgaOrResp"
           class="toggle-mode-affectation-wrapper btn flex-align-center"
         >
-          <div>Mode affectation</div>
+          <div>{{ translate("affect-switch") }}</div>
           <div
             class="toggle-mode-affectation"
             :class="{ on: modeAffectation }"
@@ -359,18 +408,18 @@ console.log(props.isOrgaOrResp);
         class="btn"
         @click="startCreatingTache"
       >
-        Ajouter un créneau
+        {{ translate("add-creneau-btn") }}
       </div>
 
       <div id="add-ics-btn" class="btn" @click="askForICS">
-        Demander un fichier ics
+        {{ translate("add-ics-btn") }}
       </div>
 
       <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn">
         {{ vuePerso ? "Planning général" : " Mon planning" }}
       </div>
 
-          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
+          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">{{ translate("add-indispo-btn") }}</div>
         </div>
     </div>
 
@@ -393,6 +442,7 @@ console.log(props.isOrgaOrResp);
       :postes="postes"
       :update-taches="updateTaches"
       :close="stopCreatingTache"
+      :lang="lang"
     />
   </Modal>
   <Modal v-if="creatingPlage" @close="stopCreatingPlage">
@@ -402,6 +452,7 @@ console.log(props.isOrgaOrResp);
       :dateFin="festival.dateFin"
       :close="stopCreatingPlage"
       :updatePlages="updatePlages"
+      :lang="lang"
     />
     />
   </Modal>
@@ -412,6 +463,7 @@ console.log(props.isOrgaOrResp);
       :dateDebut="festival.dateDebut"
       :dateFin="festival.dateFin"
       @close="stopAddIndispo"
+      :lang="lang"
     />
   </Modal>
 </template>

@@ -13,6 +13,7 @@ interface Props {
   total: number,
   modeAffectation: boolean,
   benevoles: Benevole[],
+  lang: string
 }
 
 const props = defineProps<Props>();
@@ -83,6 +84,23 @@ const nbLike = computed(() => {
   return nb
 })
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'desc': return 'Description :';
+      case 'note' : return 'Remarque :';
+      case 'location' : return 'Lieu :';
+      case 'affectedVolun' : return 'Bénévoles affectés';
+    }
+  } else {
+    switch (key) {
+      case 'desc': return 'Description :';
+      case 'note' : return 'Note :';
+      case 'location' : return 'Location :';
+      case 'affectedVolun' : return 'Affected volunteers';
+    }
+  }
+}
 </script>
 
 <template>
@@ -155,19 +173,23 @@ const nbLike = computed(() => {
       </div> -->
       <div class="info-wrapper">
           <div>
-              <h5>Description :</h5>
+              <h5>        {{ translate("desc") }}
+              </h5>
               <div class="content">{{ tache.poste.description || (tache.poste.description.length === 0 ? 'Il n\'y a pas de description' : tache.poste.description) }}</div>
           </div>
           <div>
-              <h5>Remarque :</h5>
+              <h5>        {{ translate("note") }}
+              </h5>
               <div class="content">{{ tache.description || (tache.description.length === 0 ? 'Il n\'y a pas de remarque' : tache.description) }}</div>
           </div>
           <div>
-              <h5 v-if="tache.lieu">Lieu :</h5>
+              <h5 v-if="tache.lieu">        {{ translate("location") }}
+              </h5>
               <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
           </div>
           <div class="tache-info_benevoles">
-            {{ tache.benevoleAffecte }} bénévoles affectés
+            {{ tache.benevoleAffecte }}         {{ translate("affectedVolun") }}
+
           </div>
       </div>
     </Modal>
@@ -181,7 +203,8 @@ const nbLike = computed(() => {
         :tache="tache"
         :benevoles="benevoles"
         :chargesBenevole = "chargesBenevole"
-        @reloadBenevoles="() => $emit('reloadBenevoles')" 
+        @reloadBenevoles="() => $emit('reloadBenevoles')"
+        :lang = "lang"
       />
     </Modal>
 

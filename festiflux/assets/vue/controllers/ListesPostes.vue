@@ -4,6 +4,8 @@ import { Backend } from "../../scripts/Backend";
 import PosteForm from "./PosteForm.vue";
 import { Poste, Preference } from "../../scripts/types";
 
+
+
 interface Props {
   festivalId: number;
   festivalName: string;
@@ -77,6 +79,37 @@ const getPreferences = async () => {
   preferences.value = listeOfPreferences;
 };
 
+let lang = document.getElementById('app').getAttribute('data-locale');
+if (lang ==='null') {
+  lang = 'fr';
+}
+
+function translate(key: string) {
+  if (lang === 'fr') {
+    switch (key) {
+      case 'title':
+        return 'Liste des postes';
+      case 'void':
+        return "Il n'y a aucun poste pour le moment";
+      case 'add':
+        return 'Ajouter un poste';
+      case 'love' : return "J'aime";
+      case 'hate' : return "Je n'aime pas";
+    }
+  } else {
+    switch (key) {
+      case 'title':
+        return 'List of posts';
+      case 'void':
+        return "There is no jobs";
+      case 'add':
+        return 'Add a job';
+      case 'love' : return "Love";
+      case 'hate' : return "Dislike";
+    }
+  }
+}
+
 onMounted(async () => {
   await getPostes();
   if (!props.isOrgaOrResp)  {
@@ -92,9 +125,9 @@ onMounted(async () => {
 
   <div class="poste-list-wrapper">
     <div class="poste-list" >
-      <h3>Liste des postes</h3>
+      <h3>        {{ translate("title") }} </h3>
       <div v-if="posteList.length === 0">
-        Il n'y a aucun poste pour le moment
+        {{ translate("void") }}
       </div>
       <div v-else class="postes">
         <div
@@ -109,12 +142,12 @@ onMounted(async () => {
         >
           {{ poste.nom }}
           <div v-if="getPreference(poste) == 1 || getPreference(poste) == -1" class="pref-pastille" :class="{'pref-like': getPreference(poste) == 1, 'pref-dislike': getPreference(poste) == -1}">
-            {{  getPreference(poste) == 1 ? 'J\'aime' : getPreference(poste) == -1 ? 'Je n\'aime pas' : '' }}
+            {{  getPreference(poste) == 1 ? translate('love') : getPreference(poste) == -1 ? translate('hate') : '' }}
           </div>
         </div>
       </div>
       <div v-if="isOrgaOrResp && !posteOpened && !status" class="new-poste-btn pointer" @click="newPoste">
-        Ajouter un poste
+        {{ translate("add") }}
       </div>
     </div>
 
@@ -133,6 +166,7 @@ onMounted(async () => {
         :isOrgaOrResp="isOrgaOrResp"
         @close="() => setPosteOpened(false)"
         @reloadPostes="getPreferences"
+        :lang="lang"
     />
   </div>
 </template>

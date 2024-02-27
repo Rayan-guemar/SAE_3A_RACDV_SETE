@@ -10,6 +10,7 @@ interface Props {
     benevole: Benevole;
     affected: boolean;
     poste: Poste;
+    lang: string;
 }
 
     const props = defineProps<Props>();
@@ -23,7 +24,33 @@ interface Props {
         '#3b3a39',
         '#00C800'
     ]
-   
+
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'affect':
+        return 'Affecter';
+      case 'unaffect':
+        return "Désaffecter";
+      case 'love':
+        return "j'aime";
+      case 'hate':
+        return "je n'aime pas";
+    }
+  } else {
+    switch (key) {
+      case 'affect':
+        return 'Affect';
+      case 'unaffect':
+        return "Unaffect";
+      case 'love':
+        return "love";
+      case 'hate':
+        return "hate";
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -49,14 +76,14 @@ interface Props {
                     'pref-dislike': pref === -1
                 }"
             >
-                {{ pref === 1 ? 'Aime' : 'N\'aime pas' }}
+                {{ pref === 1 ? translate("love") : translate("hate") }}
             </div>
         </div>
         <div v-if="!affected" class="btn affect" @click="() => $emit('addBenevole')">
-            Affecter
+          {{ translate("affect")}}
         </div>
         <div v-else class="btn unaffect" @click="() => $emit('removeBenevole')">
-            Désaffecter
+          {{ translate("unaffect") }}
         </div>
     </div>
 </template>
