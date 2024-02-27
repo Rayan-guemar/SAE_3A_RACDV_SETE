@@ -334,9 +334,16 @@ class FestivalController extends AbstractController {
                 'nom' => $festival->getNom(),
                 'latitude' => $festival->getLat(),
                 'longitude' => $festival->getLon(),
+                'open' => $festival->isOpen()
             ];
         }
         return new JsonResponse($tab, 200);
+    }
+
+    #[Route('/festival/all/map', name: 'app_map', options: ['expose' => true], methods: ['GET'])]
+    public function allFestMap(FestivalRepository $repository): Response
+    {
+        return $this->render('festival/map.html.twig');
     }
 
     #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
