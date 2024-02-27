@@ -151,7 +151,7 @@
         }
         
         &.affect:hover {
-          color: $blue-primary;
+          color: white;
         }
       }
     }
@@ -165,11 +165,11 @@
     gap: 10px;
     
     .select-sort {
-      border: none;
       background-color: white;
       font-size: 17px;
       font-weight: 500;
-      
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+
       &:focus {
         outline: none;
         border: none;
@@ -296,6 +296,7 @@
 }
 
 .save-edits {
+  cursor: pointer;
   border-radius: 5%;
   align-self: center;
   display: flex;

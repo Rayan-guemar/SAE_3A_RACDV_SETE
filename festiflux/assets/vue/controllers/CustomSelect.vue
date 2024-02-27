@@ -42,7 +42,8 @@
         width: fit-content;
         position: relative;
 
-        .options {
+
+      .options {
             opacity: 0;
             position: absolute;
             top: 0;
