@@ -43,7 +43,8 @@
         <div class="public-profile__main">
             <div class="public-profile__main--header">
                 <div class="public-profile__main--header-name">
-                    {{user.nom ~ " " ~ user.prenom }}
+                    <div class="">{{user.nom ~ " " ~ user.prenom }}</div>
+                    <a href="{{path('app_profile_edit', {'id': user.getId()})}}"><img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings"></a>
                 </div>
                 <div class="public-profile__main--header-bio">
                     {{ user.description }}
