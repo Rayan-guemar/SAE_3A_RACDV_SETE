@@ -1,7 +1,3 @@
-const btn = document.querySelector(".map-btn");
-var mapEl = document.getElementById("map");
-
-
 async function getAllFestival() {
 
     // Initialisation de la carte
@@ -23,13 +19,15 @@ async function getAllFestival() {
         try {
             data = await response.json();
             data.forEach(festival => {
-                if (festival.latitude && festival.longitude) {
-                    let coordinates = new L.Marker([festival.latitude, festival.longitude])
-                    layer.addLayer(coordinates)
-                    function redirectToFest() {
-                        window.location = Routing.generate('app_festival_detail', { id: festival.id })
+                if (festival.open) {
+                    if (festival.latitude && festival.longitude) {
+                        let coordinates = new L.Marker([festival.latitude, festival.longitude])
+                        layer.addLayer(coordinates)
+                        function redirectToFest() {
+                            window.location = Routing.generate('app_festival_detail', { id: festival.id })
+                        }
+                        coordinates.on('click', redirectToFest)
                     }
-                    coordinates.on('click', redirectToFest)
                 }
             });
             var overlay = { 'markers': layer };
@@ -39,16 +37,5 @@ async function getAllFestival() {
         }
     }
 
-    btn.addEventListener('click', () => {
-        if (btn.innerText === "Afficher la carte") {
-            mapEl.style.display = "block";
-            btn.innerText = "Cacher la carte"
-            map.invalidateSize();
-        }
-        else if (btn.innerText === "Cacher la carte") {
-            mapEl.style.display = "none";
-            btn.innerText = "Afficher la carte"
-        }
-    })
 }
 getAllFestival();
