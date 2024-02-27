@@ -334,9 +334,16 @@ class FestivalController extends AbstractController {
                 'nom' => $festival->getNom(),
                 'latitude' => $festival->getLat(),
                 'longitude' => $festival->getLon(),
+                'open' => $festival->isOpen()
             ];
         }
         return new JsonResponse($tab, 200);
+    }
+
+    #[Route('/festival/all/map', name: 'app_map', options: ['expose' => true], methods: ['GET'])]
+    public function allFestMap(FestivalRepository $repository): Response
+    {
+        return $this->render('festival/map.html.twig');
     }
 
     #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
@@ -408,6 +415,7 @@ class FestivalController extends AbstractController {
         }
 
         return $this->render('festival/postes.html.twig', [
+            'status' => $festival->isOpen(),
             'controller_name' => 'FestivalController',
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
@@ -442,13 +450,16 @@ class FestivalController extends AbstractController {
     public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
-        if (!$festival->isOpen()) {
+        if ($festival->isOpen()) {
+            $this->addFlash('error', 'Le festival est deja ouvert');
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -978,7 +989,7 @@ class FestivalController extends AbstractController {
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
-        if (!$festival->isOpen()) {
+        if ($festival->isOpen()) {
             $this->addFlash('error', 'Le festival est deja ouvert');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }

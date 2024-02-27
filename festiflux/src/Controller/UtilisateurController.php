@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\Creneaux;
 use App\Entity\Disponibilite;
 use App\Entity\Festival;
@@ -15,7 +16,9 @@ use App\Repository\HistoriquePostulationRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
 use App\Entity\PosteUtilisateurPreferences;
+use App\Repository\ContactRepository;
 use App\Repository\TacheRepository;
+use App\Repository\TypeContactRepository;
 use App\Repository\UtilisateurRepository;
 use App\Service\Ical\IcalBuilder;
 use App\Service\Ical\Event;
@@ -366,4 +369,6 @@ class UtilisateurController extends AbstractController {
             ]);
         }
     }
+
+
 }

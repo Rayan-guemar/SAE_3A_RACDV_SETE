@@ -21,8 +21,8 @@
 	{{ form_end(form) }}
 	<!-- Map All Festivals -->
 	<div class="index-wrapper">
-		<button class="map-btn">Afficher la carte</button>
-		<div id="map" style="display: none;"></div>
+		<button class="map-btn"><a style="color: white" id="cancel-research" href="{{ path('app_map') }}">Voir la carte</a></button>
+		<div id="map"></div>
 		{% if festivals|length == 0 %}
 			<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
 				Aucun festival ne correspond à votre recherche

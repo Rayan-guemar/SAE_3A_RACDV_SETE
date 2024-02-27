@@ -8,13 +8,12 @@
 
 {% block body %}
 
-		<div class="profil-box">
-			<h1>
-				Profil de
-				{{ utilisateur.nom }}
-				{{ utilisateur.prenom }}
-			</h1>
-
+	<div class="profil-box">
+		<h1>
+			Profil de
+			{{ utilisateur.nom }}
+			{{ utilisateur.prenom }}
+		</h1>
 			<div class="info-box-wrapper">
 				<div class="image_profile">
 					<img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
@@ -30,40 +29,84 @@
 						:
 						{{ utilisateur.email }}
 
-				    </div>
-						<div class="info-name-surname">
-							<div class="info-border">
-								<strong>Nom</strong>
-								:
-								{{ utilisateur.nom }}
-							</div>
+					</div>
+					<div class="info-name-surname">
+						<div class="info-border">
+							<strong>Nom</strong>
+							:
+							{{ utilisateur.nom }}
+						</div>
 
-							<div class="info-border">
-								<strong>Prénom</strong>
-								:
-								{{ utilisateur.prenom }}
-							</div>		
-						</div>	
-            <div class="info-border">
-					<strong>Adresse</strong>
-					:
-					{{ utilisateur.adresse }}
-
-				</div>
-						<div class="info-border biographie">
-								<strong>Biographie</strong>
-								:
-								{{ utilisateur.description }}
+						<div class="info-border">
+							<strong>Prénom</strong>
+							:
+							{{ utilisateur.prenom }}
 						</div>
 					</div>
-				</div>
+					<div class="info-border">
+						<strong>Adresse</strong>
+						:
+						{{ utilisateur.adresse }}
 
-				<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
-					<div class="edit-button">
-						Modifier mon profil
 					</div>
-				</a>
+					<div class="info-border biographie">
+						<strong>Biographie</strong>
+						:
+						{{ utilisateur.description }}
+					</div>
+				</div>
 			</div>
+
+			<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
+				<div class="edit-button">
+					Modifier mon profil
+				</div>
+			</a>
 		</div>
+		<!-- Section des moyens de contact -->
+		<div class="contact-section">
+			{% set contacts = utilisateur.getContacts() %}
+			{% if contacts is not empty %}        
+				{% for contact in contacts %}
+					{% include 'contacts/contact.html.twig' with {
+						contact: {
+							value: contact.value ,
+							name: contact.type.name ,
+							link: contact.getLink() 
+						}
+					}%}
+				{% endfor %}
+			{% else %}
+				<p>Aucun moyen de contact n'a été ajouté.</p>
+			{% endif %}
+				<a class="manage-contact-button" href={{path("app_user_contacts")}}>
+					<span>
+						Gérer mes contacts
+					</span>
+				</a>
+		</div>
+
+		<div class="contact-section">
+			{% set skills = utilisateur.getSkills() %}
+			{% if skills is not empty %}        
+				{% for skill in skills %}
+					<div>
+						{% include 'skills/skill.html.twig' with {
+							skill: {
+								name: skill.name,
+								level: skill.getLevelName()
+							}
+						}%}
+				{% endfor %}
+			{% else %}
+				<p>Aucune compétence n'a été ajoutée.</p>
+			{% endif %}
+				<a class="manage-contact-button" href={{path("app_user_skills")}}>
+					<span>
+						Gérer mes compétences
+					</span>
+				</a>
+		</div>
+	</div>
 
 {% endblock %}

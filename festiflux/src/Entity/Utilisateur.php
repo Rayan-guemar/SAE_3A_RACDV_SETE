@@ -97,6 +97,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Preference::class, orphanRemoval: true)]
     private Collection $preferences;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Contact::class, orphanRemoval: true)]
+    private Collection $contacts;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Skills::class)]
+    private Collection $skills;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
@@ -108,6 +114,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->historiquePostulations = new ArrayCollection();
         $this->postulations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
+        $this->skills = new ArrayCollection();
     }
 
     /**
@@ -492,6 +500,66 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($preference->getUtilisateur() === $this) {
                 $preference->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): static
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+            $contact->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): static
+    {
+        if ($this->contacts->removeElement($contact)) {
+            // set the owning side to null (unless already changed)
+            if ($contact->getUtilisateur() === $this) {
+                $contact->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skills>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skills $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skills $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            // set the owning side to null (unless already changed)
+            if ($skill->getUser() === $this) {
+                $skill->setUser(null);
             }
         }
 
