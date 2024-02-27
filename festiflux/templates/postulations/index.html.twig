@@ -31,7 +31,7 @@
 							</a>
 						</td>
 						<td>{{ postulation.date | date('d/m/Y') }}</td>
-						<td>{{ postulation.statusToString() }}</td>
+						<td>{{ (postulation.statusToString())|trans({},'index_postulation') }}</td>
 						<td>{{ postulation.motif ? postulation.motif : '/' }}</td>
 					</tr>
 				</tbody>
