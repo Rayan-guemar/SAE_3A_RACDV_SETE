@@ -1,28 +1,27 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	{{ user.nom }}
+    {{ user.nom }}
 {% endblock %}
 
 {% block body %}
-	<div class="public-profile__container">
-		<div class="public-profile__side">
+    <div class="public-profile__container">
+        <div class="public-profile__side">
             <div class="public-profile__side--img">
                 <img {% if user.nomPhotoProfil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
             </div>
             <div class="public-profile__side--infos">
                 <div class="public-profile__side--infos-address">
-                     <h3>Adresse :</h3>
-                   <div class="contact-section">
-                    {{user.adresse}}
+                    <h3>Adresse :</h3>
+                    <div class="contact-section">
+                        {{user.adresse}}
                     </div>
-
                 </div>
                 <div class="public-profile__side--infos-contacts">
                     <h3>Contacts :</h3>
                     <div class="contact-section">
                         {% set contacts = user.getContacts() %}
-                        {% if contacts is not empty %}        
+                        {% if contacts is not empty %}
                             {% for contact in contacts %}
                                 <div>
                                     {% include 'contacts/contact.html.twig' with {
@@ -44,7 +43,7 @@
         <div class="public-profile__main">
             <div class="public-profile__main--header">
                 <div class="public-profile__main--header-name">
-                    {{user.nom ~ " " ~ user.prenom }} 
+                    {{user.nom ~ " " ~ user.prenom }}
                 </div>
                 <div class="public-profile__main--header-bio">
                     {{ user.description }}
@@ -53,47 +52,30 @@
             <div class="public-profile__main--body">
                 <div class="public-profile__main--body-skills">
                     <h3>Compétences :</h3>
+                    <div class="skills-section">
+                        {% set skills = user.getSkills() %}
+                        {% if skills is not empty %}
+                            {% for skill in skills %}
+                                <div>
+                                    {% include 'skills/skill.html.twig' with {
+                                        skill: {
+                                            name: skill.name,
+                                            level: skill.getLevelName()
+                                        }
+                                    }%}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Aucune compétence n'a été ajoutée.</p>
+                        {% endif %}
+                    </div>
                 </div>
+
                 <div class="public-profile__main--body-fest">
                     <h3>Expérience :</h3>
+                    
                 </div>
             </div>
         </div>
-	</div>
+    </div>
 {% endblock %}
-
-{# 
-<div class="public-profile__header">
-			<div class="public-profile__header--image">
-				<img {% if user.nomphotoprofil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
-			</div>
-            <div class="public-profile__header--name"> {{user.nom ~ " " ~ user.prenom }} </div>
-		</div>
-        <div class="public-profile__infos">
-            <div class="public-profile__infos--title sub-title">biographie</div>
-            <div class="public-profile__infos--bio">    
-                {{ user.description }}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias enim illum nobis dolores sequi optio amet earum in repudiandae placeat itaque odio undeazerazer azerazerazer dee aazaz
-            </div>
-        </div>
-        <div class="public-profile__contacts">
-            <div class="public-profile__contacts--title sub-title">contacts</div>
-            <div class="contact-section">
-                {% set contacts = user.getContacts() %}
-                {% if contacts is not empty %}        
-                    {% for contact in contacts %}
-                        <div>
-                            {% include 'contacts/contact.html.twig' with {
-                                contact: {
-                                    value: contact.value ,
-                                    name: contact.type.name ,
-                                    link: contact.getLink() 
-                                }
-                            }%}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Aucun moyen de contact n'a été ajouté.</p>
-                {% endif %}
-            </div>
-        </div> #}
