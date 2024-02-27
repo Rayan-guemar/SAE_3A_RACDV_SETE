@@ -87,6 +87,28 @@
 					</span>
 				</a>
 		</div>
+
+		<div class="contact-section">
+			{% set skills = utilisateur.getSkills() %}
+			{% if skills is not empty %}        
+				{% for skill in skills %}
+					<div>
+						{% include 'skills/skill.html.twig' with {
+							skill: {
+								name: skill.name,
+								level: skill.getLevelName()
+							}
+						}%}
+				{% endfor %}
+			{% else %}
+				<p>Aucune compétence n'a été ajoutée.</p>
+			{% endif %}
+				<a class="manage-contact-button" href={{path("app_user_skills")}}>
+					<span>
+						Gérer mes compétences
+					</span>
+				</a>
+		</div>
 	</div>
 
 {% endblock %}
