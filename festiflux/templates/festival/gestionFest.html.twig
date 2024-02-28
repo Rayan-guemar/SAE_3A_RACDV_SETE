@@ -9,13 +9,7 @@
     <section class='page-container	flex-column'>
         <h1 class="page-title">Gestion du
             {{ festival.getNom() }}</h1>
-        <h2>
-            Ce festival est
-            {% if festival.isOpen() %}ouvert aux postulations
-            {% else %}
-                {{ statut }}
-            {% endif %}
-        </h2>
+
         <div class="manage-container">
             <div class="actions">
                 <a class="action-div" href="{{ path('app_festival_planning', {'id': festival.getId()}) }}">
@@ -82,16 +76,11 @@
             </div>
             <div class="actions">
                 <div class="action-div-reverse">
-                    <div class="background"><img class="img-size" src="{{ asset("icons/post-manage.svg") }}"
-                                                 alt="manage user icon"></div>
+                    <div class="background">
+                        <img class="img-size" src="{{ asset("icons/post-manage.svg") }}" alt="manage user icon"></div>
                     <div>
                         <h2>Ouvrir le festival au postulation</h2>
-                        <p>Cette action va permettre au utilisateur de postuler pour devenir bénévole pour ce
-                            festival</p>
-                        <p>Attention! cette action est définitive est irréversible, aucune modification du festival du
-                            formulaire de
-                            postulation et de poste ne sera autorisée</p>
-                    </div>
+                    
 
                     {% if festival.getValid()!=1 %}
                         <div>
@@ -101,15 +90,14 @@
                     {% elseif festival.isOpen() %}
                         <div>
                             <span>Le festival est déjà ouvert</span>
-                        </div>
+                        </div>  
 
                     {% else %}
                         <div>
-                            <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
-                                <button name="" value="" class="gest_btn tooltip">Ouvrir</button>
-                            </form>
+                            <a href={{ path('app_festival_open_page', { 'id' :festival.getId() } )}} class="gest_btn tooltip">Ouvrir</a>
                         </div>
                     {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

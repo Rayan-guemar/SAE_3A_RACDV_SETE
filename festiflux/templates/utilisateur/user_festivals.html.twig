@@ -7,8 +7,8 @@
 	<h1 class="my-fest__title">Mes Festivals</h1>
 
 	<div class="my-fest__btns ">
-		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn'}} ">Festivals en tant que bénévole</a>
-		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn'}}">Festivals que j'organise</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn-primary'}} ">Festivals en tant que bénévole</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn-primary'}}">Festivals que j'organise</a>
 	</div>
 
 	{% if filter == 'volunteer' %}
