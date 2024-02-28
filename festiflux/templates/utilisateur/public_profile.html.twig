@@ -1,0 +1,119 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ user.nom }}
+{% endblock %}
+
+{% block body %}
+	<div class="public-profile__container">
+		<div class="public-profile__side">
+			<div class="public-profile__side--img">
+				<img {% if user.nomPhotoProfil == true %} src="{{ asset("uploads/user/"~ user.nomPhotoProfil ~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+			</div>
+			<div class="public-profile__side--infos">
+				<div class="public-profile__side--infos-address">
+					<h3>Adresse
+					</h3>
+					<div class="contact-section">
+						{{user.adresse}}
+					</div>
+				</div>
+				<div class="public-profile__side--infos-contacts">
+					<div class="public-profile-title flex-row">
+						<h3>Contacts</h3>
+						{% if app.user == user %}
+							<a class="" href="{{path('app_user_contacts', {'id': user.getId()})}}">
+								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
+							</a>
+						{% endif %}
+					</div>
+
+
+					<div class="contact-section">
+						{% set contacts = user.getContacts() %}
+						{% if contacts is not empty %}
+							{% for contact in contacts %}
+								<div>
+									{% include 'contacts/contact.html.twig' with {
+                                        contact: {
+                                            value: contact.value ,
+                                            name: contact.type.name ,
+                                            link: contact.getLink() 
+                                        }
+                                    }%}
+								</div>
+							{% endfor %}
+						{% else %}
+							<p>Aucun moyen de contact n'a été ajouté.</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="public-profile__main">
+			<div class="public-profile__main--header">
+				<div class="public-profile__main--header-name">
+					<div class="">{{user.nom ~ " " ~ user.prenom }}</div>
+					{% if app.user == user %}
+						<a class='btn' href="{{path("app_user_info")}}">Consulter</a>
+					{% endif %}
+				</div>
+				<div class="public-profile__main--header-bio">
+					{{ user.description }}
+				</div>
+			</div>
+			<div class="public-profile__main--body">
+				<div class="public-profile__main--body-skills">
+					<div class="public-profile-title flex-row">
+						<h3>Compétences</h3>
+						{% if app.user == user %}
+							<a class="" href="{{path('app_user_skills', {'id': user.getId()})}}">
+								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
+							</a>
+						{% endif %}
+					</div>
+
+					<div class="skills-section">
+						{% set skills = user.getSkills() %}
+						{% if skills is not empty %}
+							{% for skill in skills %}
+								<div>
+									{% include 'skills/skill.html.twig' with {
+                                        skill: {
+                                            name: skill.name,
+                                            level: skill.getLevelName()
+                                        }
+                                    }%}
+								</div>
+							{% endfor %}
+						{% else %}
+							<p>Aucune compétence n'a été ajoutée.</p>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="public-profile__main--body-fest">
+					<h3>Expérience
+					</h3>
+                    <div class="skills-section">
+                    {% set festivals = user.getEstBenevole() %}
+						{% if festivals is not empty %}
+							{% for fest in festivals %}
+								<div>
+									{% include 'skills/skill.html.twig' with {
+                                        skill: {
+                                            name: fest.nom,
+                                            level: ''
+                                        }
+                                    }%}
+								</div>
+							{% endfor %}
+						{% else %}
+							<p>Aucune compétence n'a été ajoutée.</p>
+						{% endif %}
+	                </div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
