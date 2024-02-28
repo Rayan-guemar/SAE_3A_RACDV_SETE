@@ -18,10 +18,6 @@
 				</div>
 				<div class="user-details">
 					<div>
-						<strong>Email</strong>:
-						{{ postulation.utilisateur.email }}
-					</div>
-					<div>
 						<strong>Nom</strong>:
 						{{ postulation.utilisateur.nom }}
 					</div>
@@ -29,15 +25,10 @@
 						<strong>Prénom</strong>:
 						{{ postulation.utilisateur.prenom }}
 					</div>
-					<div>
-						<strong>Adresse</strong>:
-						{{ postulation.utilisateur.adresse }}
-					</div>
-					<div>
-						<strong>Biographie</strong>:
-						{{ postulation.utilisateur.description }}
-					</div>
 				</div>
+				<a class="profile-link" href="{{path("app_user_profile", { id: postulation.utilisateur.getId() })}}">
+					<img src="{{asset('/icons/external-link.png')}}" alt="">
+				</a>
 			</div>
 
 		</div>
