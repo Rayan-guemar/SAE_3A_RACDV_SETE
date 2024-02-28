@@ -95,7 +95,23 @@
 				<div class="public-profile__main--body-fest">
 					<h3>Expérience
 					</h3>
-
+                    <div class="skills-section">
+                    {% set festivals = user.getEstBenevole() %}
+						{% if festivals is not empty %}
+							{% for fest in festivals %}
+								<div>
+									{% include 'skills/skill.html.twig' with {
+                                        skill: {
+                                            name: fest.nom,
+                                            level: ''
+                                        }
+                                    }%}
+								</div>
+							{% endfor %}
+						{% else %}
+							<p>Aucune compétence n'a été ajoutée.</p>
+						{% endif %}
+	                </div>
 				</div>
 			</div>
 		</div>
