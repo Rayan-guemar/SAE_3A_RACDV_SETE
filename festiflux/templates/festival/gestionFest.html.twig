@@ -68,15 +68,10 @@
 					            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
 				            </span>
                         {% else %}
-                            <form action="{{ path('app_festival_validation', {'id': festival.getId()}) }}"
-                                  method="post">
-                                <button name="" value="" class="gest_btn tooltip">Demander la validation</button>
-                            </form>
+                             <a href={{ path('app_festival_validation_page', { 'id' : festival.getId() } )}} class="gest_btn tooltip">Demander la validation</a>
                         {% endif %}
                         {% if hasValidations %}
-                        <span>consulter vos précédentes demandes
-                            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
-                        </span>
+                        
                         {% endif %}
                     </div>
                     <div class="background"><img class="img-size" src="{{ asset("icons/checked-manage.svg") }}"

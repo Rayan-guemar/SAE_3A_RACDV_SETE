@@ -1319,7 +1319,7 @@ class FestivalController extends AbstractController {
         }
     }
 
-    #[Route('/festival/{id}/open', name: 'app_festival_open_page')]
+    #[Route('/festival/{id}/open/page', name: 'app_festival_open_page')]
     public function openFestival(#[MapEntity] Festival $festival, ): Response {
 
         $u = $this->getUser();
