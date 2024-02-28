@@ -397,12 +397,19 @@ console.log(props.isOrgaOrResp);
             v-for="tacheWithPos of displayTaches.filter(
               ({ tache }) => tache.creneau.debut.getDate() === day.getDate()
             )"
+            :festID="festID"
             :chargesBenevole="chargesBenevole"
             :benevoles="benevoles"
             :tache="tacheWithPos.tache"
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            @reloadTaches="
+              async () => {
+                await getTaches();
+                await getBenevoles();
+              }
+            "
             @reloadBenevoles="
               async () => {
                 await getTaches();
