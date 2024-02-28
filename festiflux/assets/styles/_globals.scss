@@ -100,3 +100,40 @@ tbody a {
 .map-title {
     margin: 40px auto;
 }
+
+.tooltip{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltipText{
+    position: absolute;
+    top: -70%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    white-space: nowrap;
+    padding: 5px 10px;
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.tooltipText::before{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: black;
+}
+
+.tooltip:hover .tooltipText{
+    visibility: visible;
+    opacity: 1;
+}
