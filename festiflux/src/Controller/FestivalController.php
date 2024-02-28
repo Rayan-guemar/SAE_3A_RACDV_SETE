@@ -1319,6 +1319,40 @@ class FestivalController extends AbstractController {
         }
     }
 
+    #[Route('/festival/{id}/open', name: 'app_festival_open_page')]
+    public function openFestival(#[MapEntity] Festival $festival, ): Response {
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        } else if ($festival->getOrganisateur() != $u) {
+            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            return $this->redirectToRoute('home');
+        }
+
+        if ($festival == null || $festival->getIsArchive()) {
+            $this->addFlash('error', 'Le festival n\'existe pas');
+            return $this->redirectToRoute('home');
+        } else if ($festival->getValid() != 1) {
+            $this->addFlash('error', 'Le festival n\'est pas validé');
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+        } else {
+            if ($festival->isOpen()) {
+                $this->addFlash('error', 'Le festival est déjà ouvert');
+                return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+            }
+
+            return $this->render('postulations/openPostulation.html.twig', [
+                'controller_name' => 'FestivalController',
+                'festival' => $festival,
+            ]);
+        }
+
+    }
+    
+
+
     #[Route('/festival/{id}/open', name: 'app_festival_open')]
     public function openFest(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
         $u = $this->getUser();
