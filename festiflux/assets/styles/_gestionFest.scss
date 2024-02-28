@@ -19,19 +19,7 @@
         margin-bottom: 1rem;
     }
 
-    .gest_btn {
-     
-        color: #fff;
-        text-decoration: none;
-        padding: 0.7rem;
-        border-radius: .3125rem;
-        background-color: #1e88e5;
-        transition: background-color 0.3s ease-in-out;
-
-        &:hover {
-            background-color: #1565c0;
-        }
-    }
+    
 }
 
 .page-title {
@@ -156,7 +144,7 @@
     .links-section {
         h2 {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0;
         }
 
         a {
@@ -170,5 +158,20 @@
                 text-decoration: underline;
             }
         }
+    }
+}
+
+
+.gest_btn {
+     
+    color: #fff;
+    text-decoration: none;
+    padding: 0.7rem;
+    border-radius: .3125rem;
+    background-color: #1e88e5;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+        background-color: #1565c0;
     }
 }

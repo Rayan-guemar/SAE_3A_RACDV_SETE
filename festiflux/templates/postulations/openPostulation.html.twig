@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <section class="postlation-container">
+    <section class="postulation-container">
         <h1 class="page-title">Ouvrir à la postulation</h1>
 
         <div class="consequences-section">
@@ -17,6 +17,10 @@
                 <li>Les plages horaires d'ouverture du festival seront définitives et ne pourront plus être ajustées.</li>
             </ul>
         </div>
+
+        <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
+            <button name="" value="" class="gest_btn">Ouvrir quand même</button>
+        </form>
 
         <div class="links-section">
             <h2>Liens utiles :</h2>
