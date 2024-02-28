@@ -46,7 +46,7 @@
 
 							<div class="tooltip">
 								<span class="tooltipText">Gérer les postulations</span>
-								<a class="my-fest__btn" href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
+								<a class="my-fest__btn" href="{{ path('app_festival_postulations', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
 									{{ component('Notification', { type : 'autre', userId : app.user.id, festId : festival.id}) }}
 								</a>
