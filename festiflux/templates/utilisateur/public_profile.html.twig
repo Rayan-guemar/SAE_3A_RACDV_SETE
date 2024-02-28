@@ -22,9 +22,13 @@
 					<div class="public-profile-title flex-row">
 						<h3>Contacts</h3>
 						{% if app.user == user %}
+						<div class="tooltip">
+							<span class="tooltipText">Gérer les contacts	</span>
 							<a class="" href="{{path('app_user_contacts', {'id': user.getId()})}}">
 								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
 							</a>
+						</div>
+							
 						{% endif %}
 					</div>
 
@@ -67,9 +71,12 @@
 					<div class="public-profile-title flex-row">
 						<h3>Compétences</h3>
 						{% if app.user == user %}
+							<div class="tooltip">
+							<span class="tooltipText">Gérer les compétences	</span>
 							<a class="" href="{{path('app_user_skills', {'id': user.getId()})}}">
 								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
 							</a>
+							</div>
 						{% endif %}
 					</div>
 
