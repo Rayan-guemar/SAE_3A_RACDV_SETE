@@ -1,0 +1,46 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste des demandes
+{% endblock %}
+{% block overhead %}
+    <script src="{{ asset('js/addResponsable.js') }}" defer></script>
+    <script src="{{ asset('js/modal.js') }}" defer></script>
+
+{% endblock %}
+{% block body %}
+    <input type="hidden" id="id_festival" value={{ idFest }}>
+
+    
+    <h1>Liste des bénévoles</h1>
+    <h2>vous {% if  benevoles|length() > 0 %}  avez {{ benevoles|length() }} bénévoles
+        {% else %} n'avez pas encore de bénévoles {% endif %}
+        pour ce festival</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Mail</th>
+            <th>Responsable</th>
+        </tr>
+        </thead>
+        {% if benevoles|length() > 0 %}
+        {% for benevole in benevoles %}
+        <tbody>
+        <tr>
+            <td>{{ benevole.nom }}</td>
+            <td>{{ benevole.prenom }}</td>
+            <td>{{ benevole.email }}</td>
+            <td>
+                <div class="switch__container">
+                    <input id="{{ benevole.id }}" class="switch switch--shadow" type="checkbox"{% if benevole in responsables %} checked {% endif %}>
+                    <label for="{{ benevole.id }}"></label>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
+
