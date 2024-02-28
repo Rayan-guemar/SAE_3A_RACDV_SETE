@@ -48,29 +48,29 @@ footer {
 }
 
 .flex-row {
-    display: flex;
-    flex-direction: row;
+    display: flex !important;
+    flex-direction: row !important;
 }
 
 .flex-column {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .flex-align-center {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .flex-justify-center {
-    display: flex;
-    justify-content: center;
+    display: flex !important;
+    justify-content: center !important;
 }
 
 .page-container {
