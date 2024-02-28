@@ -36,27 +36,39 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
+use App\Service\UtilisateurManager;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
 use PHPUnit\Util\Json;
 use DateTime;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class UtilisateurController extends AbstractController {
 
+    public function __construct(
+        public FlashMessageService $flashMessageService, 
+        public UtilisateurManager $utilisateurManager,
+        public EntityManagerInterface $em
+        ) {}
 
-    #[Route('/user/me', name: 'app_user_me')]
-    public function me(): Response {
-        $u = $this->getUser();
-        
-    
-        return $this->render('utilisateur/profile.html.twig', [
+
+    #[Route('/user/info', name: 'app_user_info', methods: ['GET'])]
+    public function info(UtilisateurRepository $repository, #[CurrentUser] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurManagerInterface $utilisateurManager): Response {
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+        $form = $this->createForm(ModifierProfilType::class, $utilisateur);
+        $form->handleRequest($request);
+
+        return $this->render('utilisateur/modifierProfil.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'utilisateur' => $u
+            'form' => $form->createView(),
+            'utilisateur' => $utilisateur,
         ]);
         
     }
 
-    #[Route('/user/profile/{id}', name: 'app_user_profile')]
+    #[Route('/user/{id}/profile', name: 'app_user_profile')]
     public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
 
         $u = $utilisateurRepository->find($id);
@@ -163,7 +175,7 @@ class UtilisateurController extends AbstractController {
         }
     }
 
-    #[Route('/user/profile/{id}/edit', name: 'app_profile_edit')]
+    #[Route('/user/profile/{id}/edit', name: 'app_profile_edit', methods: ['POST'])]
     public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurManagerInterface $utilisateurManager): Response {
 
         if (!$utilisateur) {

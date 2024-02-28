@@ -55,7 +55,7 @@
 				<div class="public-profile__main--header-name">
 					<div class="">{{user.nom ~ " " ~ user.prenom }}</div>
 					{% if app.user == user %}
-						<a class='btn' href="{{path("app_profile_edit", { 'id' : user.getId() } )}}">Consulter</a>
+						<a class='btn' href="{{path("app_user_info")}}">Consulter</a>
 					{% endif %}
 				</div>
 				<div class="public-profile__main--header-bio">
