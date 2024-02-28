@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Demander la validation
+{% endblock %}
+
+{% block body %}
+    <section class="postulation-container">
+        <h1 class="page-title">Demander la validation</h1>
+
+        <div class="consequences-section">
+            <h2>Conséquences du lancement d'une demande de validation :</h2>
+
+        <ul>
+            <li>Pendant le processus de demande de validation, les données du festival telles que le nom, la description, etc., ainsi que les postes disponibles et les plages horaires d'ouverture, peuvent être modifiés.</li>
+            <li>Après validation, toute modification annulera la validation en cours, nécessitant une nouvelle demande pour appliquer les changements.</li>
+        </ul>
+
+
+
+
+        </div>
+
+        <form action="{{ path('app_festival_validation', {'id': festival.getId()}) }}" method="post">
+            <button name="" value="" class="gest_btn">Demander la validation</button>
+        </form>
+
+    </section>
+{% endblock %}

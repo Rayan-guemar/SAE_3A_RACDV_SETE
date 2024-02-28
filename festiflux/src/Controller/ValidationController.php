@@ -69,6 +69,37 @@ class ValidationController extends AbstractController {
         return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
     }
 
+    #[Route('festival/{id}/validation/page', name: 'app_festival_validation_page')]
+    public function getFestivalValidations(#[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, FlashMessageService $flashMessageService): Response {
+
+        if (!$festival) {
+            throw $this->createNotFoundException("Le festival n'existe pas");
+        }
+
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
+
+
+        if ($festival->getValid() == 1) {
+            $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+            return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
+        }
+       
+        return $this->render('validations/openValidation.html.twig', [
+            'festival' => $festival
+        ]);
+    }
+
+
+
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation', name: 'app_validation', methods: 'GET')]
     public function getPendingValidations(ValidationRepository $validationRepository): Response {
