@@ -96,19 +96,19 @@ const createTache = async (e: Event) => {
       <div class="flex-column flex-align-center">
 
         <label for="poste">Choisissez un poste</label>
-        <select ref="posteSelected" name="poste" @change="emitPosteChange">
+        <select ref="posteSelected" name="poste" @change="emitPosteChange" required>
           <option v-for="poste in postes" :value="poste.id">{{ poste.nom }}</option>
         </select>
 
       </div>
       <div class="flex-column flex-align-center">
         <label for="description">Remarque</label>
-        <input name="description" id="creneau-description" type="text">
+        <input name="description" id="creneau-description" type="text" required>
       </div>
       <div class="flex-column flex-align-center">
         <label for="nombre_benevole">Nombre de bénévoles nécessaires
         </label>
-        <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
+        <input name="nombre_benevole" id="creneau-nombre-benevole" type="number" required>
       </div>
       <!-- <div class="creneau-container">
         <div class="flex-column flex-align-center">
@@ -127,7 +127,7 @@ const createTache = async (e: Event) => {
 
       <div class="flex-column flex-align-center">
         <label for="lieuTache">Lieu du créneau</label>
-        <input type='text' name='creneau-lieu' id="creneau-lieu">
+        <input type='text' name='creneau-lieu' id="creneau-lieu" required>
       </div>
 
       <div class="flex-column flex-align-center">
