@@ -45,7 +45,7 @@
 					<h3>COMPTE</h3>
 					<ul>
 						{% if is_granted('ROLE_USER')  %}
-							<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_profile_edit", {id: app.user.id} )}}>{{ app.user.prenom }}</a>
+							<li><img src="{{ asset("icons/person.svg") }}" alt="Person icon"><a href={{path("app_user_profile", {id: app.user.id} )}}>{{ app.user.prenom }}</a>
 							</li>
 							<li><img src="{{ asset("icons/logout.svg") }}" alt="Logout icon"><a href={{path("app_auth_logout")}}>Se déconnecter</a>
 							</li>

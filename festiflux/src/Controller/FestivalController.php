@@ -346,7 +346,7 @@ class FestivalController extends AbstractController {
         return $this->render('festival/map.html.twig');
     }
 
-    #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
+    #[Route('/festival/{id}/benevoles', name: 'app_festival_benevoles')]
     public function showDemandes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
         if (!$festival) {
@@ -361,7 +361,7 @@ class FestivalController extends AbstractController {
         $benevoles = $festival->getBenevoles();
         $responsables = $festival->getResponsables();
 
-        return $this->render('demandes_benevolat/demandesBenevole.html.twig', [
+        return $this->render('benevoles/benevoles.html.twig', [
             'controller_name' => 'FestivalController',
             'demandes' => $festival->getDemandesBenevole(),
             'idFest' => $id,
