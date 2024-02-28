@@ -688,19 +688,25 @@ h2 {
 
 .change-date-btn {
     position: absolute;
-    height: 50px;
-    width: 50px;
-    background-color: rgb(125, 179, 255);
+    height: 20px;
+    width: 20px;
+    // background-color: white;
+    box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.5);
+    background-image: url('../../public/icons/resize.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: white;
     left: 50%;
     border-radius: 50%;
+    z-index: 3;
 }
 
 #change-date-btn-down {
     bottom: 0;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 50%);
 }
 
 #change-date-btn-up {
     top: 0;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, -50%);
 }

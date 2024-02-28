@@ -119,7 +119,7 @@ const toggleModeAffectation = () => {
   modeAffectation.value = !modeAffectation.value;
 };
 
-const newTacheName = ref("");
+const newTacheName = ref("Aucun poste sélectionné");
 const newTacheStart = ref(new Date());
 const newTacheEnd = ref(new Date());
 
@@ -222,6 +222,12 @@ const startCreatingTache = (e: MouseEvent, d: Date) => {
   wantsToCreateTache.value = false;
 };
 
+const updateCurrentPosteName = (posteName: string) => {
+  console.log(posteName);
+  console.log('test');
+  newTacheName.value = posteName;
+};
+
 const stopCreatingTache = (tache?: TacheCreateData) => {
   creatingTache.value = false;
   if (!tache) return;
@@ -279,6 +285,61 @@ onMounted(async () => {
   await Promise.all(promises);
   loading.value = false;
 });
+
+const startResizingStart = (e: MouseEvent) => {
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const listener = (e: MouseEvent) => {
+    const mousePos = e.clientY - divY;
+    let nbOfQuarters = Math.floor(mousePos / divH * 96);
+    if (nbOfQuarters < 0) {
+      nbOfQuarters = 0;
+    } else if (nbOfQuarters > newTacheEnd.value.getHours() * 4 + newTacheEnd.value.getMinutes() / 15 - 4) {
+      nbOfQuarters = newTacheEnd.value.getHours() * 4 + newTacheEnd.value.getMinutes() / 15 - 4;
+    }
+    const startDate = new Date(newTacheStart.value);
+    startDate.setHours(Math.floor(nbOfQuarters / 4));
+    startDate.setMinutes((nbOfQuarters % 4) * 15);
+    newTacheStart.value = startDate;
+  };
+  
+  document.addEventListener('mousemove', listener);
+  document.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', listener);
+  });
+};
+
+const startResizingEnd = (e: MouseEvent) => {
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const listener = (e: MouseEvent) => {
+    const mousePos = e.clientY - divY;
+    let nbOfQuarters = Math.floor(mousePos / divH * 96);
+    if (nbOfQuarters >= 24 * 4) {
+      const endDate = new Date(newTacheEnd.value);
+      endDate.setHours(23);
+      endDate.setMinutes(59);
+      newTacheEnd.value = endDate;
+    } else {
+      if (nbOfQuarters < newTacheStart.value.getHours() * 4 + newTacheStart.value.getMinutes() / 15 + 4) {
+        nbOfQuarters = newTacheStart.value.getHours() * 4 + newTacheStart.value.getMinutes() / 15 + 4;
+      }
+      const endDate = new Date(newTacheEnd.value);
+      endDate.setHours(Math.floor(nbOfQuarters / 4));
+      endDate.setMinutes((nbOfQuarters % 4) * 15);
+      newTacheEnd.value = endDate;
+    }
+  };
+  
+  document.addEventListener('mousemove', listener);
+  document.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', listener);
+  }); 
+};
 
 const vuePerso = ref(false);
 
@@ -350,21 +411,22 @@ console.log(props.isOrgaOrResp);
             "
           />
           <div
-            @mousedown="() => console.log('test')"
             v-if="creatingTache && day.getDay() === newTacheStart.getDay()" 
             class="task new-task"
             :style="{
               top: (newTacheStart.getHours() * 4 + newTacheStart.getMinutes() / 15) / (4 * 24) * 100 + '%',
               height: ((newTacheEnd.getHours() - newTacheStart.getHours()) * 4 + (newTacheEnd.getMinutes() - newTacheStart.getMinutes()) / 15) / (4 * 24) * 100 + '%'
             }"
+            style="overflow: visible;
+            z-index: 100;"
           >
-            <div @mousedown="() => { console.log('caca') }" id="change-date-btn-down" class="change-date-btn"></div>
-            <div id="change-date-btn-up" class="change-date-btn"></div>
+            <div @mousedown="startResizingStart" id="change-date-btn-up" class="change-date-btn"></div>
+            <div @mousedown="startResizingEnd" id="change-date-btn-down" class="change-date-btn"></div>
             <div
               class="task-text"
               style="width: 100%"
             >
-              <div class="name">Aucun poste</div>
+              <div class="name">{{ newTacheName }}</div>
               <div class="tache">{{ displayHoursMinutes(newTacheStart) + ' - ' + displayHoursMinutes(newTacheEnd) }}</div>
             </div>
           </div>
@@ -449,19 +511,23 @@ console.log(props.isOrgaOrResp);
     </div>
   </div>
 
-  <Modal v-if="false" @close="stopCreatingTache">
-    <TacheForm
-      class="tache-form"
-      :festID="festival.festID"
-      :title="festival.title"
-      :dateDebut="festival.dateDebut"
-      :dateFin="festival.dateFin"
-      :isOrgaOrResp="festival.isOrgaOrResp"
-      :postes="postes"
-      :update-taches="updateTaches"
-      :close="stopCreatingTache"
-    />
-  </Modal>
+  <TacheForm
+    v-if="creatingTache"
+    class="tache-form right"
+    :festID="festival.festID"
+    :title="festival.title"
+    :dateDebut="newTacheStart"
+    :dateFin="newTacheEnd"
+    :isOrgaOrResp="festival.isOrgaOrResp"
+    :postes="postes"
+    :update-taches="updateTaches"
+    :close="stopCreatingTache"
+    @posteChange="updateCurrentPosteName"
+  />
+
+  <!-- <Modal v-if="false" @close="stopCreatingTache">
+    
+  </Modal> -->
   <Modal v-if="creatingPlage" @close="stopCreatingPlage">
     <PlageHoraireForm
       :festivalId="festID"
