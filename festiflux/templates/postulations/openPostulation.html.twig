@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ouvrir à la postulation
+{% endblock %}
+
+{% block body %}
+    <section class="postulation-container">
+        <h1 class="page-title">Ouvrir à la postulation</h1>
+
+        <div class="consequences-section">
+            <h2>Conséquences de l'ouverture du festival :</h2>
+
+            <ul>
+                <li>Les données du festival telles que le nom, la description, etc., seront figées et ne pourront plus être modifiées après la validation.</li>
+                <li>Les postes disponibles pour le festival ne pourront plus être modifiés.</li>
+                <li>Les plages horaires d'ouverture du festival seront définitives et ne pourront plus être ajustées.</li>
+            </ul>
+        </div>
+
+        <form action="{{ path('app_festival_open', {'id': festival.getId()}) }}" method="post">
+            <button name="" value="" class="gest_btn">Ouvrir quand même</button>
+        </form>
+
+        <div class="links-section">
+            <h2>Liens utiles :</h2>
+
+            <!-- Lien pour consulter la liste des demandes -->
+            <a href="{{ path('app_festival_postulations', { 'id' : festival.getId()}) }}">Consulter la liste des demandes</a>
+        </div>
+    </section>
+{% endblock %}

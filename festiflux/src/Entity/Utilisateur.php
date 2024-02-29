@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\InverseJoinColumn;
 use Doctrine\DBAL\Types\Types;
 
+
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
@@ -100,6 +101,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Contact::class, orphanRemoval: true)]
     private Collection $contacts;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Skills::class)]
+    private Collection $skills;
+
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Indisponibilite::class, orphanRemoval: true)]
+    private Collection $indisponibilites;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
@@ -112,6 +119,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->postulations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->skills = new ArrayCollection();
+        $this->indisponibilites = new ArrayCollection();
     }
 
     /**
@@ -526,6 +535,66 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($contact->getUtilisateur() === $this) {
                 $contact->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skills>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skills $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skills $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            // set the owning side to null (unless already changed)
+            if ($skill->getUser() === $this) {
+                $skill->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Indisponibilite>
+     */
+    public function getIndisponibilites(): Collection
+    {
+        return $this->indisponibilites;
+    }
+
+    public function addIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if (!$this->indisponibilites->contains($indisponibilite)) {
+            $this->indisponibilites->add($indisponibilite);
+            $indisponibilite->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if ($this->indisponibilites->removeElement($indisponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($indisponibilite->getUtilisateur() === $this) {
+                $indisponibilite->setUtilisateur(null);
             }
         }
 

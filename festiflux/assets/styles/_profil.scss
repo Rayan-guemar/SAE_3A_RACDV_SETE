@@ -22,12 +22,14 @@
 }
 
 .info-box-wrapper {
-  margin-top: 130px;
+  margin-top: 100px;
+  margin-bottom: 50px;
+  padding: 20px;
+  padding-top: 50px;
 
   position: relative;
 
   width: 80%;
-  height: 70%;
 
   display: flex;
   flex-direction: column;
@@ -101,17 +103,15 @@ h1 {
       position: relative;
     }
 
-    input {
-      width: 100%;
-    }
   }
 }
 
 .info-border {
-  border-radius: 15px;
-  border: 2px solid $grey-primary;
-  padding: 15px;
-  margin: 0 10px;
+  border: none;
+  padding: 5px;
+  margin: 0 20px;
+  background-color: white;
+  color: black;
 
   &.editing {
     font-size: large;
@@ -193,7 +193,7 @@ div.biographie {
 }
 
 .edit-button {
-  display: flex;
+  display: none;
   padding: 20px;
   border-radius: 20px;
   background: #000;
@@ -201,6 +201,48 @@ div.biographie {
   font-size: large;
   font-weight: 700;
   cursor: pointer;
+  margin: 20px auto 20px auto;
+
+}
+
+.df {
+  display: flex;
+  flex-direction: row;
+  color: black
+}
+
+.pen {
+  cursor:pointer;
+  padding: 5px 8px ;
+  font-size: 15px;
+  border-radius: 10px;
+  color: black;
+  z-index: 10;
+  margin-left: 10px;
+  border: solid 2px black;
+}
+
+edit-hover {
+  border: solid 2px black;
+  border-radius: 5px;
+}
+
+.pen-hover {
+  padding: 5px 8px ;
+  font-size: 15px;
+  border-radius: 10px;
+  z-index: 10;
+  margin-left: 10px;
+  border: solid 2px #463BC3;
+}
+
+
+.form-edit {
+
+}
+
+.pen-img {
+  width: 20px;
 }
 
 .manage-contact-button {

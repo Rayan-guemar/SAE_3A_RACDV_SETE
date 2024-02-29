@@ -36,29 +36,50 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
+use App\Service\UtilisateurManager;
 use Symfony\Component\Validator\Constraints\Date;
 use App\Service\UtilisateurManagerInterface;
 use PHPUnit\Util\Json;
 use DateTime;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class UtilisateurController extends AbstractController {
 
-    #[Route('/user/profile/{id}', name: 'app_user_profile')]
+    public function __construct(
+        public FlashMessageService $flashMessageService, 
+        public UtilisateurManager $utilisateurManager,
+        public EntityManagerInterface $em
+        ) {}
+
+
+    #[Route('/user/info', name: 'app_user_info', methods: ['GET'])]
+    public function info(UtilisateurRepository $repository, #[CurrentUser] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurManagerInterface $utilisateurManager): Response {
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+        $form = $this->createForm(ModifierProfilType::class, $utilisateur);
+        $form->handleRequest($request);
+
+        return $this->render('utilisateur/modifierProfil.html.twig', [
+            'controller_name' => 'UtilisateurController',
+            'form' => $form->createView(),
+            'utilisateur' => $utilisateur,
+        ]);
+        
+    }
+
+    #[Route('/user/{id}/profile', name: 'app_user_profile')]
     public function profile(int $id, UtilisateurRepository $utilisateurRepository): Response {
 
         $u = $utilisateurRepository->find($id);
         if (!$u)
             throw $this->createNotFoundException("L'utilisateur n'existe pas");
 
-        $loggedInUser = $this->getUser();
-
-        $isCurrentUser = $loggedInUser && $loggedInUser->getUserIdentifier() != $u->getUserIdentifier();
-
-        return $this->render('utilisateur/profile.html.twig', [
+        return $this->render('utilisateur/public_profile.html.twig', [
             'controller_name' => 'UtilisateurController',
-            'utilisateur' => $u,
-            'isCurrentUser' => $isCurrentUser,
+            'user' => $u
         ]);
+        
     }
 
     #[Route('/user/festivals', name: 'app_user_festivals', methods: ['GET'])]
@@ -154,24 +175,21 @@ class UtilisateurController extends AbstractController {
         }
     }
 
-    #[Route('/user/profile/{id}/edit', name: 'app_profile_edit')]
+    #[Route('/user/profile/{id}/edit', name: 'app_profile_edit', methods: ['POST'])]
     public function edit(UtilisateurRepository $repository, #[MapEntity] Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, UtilisateurManagerInterface $utilisateurManager): Response {
 
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
-
-
         $form = $this->createForm(ModifierProfilType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $photoProfil = $form["fichierPhotoProfil"]->getData();
             $utilisateurManager->processNewUtilisateur($utilisateur, $photoProfil);
             $em->flush();
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
-            return $this->redirectToRoute('app_user_profile', ['id' => $utilisateur->getId()]);
+            return $this->redirectToRoute('app_profile_edit', ['id' => $utilisateur->getId()]);
         }
 
         return $this->render('utilisateur/modifierProfil.html.twig', [

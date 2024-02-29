@@ -44,6 +44,19 @@ export class Backend {
 	}
 
 	/**
+	 * Effectue une requête HTTP DELETE à l'URL spécifiée.
+	 * @param {string} URL - L'URL à laquelle effectuer la requête.
+	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
+	 * @private
+	 * @static
+	 * @param URL
+	 * @returns
+	 */
+	static async #delete(URL: string) {
+		return await this.#fetch(URL, { method: 'DELETE' });
+	}
+
+	/**
 	 * Récupère les postes liés à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
 	 * @returns {Promise<Poste[]>} - Une promesse qui résout avec les données des postes.
@@ -140,6 +153,15 @@ export class Backend {
 		return Backend.#get(URL);
 	}
 
+	static deleteTache(festivalId: ID, tache: Tache) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_delete_tache', {
+			id: festivalId,
+			idTache: tache.id
+		});
+		return Backend.#delete(URL);
+	}
+
 	/**
 	 * Ajoute une tâche à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
@@ -180,12 +202,6 @@ export class Backend {
 		}));
 
 		return res;
-	}
-
-	static async addIndispo(festivalId: ID, creneau: Creneau) {
-		// @ts-ignore
-		const URL = Routing.generate('app_festival_add_disponibilities', { id: festivalId });
-		return await Backend.#post(URL, creneau as RequestInit);
 	}
 
 	/**
@@ -278,5 +294,34 @@ export class Backend {
 		const res = [...data].map((o: any) => o as Preference);
 
 		return res;
+	}
+
+	static async getUserIndispos(festivalId: ID, userId: ID): Promise<Creneau[]> {
+		// @ts-ignore
+		console.log(Routing.getRoutes());
+		// @ts-ignore
+		const URL = Routing.generate('app_user_indispo', { festivalId: festivalId, userId: userId });
+		const data = await Backend.#get(URL);
+		console.log('nbbbbbb', data);
+
+		const res = [...data].map(
+			(o: any) =>
+				({
+					id: o.id,
+					debut: new Date(o.debut),
+					fin: new Date(o.fin)
+				} as Creneau)
+		);
+		console.log('aaaa', res);
+		return res;
+	}
+
+	static async addUserIndispo(festivalId: ID, userId: ID, creneau: Creneau) {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_indispo_add', { festivalId: festivalId, userId: userId });
+		return await Backend.#post(URL, {
+			debut: getDateFromLocale(creneau.debut).toISOString(),
+			fin: getDateFromLocale(creneau.fin).toISOString()
+		} as RequestInit);
 	}
 }

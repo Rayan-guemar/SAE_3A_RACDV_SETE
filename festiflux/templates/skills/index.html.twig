@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Compétences de {{ utilisateur.nom }} {{ utilisateur.prenom }}
+{% endblock %}
+
+{% block body %}
+    <h1>Compétences de {{ utilisateur.nom }} {{ utilisateur.prenom }}</h1>
+
+    <!-- Affichage des compétences sous forme de cartes -->
+    <div class="contact-section">
+        {% if skills is not empty %}        
+            {% for skill in skills %}
+            <div>
+                {% include 'skills/skill.html.twig' with {
+                    skill: {
+                        name: skill.name,
+                        level: skill.getLevelName()
+                    }
+                }%}
+                <form type="submit" method="GET" action="{{path('app_user_skills_delete', {id: skill.getId()})}}"  >
+                    <button class="delete-btn"><img src="{{asset("/img/contacts/trash.png")}}" alt=""></button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucun moyen de contact n'a été ajouté.</p>
+        {% endif %}
+    </div>
+
+
+    <!-- Formulaire pour ajouter une nouvelle compétence -->
+    <div class="add-contact-form">
+        <h2>Ajouter une compétence</h2>
+        <form action="{{path('app_user_skills_add')}}" method="post">
+            <label for="level">Niveau de la compétence :</label>
+            <select id="type" name="level">
+                <!-- Ajoutez d'autres options si nécessaire -->
+                <option value="1">Débutant</option>
+                <option value="2">Avancé</option>
+                <option value="3">Expert</option>
+            </select>
+
+            <label for="name">Compétence :</label>
+            <input type="text" id="value" name="name" placeholder="Exemple : Chant...">
+
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
+{% endblock %}

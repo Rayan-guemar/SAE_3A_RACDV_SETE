@@ -16,6 +16,7 @@ type Props = {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits();
 
 const festival = ref<Festival>({
   festID: props.festID,
@@ -27,6 +28,7 @@ const festival = ref<Festival>({
 
 const startTache = ref<HTMLInputElement>();
 const endTache = ref<HTMLInputElement>();
+const posteSelected = ref<HTMLSelectElement>();
 
 function changeHandlerStart() {
 
@@ -52,11 +54,17 @@ function changeHandlerEnd() {
   }
 }
 
+const emitPosteChange = () => {
+  const posteName = posteSelected.value?.selectedOptions[0].text;
+  console.log(posteName);
+  emit('posteChange', posteName);
+}
+
 const createTache = async (e: Event) => {
   const formData = new FormData(e.target as HTMLFormElement)
 
-  const debut = new Date(formData.get("start") + "");
-  const fin = new Date(formData.get("end") + "");
+  const debut = new Date(props.dateDebut);
+  const fin = new Date(props.dateFin);
   const description = formData.get('description') + "";
   const nbBenevole = +(formData.get('nombre_benevole') + "");
   const posteId = formData.get('poste') + "";
@@ -83,27 +91,26 @@ const createTache = async (e: Event) => {
 </script>
 
 <template>
-  <div class="planning-form">
     <form @submit.prevent="createTache">
-      <h2>Création d'un créneau</h2>
+      <h2>Nouveau créneau</h2>
       <div class="flex-column flex-align-center">
 
         <label for="poste">Choisissez un poste</label>
-        <select name="poste" id="creneau-poste-select">
+        <select ref="posteSelected" name="poste" @change="emitPosteChange" required>
           <option v-for="poste in postes" :value="poste.id">{{ poste.nom }}</option>
         </select>
 
       </div>
       <div class="flex-column flex-align-center">
         <label for="description">Remarque</label>
-        <input name="description" id="creneau-description" type="text">
+        <input name="description" id="creneau-description" type="text" required>
       </div>
       <div class="flex-column flex-align-center">
         <label for="nombre_benevole">Nombre de bénévoles nécessaires
         </label>
-        <input name="nombre_benevole" id="creneau-nombre-benevole" type="number">
+        <input name="nombre_benevole" id="creneau-nombre-benevole" type="number" required>
       </div>
-      <div class="creneau-container">
+      <!-- <div class="creneau-container">
         <div class="flex-column flex-align-center">
           <label for="start-creneau">Début du créneau</label>
           <input name="start" id="start-creneau" ref="startTache" type="datetime-local"
@@ -116,11 +123,11 @@ const createTache = async (e: Event) => {
             :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateFin"
             @change="changeHandlerEnd">
         </div>
-      </div>
+      </div> -->
 
       <div class="flex-column flex-align-center">
         <label for="lieuTache">Lieu du créneau</label>
-        <input type='text' name='creneau-lieu' id="creneau-lieu">
+        <input type='text' name='creneau-lieu' id="creneau-lieu" required>
       </div>
 
       <div class="flex-column flex-align-center">
@@ -133,5 +140,4 @@ const createTache = async (e: Event) => {
         <button id="cancel-creneau-btn" class="btn" @click="close()">Annuler</button>
       </div>
     </form>
-  </div>
 </template>

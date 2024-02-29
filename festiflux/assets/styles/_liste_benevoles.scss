@@ -1,57 +1,47 @@
 /* Style de base pour le tableau */
 table {
   width: 80%;
-  /* Largeur du tableau */
-  margin: 40px;
+  margin: 20px auto; /* Centrer le tableau */
   border-collapse: collapse;
-  border: 1px solid black;
+  background-color: #fff; /* Fond blanc */
+
+  .btn-primary {
+    margin: 0.3rem 0;
+  }
 }
 
 /* Style des cellules du tableau */
 td,
 th {
-  padding: 8px;
-  /* Espace intérieur autour du contenu de la cellule */
+  padding: 12px;
   text-align: center;
-  /* Alignement du texte au centre */
+  border: 1px solid #ddd; /* Couleur de bordure plus claire */
+  color: #000; /* Couleur du texte noire */
 }
 
 /* Style de la première ligne (en-tête) du tableau */
 th {
-  background: white;
+  background-color: #fff; /* Fond blanc */
   font-weight: bold;
-  /* Texte en gras */
-  color: black;
-  border-right: solid 2px #000000;
-  border-bottom: solid 2px #000000;
+  color: black; /* Couleur du texte en bleu primaire */
 }
 
-/* Style pour les cellules impaires (ligne de couleur différente) */
-tr:nth-child(odd) {
-  background-color: #363636;
-  /* Couleur de fond différente */
-  color: white;
-}
+/* Style pour toutes les cellules (pas de changement de couleur en fonction de la parité) */
+tr td {
+  background-color: #fff; /* Fond blanc */
+  border-radius: 6px; /* Border radius pour les coins arrondis */
+  margin: 4px 0; /* Espacement entre les éléments */
 
-/* Style pour les cellules impaires (ligne de couleur différente) */
-tr:nth-child(even) {
-  background-color: #000000;
-  /* Couleur de fond différente */
-  color: white;
 }
 
 @media screen and (max-width: 768px) {
   th {
     font-size: 80%;
-    width: 20%;
-    padding: 3px;
   }
 }
 
 @media screen and (max-width: 496px) {
   th {
     font-size: 60%;
-    width: 20%;
-    padding: 1px;
   }
 }

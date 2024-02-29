@@ -14,11 +14,14 @@
 			{{ utilisateur.nom }}
 			{{ utilisateur.prenom }}
 		</h1>
-
-		<div class="info-box-wrapper">
-			<div class="image_profile">
-				<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
-			</div>
+			<div class="info-box-wrapper">
+				<div class="image_profile">
+					<img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+					{% else %}
+						src="{{ asset("uploads/user/anonyme.png") }}"
+							{% endif %}>
+				</div>
 			<div class="info-box">
 				<div class="info-row">
 					<div class="info-border">
@@ -79,6 +82,28 @@
 				<a class="manage-contact-button" href={{path("app_user_contacts")}}>
 					<span>
 						Gérer mes contacts
+					</span>
+				</a>
+		</div>
+		
+		<div class="contact-section">
+			{% set skills = utilisateur.getSkills() %}
+			{% if skills is not empty %}        
+				{% for skill in skills %}
+					<div>
+						{% include 'skills/skill.html.twig' with {
+							skill: {
+								name: skill.name,
+								level: skill.getLevelName()
+							}
+						}%}
+				{% endfor %}
+			{% else %}
+				<p>Aucune compétence n'a été ajoutée.</p>
+			{% endif %}
+				<a class="manage-contact-button" href={{path("app_user_skills")}}>
+					<span>
+						Gérer mes compétences
 					</span>
 				</a>
 		</div>
