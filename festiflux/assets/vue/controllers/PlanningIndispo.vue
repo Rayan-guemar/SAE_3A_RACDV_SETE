@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { calculCharge, dateDiff, getDateHours2Digits } from '../../scripts/utils';
 import { VNodeRef, ref, onMounted, computed } from 'vue';
-import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID } from '../../scripts/types';
+import { Tache as TacheType, Festival, Poste, TacheCreateData, Benevole, Creneau, ID, Plage, Indisponibilite } from '../../scripts/types';
 import { Backend } from '../../scripts/Backend';
 import Tache from './Tache.vue';
 import { sortTachesByOverriding } from '../../scripts/tache';
-import Indispo from './Indispo.vue';
 import PlageHoraire from './PlageHoraire.vue';
+import Indispo from './Indispo.vue';
 
 type Props = {
 	festID: number;
@@ -18,6 +18,7 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
 
 const festival = ref<Festival>({
 	festID: props.festID,
@@ -33,10 +34,11 @@ const dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi',
 const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 const daysDiv = ref<HTMLDivElement>();
 
-const indispos = ref<Creneau[]>([]);
-const plages = ref<Creneau[]>([]);
+const indispos = ref<Indisponibilite[]>([]);
+const plages = ref<Plage[]>([]);
 
 const loading = ref(true);
+const modeCreation = ref(false);
 const creatingIndispo = ref(false);
 
 const newIndispo = ref<Creneau>({
@@ -45,6 +47,7 @@ const newIndispo = ref<Creneau>({
 });
 
 const startCreatingIndispo = (e: MouseEvent, d: Date) => {
+	if (!modeCreation.value) return;
 	if (creatingIndispo.value || props.isOrga) return;
 
 	const div = daysDiv.value;
@@ -137,16 +140,26 @@ const createIndispo = async () => {
 	console.log('éééé', 2);
 
 	await Backend.addUserIndispo(festival.value.festID, props.userId, newIndispo.value);
-	indispos.value.push(newIndispo.value);
+	indispos.value.push({ id: -1, ...newIndispo.value });
 	getIndispos();
 	creatingIndispo.value = false;
+	modeCreation.value = false;
 };
 
+const cancelIndispo = () => {
+	creatingIndispo.value = false;
+};
 const getIndispos = async () => {
 	const res = await Backend.getUserIndispos(festival.value.festID, props.userId);
 	if (res) {
 		indispos.value = res;
 	}
+};
+
+const handleDeleteIndispo = async (indispo: Indisponibilite) => {
+	indispos.value = indispos.value.filter(i => i.id !== indispo.id);
+	await Backend.deleteIndispo(indispo);
+	getIndispos();
 };
 
 const getPlagesHoraires = async () => {
@@ -232,8 +245,8 @@ onMounted(async () => {
 						<div @mousedown="startResizingEnd" id="change-date-btn-down" class="change-date-btn"></div>
 						{{ `${getDateHours2Digits(newIndispo.debut)} - ${getDateHours2Digits(newIndispo.fin)}` }}
 					</div>
-					<PlageHoraire v-for="creneauWithPos of plages.filter(c => new Date(c.debut).getDate() === day.getDate())" :creneau="creneauWithPos" />
-					<Indispo v-for="creneauWithPos of indispos.filter(c => new Date(c.debut).getDate() === day.getDate())" :creneau="creneauWithPos" />
+					<PlageHoraire v-for="p of plages.filter(c => new Date(c.debut).getDate() === day.getDate())" :plage="p" :can-delete="false" />
+					<Indispo v-for="i of indispos.filter(c => new Date(c.debut).getDate() === day.getDate())" :indispo="i" @delete="(_i) => handleDeleteIndispo(_i)" />
 					<!-- <Tache /> -->
 				</div>
 			</div>
@@ -257,9 +270,26 @@ onMounted(async () => {
 					<div class="legend-label">Indisponibilités</div>
 				</div>
 			</div>
-			<div class="tooltip">
-				<span class="tooltipText">Cliquer ici pour ajouter l'indisponiblité</span>
-				<div v-if="creatingIndispo" @click="createIndispo()" class="btn">Ajouter</div>
+			<div class="tooltip"  v-if="creatingIndispo">
+				<span class="tooltipText">Cliquer pour ajouter l'indisponibilité</span>
+				<div @click="createIndispo()" class="btn">Ajouter</div>
+			</div>
+			<div class="tooltip" v-if="creatingIndispo">
+				<span class="tooltipText">Cliquer annuler </span>
+				<div @click="cancelIndispo()" class="btn">Annuler</div>
+			</div>
+
+				
+			<div v-if="modeCreation  && !creatingIndispo">Cliquer pour ajouter une indisponibilité</div>
+			<div class="tooltip" v-if="modeCreation  && !creatingIndispo">
+				<span class="tooltipText">Cliquer pour annuler </span>
+				<div @click="modeCreation=false" class="btn">Annuler</div>
+			</div>
+			
+
+			<div class="tooltip" v-if="!modeCreation">
+				<span class="tooltipText">Cliquer commencer l'ajout </span>
+				<div @click="modeCreation = true" class="btn">Ajouter</div>
 			</div>
 		</div>
 	</div>

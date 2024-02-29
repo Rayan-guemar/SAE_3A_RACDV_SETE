@@ -139,7 +139,11 @@ const createPlage = async () => {
 	creatingPlage.value = false;
 	modeCreation.value = false;
 };
-
+const handleDeletePlage = async (plage: Plage) => {
+	plages.value = plages.value.filter(p => p.id !== plage.id);
+	await Backend.deletePlageHoraire(plage);
+	getPlagesHoraires();
+}
 const cancelPlage = () => {
 	creatingPlage.value = false;
 };
@@ -230,7 +234,7 @@ onMounted(async () => {
 						<div @mousedown="startResizingEnd" id="change-date-btn-down" class="change-date-btn"></div>
 						{{ `${getDateHours2Digits(newPlage.debut)} - ${getDateHours2Digits(newPlage.fin)}` }}
 					</div>
-					<PlageHoraire v-for="p of plages.filter(c => new Date(c.debut).getDate() === day.getDate())" :plage="p" @reload-plages="getPlagesHoraires()"  />
+					<PlageHoraire v-for="p of plages.filter(c => new Date(c.debut).getDate() === day.getDate())" :plage="p" @delete="(_p) => handleDeletePlage(_p)" :can-delete="true"  />
 				</div>
 			</div>
 		</div>
@@ -256,7 +260,7 @@ onMounted(async () => {
 			</div>
 
 				
-			<div v-if="modeCreation  && !creatingPlage">Cliquer pour ajouté une plage</div>
+			<div v-if="modeCreation  && !creatingPlage">Cliquer pour ajouter une plage</div>
 			<div class="tooltip" v-if="modeCreation  && !creatingPlage">
 				<span class="tooltipText">Cliquer pour annuler </span>
 				<div @click="modeCreation=false" class="btn">Annuler</div>

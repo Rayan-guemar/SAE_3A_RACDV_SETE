@@ -7,24 +7,23 @@ import { Backend } from '../../scripts/Backend';
 
 interface Props {
 	plage: Plage;
+	canDelete: boolean;
 }
 const props = defineProps<Props>();
 
 const deleting = ref(false);
 const emit = defineEmits<{
-	(e: 'reloadPlages'): void;
-	(e: 'deletingPlage'): void;
+	(e: 'delete', plage: Plage): void;
 }>();
 
 const deletePlage = async () => {
 	await Backend.deletePlageHoraire(props.plage);
-	emit('reloadPlages');
+	emit('delete', props.plage);
 	deleting.value = false;
 };
 
 const startDeleting = () => {
 	deleting.value = true;
-	emit('deletingPlage');
 };
 
 const ajoutIndispo = ref(false);
@@ -60,7 +59,7 @@ let fin = new Date(props.plage.fin);
 		}"
 		@click="e => addIndispo()">
 		{{ `${getDateHours2Digits(debut)} - ${getDateHours2Digits(fin)}`}}
-		<div ref="deleteBtn" class="delete" @click.prevent="() => startDeleting()">
+		<div  v-if="canDelete" ref="deleteBtn" class="delete" @click.prevent="() => startDeleting()">
 			<img src="../../../public/icons/delete.svg" alt="" />
 		</div>
 	</div>

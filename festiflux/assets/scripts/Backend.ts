@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference, Plage } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference, Plage, Indisponibilite } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -312,7 +312,7 @@ export class Backend {
 		return res;
 	}
 
-	static async getUserIndispos(festivalId: ID, userId: ID): Promise<Creneau[]> {
+	static async getUserIndispos(festivalId: ID, userId: ID): Promise<Indisponibilite[]> {
 		// @ts-ignore
 		console.log(Routing.getRoutes());
 		// @ts-ignore
@@ -326,7 +326,7 @@ export class Backend {
 					id: o.id,
 					debut: new Date(o.debut),
 					fin: new Date(o.fin)
-				} as Creneau)
+				} as Indisponibilite)
 		);
 		console.log('aaaa', res);
 		return res;
@@ -339,5 +339,11 @@ export class Backend {
 			debut: getDateFromLocale(creneau.debut).toISOString(),
 			fin: getDateFromLocale(creneau.fin).toISOString()
 		} as RequestInit);
+	}
+
+	static async deleteIndispo({ id }: Indisponibilite) {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_indispo_delete', { id });
+		return await Backend.#get(URL);
 	}
 }
