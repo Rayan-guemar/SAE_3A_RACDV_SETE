@@ -180,7 +180,7 @@
                 cursor: pointer;
                 z-index: 99 !important;
                 width: 98% !important;
-                left: 0% !important;
+                left: 0%;
 
                 .delete {
                     display: flex;
@@ -825,4 +825,8 @@ h2 {
 #change-date-btn-up {
     top: 0;
     transform: translate(-50%, -50%);
+}
+
+.new-task:hover {
+    left: 50% !important;
 }
