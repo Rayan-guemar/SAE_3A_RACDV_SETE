@@ -30,9 +30,9 @@
                     <td>{{ validation.getFestival().getLieu() }}</td>
                     <td>
                         <form action="{{ path('app_validation_accept', {'id': validation.id}) }}" method="post">
-                            <button class="">Accepter</button>
+                            <button class="">{{ 'accept'|trans({},'demandefest') }}</button>
                         </form>
-                        <button class="btn-open" data-validation-id="{{ validation.id }}">Refuser</button>
+                        <button class="btn-open" data-validation-id="{{ validation.id }}">{{ 'reject'|trans({},'demandefest') }}</button>
                     </td>
                 </tr>
 

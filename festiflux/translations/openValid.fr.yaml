@@ -1,0 +1,6 @@
+title: 'Demander la validation'
+h1: 'Demander la validation'
+h2: "Conséquences du lancement d'une demande de validation :"
+li: "Pendant le processus de demande de validation, les données du festival telles que le nom, la description, etc., ainsi que les postes disponibles et les plages horaires d'ouverture, peuvent être modifiés."
+li2: "Après validation, toute modification annulera la validation en cours, nécessitant une nouvelle demande pour appliquer les changements."
+btn: "Demander la validation"

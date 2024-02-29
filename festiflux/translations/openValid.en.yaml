@@ -1,0 +1,6 @@
+title: 'Request validation'
+h1: 'Request validation'
+h2: "Consequences of requesting validation:"
+li: "During the validation request process, the festival's data such as name, description, etc., as well as available positions and opening hours, can be modified."
+li2: "After validation, any modification will cancel the ongoing validation, requiring a new request to apply the changes."
+btn: "Request validation"
