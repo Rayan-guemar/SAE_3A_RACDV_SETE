@@ -10,3 +10,7 @@ void: "Aucun moyen de contact n'a été ajouté."
 managecontact: "Gérer mes moyens de contact"
 competanceVoid: "Aucune compétence n'a été ajoutée."
 managecompetance: "Gérer mes compétences"
+contact: 'Contacts'
+visit: 'Consulter'
+experience: 'Expérience'
+experienceVoid: "Aucune expérience n'a été ajoutée."

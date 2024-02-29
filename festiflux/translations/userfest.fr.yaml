@@ -5,3 +5,11 @@ titles:
 subtitles:
   volontary_fest: 'Les festivals auxquels je participe :'
   manager_fest: "Les festivals que j'organise :"
+tooltip:
+  modify: 'Modifier votre festival'
+  volun: 'Gérer les postulations'
+  suplanning: 'Visualiser/Gérer le planning'
+  managefest: ' Gérer votre festival'
+  fest: 'Présentation du festival'
+  pref: 'Ajouter ses préférences'
+  planning: 'Visualiser le planning'

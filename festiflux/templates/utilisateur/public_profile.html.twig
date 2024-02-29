@@ -12,7 +12,7 @@
 			</div>
 			<div class="public-profile__side--infos">
 				<div class="public-profile__side--infos-address">
-					<h3>Adresse
+					<h3>{{ 'address'|trans({}, 'profil') }}
 					</h3>
 					<div class="contact-section">
 						{{user.adresse}}
@@ -20,10 +20,10 @@
 				</div>
 				<div class="public-profile__side--infos-contacts">
 					<div class="public-profile-title flex-row">
-						<h3>Contacts</h3>
+						<h3>{{ 'contact'|trans({}, 'profil') }}</h3>
 						{% if app.user == user %}
 						<div class="tooltip">
-							<span class="tooltipText">Gérer les contacts	</span>
+							<span class="tooltipText">{{ 'managecontact'|trans({}, 'profil') }}	</span>
 							<a class="" href="{{path('app_user_contacts', {'id': user.getId()})}}">
 								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
 							</a>
@@ -48,7 +48,7 @@
 								</div>
 							{% endfor %}
 						{% else %}
-							<p>Aucun moyen de contact n'a été ajouté.</p>
+							<p>{{ 'void'|trans({}, 'profil') }}</p>
 						{% endif %}
 					</div>
 				</div>
@@ -59,7 +59,7 @@
 				<div class="public-profile__main--header-name">
 					<div class="">{{user.nom ~ " " ~ user.prenom }}</div>
 					{% if app.user == user %}
-						<a class='btn-primary' href="{{path("app_user_info")}}">Consulter</a>
+						<a class='btn-primary' href="{{path("app_user_info")}}">{{ 'visit'|trans({}, 'profil') }}</a>
 					{% endif %}
 				</div>
 				<div class="public-profile__main--header-bio">
@@ -72,7 +72,7 @@
 						<h3>Compétences</h3>
 						{% if app.user == user %}
 							<div class="tooltip">
-							<span class="tooltipText">Gérer les compétences	</span>
+							<span class="tooltipText">{{ 'managecompetance'|trans({}, 'profil') }}	</span>
 							<a class="" href="{{path('app_user_skills', {'id': user.getId()})}}">
 								<img class="settings-ico" src="{{ asset("icons/black-settingsIco.svg") }}" alt="settings">
 							</a>
@@ -94,13 +94,13 @@
 								</div>
 							{% endfor %}
 						{% else %}
-							<p>Aucune compétence n'a été ajoutée.</p>
+							<p>{{ 'competanceVoid'|trans({}, 'profil') }}</p>
 						{% endif %}
 					</div>
 				</div>
 
 				<div class="public-profile__main--body-fest">
-					<h3>Expérience
+					<h3>{{ 'experience'|trans({}, 'profil') }}
 					</h3>
                     <div class="skills-section">
                     {% set festivals = user.getEstBenevole() %}
@@ -116,7 +116,7 @@
 								</div>
 							{% endfor %}
 						{% else %}
-							<p>Aucune compétence n'a été ajoutée.</p>
+							<p>{{ 'experienceVoid'|trans({}, 'profil') }}</p>
 						{% endif %}
 	                </div>
 				</div>
