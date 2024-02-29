@@ -460,6 +460,7 @@ class FestivalController extends AbstractController {
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
             'isFestivalOpen' => $festival->isOpen(),
             'watchingOtherUserPreferences' => false,
+            'otherUserId' => null
         ]);
     }
 

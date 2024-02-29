@@ -92,16 +92,6 @@ function translate(key: string) {
     isOrgaOrResp: props.isOrgaOrResp,
   });
 
-const props = defineProps<Props>();
-
-const festival = ref<Festival>({
-  festID: props.festID,
-  title: props.title,
-  dateDebut: new Date(props.dateDebut),
-  dateFin: new Date(props.dateFin),
-  isOrgaOrResp: props.isOrgaOrResp,
-});
-
 const numberOfDays =
   dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
 const days = Array.from(

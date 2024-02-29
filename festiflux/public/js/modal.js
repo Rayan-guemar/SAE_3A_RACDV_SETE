@@ -29,7 +29,7 @@ closeModalBtns.forEach(btn => {
     });
 });
 
-overlay.addEventListener("click", function () {
+overlay?.addEventListener("click", function () {
     modals.forEach(modal => {
         const modalId = modal.getAttribute('id').replace('modal-', '');
         closeModal(modalId);
