@@ -367,18 +367,17 @@ class UtilisateurController extends AbstractController {
         }
     }
 
-    /**
-     * pour afficher les préferences de l'utilisateur pour les postes d'un festival
-     */
-    #[Route('/festival/{id}/preferences', name: 'app_festival_get_preferences', options: ['expose' => true], methods: ['GET'])]
-    public function getPreferences(#[MapEntity] Festival $festival, UtilisateurUtils $user, TranslatorInterface $translator): Response {
+
+    #[Route('/festival/{id}/preferences/{userId}', name: 'app_festival_get_preferences', options: ['expose' => true], methods: ['GET'])]
+    public function getPreferences(#[MapEntity] Festival $festival, #[MapEntity(id: 'userId')] Utilisateur $user, Request $request, EntityManagerInterface $em, UtilisateurUtils $uu, TranslatorInterface $translator): Response {
+
         $u = $this->getUser();
         $f = $festival->getId();
 
         if (!$u instanceof Utilisateur) {
             return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], Response::HTTP_FORBIDDEN);
         }
-
+      
         $isBenevole = $user->isBenevole($u, $festival);
 
         if (!$isBenevole) {
@@ -389,7 +388,7 @@ class UtilisateurController extends AbstractController {
             return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
-        $prefs = $u->getPosteUtilisateurPreferences()->filter(function ($p) use ($festival) {
+        $prefs = $user->getPosteUtilisateurPreferences()->filter(function ($p) use ($festival) {
             return $p->getPosteId()->getFestival() === $festival;
         });
 
@@ -418,6 +417,14 @@ class UtilisateurController extends AbstractController {
                 'demandes' => $demandePostulation,
             ]);
         }
+    }
+
+    #[Route('/user/name/{id}', name: 'app_user_name', methods: ['GET'], options: ['expose' => true])]
+    public function name(int $id, UtilisateurRepository $utilisateurRepository): Response {
+        $u = $utilisateurRepository->find($id);
+        if (!$u)
+            throw $this->createNotFoundException("L'utilisateur n'existe pas");
+        return new JsonResponse(['name' => $u->getNom() . ' ' . $u->getPrenom()]);
     }
 
 

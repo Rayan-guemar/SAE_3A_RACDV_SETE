@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference, User, Plage } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -111,6 +111,12 @@ export class Backend {
 		await Backend.#post(URL, '');
 	}
 
+	static async getUser(id: ID): Promise<User> {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_name', { id: id });
+		return await Backend.#get(URL);
+	}
+
 	static async removeBenevole(benevole: Benevole, tache: Tache) {
 		// @ts-ignore
 		const URL = Routing.generate('app_user_task_remove', {
@@ -190,18 +196,34 @@ export class Backend {
 		await Backend.#post(URL, creneau as RequestInit);
 	}
 
-	static async getPlagesHoraires(festivalId: ID): Promise<Creneau[]> {
+	static async getPlagesHoraires(festivalId: ID): Promise<Plage[]> {
 		// @ts-ignore
-		const URL = Routing.generate('app_festival_get_DebutFinDay', { id: festivalId });
+		const URL = Routing.generate('app_festival_plages_all', { id: festivalId });
 		const data = await Backend.#get(URL);
 
-		const res = [...data].map<Creneau>((o: any) => ({
+		const res = [...data].map<Plage>((o: any) => ({
 			id: o.id,
 			debut: new Date(o.debut?.date),
 			fin: new Date(o.fin?.date)
 		}));
 
 		return res;
+	}
+
+	static async addPlageHoraire(festivalId: ID, creneau: Creneau) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_plages_add', { id: festivalId });
+		return await Backend.#post(URL, {
+			debut: getDateFromLocale(creneau.debut).toISOString(),
+			fin: getDateFromLocale(creneau.fin).toISOString()
+		} as RequestInit);
+	}
+
+	static async deletePlageHoraire({ id }: Plage) {
+		console.log('id plage', id);
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_plages_delete', { id: id });
+		return await Backend.#get(URL);
 	}
 
 	/**
@@ -285,9 +307,9 @@ export class Backend {
 		} as RequestInit);
 	}
 
-	static async getPreferences(festivalId: ID): Promise<Preference[]> {
+	static async getPreferences(festivalId: ID, userId: ID): Promise<Preference[]> {
 		// @ts-ignore
-		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId });
+		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId, userId: userId});
 		const data = await Backend.#get(URL);
 		console.log(data);
 

@@ -18,6 +18,14 @@
 	</main>
 	<div id="app" data-locale="{{ app.request.locale }}"></div>
 
+	<main {{ vue_component('ListesPostes', {
+		'festivalId': festival.id,
+		'festivalName': festival.nom,
+		'isOrgaOrResp': isOrgaOrResp,
+		'isFestivalOpen': isFestivalOpen,
+		'watchingOtherUserPreferences': watchingOtherUserPreferences,
+		'otherUserId': otherUserId,
+	} ) }}></main>
 
 
 {% endblock %}
