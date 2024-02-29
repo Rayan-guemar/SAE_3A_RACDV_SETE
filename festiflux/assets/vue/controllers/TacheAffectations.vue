@@ -117,14 +117,14 @@ const benevoleDisponibilites = (t: Tache, list: BenevoleType[]) => {
     return list.filter(b => b.indisponibilites.every(i => i.debut > t.creneau.fin || i.fin < t.creneau.debut))
 }
 
-const startDrag = (event, item) => {
+const startDrag = (event: any, item: any) => {
   console.log('start drag', item);
   event.dataTransfer.dropEffect = 'move';
   event.dataTransfer.effectAllowed = 'move';
   event.dataTransfer.setData('itemID', item.id);
 }
 
-const onDrop = (event, bool) => {
+const onDrop = (event: any, bool: any) => {
   const itemID = event.dataTransfer.getData('itemID');
   if(bool){
     console.log(itemID);

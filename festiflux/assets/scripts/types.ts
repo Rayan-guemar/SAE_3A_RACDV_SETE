@@ -64,3 +64,6 @@ export interface SelectOption {
 	value: ID;
 	label: string;
 }
+export interface Plage extends Creneau {
+	id: ID;
+}

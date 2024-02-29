@@ -19,7 +19,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits();
+const emit = defineEmits<{
+  (e: 'reloadTaches'): void
+  (e: 'reloadBenevoles'): void
+}>();
 
 const deleteBtn = ref<HTMLDivElement>();
 

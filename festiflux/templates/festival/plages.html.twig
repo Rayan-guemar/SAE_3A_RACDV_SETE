@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>
-			Planning
+			{{'Plages horaires ' ~ festival.nom}}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
 		<link rel="stylesheet" href="{{ asset('build/app.css') }}">
@@ -20,7 +20,7 @@
 				<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
 			</a>
 
-			<div class="planning-wrapper" {{ vue_component('Plages', { 'festID': festival.id, 'title': 'Planning du ' ~ festival.nom, 'isOrgaOrResp': isOrgaOrResp, 'dateDebut': festival.dateDebut | date("m/d/Y"), 'dateFin': festival.dateFin | date("m/d/Y"), 'userId': userId, } ) }}></div>
+			<div class="planning-wrapper" {{ vue_component('PlagesPlanning', { 'festID': festival.id, 'title': 'Plages horaires ' ~ festival.nom, 'isOrgaOrResp': isOrgaOrResp, 'dateDebut': festival.dateDebut | date("m/d/Y"), 'dateFin': festival.dateFin | date("m/d/Y"), 'userId': userId, } ) }}></div>
 
 		</main>
 

@@ -40,6 +40,7 @@ use App\Entity\Creneaux;
 use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Lieu;
+use App\Entity\Plage;
 use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
@@ -52,6 +53,13 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class FestivalController extends AbstractController {
+
+    public function __construct(
+        public FlashMessageService $flashMessageService, 
+        public UtilisateurRepository $utilisateurRepository, 
+        public EntityManagerInterface $em
+    ) {}
+
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
         return $this->redirectToRoute('app_festival_all');
@@ -396,32 +404,6 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-    #[Route('/festival/{id}/plages', name: 'app_festival_plages')]
-    public function plagesHoraire(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
-        $festival = $repository->find($id);
-        if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
-        }
-
-        $u = $this->getUser();
-        if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
-            return $this->redirectToRoute('home');
-        }
-
-        return $this->render('festival/plages.html.twig', [
-            'controller_name' => 'FestivalController',
-            'festival' => $festival,
-            'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
-            'userId' => $u->getId(),
-        ]);
-    }
-
     #[Route('/festival/{id}/postes', name: 'app_festival_postes')]
     public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
@@ -537,6 +519,8 @@ class FestivalController extends AbstractController {
             'postes' => $tab
         ], 200);
     }
+
+    
 
     #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
     public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste) {
@@ -751,66 +735,6 @@ class FestivalController extends AbstractController {
             'benevolesAime' => $tab2,
             'benevolesAimePas' => $tab3,
         ], 200);
-    }
-
-
-    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
-    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): Response {
-        if ($f == null) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
-        }
-        $u = $this->getUser();
-        if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
-        }
-        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
-            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
-        }
-        $body = json_decode($request->getContent(), true);
-        try {
-            $dateDebut = new DateTime($body['debut']);
-            $dateFin = new DateTime($body['fin']);
-
-            if ($dateDebut > $dateFin) {
-                return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
-            } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
-                return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
-            } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
-                return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $c = new Creneaux();
-            $c->setDateDebut($dateDebut);
-            $c->setDateFin($dateFin);
-            $f->addPlagesHoraire($c);
-
-            $em->persist($c);
-            $em->flush();
-        } catch (\Throwable $th) {
-            if ($th instanceof \ErrorException) {
-                return new JsonResponse(['error' => "Les données ne sont pas valides"], Response::HTTP_BAD_REQUEST);
-            }
-            throw $th;
-        }
-
-        return new JsonResponse(status: Response::HTTP_CREATED);
-    }
-
-    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_get_DebutFinDay', methods: ['GET'], options: ["expose" => true])]
-    public function getPlagesHoraires(#[MapEntity] Festival $f): JsonResponse {
-        if ($f == null) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
-        }
-        $creneaux = $f->getPlagesHoraires();
-        $tab = [];
-        foreach ($creneaux as $creneau) {
-            $tab[] = [
-                'id' => $creneau->getId(),
-                'debut' => $creneau->getDateDebut(),
-                'fin' => $creneau->getDateFin(),
-            ];
-        }
-        return new JsonResponse($tab, 200);
     }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]

@@ -9,6 +9,7 @@ import {
   Benevole,
   Creneau,
   ID,
+Plage,
 } from "../../scripts/types";
 import { Backend } from "../../scripts/Backend";
 import Tache from "./Tache.vue";
@@ -79,7 +80,6 @@ const daysDiv = ref<HTMLDivElement>();
 const taches = ref<TacheType[]>([]);
 const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
 const postes = ref<Poste[]>([]);
-const crx = ref<Creneau[]>([]);
 
 const benevoles = ref<Benevole[]>([]);
 
@@ -137,13 +137,6 @@ const getBenevoles = async () => {
 
   if (res) {
     benevoles.value = res;
-  }
-};
-
-const getPlagesHoraires = async () => {
-  const res = await Backend.getPlagesHoraires(festival.value.festID);
-  if (res) {
-    crx.value = res;
   }
 };
 
@@ -272,15 +265,11 @@ const askForICS = () => {
 const updateTaches = async () => {
   await getTaches();
 };
-const updatePlages = async () => {
-  await getPlagesHoraires();
-};
 
 onMounted(async () => {
   const promises = [];
   promises.push(getTaches());
   promises.push(getPostes());
-  promises.push(getPlagesHoraires());
   promises.push(getBenevoles());
   await Promise.all(promises);
   loading.value = false;
@@ -386,12 +375,6 @@ console.log(props.isOrgaOrResp);
             v-for="i in parseInt('11')"
             :id="`line-break-${i * 2}`"
           ></div>
-          <PlageHoraire
-            v-for="creneauWithPos of crx.filter(
-              (c) => new Date(c.debut).getDate() === day.getDate()
-            )"
-            :creneau="creneauWithPos"
-          />
           <!-- <Tache /> -->
           <Tache
             v-for="tacheWithPos of displayTaches.filter(
@@ -441,14 +424,6 @@ console.log(props.isOrgaOrResp);
       </div>
     </div>
     <div class="manage-interface">
-      <div
-        v-if="isOrgaOrResp"
-        id="add-plage-btn"
-        class="btn"
-        @click="startCreatingPlage"
-      >
-        Ajouter les plages horaires des jours du festival
-      </div>
 
       <div>
         <label for="poste_filter">Filtrer par:</label>
@@ -535,15 +510,6 @@ console.log(props.isOrgaOrResp);
   <!-- <Modal v-if="false" @close="stopCreatingTache">
     
   </Modal> -->
-  <Modal v-if="creatingPlage" @close="stopCreatingPlage">
-    <PlageHoraireForm
-      :festivalId="festID"
-      :dateDebut="festival.dateDebut"
-      :dateFin="festival.dateFin"
-      :close="stopCreatingPlage"
-      :updatePlages="updatePlages"
-    />
-  </Modal>
 
   <Modal v-if="addIndispo" @close="stopAddIndispo">
     <IndispoForm
