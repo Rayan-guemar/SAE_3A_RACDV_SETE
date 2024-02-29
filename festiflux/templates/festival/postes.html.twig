@@ -14,7 +14,14 @@
 
 	{{ encore_entry_script_tags('app') }}
 
-	<main {{ vue_component('ListesPostes', { 'festivalId': festival.id, 'festivalName': festival.nom, 'isOrgaOrResp': isOrgaOrResp, 'status' : status } ) }}></main>
+	<main {{ vue_component('ListesPostes', {
+		'festivalId': festival.id,
+		'festivalName': festival.nom,
+		'isOrgaOrResp': isOrgaOrResp,
+		'isFestivalOpen': isFestivalOpen,
+		'watchingOtherUserPreferences': watchingOtherUserPreferences,
+		'otherUserId': otherUserId,
+	} ) }}></main>
 
 
 {% endblock %}

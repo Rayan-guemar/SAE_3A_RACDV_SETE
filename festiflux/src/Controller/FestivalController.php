@@ -423,10 +423,11 @@ class FestivalController extends AbstractController {
         }
 
         return $this->render('festival/postes.html.twig', [
-            'status' => $festival->isOpen(),
             'controller_name' => 'FestivalController',
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'isFestivalOpen' => $festival->isOpen(),
+            'watchingOtherUserPreferences' => false,
         ]);
     }
 
@@ -547,7 +548,7 @@ class FestivalController extends AbstractController {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
 
-        if (!$f->isOpen()) {
+        if ($f->isOpen()) {
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -586,7 +587,7 @@ class FestivalController extends AbstractController {
         if (!$p) {
             return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
         }
-        if (!$f->isOpen()) {
+        if ($f->isOpen()) {
             return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
         }
 
@@ -1008,21 +1009,38 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_user_festivals');
     }
 
-    #[Route('/festival/{id}/postesPref', name: 'app_festival_display_postes')]
-    public function displayPostes(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    #[Route('/user/{id}/preferences/{idFest}', name: 'app_festival_preferences')]
+    public function displayPostes(int $idFest, int $id, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
 
+        $festival = $festivalRepository->find($idFest);
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
+        
+        $postes = $posteRepository->findBy(["festival" => $festival]);
 
         $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId" => $u]);
 
-        return $this->render('utilisateur/liked_postes.html.twig', [
-            'postes' => $postes,
+        $isOrgaOrResp = $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival);
+        $routeUserId = $id;
+
+        $watchingOtherUserPreferences = $routeUserId != $u->getId();
+
+        if ($watchingOtherUserPreferences && !$isOrgaOrResp) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/postes.html.twig', [
             'utilisateur' => $u,
-            'preferences' => $pref
+            'festival' => $festival,
+            'isOrgaOrResp' => $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival),
+            'status' => true,
+            'watchingOtherUserPreferences' => $watchingOtherUserPreferences,
+            'otherUserId' => $routeUserId,
+            'isFestivalOpen' => $festival->isOpen(),
         ]);
     }
 
