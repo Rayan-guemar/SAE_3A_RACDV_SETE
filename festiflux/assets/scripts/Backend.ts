@@ -182,12 +182,6 @@ export class Backend {
 		return res;
 	}
 
-	static async addIndispo(festivalId: ID, creneau: Creneau) {
-		// @ts-ignore
-		const URL = Routing.generate('app_festival_add_disponibilities', { id: festivalId });
-		return await Backend.#post(URL, creneau as RequestInit);
-	}
-
 	/**
 	 *
 	 * @param {string} festivalId
@@ -278,5 +272,34 @@ export class Backend {
 		const res = [...data].map((o: any) => o as Preference);
 
 		return res;
+	}
+
+	static async getUserIndispos(festivalId: ID, userId: ID): Promise<Creneau[]> {
+		// @ts-ignore
+		console.log(Routing.getRoutes());
+		// @ts-ignore
+		const URL = Routing.generate('app_user_indispo', { festivalId: festivalId, userId: userId });
+		const data = await Backend.#get(URL);
+		console.log('nbbbbbb', data);
+
+		const res = [...data].map(
+			(o: any) =>
+				({
+					id: o.id,
+					debut: new Date(o.debut),
+					fin: new Date(o.fin)
+				} as Creneau)
+		);
+		console.log('aaaa', res);
+		return res;
+	}
+
+	static async addUserIndispo(festivalId: ID, userId: ID, creneau: Creneau) {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_indispo_add', { festivalId: festivalId, userId: userId });
+		return await Backend.#post(URL, {
+			debut: getDateFromLocale(creneau.debut).toISOString(),
+			fin: getDateFromLocale(creneau.fin).toISOString()
+		} as RequestInit);
 	}
 }

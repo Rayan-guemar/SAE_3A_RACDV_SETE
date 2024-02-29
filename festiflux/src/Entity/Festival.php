@@ -93,6 +93,9 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Postulations::class, orphanRemoval: true)]
     private Collection $postulations;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Indisponibilite::class, orphanRemoval: true)]
+    private Collection $indisponibilites;
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -110,6 +113,7 @@ class Festival {
         $this->historiquePostulations = new ArrayCollection();
         $this->open = false;
         $this->postulations = new ArrayCollection();
+        $this->indisponibilites = new ArrayCollection();
 
     }
 
@@ -544,6 +548,36 @@ class Festival {
             // set the owning side to null (unless already changed)
             if ($postulation->getFestival() === $this) {
                 $postulation->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Indisponibilite>
+     */
+    public function getIndisponibilites(): Collection
+    {
+        return $this->indisponibilites;
+    }
+
+    public function addIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if (!$this->indisponibilites->contains($indisponibilite)) {
+            $this->indisponibilites->add($indisponibilite);
+            $indisponibilite->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if ($this->indisponibilites->removeElement($indisponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($indisponibilite->getFestival() === $this) {
+                $indisponibilite->setFestival(null);
             }
         }
 
