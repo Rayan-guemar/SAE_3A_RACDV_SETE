@@ -17,7 +17,6 @@ const emit = defineEmits<{
 }>();
 
 const deletePlage = async () => {
-	await Backend.deletePlageHoraire(props.plage);
 	emit('delete', props.plage);
 	deleting.value = false;
 };
