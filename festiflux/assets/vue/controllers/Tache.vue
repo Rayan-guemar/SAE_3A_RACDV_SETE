@@ -25,6 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const deleteBtn = ref<HTMLDivElement>();
+const deleteImg = ref<HTMLImageElement>();
 
 const posteToColor = (poste: Poste) => {
   const colors = [
@@ -101,10 +102,11 @@ const nbLike = computed(() => {
 })
 
 const switchMode = (e: MouseEvent) => {
-  if (e.target === deleteBtn.value) {
+
+  if (e.target === deleteBtn.value || e.target === deleteImg.value) {
     return
   }
-  props.modeAffectation ;
+  props.modeAffectation ? showAffectionMode() : showInfo();
 }
 
 </script>
@@ -146,7 +148,7 @@ const switchMode = (e: MouseEvent) => {
     @click="(switchMode)"
   >
     <div ref="deleteBtn" class="delete" @click.prevent="() => deleting = true">
-      <img src="../../../public/icons/delete.svg" alt="">
+      <img ref="deleteImg" src="../../../public/icons/delete.svg" alt="">
     </div>
     <div
       @mouseover="() => (taskHover = true)"
