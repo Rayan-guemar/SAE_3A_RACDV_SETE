@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Skills
 {
 
-    public const LEVEL_BEGINNER = 0;
-    public const LEVEL_ADVANCED = 1;
-    public const LEVEL_EXPERT = 2;
+    public const LEVEL_BEGINNER = 1;
+    public const LEVEL_ADVANCED = 2;
+    public const LEVEL_EXPERT = 3;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

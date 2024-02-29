@@ -6,73 +6,108 @@
 {% endblock %}
 
 {% block body %}
-	<section class='page-container	flex-column'>
-		<h1 class="page-title">{{ 'titles.pageTitle'|trans({},'gestionfest') }}
-			{{festival.getNom()}}</h1>
-		<h2>
-			{{ 'titles.status'|trans({},'gestionfest') }}
-			{% if festival.isOpen() %}{{ 'titles.open'|trans({},'gestionfest') }}
-			{% else %}
-				{{ statut }}
-			{% endif %}
-		</h2>
-		<div class="actions">
-			<h2>{{ 'subtitles.planning.title'|trans({},'gestionfest') }}</h2>
-			<p>{{ 'subtitles.planning.p'|trans({},'gestionfest') }}</p>
-			<a href="{{path('app_festival_planning', {'id': festival.getId()})}}" class="gest_btn">{{ 'subtitles.planning.a'|trans({},'gestionfest') }}</a>
-		</div>
-		<div class="actions">
-			<h2>{{ 'subtitles.post.title'|trans({},'gestionfest')  }}</h2>
-			<p>{{ 'subtitles.post.p'|trans({},'gestionfest')  }}</p>
-			<a href="{{path('app_festival_postes', {'id': festival.getId()})}}" class="gest_btn">{{ 'subtitles.post.a'|trans({},'gestionfest')  }}</a>
-		</div>
-		<div class="actions">
-			<h2> {{ 'subtitles.postulation.title'|trans({},'gestionfest')  }}</h2>
-			<p>{{ 'subtitles.postulation.p'|trans({},'gestionfest')  }}</p>
-			<a href="{{path('app_festival_postulations', {'id': festival.getId()})}}" class="gest_btn">{{ 'subtitles.postulation.a'|trans({},'gestionfest')  }}</a>
-		</div>
-		<div class="actions">
-			<h2>{{ 'subtitles.questionnaire.title'|trans({},'gestionfest')  }}</h2>
-			<p>{{ 'subtitles.questionnaire.p'|trans({},'gestionfest')  }}</p>
-			<a href="{{path('app_festival_create_questionnaire', {'id': festival.getId()})}}" class="gest_btn">{{ 'subtitles.questionnaire.a'|trans({},'gestionfest')  }}</a>
-		</div>
-		<div class="actions">
-			<h2>{{ 'actions.valid'|trans({}, 'gestionfest') }}</h2>
-			{% if festival.getValid()==1 %}
-				<span>{{ 'response.valid'|trans({}, 'gestionfest') }}</span>
-			{% elseif hasPendingValidation %}
-				<span>{{ 'response.pending'|trans({}, 'gestionfest') }}</span>
-					<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{path('app_festival_validation', {'id': festival.getId()})}}">{{ 'ici'|trans({}, 'gestionfest') }}</a>
-				</span>
-			{% else %}
-				<form action="{{path('app_festival_validation', {'id': festival.getId()})}}" method="post">
-					<button name="" value="" class="gest_btn tooltip">{{ 'actions.valid'|trans({}, 'gestionfest') }}</button>
-				</form>
-				{% if hasValidations %}
-					<span>
-						{{ 'response.validations'|trans({}, 'gestionfest') }}
-						<a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{path('app_festival_validation', {'id': festival.getId()})}}">{{ 'ici'|trans({},'gestionfest') }}</a>
-					</span>
-				{% endif %}
-			{% endif %}
-		</div>
+    <section class='page-container	flex-column'>
+        <h1 class="page-title">{{ 'titles.pageTitle'|trans({},'gestionfest') }}
+            {{ festival.getNom() }}</h1>
 
-		<div class="actions">
-			<h2>{{ 'actions.open'|trans({}, 'gestionfest') }}</h2>
-			<p>{{ 'subtitles.open.p'|trans({},'gestionfest') }}</p>
-			<p>{{ 'subtitles.open.pp'|trans({},'gestionfest') }}</p>
-			{% if festival.getValid()!=1 %}
-				<span>{{ 'response.not_valid'|trans({},'gestionfest') }}</span>
-			{% elseif festival.isOpen() %}
-				<span>{{ 'response.open'|trans({},'gestionfest') }}</span>
-			{% else %}
-				<form action="{{path('app_festival_open', {'id': festival.getId()})}}" method="post">
-					<button name="" value="" class="gest_btn tooltip">{{ 'actions.open'|trans({},'gestionfest') }}</button>
-				</form>
-			{% endif %}
-		</div>
-		<div class="button-archive">
-			<a href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }} class="btn btn-primary">{{ 'actions.archiver'|trans({}, 'gestionfest') }}</a>
-		</div>
-	</section>
+        <div class="manage-container">
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_planning', {'id': festival.getId()}) }}">
+                    <div><h2>{{ 'subtitles.planning.title'|trans({},'gestionfest') }}</h2>
+                        <p>{{ 'subtitles.planning.p'|trans({},'gestionfest') }}</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/planning-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_postes', {'id': festival.getId()}) }}">
+                    <div><h2>{{ 'subtitles.post.title'|trans({},'gestionfest')  }}</h2>
+                        <p>{{ 'subtitles.post.p'|trans({},'gestionfest')  }}</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/assignment-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_postulations', {'id': festival.getId()}) }}">
+                    <div><h2>{{ 'subtitles.postulation.title'|trans({},'gestionfest')  }}</h2>
+                        <p>{{ 'subtitles.postulation.p'|trans({},'gestionfest')  }}</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/postule-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_benevoles', {'id': festival.getId()}) }}">
+                    <div><h2>Gestion des bénévoles</h2>
+                        <p>Pour voir toutes les postulations du festival</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/benevoles-manage.svg") }}"
+                                                 alt="manage benevole icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <a class="action-div" href="{{ path('app_festival_create_questionnaire', {'id': festival.getId()}) }}">
+                    <div>
+                        <h2>{{ 'subtitles.questionnaire.title'|trans({},'gestionfest')  }}</h2>
+                        <p>{{ 'subtitles.questionnaire.p'|trans({},'gestionfest')  }}</p>
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/form-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </a>
+            </div>
+            <div class="actions">
+                <div class="action-div">
+                    <div>
+                        <h2>{{ 'actions.valid'|trans({}, 'gestionfest') }}</h2>
+                        {% if festival.getValid()==1 %}
+                            <span>{{ 'response.valid'|trans({}, 'gestionfest') }}</span>
+                        {% elseif hasPendingValidation %}
+                            <span>{{ 'response.pending'|trans({}, 'gestionfest') }}
+					            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
+				            </span>
+                        {% else %}
+                             <a href={{ path('app_festival_validation_page', { 'id' : festival.getId() } )}} class="gest_btn tooltip">{{ 'actions.valid'|trans({}, 'gestionfest') }}</a>
+                        {% endif %}
+                        {% if hasValidations %}
+
+                        {% endif %}
+                    </div>
+                    <div class="background"><img class="img-size" src="{{ asset("icons/checked-manage.svg") }}"
+                                                 alt="manage user icon"></div>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="action-div-reverse">
+                    <div class="background">
+                        <img class="img-size" src="{{ asset("icons/post-manage.svg") }}" alt="manage user icon"></div>
+                    <div>
+                        <h2>{{ 'actions.open'|trans({}, 'gestionfest') }}</h2>
+
+
+                    {% if festival.getValid()!=1 %}
+                        <div>
+                            <span>{{ 'response.not_valid'|trans({},'gestionfest') }}</span>
+                        </div>
+
+                    {% elseif festival.isOpen() %}
+                        <div>
+                            <span>{{ 'response.open'|trans({},'gestionfest') }}</span>
+                        </div>
+
+                    {% else %}
+                        <div>
+                            <a href={{ path('app_festival_open_page', { 'id' :festival.getId() } )}} class="gest_btn tooltip">{{ 'actions.open'|trans({},'gestionfest') }}</a>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-archive">
+            <a class="a-archive" href={{ path("app_festival_archiver", {'id' : festival.getId()} ) }}>{{ 'actions.archiver'|trans({}, 'gestionfest') }}</a>
+        </div>
+    </section>
 {% endblock %}

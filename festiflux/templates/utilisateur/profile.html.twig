@@ -7,23 +7,26 @@
 
 {% block body %}
 
-<div class="profil-box">
-	<h1>
-		{{ 'title'|trans({}, 'profil') }}
-		{{ utilisateur.nom }}
-		{{ utilisateur.prenom }}
-	</h1>
-
-	<div class="info-box-wrapper">
-		<div class="image_profile">
-			<img id="img-profil" {% if utilisateur.nomphotoprofil == true %} src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
-		</div>
-		<div class="info-box">
-			<div class="info-row">
-				<div class="info-border">
-					<strong>{{ 'email'|trans({}, 'profil') }}</strong>
-					:
-					{{ utilisateur.email }}
+	<div class="profil-box">
+		<h1>
+            {{ 'title'|trans({}, 'profil') }}
+			{{ utilisateur.nom }}
+			{{ utilisateur.prenom }}
+		</h1>
+			<div class="info-box-wrapper">
+				<div class="image_profile">
+					<img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+						src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+					{% else %}
+						src="{{ asset("uploads/user/anonyme.png") }}"
+							{% endif %}>
+				</div>
+			<div class="info-box">
+				<div class="info-row">
+					<div class="info-border">
+						<strong>{{ 'email'|trans({}, 'profil') }}</strong>
+						:
+						{{ utilisateur.email }}
 
 				</div>
 				<div class="info-name-surname">
@@ -79,21 +82,21 @@
 		<a class="manage-contact-button" href={{path("app_user_contacts")}}>
 					<span>{{ 'managecontact'|trans({}, 'profil') }}
 					</span>
-		</a>
-	</div>
+				</a>
+		</div>
 
-	<div class="contact-section">
-		{% set skills = utilisateur.getSkills() %}
-		{% if skills is not empty %}
-		{% for skill in skills %}
-		<div>
-			{% include 'skills/skill.html.twig' with {
-				skill: {
-					name: skill.name,
-					level: skill.getLevelName()
-				}
-			}%}
-			{% endfor %}
+		<div class="contact-section">
+			{% set skills = utilisateur.getSkills() %}
+			{% if skills is not empty %}        
+				{% for skill in skills %}
+					<div>
+						{% include 'skills/skill.html.twig' with {
+							skill: {
+								name: skill.name,
+								level: skill.getLevelName()
+							}
+						}%}
+				{% endfor %}
 			{% else %}
 				<p>{{ 'competanceVoid'|trans({}, 'profil') }} </p>
 			{% endif %}

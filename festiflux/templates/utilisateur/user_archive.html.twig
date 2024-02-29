@@ -12,10 +12,10 @@
 
     <div class="btn-container">
         <div class="button-benevole">
-            <a href={{ path("app_user_profile",{ 'id': utilisateur.getId() }) }} class="btn btn-primary">{{ 'cancel'|trans({}, "userarchive") }}</a>
+            <a href={{ path("app_user_profile",{ 'id': utilisateur.getId() }) }} class="btn ">{{ 'cancel'|trans({}, "userarchive") }}</a>
         </div>
         <div class="button-archive">
-            <a href={{ path("app_festival_archiver_done", { 'id': utilisateur.getId() }) }} class="btn btn-primary">{{ 'submit'|trans({}, "userarchive") }}</a>
+            <a href={{ path("app_festival_archiver_done", { 'id': utilisateur.getId() }) }} class="btn ">{{ 'submit'|trans({}, "userarchive") }}</a>
         </div>
     </div>
 {% endblock %}

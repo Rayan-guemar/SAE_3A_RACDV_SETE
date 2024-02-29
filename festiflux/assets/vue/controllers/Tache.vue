@@ -2,11 +2,13 @@
 import { ref, computed } from 'vue';
 import { getDateHours2Digits, hashCode, hexToBrighterHex } from '../../scripts/utils';
 import {Tache, Creneau, Poste, Benevole, Festival, ID} from '../../scripts/types';
+import { Backend } from '../../scripts/Backend';
 import Modal from './Modal.vue';
 import TacheAffectations from './TacheAffectations.vue';
 
 
 interface Props {
+  festID: ID,
   chargesBenevole: Record<ID, number>,
   tache: Tache,
   position: number,
@@ -17,6 +19,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits();
+
+const deleteBtn = ref<HTMLDivElement>();
 
 const posteToColor = (poste: Poste) => {
   const colors = [
@@ -57,6 +62,14 @@ const showAffectionMode = () => {
 
 const taskHover = ref(false);
 
+const deleting = ref(false);
+
+const deleteTache = () => {
+  Backend.deleteTache(props.festID, props.tache).then(() => {
+    emit('reloadTaches');
+  });
+  deleting.value = false;
+}
 
 const nbDispo = computed(() => {
   let nb = 0;
@@ -83,6 +96,13 @@ const nbLike = computed(() => {
   
   return nb
 })
+
+const switchMode = (e: MouseEvent) => {
+  if (e.target === deleteBtn.value) {
+    return
+  }
+  props.modeAffectation ;
+}
 
 function translate(key: string) {
   if (props.lang === 'fr') {
@@ -137,8 +157,11 @@ function translate(key: string) {
       zIndex: showingInfo ? 99 : 0,
       overflow: showingInfo ? 'visible' : 'hidden',
     }"
-    @click="() => (modeAffectation ? showAffectionMode() : showInfo())"
+    @click="(switchMode)"
   >
+    <div ref="deleteBtn" class="delete" @click.prevent="() => deleting = true">
+      <img src="../../../public/icons/delete.svg" alt="">
+    </div>
     <div
       @mouseover="() => (taskHover = true)"
       @mouseleave="() => (taskHover = false)"
@@ -206,6 +229,16 @@ function translate(key: string) {
         @reloadBenevoles="() => $emit('reloadBenevoles')"
         :lang = "lang"
       />
+    </Modal>
+
+    <Modal v-if="deleting">
+      <form class="planning-form">
+        <h5>Voulez vous vraiment supprimer cette tache ?</h5>
+        <div class="flex-row">
+          <div class="btn" @click="deleteTache">Oui</div>
+          <div class="btn" @click="() => deleting = false">Non</div>
+        </div>
+      </form>
     </Modal>
 
     <div v-if="modeAffectation" class="pastille-wrapper">

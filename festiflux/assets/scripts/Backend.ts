@@ -44,6 +44,19 @@ export class Backend {
 	}
 
 	/**
+	 * Effectue une requête HTTP DELETE à l'URL spécifiée.
+	 * @param {string} URL - L'URL à laquelle effectuer la requête.
+	 * @returns {Promise<any>} - Une promesse qui résout avec les données de la réponse.
+	 * @private
+	 * @static
+	 * @param URL
+	 * @returns
+	 */
+	static async #delete(URL: string) {
+		return await this.#fetch(URL, { method: 'DELETE' });
+	}
+
+	/**
 	 * Récupère les postes liés à un festival spécifique.
 	 * @param {number} festivalId - L'identifiant du festival.
 	 * @returns {Promise<Poste[]>} - Une promesse qui résout avec les données des postes.
@@ -138,6 +151,15 @@ export class Backend {
 			idPoste: poste.id
 		});
 		return Backend.#get(URL);
+	}
+
+	static deleteTache(festivalId: ID, tache: Tache) {
+		// @ts-ignore
+		const URL = Routing.generate('app_festival_delete_tache', {
+			id: festivalId,
+			idTache: tache.id
+		});
+		return Backend.#delete(URL);
 	}
 
 	/**

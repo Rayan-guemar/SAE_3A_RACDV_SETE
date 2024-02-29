@@ -6,23 +6,33 @@
     <div class="profil-box">
         <h1>{{ 'title'|trans({}, 'modifyprofil') }}</h1>
 
-        {{ form_start(form, {'attr': {'class': 'info-box-wrapper editing'}}) }}
+    <div class="info-box-wrapper">
+        <div class="image_profile">
+            <img id="img-profil" {% if utilisateur.nomphotoprofil == true %}
+                src="{{ asset("uploads/user/"~utilisateur.nomPhotoProfil~"") }}"
+            {% else %}
+                src="{{ asset("uploads/user/anonyme.png") }}"
+                    {% endif %}>
+        </div>
+
+        {{ form_start(form, {'attr': {'class': 'form-edit editing'}}) }}
 
         <div class="info-box editing">
             <div class="info-row editing">
-                {{ form_row(form.email, {'label': 'email'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
-                <div class="info-name-surname editing">
-                    {{ form_row(form.nom, {'label': 'surname'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
-                    {{ form_row(form.prenom, {'label': 'name'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
-                </div>
-                {{ form_row(form.adresse, {'label': 'address'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
-                {{ form_row(form.description, {'label': 'bio'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
-                {{ form_row(form.fichierPhotoProfil, {'label': 'pp'|trans({}, 'profil'), 'attr': {'class': 'info-border editing'}}) }}
+                <div class="df">{{ form_row(form.email, {'label': 'email'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }} <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                    <div class="df"> {{ form_row(form.nom, {'label': 'surname'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                        <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                    <div class="df"> {{ form_row(form.prenom, {'label': 'name'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                        <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                <div class="df"> {{ form_row(form.adresse, {'label': 'address'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                <div class="df"> {{ form_row(form.description, {'label': 'bio'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                <div class="df">{{ form_row(form.fichierPhotoProfil, {'label': 'pp'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
             </div>
         </div>
-
         {{ form_widget(form.demanderModificationProfil, {'label': 'submit'|trans({}, 'modifyprofil'), 'attr': {'class': 'edit-button'}}) }}
-
         {{ form_end(form) }}
     </div>
 

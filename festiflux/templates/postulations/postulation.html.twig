@@ -19,31 +19,19 @@
 				</div>
 				<div class="user-details">
 					<div>
-						<strong>	{{ 'email'|trans({},'postulation') }}
-						</strong>:
-						{{ postulation.utilisateur.email }}
-					</div>
-					<div>
-						<strong>	{{ 'surname'|trans({},'postulation') }}
-						</strong>:
-						{{ postulation.utilisateur.nom }}
+                        <strong>	{{ 'surname'|trans({},'postulation') }}
+                        </strong>
+                            {{ postulation.utilisateur.nom }}
 					</div>
 					<div>
 						<strong>	{{ 'name'|trans({},'postulation') }}
 						</strong>:
 						{{ postulation.utilisateur.prenom }}
 					</div>
-					<div>
-						<strong>	{{ 'address'|trans({},'postulation') }}
-						</strong>:
-						{{ postulation.utilisateur.adresse }}
-					</div>
-					<div>
-						<strong>	{{ 'bio'|trans({},'postulation') }}
-						</strong>:
-						{{ postulation.utilisateur.description }}
-					</div>
 				</div>
+				<a class="profile-link" href="{{path("app_user_profile", { id: postulation.utilisateur.getId() })}}">
+					<img src="{{asset('/icons/external-link.png')}}" alt="">
+				</a>
 			</div>
 
 		</div>

@@ -7,8 +7,8 @@
 	<h1 class="my-fest__title">{{ 'titles.title_page'|trans({},'userfest') }}</h1>
 
 	<div class="my-fest__btns ">
-		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn'}} ">{{ 'titles.volontary_fest'|trans({},'userfest') }}</a>
-		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn'}}">{{ 'titles.manager_fest'|trans({},'userfest') }}</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn-primary'}} ">{{ 'titles.volontary_fest'|trans({},'userfest') }}</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn-primary'}}">{{ 'titles.manager_fest'|trans({},'userfest') }}</a>
 	</div>
 
 	{% if filter == 'volunteer' %}
@@ -46,7 +46,7 @@
 
 							<div class="tooltip">
 								<span class="tooltipText">Gérer les postulations</span>
-								<a class="my-fest__btn" href="{{ path('app_festival_demandesBenevolat', {'id' : festival.getId()}) }}">
+								<a class="my-fest__btn" href="{{ path('app_festival_postulations', {'id' : festival.getId()}) }}">
 									<img src="{{ asset("icons/gererUser.svg") }}" alt="manage user icon">
 									{{ component('Notification', { type : 'autre', userId : app.user.id, festId : festival.id}) }}
 								</a>

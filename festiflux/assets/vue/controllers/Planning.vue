@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { calculCharge, dateDiff } from "../../scripts/utils";
+import { calculCharge, dateDiff, displayHoursMinutes } from "../../scripts/utils";
 import { VNodeRef, ref, onMounted, computed } from "vue";
 import {
   Tache as TacheType,
@@ -138,10 +138,11 @@ function translate(key: string) {
     return charges;
   });
 
-  const loading = ref(true);
-  const creatingTache = ref(false);
-  const creatingPlage = ref(false);
-  const addIndispo = ref(false);
+const loading = ref(true);
+const wantsToCreateTache = ref(false);
+const creatingTache = ref(false);
+const creatingPlage = ref(false);
+const addIndispo = ref(false);
 
   const filterByPoste = ref("");
 
@@ -165,8 +166,12 @@ function translate(key: string) {
     modeAffectation.value = !modeAffectation.value;
   };
 
-  const getTaches = async () => {
-    const res = await Backend.getTaches(festival.value.festID);
+const newTacheName = ref("Aucun poste sélectionné");
+const newTacheStart = ref(new Date());
+const newTacheEnd = ref(new Date());
+
+const getTaches = async () => {
+  const res = await Backend.getTaches(festival.value.festID);
 
     if (res) {
       taches.value = res;
@@ -226,9 +231,49 @@ function translate(key: string) {
     });
   };
 
-  const startCreatingTache = () => {
-    creatingTache.value = true;
-  };
+const startWantingToCreateTache = () => {
+  wantsToCreateTache.value = true;
+};
+
+const stopWantingToCreateTache = () => {
+  wantsToCreateTache.value = false;
+};
+
+const startCreatingTache = (e: MouseEvent, d: Date) => {
+  if (!wantsToCreateTache.value) return;
+
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const mouseYWithOffset = e.clientY - divY;
+
+  const nbOfQuarters = Math.floor(mouseYWithOffset / divH * 96);
+  const startDate = new Date(d);
+  const endDate = new Date(startDate);
+  startDate.setHours(Math.floor(nbOfQuarters / 4));
+  if (startDate.getHours() >= 23) {
+    startDate.setHours(22);
+    startDate.setMinutes(30);
+    endDate.setHours(23);
+    endDate.setMinutes(30);
+  } else {
+    startDate.setMinutes((nbOfQuarters % 4) * 15);
+    endDate.setHours(startDate.getHours() + 1);
+    endDate.setMinutes(startDate.getMinutes());
+  }
+  console.log(startDate, endDate);
+  newTacheStart.value = startDate;
+  newTacheEnd.value = endDate;
+  creatingTache.value = true;
+  wantsToCreateTache.value = false;
+};
+
+const updateCurrentPosteName = (posteName: string) => {
+  console.log(posteName);
+  console.log('test');
+  newTacheName.value = posteName;
+};
 
   const stopCreatingTache = (tache?: TacheCreateData) => {
     creatingTache.value = false;
@@ -288,7 +333,62 @@ function translate(key: string) {
     loading.value = false;
   });
 
-  const vuePerso = ref(false);
+const startResizingStart = (e: MouseEvent) => {
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const listener = (e: MouseEvent) => {
+    const mousePos = e.clientY - divY;
+    let nbOfQuarters = Math.floor(mousePos / divH * 96);
+    if (nbOfQuarters < 0) {
+      nbOfQuarters = 0;
+    } else if (nbOfQuarters > newTacheEnd.value.getHours() * 4 + newTacheEnd.value.getMinutes() / 15 - 4) {
+      nbOfQuarters = newTacheEnd.value.getHours() * 4 + newTacheEnd.value.getMinutes() / 15 - 4;
+    }
+    const startDate = new Date(newTacheStart.value);
+    startDate.setHours(Math.floor(nbOfQuarters / 4));
+    startDate.setMinutes((nbOfQuarters % 4) * 15);
+    newTacheStart.value = startDate;
+  };
+
+  document.addEventListener('mousemove', listener);
+  document.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', listener);
+  });
+};
+
+const startResizingEnd = (e: MouseEvent) => {
+  const div = daysDiv.value;
+  const divY = div?.getBoundingClientRect().top || 0;
+  const divH = div?.getBoundingClientRect().height || 0;
+
+  const listener = (e: MouseEvent) => {
+    const mousePos = e.clientY - divY;
+    let nbOfQuarters = Math.floor(mousePos / divH * 96);
+    if (nbOfQuarters >= 24 * 4) {
+      const endDate = new Date(newTacheEnd.value);
+      endDate.setHours(23);
+      endDate.setMinutes(59);
+      newTacheEnd.value = endDate;
+    } else {
+      if (nbOfQuarters < newTacheStart.value.getHours() * 4 + newTacheStart.value.getMinutes() / 15 + 4) {
+        nbOfQuarters = newTacheStart.value.getHours() * 4 + newTacheStart.value.getMinutes() / 15 + 4;
+      }
+      const endDate = new Date(newTacheEnd.value);
+      endDate.setHours(Math.floor(nbOfQuarters / 4));
+      endDate.setMinutes((nbOfQuarters % 4) * 15);
+      newTacheEnd.value = endDate;
+    }
+  };
+
+  document.addEventListener('mousemove', listener);
+  document.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', listener);
+  });
+};
+
+const vuePerso = ref(false);
 
   const toggleVuePerso = async () => {
     vuePerso.value = !vuePerso.value;
@@ -317,7 +417,7 @@ function translate(key: string) {
       </div>
     </div>
     <div class="days" ref="daysDiv">
-      <div class="day" v-for="day of days" ref="truc">
+      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => {startCreatingTache(e, day)} } : {}">
         <div class="day">
           <div class="heading">
             {{
@@ -345,12 +445,19 @@ function translate(key: string) {
             v-for="tacheWithPos of displayTaches.filter(
               ({ tache }) => tache.creneau.debut.getDate() === day.getDate()
             )"
+            :festID="festID"
             :chargesBenevole="chargesBenevole"
             :benevoles="benevoles"
             :tache="tacheWithPos.tache"
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            @reloadTaches="
+              async () => {
+                await getTaches();
+                await getBenevoles();
+              }
+            "
             :lang="lang"
             @reloadBenevoles="
               async () => {
@@ -403,10 +510,10 @@ function translate(key: string) {
         </div>
       </div>
       <div
-        v-if="isOrgaOrResp"
+        v-if="isOrgaOrResp && !wantsToCreateTache"
         id="add-creneau-btn"
         class="btn"
-        @click="startCreatingTache"
+        @click="startWantingToCreateTache"
       >
         {{ translate("add-creneau-btn") }}
       </div>
@@ -432,19 +539,24 @@ function translate(key: string) {
     </div>
   </div>
 
-  <Modal v-if="creatingTache" @close="stopCreatingTache">
-    <TacheForm
-      :festID="festival.festID"
-      :title="festival.title"
-      :dateDebut="festival.dateDebut"
-      :dateFin="festival.dateFin"
-      :isOrgaOrResp="festival.isOrgaOrResp"
-      :postes="postes"
-      :update-taches="updateTaches"
-      :close="stopCreatingTache"
-      :lang="lang"
-    />
-  </Modal>
+  <TacheForm
+    v-if="creatingTache"
+    class="tache-form right"
+    :festID="festival.festID"
+    :title="festival.title"
+    :dateDebut="newTacheStart"
+    :dateFin="newTacheEnd"
+    :isOrgaOrResp="festival.isOrgaOrResp"
+    :postes="postes"
+    :update-taches="updateTaches"
+    :close="stopCreatingTache"
+    @posteChange="updateCurrentPosteName"
+    :lang="lang"
+  />
+
+  <!-- <Modal v-if="false" @close="stopCreatingTache">
+
+  </Modal> -->
   <Modal v-if="creatingPlage" @close="stopCreatingPlage">
     <PlageHoraireForm
       :festivalId="festID"
@@ -453,7 +565,6 @@ function translate(key: string) {
       :close="stopCreatingPlage"
       :updatePlages="updatePlages"
       :lang="lang"
-    />
     />
   </Modal>
 

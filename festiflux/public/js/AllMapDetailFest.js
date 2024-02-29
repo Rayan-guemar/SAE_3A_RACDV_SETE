@@ -23,13 +23,15 @@ async function getAllFestival() {
         try {
             data = await response.json();
             data.forEach(festival => {
-                if (festival.latitude && festival.longitude) {
-                    let coordinates = new L.Marker([festival.latitude, festival.longitude])
-                    layer.addLayer(coordinates)
-                    function redirectToFest() {
-                        window.location = Routing.generate('app_festival_detail', { id: festival.id })
+                if (festival.open) {
+                    if (festival.latitude && festival.longitude) {
+                        let coordinates = new L.Marker([festival.latitude, festival.longitude])
+                        layer.addLayer(coordinates)
+                        function redirectToFest() {
+                            window.location = Routing.generate('app_festival_detail', { id: festival.id })
+                        }
+                        coordinates.on('click', redirectToFest)
                     }
-                    coordinates.on('click', redirectToFest)
                 }
             });
             var overlay = { 'markers': layer };

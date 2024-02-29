@@ -21,8 +21,8 @@
 	{{ form_end(form) }}
 	<!-- Map All Festivals -->
 	<div class="index-wrapper">
-		<button class="map-btn">{{ 'map_show'|trans({},'festival') }}</button>
-		<div id="map" style="display: none;"></div>
+		<button class="map-btn"><a style="color: white" id="cancel-research" href="{{ path('app_map') }}">{{ 'map_show'|trans({},'festival') }}</a></button>
+		<div id="map"></div>
 		{% if festivals|length == 0 %}
 			<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
 				{{ 'no_fest'|trans({},'festival')}}
