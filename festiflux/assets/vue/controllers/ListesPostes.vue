@@ -89,7 +89,7 @@ const getPreferences = async () => {
   preferences.value = listeOfPreferences;
 };
 
-let lang = document.getElementById('app').getAttribute('data-locale');
+let lang = document.getElementById('app')?.getAttribute('data-locale');
 if (lang ==='null') {
   lang = 'fr';
 }
@@ -187,7 +187,7 @@ onMounted(async () => {
         :isOrgaOrResp="isOrgaOrResp"
         @close="() => setPosteOpened(false)"
         @reloadPostes="getPreferences"
-        :lang="lang"
+        :lang="lang ?? 'fr'"
     />
   </div>
 </template>

@@ -21,10 +21,11 @@ import PlageHoraire from "./PlageHoraire.vue";
 import IndispoForm from "./IndispoForm.vue";
 /////////////translate///////////////
 
-let lang = document.getElementById('app').getAttribute('data-locale');
+let lang = document.getElementById('app')?.getAttribute('data-locale');
 if (lang ==='null') {
   lang = 'fr';
 }
+
 function translate(key: string) {
   if (lang === 'fr') {
     switch (key) {
@@ -446,7 +447,7 @@ const vuePerso = ref(false);
                 await getBenevoles();
               }
             "
-            :lang="lang"
+            :lang="lang ?? 'fr'"
             @reloadBenevoles="
               async () => {
                 await getTaches();
@@ -537,7 +538,7 @@ const vuePerso = ref(false);
     :update-taches="updateTaches"
     :close="stopCreatingTache"
     @posteChange="updateCurrentPosteName"
-    :lang="lang"
+    :lang="lang ?? 'fr'"
   />
 
   <!-- <Modal v-if="false" @close="stopCreatingTache">
@@ -549,7 +550,7 @@ const vuePerso = ref(false);
       :dateDebut="festival.dateDebut"
       :dateFin="festival.dateFin"
       @close="stopAddIndispo"
-      :lang="lang"
+      :lang="lang ?? 'fr'"
     />
   </Modal>
 </template>
