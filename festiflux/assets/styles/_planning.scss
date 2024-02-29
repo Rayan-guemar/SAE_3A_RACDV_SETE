@@ -208,6 +208,7 @@
                 background-color: transparent;
 
                 display: none;
+                cursor: pointer;
 
                 justify-content: center;
                 align-items: center;
@@ -222,7 +223,6 @@
             }
 
             &:hover {
-                cursor: pointer;
                 z-index: 99 !important;
 
                 .delete {
@@ -236,22 +236,6 @@
             top: calc(15/24*100%);
             left: 0%;
             height: calc(2/24*100%);
-            width: 100%;
-            transform: translate(-50%, 0);
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .indispo{
-            position: absolute;
-            top: calc(15/24*100%);
-            left: 0%;
-            height: calc(2/24*100%);
-            width: 100%;
             transform: translate(-50%, 0);
             border-radius: 3px;
             display: flex;
@@ -260,6 +244,34 @@
             flex-direction: column;
             gap: 5px;
             background-color: #ff4454;
+
+            .delete {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background-color: transparent;
+
+                display: none;
+                justify-content: center;
+                align-items: center;
+
+                border-radius: 0 0 0 3px;
+
+                z-index: 10;
+
+                &:hover {
+                    background-color: #c73743;
+                }
+            }
+
+
+            &:hover {
+                cursor: pointer;
+
+                .delete {
+                    display: flex;
+                }
+            }
         }
     }
 
@@ -723,6 +735,8 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    
 
     .tache {
         text-align: center;

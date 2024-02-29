@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class IndisponibiliteController extends AbstractController
 {
@@ -46,7 +47,7 @@ class IndisponibiliteController extends AbstractController
             'controller_name' => 'IndisponibiliteController',
             'utilisateur' => $user,
             'festival' => $festival,
-            'isOrga' => $festival->getOrganisateur() === $u
+            'isOrga' => false,// $festival->getOrganisateur() === $u
         ]);
     }
         
@@ -69,7 +70,7 @@ class IndisponibiliteController extends AbstractController
         foreach ($indispo as $i) {
             $c = $i->getCreneau();
             $creneaux[] = [
-                'id' => $c->getId(),
+                'id' => $i->getId(),
                 'debut' => $c->getDateDebut()->format('Y-m-d H:i:s'),
                 'fin' => $c->getDateFin()->format('Y-m-d H:i:s'),
             ];
@@ -80,7 +81,7 @@ class IndisponibiliteController extends AbstractController
     }
 
     #[Route('/user/{userId}/indisponibilite/{festivalId}/add', name: 'app_user_indispo_add', methods: ['POST'], options: ['expose' => true])]
-    public function addIndispo(Request $req, #[MapEntity(id: "userId")] Utilisateur $user, #[MapEntity(id: "festivalId")] Festival $festival): Response {
+    public function addIndispo(Request $req, #[MapEntity(id: "festivalId")] Festival $festival): Response {
         $u = $this->getUser();
         
         if (!$u instanceof Utilisateur) {
@@ -88,7 +89,7 @@ class IndisponibiliteController extends AbstractController
             return new JsonResponse("Vous n'êtes pas connecté", 403, [], true);
         }
 
-        if ($u->getId() !== $user->getId() && $festival->getOrganisateur() !== $u) {
+        if ($u->getId() !== $u->getId() && $festival->getOrganisateur() !== $u) {
             $this->flashMessageService->add(FlashMessageType::ERROR, "Vous n'avez pas le droit de voir les indisponibilités de cet utilisateur");
             return new JsonResponse("Vous n'avez pas le droit de voir les indisponibilités de cet utilisateur", 403, [], true);
         }
@@ -108,7 +109,7 @@ class IndisponibiliteController extends AbstractController
         
         $indispo = new Indisponibilite();
         $indispo->setCreneau($c);
-        $indispo->setUtilisateur($user);
+        $indispo->setUtilisateur($u);
         $indispo->setFestival($festival);
 
         $this->em->persist($indispo);
@@ -116,6 +117,32 @@ class IndisponibiliteController extends AbstractController
         $this->em->flush();
 
         return new JsonResponse(" Indisponibilté à bien été ajouté" , 200);
+    }
+
+    #[Route('/indisponibilites/{id}/delete', name: 'app_user_indispo_delete', methods: ['GET'], options: ['expose' => true])]
+    public function deleteIndispo(#[CurrentUser()] Utilisateur $user, int $id ): Response {
+        $u = $this->getUser();
+        
+        if (!$u instanceof Utilisateur) {
+            $this->flashMessageService->add(FlashMessageType::ERROR, "Vous n'êtes pas connecté");
+            return new JsonResponse("Vous n'êtes pas connecté", 403, [], true);
+        }
+
+        $indispo = $this->indisponibiliteRepository->findOneBy(['id' => $id]);
+
+        if ($u->getId() !== $user->getId() && $indispo->getFestival()->getOrganisateur() !== $u) {
+            $this->flashMessageService->add(FlashMessageType::ERROR, "Vous n'avez pas le droit de voir les indisponibilités de cet utilisateur");
+            return new JsonResponse("Vous n'avez pas le droit de voir les indisponibilités de cet utilisateur", 403, [], true);
+        }
+
+        if ($indispo === null) {
+            return new JsonResponse("Indisponibilté introuvable" , 404, [], true);
+        }
+
+        $this->em->remove($indispo);
+        $this->em->flush();
+
+        return new JsonResponse("Indisponibilté à bien été supprimé" , 200);
     }
 
 }
