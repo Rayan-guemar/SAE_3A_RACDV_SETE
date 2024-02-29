@@ -13,7 +13,7 @@
 
 {% block body %}
 	{{ form_start(form, { attr: { 'class': 'searchbar' } }) }}
-	{{ form_widget(form.q, { attr: { 'placeholder': 'Rechercher un festival' } }) }}
+	{{ form_widget(form.q, { attr: { 'placeholder': 'search_placeholder'|trans({},'searchbar') } }) }}
 	{% if searched %}
 		<a id="cancel-research" href="{{ path('app_festival_all') }}"><img src="{{ asset('icons/fermer.png') }}" alt="cross" id="cross"></a>
 	{% endif %}
@@ -21,11 +21,11 @@
 	{{ form_end(form) }}
 	<!-- Map All Festivals -->
 	<div class="index-wrapper">
-		<button class="map-btn"><a style="color: white" id="cancel-research" href="{{ path('app_map') }}">Voir la carte</a></button>
+		<button class="map-btn"><a style="color: white" id="cancel-research" href="{{ path('app_map') }}">{{ 'map_show'|trans({},'festival') }}</a></button>
 		<div id="map"></div>
 		{% if festivals|length == 0 %}
 			<div style="width: 100%; font-size: larger; text-align: center; margin-top: 100px;">
-				Aucun festival ne correspond à votre recherche
+				{{ 'no_fest'|trans({},'festival')}}
 			</div>
 		{% else %}
 			<div class="fest-wrapper">

@@ -1,0 +1,4 @@
+title: 'Delete'
+h1: "Warning, this action is irreversible. If you DELETE your account you will not be able to access it anymore but the data will be kept for legal reasons."
+cancel: "Cancel"
+submit: "Delete my account"

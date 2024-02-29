@@ -6,3 +6,10 @@ controllers:
 
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
+
+root_route_redirect:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        path: /fr
+        permanent: true

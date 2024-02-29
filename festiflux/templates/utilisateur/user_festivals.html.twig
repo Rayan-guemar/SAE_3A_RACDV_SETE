@@ -1,20 +1,20 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes Festivals
+{% block title %}{{ 'titles.title_page'|trans({},'userfest') }}
 {% endblock %}
 
 {% block body %}
-	<h1 class="my-fest__title">Mes Festivals</h1>
+	<h1 class="my-fest__title">{{ 'titles.title_page'|trans({},'userfest') }}</h1>
 
 	<div class="my-fest__btns ">
-		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn-primary'}} ">Festivals en tant que bénévole</a>
-		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn-primary'}}">Festivals que j'organise</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn-primary'}} ">{{ 'titles.volontary_fest'|trans({},'userfest') }}</a>
+		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn-primary'}}">{{ 'titles.manager_fest'|trans({},'userfest') }}</a>
 	</div>
 
 	{% if filter == 'volunteer' %}
-		<h2 class="my-fest__heading">Les festivals auxquels je participe :</h2>
+		<h2 class="my-fest__heading">{{ 'subtitles.volontary_fest'|trans({},'userfest') }}</h2>
 	{% else %}
-		<h2 class="my-fest__heading">Les festivals que j'organise :</h2>
+		<h2 class="my-fest__heading">{{ 'subtitles.manager_fest'|trans({},'userfest') }}</h2>
 	{% endif %}
 
 	<div class="fest-wrapper with-margin">

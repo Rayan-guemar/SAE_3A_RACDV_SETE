@@ -1,34 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}{{ 'title'|trans({},'signup') }}{% endblock %}
 
 {% block body %}
   <div class="form-wrapper">
-    <h1 class="registration-form__title">Créer un compte</h1>
+    <h1 class="registration-form__title">{{ 'create'|trans({},'signup') }}</h1>
 
     {{ form_start(form, {'attr': {'class': 'registration-form__form'}}) }}
 
-      {{ form_row(form.email, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Email'}}) }}
+      {{ form_row(form.email, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'email'|trans({},'signup') }}) }}
 
       <div class="form-row">
-        {{ form_row(form.nom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Nom'}}) }}
+        {{ form_row(form.nom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'name'|trans({},'signup') }}) }}
 
-        {{ form_row(form.prenom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Prénom'}}) }}
+        {{ form_row(form.prenom, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'surname'|trans({},'signup') }}) }}
       </div>
 
-      {{ form_row(form.password.first, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Mot de passe'}}) }}
+      {{ form_row(form.password.first, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'pwd'|trans({},'signup') }}) }}
 
-      {{ form_row(form.password.second, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'Confirmation mot de passe'}}) }}
+      {{ form_row(form.password.second, {'label': false, 'attr': {'class': 'registration-form__input', 'placeholder': 'confirm'|trans({},'signup') }}) }}
 
-      {{ form_row(form.adresse, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'Adresse'}}) }}
+      {{ form_row(form.adresse, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'address'|trans({},'signup') }}) }}
 
-      {{ form_row(form.description, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'Description'}}) }}
+      {{ form_row(form.description, {'label': false, 'attr': {'class': 'registration-form__input','placeholder': 'desc'|trans({},'signup') }}) }}
 
-      {{ form_widget(form.inscription, {'label': 'S\'inscrire', 'attr': {'class': 'registration-form__submit'}}) }}
+      {{ form_widget(form.inscription, {'label': 'signup'|trans({},'signup'), 'attr': {'class': 'registration-form__submit'}}) }}
 
       <div class="form-center">
-        <span>Vous avez déjà un compte ? </span>
-        <a style="margin-left: 5px;" href="{{ path("app_auth_login") }}" class="login-form__link--register">Se connecter</a>
+        <span>{{ 'already'|trans({},'signup') }}</span>
+        <a style="margin-left: 5px;" href="{{ path("app_auth_login") }}" class="login-form__link--register">{{ 'login'|trans({},'signup') }}</a>
       </div>
       
       {{ form_rest(form) }}

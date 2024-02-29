@@ -13,6 +13,7 @@ type Props = {
   postes: Poste[];
   updateTaches: () => void
   close: (t?: TacheCreateData) => void
+  lang: string
 }
 
 const props = defineProps<Props>();
@@ -54,6 +55,59 @@ function changeHandlerEnd() {
   }
 }
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'alertDate':
+        return "La date de début doit être avant la date de fin";
+      case 'title':
+        return "Création d'un créneau";
+      case 'job':
+        return 'Choisissez un poste';
+      case 'note':
+        return 'Remarque';
+      case 'nbrVolun':
+        return 'Nombre de bénévoles';
+      case 'begin':
+        return "Début du créneaux";
+      case 'end':
+        return "Fin du créneaux";
+      case 'location':
+        return "Lieu";
+      case 'address' :
+        return "Adresse du lieu (optionnelle)";
+      case 'add':
+        return 'Ajouter';
+      case 'cancel':
+        return 'Annuler';
+    }
+  } else {
+    switch (key) {
+      case 'alertDate':
+        return "The start date must be before the end date";
+      case 'title':
+        return "Create a slot for a job";
+      case 'job':
+        return 'Choose a job';
+      case 'note':
+        return 'Note';
+      case 'nbrVolun':
+        return 'Number of volunteers';
+      case 'begin':
+        return 'Start of the slot';
+      case 'end':
+        return 'End of the slot';
+      case 'location':
+        return 'Location';
+      case 'address' :
+        return "Address of the location (optional)";
+      case 'add':
+        return 'Add';
+      case 'cancel':
+        return 'Cancel';
+    }
+  }
+}
 const emitPosteChange = () => {
   const posteName = posteSelected.value?.selectedOptions[0].text;
   console.log(posteName);
@@ -70,7 +124,7 @@ const createTache = async (e: Event) => {
   const posteId = formData.get('poste') + "";
 
   if (debut >= fin) {
-    alert("La date de début doit être avant la date de fin");
+    alert(translate('alertDate'));
     return;
   }
 
@@ -92,33 +146,33 @@ const createTache = async (e: Event) => {
 
 <template>
     <form @submit.prevent="createTache">
-      <h2>Nouveau créneau</h2>
+      <h2>{{ translate("title") }}</h2>
       <div class="flex-column flex-align-center">
 
-        <label for="poste">Choisissez un poste</label>
+        <label for="poste">{{ translate("job") }}</label>
         <select ref="posteSelected" name="poste" @change="emitPosteChange" required>
           <option v-for="poste in postes" :value="poste.id">{{ poste.nom }}</option>
         </select>
 
       </div>
       <div class="flex-column flex-align-center">
-        <label for="description">Remarque</label>
+        <label for="description">{{ translate("note") }}</label>
         <input name="description" id="creneau-description" type="text" required>
       </div>
       <div class="flex-column flex-align-center">
-        <label for="nombre_benevole">Nombre de bénévoles nécessaires
+        <label for="nombre_benevole">{{ translate("nbrVolun") }}
         </label>
         <input name="nombre_benevole" id="creneau-nombre-benevole" type="number" required>
       </div>
       <!-- <div class="creneau-container">
         <div class="flex-column flex-align-center">
-          <label for="start-creneau">Début du créneau</label>
+          <label for="start-creneau">{{ translate("begin") }}</label>
           <input name="start" id="start-creneau" ref="startTache" type="datetime-local"
             :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)"
             :value="festival.dateDebut" @change="changeHandlerStart">
         </div>
         <div class="flex-column flex-align-center">
-          <label for="end-creneau">Fin du créneau</label>
+          <label for="end-creneau">{{ translate("end") }}</label>
           <input name="end" id="end-creneau" ref="endTache" type="datetime-local"
             :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" :value="festival.dateFin"
             @change="changeHandlerEnd">
@@ -126,18 +180,18 @@ const createTache = async (e: Event) => {
       </div> -->
 
       <div class="flex-column flex-align-center">
-        <label for="lieuTache">Lieu du créneau</label>
+        <label for="lieuTache">{{ translate("location") }}</label>
         <input type='text' name='creneau-lieu' id="creneau-lieu" required>
       </div>
 
       <div class="flex-column flex-align-center">
-        <label for="lieuTache">Adresse du lieu (optionnelle) </label>
+        <label for="lieuTache">{{ translate("address") }} </label>
         <input type='text' name='creneau-lieu-address' id="creneau-lieu-address">
       </div>
 
       <div class="flex-row flex-align-center" :style="{ justifyContent: 'space-evenly', margin: '5px' }">
-        <button type="submit" id="create-creneau-btn" class="btn" value="Créer un créneau">Créer</button>
-        <button id="cancel-creneau-btn" class="btn" @click="close()">Annuler</button>
+        <button type="submit" id="create-creneau-btn" class="btn" value="Créer un créneau">{{ translate("add") }}</button>
+        <button id="cancel-creneau-btn" class="btn" @click="close()">{{ translate("cancel") }}</button>
       </div>
     </form>
 </template>

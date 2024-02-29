@@ -1,10 +1,10 @@
     {% extends 'base.html.twig' %}
 
 {% block title %}
-    Error 400
+    {{ 'title'|trans({},'400') }}
 {% endblock %}
 
 {% block body %}
-    <h1 class="error_title">??? je ne comprends pas ce que vous me demandez</h1>
-    <p class="error_desc">Erreur 400- La syntaxe de la requête est erronée</p>
+    <h1 class="error_title">{{ 'h1'|trans({},'400') }}</h1>
+    <p class="error_desc">{{ 'h2'|trans({},'400') }}</p>
 {% endblock %}

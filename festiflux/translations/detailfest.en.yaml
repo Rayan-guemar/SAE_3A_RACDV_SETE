@@ -1,0 +1,8 @@
+titles:
+  desc: "DESCRIPTION"
+  tag: "TAGS"
+  locali: "LOCATION"
+buttons:
+  gestion: "Manage the festival"
+  planning: "Festival planning"
+  postuler: "Apply"

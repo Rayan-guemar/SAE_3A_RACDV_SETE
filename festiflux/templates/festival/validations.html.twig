@@ -1,21 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Gestion du
+{{ 'title'|trans({}, 'validations') }}
 	{{festival.getNom()}}
 {% endblock %}
 
 {% block body %}
-	<h1>Liste des Validations</h1>
+	<h1>{{ 'h1'|trans({}, 'validations') }}
+	</h1>
 
 	{% if validations is not empty %}
 		<table border="1">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Status</th>
-					<th>Motif</th>
-					<th>Date</th>
+					<th>{{ 'id'|trans({}, 'validations') }}
+					</th>
+					<th>{{ 'status'|trans({}, 'validations') }}
+					</th>
+					<th>{{ 'motif'|trans({}, 'validations') }}
+					</th>
+					<th>{{ 'date'|trans({}, 'validations') }}
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -30,6 +35,7 @@
 			</tbody>
 		</table>
 	{% else %}
-		<p>Aucune validation disponible.</p>
+		<p>{{ 'void'|trans({}, 'validations') }}
+		</p>
 	{% endif %}
 {% endblock %}

@@ -1,0 +1,147 @@
+festival:
+  success:
+    demande: 'Demande de festival acceptée'
+    volunRequestSent: 'Demande de bénévolat envoyée'
+    modified: 'Festival modifié'
+    open: 'Festival ouvert'
+    validationSent: 'Demande de validation envoyée'
+    validationAccepted: 'Festival validé'
+    validationRefused: 'Festival refusé'
+
+  error:
+    notFound: 'Festival non trouvé'
+    notValid: 'Festival non valide'
+    alreadyOpen: 'Le festival est déjà ouvert'
+    alreadyValid: 'Le festival est déjà validé'
+    pending: 'Le festival est en attente de validation'
+    upload: "Erreur lors de l'upload de l'affiche"
+    date: 'Les dates de votre festival ne sont pas conforme !'
+    demande: 'Erreur lors de la demande de festival'
+    suppression: 'Erreur lors de la suppression du festival'
+    modification: 'Erreur lors de la modification du festival'
+    validation: 'Erreur lors de la validation du festival'
+    refus: 'Erreur lors du refus du festival'
+    annulation: "Erreur lors de l'annulation"
+    archived: 'Ce festival est archivé'
+
+user:
+  success:
+    manager: 'Cet utilisateur est maintenant Responsable'
+    notManager: "Cet utilisateur n'est plus Responsable"
+    affect: 'Utilisateur affecté'
+    modified: 'Utilisateur modifié'
+  error:
+    noRequest: 'Aucune demande de bénévolat'
+    notFound: 'Utilisateur non trouvé'
+    notConnected: 'Vous devez être connecté pour effectuer cette action'
+    notVolunteer: "Cet utilisateur n'est pas bénévole"
+    alreadyMember: 'Vous êtes déjà membre de ce festival'
+    permissionDenied: "Vous n'avez pas les droits pour effectuer cette action"
+
+demande:
+  success:
+    demande: 'Demande de bénévolat acceptée'
+    demandeRefus: 'Demande de bénévolat refusée'
+  error:
+    notPending: 'Aucune demande en attente'
+    notFound: 'Demande non trouvée'
+    demande: 'Erreur lors de la demande de bénévolat'
+    suppression: 'Erreur lors de la suppression de la demande'
+    validation: 'Erreur lors de la validation de la demande'
+    refus: 'Erreur lors du refus de la demande'
+    rejected: 'Vous avez déjà été refusé pour ce festival'
+
+poste:
+  success:
+    created: 'Poste créé'
+    modified: 'Poste modifié'
+    deleted: 'Poste supprimé'
+  error:
+    notFound: 'Poste non trouvé'
+
+tache:
+  success:
+    created: 'Tâche créée'
+    modified: 'Tâche modifiée'
+    deleted: 'Tâche supprimée'
+  error:
+    notFound: 'Tâche non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+date:
+  notValid: 'Date non valide'
+  begin: 'La date de début doit être antérieure à la date de fin'
+  end: 'La date de fin doit être postérieure à la date de début'
+
+data:
+  notValid: 'Données non valides'
+
+question:
+  success:
+    created: 'Question créée'
+    modified: 'Question modifiée'
+    deleted: 'Question supprimée'
+  error:
+    notFound: 'Question non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+motif:
+  success:
+    sent: 'Motif envoyé'
+  error:
+    void: 'Le motif ne peut pas être vide'
+
+field:
+  success:
+    created: 'Champ créé'
+    modified: 'Champ modifié'
+    deleted: 'Champ supprimé'
+  error:
+    notComplete: "Veillez à bien remplir tous les champs"
+    notFound: "Champ non trouvé"
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+contact:
+  success:
+    add: 'Contact ajouté'
+    created: 'Contact créé'
+    modified: 'Contact modifié'
+    deleted: 'Contact supprimé'
+  error:
+    notFound: 'Contact non trouvé'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+    notComplete: "Veillez à bien remplir tous les champs"
+
+postulation:
+  success:
+    created: 'Postulation créée'
+    modified: 'Postulation modifiée'
+    deleted: 'Postulation supprimée'
+    accepted: 'Postulation acceptée'
+    isVolunteer: 'est maintenant bénévole'
+    refused: 'Postulation refusée'
+  error:
+    alreadyTraited: 'Postulation déjà traitée'
+    alreadyApplied: 'Vous avez déjà postulé à ce festival'
+    yours: 'Vous ne pouvez pas postuler à votre propre festival'
+    notFound: 'Postulation non trouvée'
+    notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+email:
+  confirm: 'Veuillez confirmer votre adresse mail'
+  verified: 'Adresse mail vérifiée'
+
+rein:
+  req: 'Demande de réinitialisation'
+
+fav:
+    success:
+        add: 'Préference ajouté'
+        deleted: 'Préference supprimé'
+    error:
+        notFound: 'Préference non trouvé'
+        already: 'Préference déjà créé'
+        notAllowed: "Vous n'avez pas les droits pour effectuer cette action"
+
+hours:
+  notValid: 'Heure non valide'

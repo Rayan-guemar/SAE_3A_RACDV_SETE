@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import type { Ref } from 'vue';
 import { Backend } from "../../scripts/Backend";
 import { Poste } from '../../scripts/types';
+import {trans} from "../../../vendor/symfony/ux-translator/assets";
 
 interface Props {
     festivalId: number,
@@ -16,6 +17,7 @@ interface Props {
     setPosteList: (value: Poste[]) => void,
     setPosteOpened: (value: boolean) => void,
     isOrgaOrResp: boolean,
+    lang: string,
 }
 
 const props = defineProps<Props>();
@@ -140,42 +142,85 @@ const dislike = async () => {
     emits('reloadPostes');
 }
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'title': return 'Poste';
+      case 'color' : return 'Couleur :';
+      case 'ex' : return 'ex: Faire le run de Michael Jackson de la loge à la scène principale';
+      case 'nodesc' : return 'Pas de description';
+      case 'modify' : return 'Modifier';
+      case 'delete' : return 'Supprimer';
+      case 'create' : return 'Créer';
+      case 'love' : return "J\'aime";
+      case 'like' : return "Indifférent";
+      case 'have' : return "Je n'aime pas";
+      case 'cancel' : return "Annuler";
+      case 'display' : return "Aperçu";
+      case 'confirm' : return "Voulez-vous vraiment supprimer ce poste ?";
+      case 'explain' : return "Cela entrainera la suppression de tous les créneaux associés à ce poste";
+      case 'yes' : return "Oui";
+      case 'no' : return "Non";
+    }
+  } else {
+    switch (key) {
+      case 'title': return 'Job';
+      case 'color' : return 'Couleur :';
+      case 'ex' : return 'ex: Run Michael jackson from the loge to the mail stage';
+      case 'nodesc' : return 'No description';
+      case 'modify' : return 'Modify';
+      case 'delete' : return 'Delete';
+      case 'create' : return 'Create';
+      case 'love' : return "Love";
+      case 'like' : return "Like";
+      case 'have' : return "Dislike";
+      case 'cancel' : return "Cancel";
+      case 'display' : return "Preview";
+      case 'confirm' : return "Do you really want to delete this job?";
+      case 'explain' : return "This will delete all the slots associated with this job";
+      case 'yes' : return "Yes";
+      case 'no' : return "No";
+    }
+  }
+}
+
 </script>
 
 <template>
     <div class="poste-form-wrapper" >
         <div class="poste-form">
-            <h3 class="top-heading">Poste</h3>  
+            <h3 class="top-heading">{{ translate("title") }}</h3>
 
             <input :readonly="!isOrgaOrResp" type="text" class="poste-name" :class="{ 'missing-field': missingName, 'becoming-red': becomingRed }"
-                v-model="currentPoste.nom" placeholder="ex: Accueil artiste" @input="() => missingName = false" >
+                v-model="currentPoste.nom" placeholder="ex : RUN" @input="() => missingName = false" >
             <div v-if="isOrgaOrResp" class="color-wrapper">
-                <div>Couleur :</div>
+                <div>{{ translate('color') }}</div>
                 <input type="color" v-model="currentPoste.couleur">
             </div>
-            <textarea :readonly="!isOrgaOrResp" v-model="currentPoste.description" :placeholder="isOrgaOrResp ? 'ex: Accueillir les artistes' : 'Il n\'y a pas de description pour ce poste'"></textarea>
+            <textarea :readonly="!isOrgaOrResp" v-model="currentPoste.description" :placeholder="isOrgaOrResp ? translate('ex') : translate('nodesc')"></textarea>
 
-            <div v-if='isOrgaOrResp && editing()' class="pointer poste-action edit-poste" :class="{ loading: updating, 'saying-no': sayingNo }" @click="updatePoste">Modifier</div>
+            <div v-if='isOrgaOrResp && editing()' class="pointer poste-action edit-poste" :class="{ loading: updating, 'saying-no': sayingNo }" @click="updatePoste">
+              {{ translate('modify') }}</div>
             <div v-if='isOrgaOrResp && editing()' class="pointer poste-action delete-poste" :class="{ loading: deleting }"
-                @click="(e) => setAskingForDelete(true)">Supprimer</div>
-            <div v-else-if="isOrgaOrResp" class="pointer poste-action create-poste" :class="{ 'missing-field': currentPoste.nom === '', loading: creating, 'saying-no': sayingNo }" @click="createPoste">Créer</div>
+                @click="(e) => setAskingForDelete(true)">{{ translate('delete') }}</div>
+            <div v-else-if="isOrgaOrResp" class="pointer poste-action create-poste" :class="{ 'missing-field': currentPoste.nom === '', loading: creating, 'saying-no': sayingNo }" @click="createPoste">{{ translate('create') }}</div>
 
-            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action like-poste" :class="{ loading: liking }" @click="like">J'aime</div>
-            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action neutral-poste" :class="{ loading: neutraling }" @click="neutral">Indifférent</div>
-            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action dislike-poste" :class="{ loading: disliking }" @click="dislike">Je n'aime pas</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action like-poste" :class="{ loading: liking }" @click="like">{{ translate('love') }}</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action neutral-poste" :class="{ loading: neutraling }" @click="neutral">{{ translate('like') }}</div>
+            <div v-if="!isOrgaOrResp && editing()" class="pointer poste-action dislike-poste" :class="{ loading: disliking }" @click="dislike">{{ translate('have') }}</div>
 
-            <div class="pointer poste-action cancel-poste" @click="closePoste">Annuler</div>
+            <div class="pointer poste-action cancel-poste" @click="closePoste">{{ translate('cancel') }}</div>
         </div>
 
         <div v-if="isOrgaOrResp" class="task-preview-wrapper">
-            <h4 class="top-heading">Aperçu d'une tâche</h4>
+            <h4 class="top-heading">{{ translate('display') }}</h4>
             <div class="task-preview" :style="{
                 'border-color': currentPoste.couleur,
                 'background-color': currentPoste.couleur + '1A',
                 'color': currentPoste.couleur
             }">
 
-                <div class="name">{{ currentPoste.nom !== '' ? currentPoste.nom : 'Nom poste' }}</div>
+                <div class="name">{{ currentPoste.nom !== '' ? currentPoste.nom : 'RUN' }}</div>
                 <div class="tache">
                     22h00 - 23h00
                 </div>
@@ -186,11 +231,13 @@ const dislike = async () => {
 
     <Teleport v-if="askingForDelete" to="body">
         <div class="delete-poste-confirm">
-            <div class="delete-poste-confirm-text">Voulez-vous vraiment supprimer ce poste ?</div>
-            <div class="delete-poste-confirm-text">Cela entrainera la suppression de tous les créneaux associés à ce poste</div>
+            <div class="delete-poste-confirm-text">{{translate('confirm')}}</div>
+            <div class="delete-poste-confirm-text">{{
+                translate('explain')
+              }}</div>
             <div class="delete-poste-confirm-btns">
-                <div class="pointer delete-poste-confirm-yes" @click="deletePoste">Oui</div>
-                <div class="pointer delete-poste-confirm-no" @click="(e) => setAskingForDelete(false)">Non</div>
+                <div class="pointer delete-poste-confirm-yes" @click="deletePoste">{{ translate('yes') }}</div>
+                <div class="pointer delete-poste-confirm-no" @click="(e) => setAskingForDelete(false)">{{translate('no')}}</div>
             </div>
         </div>
 

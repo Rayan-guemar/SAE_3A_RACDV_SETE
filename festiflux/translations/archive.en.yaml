@@ -1,0 +1,6 @@
+title: 'Archive'
+h1: 'Warning, this action is irreversible. If you archive '
+h2: ' you and other users will no longer be able to see it but the data will be kept'
+cancel: 'Cancel'
+submit: 'Archive'
+

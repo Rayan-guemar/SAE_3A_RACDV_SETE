@@ -9,6 +9,7 @@ type Props = {
   festivalId: number;
   dateDebut: Date;
   dateFin: Date;
+  lang: string;
 }
 
 const props = defineProps<Props>();
@@ -46,12 +47,41 @@ function changeHandlerEnd() {
   }
 }
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'alertDate':
+        return "La date de début doit être avant la date de fin";
+      case 'title':
+        return "Prévénir d'une indisponibilité";
+      case 'begin':
+        return "Début du créneaux";
+      case 'end':
+        return "Fin du créneaux";
+      case 'cancel':
+        return 'Annuler';
+    }
+  } else {
+    switch (key) {
+      case 'alertDate':
+        return "The start date must be before the end date";
+      case 'title':
+        return "Add an unavailability";
+      case 'begin':
+        return 'Start of the slot';
+      case 'end':
+        return 'End of the slot';
+      case 'cancel':
+        return 'Cancel';
+    }
+  }
+}
 
 const createIndispo = async (e: Event) => {
   if (!creneau.value.debut || !creneau.value.fin) return;
 
   if (creneau.value.debut >= creneau.value.fin) {
-    alert("La date de début doit être avant la date de fin");
+    alert(translate('alertDate'));
     return;
   }
 
@@ -63,18 +93,18 @@ const createIndispo = async (e: Event) => {
 <template>
   <div class="planning-form">
   <form @submit.prevent="createIndispo">
-    <h2>Prévénir d'une indisponibilité</h2>
+    <h2>{{ translate("title") }}</h2>
     <div class="flex-column flex-align-center">
-      <label for="start-creneau">Début du créneaux</label>
+      <label for="start-creneau">{{ translate("begin") }}</label>
       <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart" required>
     </div>
     <div class="flex-column flex-align-center">
-      <label for="end-creneau">Fin du créneaux</label>
+      <label for="end-creneau">{{ translate("end") }}</label>
       <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)" :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" required>
     </div>
     <div class="flex-row flex-align-center" :style="{justifyContent: 'space-evenly', margin: '5px'}">
       <input type="submit" value="Ajouter">
-      <button class="btn" @click="() => $emit('close')">Annuler</button>
+      <button class="btn" @click="() => $emit('close')">{{ translate("cancel") }}</button>
     </div>
   </form>
   </div>

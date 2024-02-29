@@ -1,32 +1,32 @@
 {% extends "base.html.twig" %}
-{% block title %}creer un questionnaire sur votre festival{% endblock %}
+{% block title %}{{ 'title'|trans({},'volunteerform') }}{% endblock %}
 
 {% block body %}
 
     <div class="create-questionnaire">
-        <h1>Créer un questionnaire sur votre festival</h1>
-        
+        <h1>{{ 'title'|trans({},'volunteerform') }}</h1>
+
         <div class="questions">
-            <h3>Les questions :</h3>
+            <h3>Questions :</h3>
             {% for question in questions %}
                 <div class="box-question">
                     <div>
                         {{ question.label }}
                         (
                         {% if question.typeReponse=='string' %}
-                            Text
+                            {{ 'txt'|trans({},'volunteerform') }}
                         {% elseif question.typeReponse=='integer' %}
-                            Numérique
+                            {{ 'num'|trans({},'volunteerform') }}
                         {% elseif question.typeReponse=='email' %}
-                            Email
+                            {{ 'mail'|trans({},'volunteerform') }}
                         {% elseif question.typeReponse=='date' %}
-                            Date
+                            {{ 'date'|trans({},'volunteerform') }}
                         {% elseif question.typeReponse=='boolean' %}
-                            Oui/Non
+                            {{ 'bool'|trans({},'volunteerform') }}
                         {% endif %}
                         )
                     </div>
-            
+
                     <div class="btns">
                         <a href="{{ path('app_festival_question_modify', {'id' : festival.getId(), 'idQuestion' : question.id}) }}">
                             <img src="{{ asset("icons/modify.svg") }}" alt="Modify icon">

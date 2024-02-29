@@ -6,24 +6,24 @@
 
 {% block body %}
 	<div class="form-wrapper">
-		<h1 class="login-form__title">Connexion</h1>
+		<h1 class="login-form__title">{{ 'login'|trans({},'login') }}</h1>
 
 		<form action="{{ path('app_auth_login') }}" method="post" class="login-form">
 			<div class="login-form__field">
-				<input placeholder="Email" type="text" name="_username" class="login-form__input">
+				<input placeholder="{{ 'email'|trans({},'login') }}" type="text" name="_username" class="login-form__input">
 			</div>
 
 			<div class="login-form__field">
-				<input placeholder="Mot de passe" type="password" id="x_password" name="_password" class="login-form__input">
+				<input placeholder="{{ 'psw'|trans({},'login') }}" type="password" id="x_password" name="_password" class="login-form__input">
 				<img id="toggle-eye" class="opened_eye" src={{ asset('/icons/opened_eye.png') }} >
 			</div>
-			<a href="{{ path("app_forgot_password_request") }}" style="position: relative; top: -15px;">Mot de passe oublié</a>
+			<a href="{{ path("app_forgot_password_request") }}" style="position: relative; top: -15px;">{{ 'forgot'|trans({},'login') }}</a>
 
-			<button type="submit" class="login-form__submit">Se connecter</button>
+			<button type="submit" class="login-form__submit">{{ 'button'|trans({},'login') }}</button>
 
 			<div class="form-center">
-				<span>Vous n'avez pas de compte ?</span>
-				<a href="{{ path("app_auth_register") }}" style="margin-left: 5px;" class="login-form__link--register">S'inscrire</a>
+				<span>{{ 'new'|trans({},'login') }}</span>
+				<a href="{{ path("app_auth_register") }}" style="margin-left: 5px;" class="login-form__link--register">{{ 'signup'|trans({},'login') }}</a>
 			</div>
 		</form>
 	</div>

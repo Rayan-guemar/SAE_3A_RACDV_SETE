@@ -1,3 +1,7 @@
+const btn = document.querySelector(".map-btn");
+var mapEl = document.getElementById("map");
+
+
 async function getAllFestival() {
 
     // Initialisation de la carte
@@ -37,5 +41,25 @@ async function getAllFestival() {
         }
     }
 
+    btn.addEventListener('click', () => {
+        if (btn.innerText === "Afficher la carte") {
+            mapEl.style.display = "block";
+            btn.innerText = "Cacher la carte"
+            map.invalidateSize();
+        }
+        else if (btn.innerText === "Cacher la carte") {
+            mapEl.style.display = "none";
+            btn.innerText = "Afficher la carte"
+        }
+        else if (btn.innerText === "Show the map"){
+            mapEl.style.display = "block";
+            btn.innerText = "Hide the map"
+            map.invalidateSize();
+        }
+        else if (btn.innerText === "Hide the map") {
+            mapEl.style.display = "none";
+            btn.innerText = "Show the map"
+        }
+    })
 }
 getAllFestival();

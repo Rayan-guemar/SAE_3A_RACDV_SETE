@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
 
-{% block title %}Création d'une tache
+{% block title %}{{'title'|trans({},'task') }}
 {% endblock %}
 
 {% block body %}
 
-	<h1>Création d'une tache</h1>
+	<h1> {{'title'|trans({},'task') }} </h1>
 
 	<div class="form-wrapper">
 		{{ form_start(form) }}
@@ -14,8 +14,8 @@
 		{{ form_row(form.nom, { 'label': false }) }}
 		{{ form_row(form.lieu, { 'label': false }) }}
 		<div class="form-row">
-			{{ form_widget(form.heureDebut, {'label': 'Date de début', 'attr': {'class': 'festival-form__input'} }) }}
-			{{ form_widget(form.heureFin, {'label': 'Date de fin', 'attr': {'class': 'festival-form__input'}}) }}
+			{{ form_widget(form.heureDebut, {'label': 'datedeb'|trans({},'task'), 'attr': {'class': 'festival-form__input'} }) }}
+			{{ form_widget(form.heureFin, {'label': 'dateend'|trans({},'task'), 'attr': {'class': 'festival-form__input'}}) }}
 		</div>
 		{{ form_widget(form.creerTache) }}
 

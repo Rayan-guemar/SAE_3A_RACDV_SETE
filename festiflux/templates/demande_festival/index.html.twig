@@ -1,22 +1,22 @@
 {% extends "base.html.twig" %}
-{% block title %}Liste des demandes{% endblock %}
+{% block title %}{{ 'title'|trans({},'demandefest') }}{% endblock %}
 
 {% block overhead %}
     <script src="{{ asset('js/modal.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
-    <h1>Liste des demandes de Validation</h1>
+    <h1>{{ 'title'|trans({},'demandefest') }}</h1>
     <table class="table">
         <thead>
             <tr>
-                <th>Nom festival</th>
-                <th>Description</th>
-                <th>Organisateur</th>
-                <th>Date de début</th>
-                <th>Date de fin</th>
-                <th>Lieu</th>
-                <th>Actions</th>
+                <th>{{ 'name'|trans({},'demandefest') }}</th>
+                <th>{{ 'desc'|trans({},'demandefest') }}</th>
+                <th>{{ 'orga'|trans({},'demandefest') }}</th>
+                <th>{{ 'datebeg'|trans({},'demandefest') }}</th>
+                <th>{{ 'dateend'|trans({},'demandefest') }}</th>
+                <th>{{ 'location'|trans({},'demandefest') }}</th>
+                <th>{{ 'actions'|trans({},'demandefest') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -30,26 +30,26 @@
                     <td>{{ validation.getFestival().getLieu() }}</td>
                     <td>
                         <form action="{{ path('app_validation_accept', {'id': validation.id}) }}" method="post">
-                            <button class="btn-primary">Accepter</button>
+                            <button class="">{{ 'accept'|trans({},'demandefest') }}</button>
                         </form>
-                        <button class="btn-open btn-primary" data-validation-id="{{ validation.id }}">Refuser</button>
+                        <button class="btn-open" data-validation-id="{{ validation.id }}">{{ 'reject'|trans({},'demandefest') }}</button>
                     </td>
                 </tr>
 
                 <div class="modal hidden" id="modal-{{ validation.id }}">
                     <div>
                         <div class="flex-row modal_top">
-                            <h3 style="color: #0a0a0a">Ajouter un motif</h3>
+                            <h3 style="color: #0a0a0a">{{ 'addmotif'|trans({},'demandefest') }}</h3>
                             <button class="btn-close">⨉</button>
                         </div>
                         <p>
-                            Dans la rubrique ci-dessous, ajouter un motif pour expliquer votre choix.
+                            {{ 'motiftxt'|trans({},'demandefest') }}
                         </p>
                     </div>
 
                     <form action="{{ path('app_validation_reject', {'id': validation.id}) }}" method="post">
                         <textarea name="motif" id="motif" cols="30" rows="10" placeholder="Ecrivez un motif..."></textarea>
-                        <button class="">Envoyer</button>
+                        <button class="">{{ 'send'|trans({},'demandefest') }}</button>
                     </form>
                 </div>
             {% endfor %}

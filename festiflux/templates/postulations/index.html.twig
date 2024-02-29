@@ -1,20 +1,25 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Vos postulation
+	{{ 'title'|trans({},'index_postulation') }}
 {% endblock %}
 
 {% block body %}
-	<h1>Vos Postulations</h1>
+	<h1>	{{ 'title'|trans({},'index_postulation') }}
+	</h1>
 
 	{% if postulations is not empty %}
 		<table border="1">
 			<thead>
 				<tr>
-					<th>festival</th>
-					<th>date de votre demande</th>
-					<th>status</th>
-					<th>motif</th>
+					<th>	{{ 'fest'|trans({},'index_postulation') }}
+					</th>
+					<th>	{{ 'date'|trans({},'index_postulation') }}
+					</th>
+					<th>	{{ 'status'|trans({},'index_postulation') }}
+					</th>
+					<th>	{{ 'motif'|trans({},'index_postulation') }}
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -26,11 +31,12 @@
 							</a>
 						</td>
 						<td>{{ postulation.date | date('d/m/Y') }}</td>
-						<td>{{ postulation.statusToString() }}</td>
+						<td>{{ (postulation.statusToString())|trans({},'index_postulation') }}</td>
 						<td>{{ postulation.motif ? postulation.motif : '/' }}</td>
 					</tr>
 				</tbody>
 			</tbody>
 		</tr>
 	{% endfor %}
-</tbody></table>{% else %}<p>Aucune postulations disponible.</p>{% endif %}{% endblock %}
+</tbody></table>{% else %}<p>	{{ 'void'|trans({},'index_postulation') }}
+		</p>{% endif %}{% endblock %}

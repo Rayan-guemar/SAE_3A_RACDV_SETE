@@ -5,7 +5,6 @@ import {Tache, Creneau, Poste, Benevole, Festival, ID} from '../../scripts/types
 import { Backend } from '../../scripts/Backend';
 import Modal from './Modal.vue';
 import TacheAffectations from './TacheAffectations.vue';
-// import deleteImg from '../../../public/icons/delete.svg';
 
 
 interface Props {
@@ -16,6 +15,7 @@ interface Props {
   total: number,
   modeAffectation: boolean,
   benevoles: Benevole[],
+  lang: string
 }
 
 const props = defineProps<Props>();
@@ -107,6 +107,29 @@ const switchMode = (e: MouseEvent) => {
   props.modeAffectation ;
 }
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'desc': return 'Description :';
+      case 'note' : return 'Remarque :';
+      case 'location' : return 'Lieu :';
+      case 'affectedVolun' : return 'Bénévoles affectés';
+      case 'delete' : return 'Voulez vous vraiment supprimer cette tache ?';
+      case 'yes' : return 'Oui';
+      case 'no' : return 'Non';
+    }
+  } else {
+    switch (key) {
+      case 'desc': return 'Description :';
+      case 'note' : return 'Note :';
+      case 'location' : return 'Location :';
+      case 'affectedVolun' : return 'Affected volunteers';
+      case 'delete' : return 'Do you really want to delete this task ?';
+      case 'yes' : return 'Yes';
+      case 'no' : return 'No';
+    }
+  }
+}
 </script>
 
 <template>
@@ -182,19 +205,23 @@ const switchMode = (e: MouseEvent) => {
       </div> -->
       <div class="info-wrapper">
           <div>
-              <h5>Description :</h5>
+              <h5>        {{ translate("desc") }}
+              </h5>
               <div class="content">{{ tache.poste.description || (tache.poste.description.length === 0 ? 'Il n\'y a pas de description' : tache.poste.description) }}</div>
           </div>
           <div>
-              <h5>Remarque :</h5>
+              <h5>        {{ translate("note") }}
+              </h5>
               <div class="content">{{ tache.description || (tache.description.length === 0 ? 'Il n\'y a pas de remarque' : tache.description) }}</div>
           </div>
           <div>
-              <h5 v-if="tache.lieu">Lieu :</h5>
+              <h5 v-if="tache.lieu">        {{ translate("location") }}
+              </h5>
               <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
           </div>
           <div class="tache-info_benevoles">
-            {{ tache.benevoleAffecte }} bénévoles affectés
+            {{ tache.benevoleAffecte }}         {{ translate("affectedVolun") }}
+
           </div>
       </div>
     </Modal>
@@ -208,16 +235,17 @@ const switchMode = (e: MouseEvent) => {
         :tache="tache"
         :benevoles="benevoles"
         :chargesBenevole = "chargesBenevole"
-        @reloadBenevoles="() => $emit('reloadBenevoles')" 
+        @reloadBenevoles="() => $emit('reloadBenevoles')"
+        :lang = "lang"
       />
     </Modal>
 
     <Modal v-if="deleting">
       <form class="planning-form">
-        <h5>Voulez vous vraiment supprimer cette tache ?</h5>
+        <h5>{{translate('delete')}}</h5>
         <div class="flex-row">
-          <div class="btn" @click="deleteTache">Oui</div>
-          <div class="btn" @click="() => deleting = false">Non</div>
+          <div class="btn" @click="deleteTache">{{translate('yes')}}</div>
+          <div class="btn" @click="() => deleting = false">{{translate('no')}}</div>
         </div>
       </form>
     </Modal>

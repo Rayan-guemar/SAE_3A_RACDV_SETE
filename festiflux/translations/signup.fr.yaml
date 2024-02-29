@@ -1,0 +1,12 @@
+title: 'Inscription'
+create: 'Créer votre compte'
+email: 'Adresse email'
+name: 'Prénom'
+surname: 'Nom'
+pwd: 'Mot de passe'
+confirm: 'Confirmation mot de passe'
+address: 'Adresse'
+desc: 'Description'
+signup: "S'inscrire"
+already: "Déjà inscrit ?"
+login: "Se connecter"

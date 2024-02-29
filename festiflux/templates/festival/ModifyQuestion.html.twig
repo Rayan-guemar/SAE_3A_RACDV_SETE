@@ -1,15 +1,15 @@
 {% extends "base.html.twig" %}
-{% block title %}Modifier votre question{% endblock %}
+{% block title %}{{ 'title'|trans({},'modifyquest') }}{% endblock %}
 
 {% block body %}
 
     <div class="create-questionnaire">
-        <h1>Modifier la question </h1>
+        <h1>{{ 'title'|trans({},'modifyquest') }}</h1>
 
         {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
-        {{ form_row(form.label, {'label': 'Votre question', 'attr': {'class': 'festival-form__input'}}) }}
-        {{ form_row(form.typeReponse, {'label': 'Type de reponse'}) }}
+        {{ form_row(form.label, {'label': 'quest'|trans({},'modifyquest'), 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.typeReponse, {'label': 'resp'|trans({},'modifyquest')}) }}
         {{  form_widget(form.modifyQuestion, {'attr': {'class': 'festival-form__checkbox'}}) }}
 
         {{ form_end(form) }}

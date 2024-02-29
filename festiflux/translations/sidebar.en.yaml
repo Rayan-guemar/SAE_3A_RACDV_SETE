@@ -1,0 +1,12 @@
+sidebar:
+  menu:
+    header: "MENU"
+    home: "Home"
+    my_festivals: "My festivals"
+    add_festival: "Add a festival"
+    tracking_postulations: "Tracking volontary request"
+    all_requests: "All festivals requests"
+  account:
+    header: "ACCOUNT"
+    login: "Login"
+    logout: "Logout"

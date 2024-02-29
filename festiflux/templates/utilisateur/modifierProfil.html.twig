@@ -1,19 +1,10 @@
 {% extends "base.html.twig" %}
-{% block title %}
-    Profil de
-    {{ utilisateur.nom }}
-    {{ utilisateur.prenom }}
-{% endblock %}{% block overhead %}
-    <script src="{{ asset('js/profileDynamic.js') }}" defer></script>
-{% endblock %}
+{% block title %}{{ 'title'|trans({}, 'modifyprofil') }}{% endblock %}
+
 {% block body %}
 
     <div class="profil-box">
-    <h1>
-        Profil de
-        {{ utilisateur.nom }}
-        {{ utilisateur.prenom }}
-    </h1>
+        <h1>{{ 'title'|trans({}, 'modifyprofil') }}</h1>
 
     <div class="info-box-wrapper">
         <div class="image_profile">
@@ -28,20 +19,20 @@
 
         <div class="info-box editing">
             <div class="info-row editing">
-                <div class="df">{{ form_row(form.email, {'label': 'Email', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }} <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
-                    <div class="df"> {{ form_row(form.nom, {'label': 'Nom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                <div class="df">{{ form_row(form.email, {'label': 'email'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }} <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
+                    <div class="df"> {{ form_row(form.nom, {'label': 'surname'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                         <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
-                    <div class="df"> {{ form_row(form.prenom, {'label': 'Prénom', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                    <div class="df"> {{ form_row(form.prenom, {'label': 'name'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                         <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
-                <div class="df"> {{ form_row(form.adresse, {'label': 'Adresse', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                <div class="df"> {{ form_row(form.adresse, {'label': 'address'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                     <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
-                <div class="df"> {{ form_row(form.description, {'label': 'Description', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                <div class="df"> {{ form_row(form.description, {'label': 'bio'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                     <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
-                <div class="df">{{ form_row(form.fichierPhotoProfil, {'label': 'Photo de profil', 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
+                <div class="df">{{ form_row(form.fichierPhotoProfil, {'label': 'pp'|trans({}, 'profil'), 'attr': {'disabled':'disabled', 'class': 'info-border editing'}}) }}
                     <a class="pen"><img class="pen-img" src="{{ asset("icons/pen-black.svg") }}" alt=""></a></div>
             </div>
         </div>
-        {{ form_widget(form.demanderModificationProfil, {'label': 'Modifier', 'attr': {'class': 'edit-button'}}) }}
+        {{ form_widget(form.demanderModificationProfil, {'label': 'submit'|trans({}, 'modifyprofil'), 'attr': {'class': 'edit-button'}}) }}
         {{ form_end(form) }}
     </div>
 

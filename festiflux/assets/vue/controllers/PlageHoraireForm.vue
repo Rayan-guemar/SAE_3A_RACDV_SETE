@@ -11,6 +11,7 @@ type Props = {
   dateFin: Date;
   close: (c?: Creneau) => void
   updatePlages: () => void
+  lang: string
 }
 
 const props = defineProps<Props>();
@@ -46,13 +47,45 @@ function changeHandlerEnd() {
   }
 }
 
-
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'alertDate':
+        return "La date de début doit être avant la date de fin";
+      case 'title':
+        return "Ajout d'une plage horaire";
+      case 'begin':
+        return "Début du créneaux";
+      case 'end':
+        return "Fin du créneaux";
+      case 'cancel':
+        return 'Annuler';
+      case 'add':
+        return 'Ajouter';
+    }
+  } else {
+    switch (key) {
+      case 'alertDate':
+        return "The start date must be before the end date";
+      case 'title':
+        return "Add a time slot";
+      case 'begin':
+        return 'Start of the slot';
+      case 'end':
+        return 'End of the slot';
+      case 'cancel':
+        return 'Cancel';
+      case 'add':
+        return 'Add';
+    }
+  }
+}
 
 const createCreneau = async (e: Event) => {
   if (!creneau.value.debut || !creneau.value.fin) return;
 
   if (creneau.value.debut >= creneau.value.fin) {
-    alert("La date de début doit être avant la date de fin");
+    alert(translate('alertDate'));
     return;
   }
   await Backend.addHeureDepartFin(props.festivalId, creneau.value);
@@ -65,20 +98,20 @@ const createCreneau = async (e: Event) => {
 
 <template>
   <form class="planning-form" @submit.prevent="createCreneau">
-    <h2>Ajout d'une plage horaire</h2>
+    <h2>{{ translate("title") }}</h2>
     <div class="flex-column flex-align-center">
-      <label for="start-creneau">Début du créneau</label>
+      <label for="start-creneau">{{ translate("begin") }}</label>
       <input name="start" id="start-creneau" ref="start" type="datetime-local" :min="getDateForInputAttribute(dateDebut)"
         :max="getDateForInputAttribute(dateFin)" v-model="creneau.debut" @change="changeHandlerStart" />
     </div>
     <div class="flex-column flex-align-center">
-      <label for="end-creneau">Fin du créneau</label>
+      <label for="end-creneau">{{ translate("end") }}</label>
       <input name="end" id="end-creneau" ref="end" type="datetime-local" :min="getDateForInputAttribute(dateDebut)"
         :max="getDateForInputAttribute(dateFin)" v-model="creneau.fin" @change="changeHandlerEnd" />
     </div>
     <div class="flex-column flex-align-center">
-      <button class="btn add-plage" type="submit">Ajouter</button>
-      <button id="cancel-creneau-btn" class="btn" @click="close()">Annuler</button>
+      <button class="btn add-plage" type="submit">{{ translate("add") }}</button>
+      <button id="cancel-creneau-btn" class="btn" @click="close()">{{ translate("cancel") }}</button>
     </div>
   </form>
 </template>

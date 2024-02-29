@@ -51,9 +51,11 @@ use PHPUnit\Util\Json;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+
+#[Route('{_locale<%app.supported_locales%>}')]
 class FestivalController extends AbstractController {
-
     public function __construct(
         public FlashMessageService $flashMessageService, 
         public UtilisateurRepository $utilisateurRepository, 
@@ -65,6 +67,9 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_festival_all');
     }
 
+    /**
+     * pour afficher les festivals sur la page d'acceuil
+     */
     #[Route('/festival/all', name: 'app_festival_all')]
     public function all(FestivalRepository $repository, TagRepository $tagRepository, Request $request, FlashMessageService $flashMessageService, PaginatorInterface $paginator): Response {
         $searchData = new SearchData();
@@ -118,8 +123,11 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour ajouter un festival
+     */
     #[Route('/festival/add', name: 'app_festival_add', methods: ['GET', 'POST'])]
-    public function add(TagRepository $tagRepository, Request $req, EntityManagerInterface $em, SluggerInterface $slugger, FlashMessageService $flashMessageService) {
+    public function add(TagRepository $tagRepository, Request $req, EntityManagerInterface $em, SluggerInterface $slugger, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
         $festivals = new Festival();
         $form = $this->createForm(FestivalType::class, $festivals);
         $form->handleRequest($req);
@@ -138,7 +146,8 @@ class FestivalController extends AbstractController {
                                 $newFilename
                             );
                         } catch (FileException $e) {
-                            throw new \Exception('Erreur lors de l\'upload de l\'affiche');
+
+                            throw new \Exception($translator->trans('festival.error.upload', [], 'msgflash', $translator->getLocale()));
                         }
                         $festivals->setAffiche($newFilename);
                     }
@@ -163,10 +172,10 @@ class FestivalController extends AbstractController {
                     $em->persist($festivals);
                     $em->flush();
 
-                    $this->addFlash('success', 'Demande de festival acceptée');
+                    $this->addFlash('success', $translator->trans('festival.success.demande', [], 'msgflash', $translator->getLocale()));
                     return $this->redirectToRoute('app_festival_gestion', ['id' => $festivals->getId()]);
                 } else {
-                    $this->addFlash('error', 'Les dates de votre festival ne sont pas conforme !');
+                    $this->addFlash('error', $translator->trans('festival.error.date', [], 'msgflash', $translator->getLocale()));
                     return $this->redirectToRoute('app_festival_add');
                 }
             } else {
@@ -180,9 +189,11 @@ class FestivalController extends AbstractController {
         ]);
     }
 
-
+    /**
+     * pour postuler à un festival {id}
+     */
     #[Route('/festival/{id}/apply', name: 'app_festival_apply_volunteer')]
-    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, ErrorService $errorService, MailerInterface $mailer): Response {
+    public function apply(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, TranslatorInterface $translator, ErrorService $errorService, MailerInterface $mailer): Response {
 
         $festival = $repository->find($id);
         if (!$festival) {
@@ -191,7 +202,7 @@ class FestivalController extends AbstractController {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', "Vous n'êtes pas inscrit");
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         }
 
@@ -200,7 +211,7 @@ class FestivalController extends AbstractController {
         $isOrganisateur = $utilisateurUtils->isOrganisateur($u, $festival);
 
         if ($isBenevole || $isResponsable || $isOrganisateur) {
-            $this->addFlash('error', 'Vous êtes déjà inscrit à ce festival');
+            $this->addFlash('error', $translator->trans('user.error.alreadyMember', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
         };
 
@@ -225,12 +236,15 @@ class FestivalController extends AbstractController {
 
         $mailer->send($email);
 
-        $this->addFlash('success', 'Demande de bénévolat envoyée');
+        $this->addFlash('success', $translator->trans('festival.success.volunRequestSent', [], 'msgflash', $translator->getLocale()));
         return $this->redirectToRoute('app_festival_detail', ['id' => $id]);
     }
 
+    /**
+     * pour ajouter un responsable à un festival
+     */
     #[Route('/festival/{festId}/addResponsable/{userId}', name: 'app_festival_add_responsable', options: ["expose" => true])]
-    public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService) {
+    public function addResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService, TranslatorInterface $translator): Response {
 
         $festival = $repository->find($festId);
         $u = $userRepo->find($userId);
@@ -241,7 +255,7 @@ class FestivalController extends AbstractController {
 
 
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', "cet utilisateur n'êtes pas inscrit");
+            $this->addFlash('error', $translator->trans('user.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         }
 
@@ -249,14 +263,14 @@ class FestivalController extends AbstractController {
         $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
 
         if (!$isBenevole) {
-            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
+            $this->addFlash('error', $translator->trans('user.error.notVolunteer', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         };
         if (!$isResponsable) {
             $festival->addResponsable($u);
             $em->persist($festival);
             $em->flush();
-            $this->addFlash('success', 'Cet utilisateur est maintenant responsable pour ce festival');
+            $this->addFlash('success', $translator->trans('user.success.manager', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         } else {
             $this->addFlash('erreur', '');
@@ -264,8 +278,11 @@ class FestivalController extends AbstractController {
         }
     }
 
+    /**
+     * pour retirer un responsable à un festival
+     */
     #[Route('/festival/{festId}/removeResponsable/{userId}', name: 'app_festival_remove_responsable', options: ["expose" => true])]
-    public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService) {
+    public function removeResponsabel(FestivalRepository $repository, UtilisateurRepository $userRepo, int $festId, int $userId, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, ErrorService $errorService, TranslatorInterface $translator): Response {
 
         $festival = $repository->find($festId);
         $u = $userRepo->find($userId);
@@ -276,7 +293,7 @@ class FestivalController extends AbstractController {
 
 
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', "cet utilisateur n'êtes pas inscrit");
+            $this->addFlash('error', $translator->trans('user.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         }
 
@@ -284,14 +301,14 @@ class FestivalController extends AbstractController {
         $isResponsable = $utilisateurUtils->isResponsable($u, $festival);
 
         if (!$isBenevole) {
-            $this->addFlash('error', "cet utilisateur n'êtes pas bénévole pour ce festival");
+            $this->addFlash('error', $translator->trans('user.error.notVolunteer', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         };
         if ($isResponsable) {
             $festival->removeResponsable($u);
             $em->persist($festival);
             $em->flush();
-            $this->addFlash('success', "Cet utilisateur n'est maintenant plus responsable pour ce festival");
+            $this->addFlash('success', $translator->trans('user.success.notManager', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $festId]);
         } else {
             $this->addFlash('erreur', "");
@@ -299,6 +316,9 @@ class FestivalController extends AbstractController {
         }
     }
 
+    /**
+     * pour afficher les détails d'un festival
+     */
     #[Route('/festival/{id}', name: 'app_festival_detail', options: ["expose" => true])]
     public function show(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
         $festival = $repository->find($id);
@@ -332,6 +352,9 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour les maps
+     */
     #[Route('/festival/all/coordinate', name: 'app_all_festival', methods: ['GET'], options: ['expose' => true])]
     public function allCoordinatesFest(FestivalRepository $repository): JsonResponse {
         $festivals = $repository->findAll();
@@ -354,14 +377,17 @@ class FestivalController extends AbstractController {
         return $this->render('festival/map.html.twig');
     }
 
-    #[Route('/festival/{id}/benevoles', name: 'app_festival_benevoles')]
-    public function showDemandes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    /**
+     * pour afficher les demandes de bénévolat d'un festival {id}
+     */
+    #[Route('/festival/{id}/demandes', name: 'app_festival_benevoles')]
+    public function showDemandes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
         if (!$this->getUser() instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
@@ -378,21 +404,24 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher le planning d'un festival {id}
+     */
     #[Route('/festival/{id}/planning', name: 'app_festival_planning')]
-    public function planning(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    public function planning(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
@@ -404,21 +433,24 @@ class FestivalController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher les postes d'un festival {id}
+     */
     #[Route('/festival/{id}/postes', name: 'app_festival_postes')]
-    public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    public function postes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
@@ -428,11 +460,15 @@ class FestivalController extends AbstractController {
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
             'isFestivalOpen' => $festival->isOpen(),
             'watchingOtherUserPreferences' => false,
+            'otherUserId' => null
         ]);
     }
 
+    /**
+     * pour accepter une demande de bénévolat d'un user dans un festival
+     */
     #[Route('/festival/{id}/demandes/accept/{idUser}', name: 'app_festival_accept_demande')]
-    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository) {
+    public function acceptDemandeBenevolat(int $id, int $idUser, FestivalRepository $repo, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository, TranslatorInterface $translator): Response {
 
         $festival = $repo->find($id);
         $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($idUser) {
@@ -440,7 +476,7 @@ class FestivalController extends AbstractController {
         });
 
         if (!$demande) {
-            $this->addFlash('error', 'La demande n\'existe pas');
+            $this->addFlash('error', $translator->trans('demande.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
         }
 
@@ -451,25 +487,25 @@ class FestivalController extends AbstractController {
         $em->persist($festival);
         $em->flush();
 
-        $this->addFlash('success', 'La demande a bien été acceptée');
+        $this->addFlash('success', $translator->trans('demande.success.demande', [], 'msgflash', $translator->getLocale()));
         return $this->redirectToRoute('app_festival_demandesBenevolat', ['id' => $id]);
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
-    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse {
+    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
         if ($festival->isOpen()) {
-            $this->addFlash('error', 'Le festival est deja ouvert');
-            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
+            $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
+            return new JsonResponse(['error' => $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $poste = new Poste();
@@ -486,22 +522,22 @@ class FestivalController extends AbstractController {
         $em->flush();
 
         return new JsonResponse([
-            'success' => 'Le poste a bien été créé',
+            'success' => $translator->trans('poste.success.created', [], 'msgflash', $translator->getLocale()),
             'id' => $poste->getId(),
         ], 200);
     }
 
     #[Route('/festival/{id}/poste/all', name: 'app_festival_all_poste', methods: ['GET'], options: ["expose" => true])]
-    public function allPoste(FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function allPoste(#[MapEntity] Festival $festival, TranslatorInterface $translator, UtilisateurUtils $utilisateurUtils): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $postes = $festival->getPostes();
@@ -524,32 +560,32 @@ class FestivalController extends AbstractController {
     
 
     #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
-    public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste) {
+    public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste, TranslatorInterface $translator): JsonResponse {
 
         $f = $repository->find($id);
         $p = $poste->find($idPoste);
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $f);
 
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f)) && !$isBenevole) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$f) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$p) {
-            return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
+            return new JsonResponse(['error', $translator->trans('poste.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
-        if ($f->isOpen()) {
-            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
+        if (!$f->isOpen()) {
+            return new JsonResponse(['error' => $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $p->setNom($request->toArray()['nom']);
@@ -559,64 +595,64 @@ class FestivalController extends AbstractController {
         $em->persist($p);
         $em->flush();
 
-        return new JsonResponse(['success' => 'Le poste a bien été modifié'], Response::HTTP_OK);
+        return new JsonResponse(['success' => $translator->trans('poste.success.modified', [], 'msgflash', $translator->getLocale())], Response::HTTP_OK);
     }
 
 
 
     #[Route('/festival/{id}/poste/{idPoste}/delete', name: 'app_festival_delete_poste', methods: ['GET', 'DELETE'], options: ["expose" => true])]
-    public function deletePoste(Request $request, EntityManagerInterface $em, int $id, int $idPoste, FestivalRepository $repository, UtilisateurUtils $utilisateurUtils, PosteRepository $poste): Response {
+    public function deletePoste(EntityManagerInterface $em, int $id, int $idPoste, FestivalRepository $repository, UtilisateurUtils $utilisateurUtils, PosteRepository $poste, TranslatorInterface $translator): Response {
         $f = $repository->find($id);
         $p = $poste->find($idPoste);
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $isBenevole = $utilisateurUtils->isBenevole($u, $f);
 
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f)) && !$isBenevole) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$f) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$p) {
-            return new JsonResponse(['error', 'Le poste n\'existe pas'], 403);
+            return new JsonResponse(['error', $translator->trans('poste.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
-        if ($f->isOpen()) {
-            return new JsonResponse(['error' => 'Le festival est deja ouvert'], 403);
+        if (!$f->isOpen()) {
+            return new JsonResponse(['error' => $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $em->remove($p);
         $em->flush();
 
-        return new JsonResponse(['success' => 'Le poste a bien été supprimée'], Response::HTTP_OK);
+        return new JsonResponse(['success' => $translator->trans('user.success.deleted', [], 'msgflash', $translator->getLocale())], Response::HTTP_OK);
     }
 
     #[Route('/tache/{id}/affect', name: 'app_benevole_save', methods: ['POST'], options: ["expose" => true])]
-    public function affectBenevoles(int $id, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteRepository $poste, FestivalRepository $repository, TacheRepository $tacheRepository, UtilisateurRepository $ur): Response {
+    public function affectBenevoles(int $id, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, TacheRepository $tacheRepository, UtilisateurRepository $ur, TranslatorInterface $translator): Response {
         $tache = $tacheRepository->find($id);
         $festival = $tache->getPoste()->getFestival();
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival))) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.perissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$festival) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!$tache) {
-            return new JsonResponse(['error', 'La tache n\'existe pas'], 403);
+            return new JsonResponse(['error', $translator->trans('tache.error.notFound', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $affected = $request->toArray()['affected'];
@@ -635,19 +671,19 @@ class FestivalController extends AbstractController {
         $em->persist($tache);
         $em->flush();
 
-        return new JsonResponse(['success' => 'Les bénévoles ont bien été affectés'], Response::HTTP_OK);
+        return new JsonResponse(['success' => $translator->trans('user.success.affect', [], 'msgflash', $translator->getLocale())], Response::HTTP_OK);
     }
 
     #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
-    public function allBenevoles(FestivalRepository $festRepo, PosteUtilisateurPreferencesRepository $prefRepo, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function allBenevoles(PosteUtilisateurPreferencesRepository $prefRepo, #[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): JsonResponse {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $benevoles = $festival->getBenevoles();
@@ -680,14 +716,14 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/tache/{id}/benevolespref', name: 'app_tache_benevolespref', methods: ['GET'], options: ['expose' => true])]
-    public function Benevolespref(TacheRepository $repository, #[MapEntity] Tache $tache, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function Benevolespref(#[MapEntity] Tache $tache, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $tache->getPoste()->getFestival()) || $utilisateurUtils->isResponsable($u, $tache->getPoste()->getFestival()))) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], 403);
         }
 
         $benevolesAdore = [];
@@ -738,21 +774,80 @@ class FestivalController extends AbstractController {
         ], 200);
     }
 
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
+    public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
+        if ($f == null) {
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], Response::HTTP_NOT_FOUND);
+        }
+        $u = $this->getUser();
+        if (!$u || !$u instanceof Utilisateur) {
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], Response::HTTP_FORBIDDEN);
+        }
+        if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], Response::HTTP_FORBIDDEN);
+        }
+        $body = json_decode($request->getContent(), true);
+        try {
+            $dateDebut = new DateTime($body['debut']);
+            $dateFin = new DateTime($body['fin']);
+
+            if ($dateDebut > $dateFin) {
+                return new JsonResponse(['error' => $translator->trans('date.notValid', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
+            } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                return new JsonResponse(['error' => $translator->trans('date.begin', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
+            } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
+                return new JsonResponse(['error' =>$translator->trans('date.end', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
+            }
+
+            $c = new Creneaux();
+            $c->setDateDebut($dateDebut);
+            $c->setDateFin($dateFin);
+            $f->addPlagesHoraire($c);
+
+            $em->persist($c);
+            $em->flush();
+        } catch (\Throwable $th) {
+            if ($th instanceof \ErrorException) {
+                return new JsonResponse(['error' => $translator->trans('data.notValid', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
+            }
+            throw $th;
+        }
+
+        return new JsonResponse(status: Response::HTTP_CREATED);
+    }
+
+    #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_get_DebutFinDay', methods: ['GET'], options: ["expose" => true])]
+    public function getPlagesHoraires(#[MapEntity] Festival $f, TranslatorInterface $translator): JsonResponse {
+        if ($f == null) {
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], Response::HTTP_NOT_FOUND);
+        }
+        $creneaux = $f->getPlagesHoraires();
+        $tab = [];
+        foreach ($creneaux as $creneau) {
+            $tab[] = [
+                'id' => $creneau->getId(),
+                'debut' => $creneau->getDateDebut(),
+                'fin' => $creneau->getDateFin(),
+            ];
+        }
+        return new JsonResponse($tab, 200);
+    }
+
     #[Route('/festival/{id}/tache', name: 'app_festival_add_tache', methods: ['POST'], options: ["expose" => true])]
-    public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils): Response {
+    public function addTache(#[MapEntity] Festival $f, Request $request, PosteRepository $posteRepository, EntityManagerInterface $em, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
 
 
         if ($f == null) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], Response::HTTP_NOT_FOUND);
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['error' => $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale())], Response::HTTP_FORBIDDEN);
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $f) || $utilisateurUtils->isResponsable($u, $f))) {
-            return new JsonResponse(['error' => 'Vous ne pouvez pas effectuer cet opération'], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['error' => $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale())], Response::HTTP_FORBIDDEN);
         }
 
         $body = json_decode($request->getContent(), true);
@@ -768,7 +863,7 @@ class FestivalController extends AbstractController {
             $address = (string) $body['adresse'];
         } catch (\Throwable $th) {
             if ($th instanceof \ErrorException) {
-                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => $translator->trans('data.notValid', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
             }
             throw $th;
         }
@@ -777,7 +872,7 @@ class FestivalController extends AbstractController {
 
 
         if (!$p || $p->getFestival()->getId() != $id) {
-            return new JsonResponse(['error' => 'Le poste n\'existe pas'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $translator->trans('poste.error.notFound', [], 'msgflash', $translator->getLocale())], Response::HTTP_NOT_FOUND);
         }
 
         $t = new Tache();
@@ -785,11 +880,11 @@ class FestivalController extends AbstractController {
         $t->setNombreBenevole($nombreBenevole);
 
         if ($dateDebut > $dateFin) {
-            return new JsonResponse(['error' => 'Les dates ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $translator->trans('date.notValid', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
         } else if ($dateDebut->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateDebut->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
-            return new JsonResponse(['error' => 'La date de début n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $translator->trans('date.begin', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
         } else if ($dateFin->format('Y-m-d') < $f->getDateDebut()->format('Y-m-d') || $dateFin->format('Y-m-d') > $f->getDateFin()->format('Y-m-d')) {
-            return new JsonResponse(['error' => 'La date de fin n\'est pas valide'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => $translator->trans('date.end', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
         }
 
         $c = new Creneaux();
@@ -816,11 +911,11 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/tache', name: 'app_festival_tache', methods: ['GET'], options: ["expose" => true])]
-    public function getTaches(#[MapEntity] Festival $f): JsonResponse {
+    public function getTaches(#[MapEntity] Festival $f, TranslatorInterface $translator): JsonResponse {
 
 
         if ($f == null) {
-            return new JsonResponse(['error' => 'Le festival n\'existe pas'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale())], Response::HTTP_NOT_FOUND);
         }
 
         $taches = $f->getPostes()->reduce(function ($acc, Poste $p) {
@@ -850,17 +945,17 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/tache/{idTache}/edit', name: 'app_festival_edit_tache', methods: ['GET', 'POST'], options: ["expose" => true])]
-    public function editTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, PosteRepository $pRep, LieuRepository $lRep, Request $req): Response {
+    public function editTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, PosteRepository $pRep, LieuRepository $lRep, TranslatorInterface $translator): Response {
 
         $f = $fRep->find($id);
         $t = $tRep->find($idTache);
 
         if (!$f) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         if (!$t) {
-            throw $this->createNotFoundException("La tache n'existe pas");
+            throw $this->createNotFoundException($translator->trans('tache.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $body = json_decode($request->getContent(), true);
@@ -875,7 +970,7 @@ class FestivalController extends AbstractController {
             $address = (string) $body['adresse'];
         } catch (\Throwable $th) {
             if ($th instanceof \ErrorException) {
-                return new JsonResponse(['error' => 'Les données ne sont pas valides'], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => $translator->trans('data.notValid', [], 'msgflash', $translator->getLocale())], Response::HTTP_BAD_REQUEST);
             }
 
             throw $th;
@@ -901,7 +996,7 @@ class FestivalController extends AbstractController {
         $em->persist($t);
         $em->flush();
 
-        $this->addFlash('success', 'La tache a bien été modifiée');
+        $this->addFlash('success', $translator->trans('tache.success.modified', [], 'msgflash', $translator->getLocale()));
         return $this->redirectToRoute('app_festival_planning', ['id' => $id]);
 
 
@@ -914,34 +1009,34 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/tache/{idTache}/delete', name: 'app_festival_delete_tache', methods: ['DELETE'], options: ["expose" => true])]
-    public function deleteTache(Request $request, EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep): Response {
+    public function deleteTache(EntityManagerInterface $em, int $id, int $idTache, FestivalRepository $fRep, TacheRepository $tRep, TranslatorInterface $translator): Response {
 
         $f = $fRep->find($id);
         $t = $tRep->find($idTache);
 
         if (!$f) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         if (!$t) {
-            throw $this->createNotFoundException("La tache n'existe pas");
+            throw $this->createNotFoundException($translator->trans('tache.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $em->remove($t);
         $em->flush();
 
-        return new JsonResponse(['success' => 'La tache a bien été supprimée'], Response::HTTP_OK);
+        return new JsonResponse(['success' => $translator->trans('tache.success.deleted', [], 'msgflash', $translator->getLocale())], Response::HTTP_OK);
     }
 
 
     #[Route('/festival/{id}/modifier', name: 'app_festival_modifier')]
-    public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response {
+    public function edit(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, TranslatorInterface $translator): Response {
 
         if (!$festival) {
-            throw $this->createNotFoundException('Festival non trouvé.');
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
         if ($festival->isOpen()) {
-            $this->addFlash('error', 'Le festival est deja ouvert');
+            $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
@@ -966,7 +1061,7 @@ class FestivalController extends AbstractController {
             }
             $festival->setValid(0);
             $em->flush();
-            $this->addFlash('success', 'Le festival a été modifié avec succès.');
+            $this->addFlash('success', $translator->trans('festival.success.modified', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
@@ -978,11 +1073,11 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/archiver', name: 'app_festival_archiver')]
-    public function demandeArchiverFestival(FestivalRepository $repository, int $id): Response {
+    public function demandeArchiverFestival(FestivalRepository $repository, int $id, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
 
         if (!$festival) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
+            $this->addFlash('error', $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
@@ -993,11 +1088,11 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/archiver/done', name: 'app_festival_archiver_done')]
-    public function archiverFestival(FestivalRepository $repository, int $id, EntityManagerInterface $em): Response {
+    public function archiverFestival(FestivalRepository $repository, int $id, EntityManagerInterface $em, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
 
         if (!$festival) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
+            $this->addFlash('error', $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
@@ -1008,6 +1103,7 @@ class FestivalController extends AbstractController {
 
         return $this->redirectToRoute('app_user_festivals');
     }
+
 
     #[Route('/user/{id}/preferences/{idFest}', name: 'app_festival_preferences')]
     public function displayPostes(int $idFest, int $id, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
@@ -1045,19 +1141,19 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/CreateQuestionnaire', name: 'app_festival_create_questionnaire')]
-    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): Response {
+    public function questionnaire(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, TranslatorInterface $translator): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
         if (!$festival) {
-            throw $this->createNotFoundException('Festival non trouvé.');
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         } else if ($festival->getOrganisateur() != $user) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->isOpen()) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else {
             $questionBenevole = new QuestionBenevole();
@@ -1072,7 +1168,7 @@ class FestivalController extends AbstractController {
 
                 $em->persist($questionBenevole);
                 $em->flush();
-                $this->addFlash('success', 'La question a été ajouté avec succès.');
+                $this->addFlash('success', $translator->trans('question.success.created', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
             }
 
@@ -1086,59 +1182,59 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/DeleteQuestion/{idQuestion}', name: 'app_festival_question_delete')]
-    public function deleteQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
+    public function deleteQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, EntityManagerInterface $em, int $idQuestion, TranslatorInterface $translator): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
         if (!$festival) {
-            throw $this->createNotFoundException('Festival non trouvé.');
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         } else if ($festival->getOrganisateur() != $user) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->isOpen()) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else {
             $question = $repository->find($idQuestion);
             if (!$question) {
-                throw $this->createNotFoundException('Question non trouvé.');
+                throw $this->createNotFoundException($translator->trans('question.error.notFound', [], 'msgflash', $translator->getLocale()));
             } else {
                 $em->remove($question);
                 $em->flush();
-                $this->addFlash('success', 'La question a été supprimé avec succès.');
+                $this->addFlash('success', $translator->trans('question.success.deleted', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
             }
         }
     }
 
     #[Route('/festival/{id}/ModifyQuestion/{idQuestion}', name: 'app_festival_question_modify')]
-    public function modifyQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em, int $idQuestion): Response {
+    public function modifyQuestion(QuestionBenevoleRepository $repository, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, int $idQuestion, TranslatorInterface $translator): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
         if (!$festival) {
-            throw $this->createNotFoundException('Festival non trouvé.');
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         } else if ($festival->getOrganisateur() != $user) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->isOpen()) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page car le festival est déja ouvert au posulat');
+            $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else {
             $question = $repository->find($idQuestion);
             if (!$question) {
-                throw $this->createNotFoundException('Question non trouvé.');
+                throw $this->createNotFoundException($translator->trans('question.error.notFound', [], 'msgflash', $translator->getLocale()));
             } else {
                 $form = $this->createForm(ModifierQuestionBenevoleType::class, $question);
                 $form->handleRequest($request);
                 if ($form->isSubmitted() && $form->isValid()) {
                     $em->persist($question);
                     $em->flush();
-                    $this->addFlash('success', 'La question a été modifié avec succès.');
+                    $this->addFlash('success', $translator->trans('question.success.modified', [], 'msgflash', $translator->getLocale()));
                     return $this->redirectToRoute('app_festival_create_questionnaire', ['id' => $festival->getId()]);
                 }
                 return $this->render('festival/ModifyQuestion.html.twig', [
@@ -1151,36 +1247,36 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/gestion', name: 'app_festival_gestion')]
-    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function gestion(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository, TranslatorInterface $translator): Response {
         $statut = "";
 
         $festival = $repository->find($id);
         if (!$festival) {
-            throw $this->createNotFoundException('Festival non trouvé.');
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         } else if ($festival->getOrganisateur() != $u) {
-            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->getIsArchive()) {
-            $this->addFlash('error', 'Le festival est archivé');
+            $this->addFlash('error', $translator->trans('festival.error.archived', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else {
             if ($festival->getValid() == 1) {
-                $statut = "Validé mais pas ouvert aux postulations";
+                $statut = $translator->trans('messages.valid_not_open', [], 'gestionfest', $translator->getLocale());
             } else if ($festival->getValid() == 0) {
                 $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
                 if ($enAttente == null) {
-                    $statut = "en attente de votre demande de validation";
+                    $statut = $translator->trans('messages.valid_pending', [], 'gestionfest', $translator->getLocale());
                 } else {
-                    $statut = "en cours de traitement de validation";
+                    $statut = $translator->trans('messages.valid_analyse', [], 'gestionfest', $translator->getLocale());
                 }
             } else {
-                $statut = "Rejeté";
+                $statut = $translator->trans('messages.valid_rejected', [], 'gestionfest', $translator->getLocale());
             }
         }
 
@@ -1206,7 +1302,7 @@ class FestivalController extends AbstractController {
      * je laisse cette route au cas ou on veut ajouter le statut d'une demande de festival autre part
      */
     #[Route('/festival/{id}/trackingRequest', name: 'app_festival_trackingRequest')]
-    public function trackingRequest(ValidationRepository $validationRepository, FestivalRepository $repository, #[MapEntity] Festival $festival, Request $request,  EntityManagerInterface $em,): JsonResponse {
+    public function trackingRequest(ValidationRepository $validationRepository, #[MapEntity] Festival $festival): JsonResponse {
         $user = $this->getUser();
 
         if (!$user || !$user instanceof Utilisateur) {
@@ -1244,16 +1340,16 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/user/{idUser}/rejectAndSendMotif', name: 'app_festival_rejectAndSendMotif', options: ["expose" => true], methods: ['POST'])]
-    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, FlashMessageService $flashMessageService, HistoriquePostulationRepository $historiquePostulationRepository, Request $request): Response {
+    public function rejectAndSendMotif(#[MapEntity(id: 'id')] Festival $festival, #[MapEntity(id: 'idUser')] Utilisateur $utilisateur, EntityManagerInterface $em, HistoriquePostulationRepository $historiquePostulationRepository, Request $request, TranslatorInterface $translator): Response {
 
         if ($festival == null) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
+            $this->addFlash('error', $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else if ($utilisateur == null) {
-            $this->addFlash('error', 'L\'utilisateur n\'existe pas');
+            $this->addFlash('error', $translator->trans('user.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else if ($request->request->get('motif') == null) {
-            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            $this->addFlash('error', $translator->trans('motif.error.void', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_demandesBenevolat');
         } else {
             $demande = $festival->getDemandesBenevole()->findFirst(function (int $_, Utilisateur $u) use ($utilisateur) {
@@ -1261,7 +1357,7 @@ class FestivalController extends AbstractController {
             });
 
             if (!$demande) {
-                $this->addFlash('error', 'La demande n\'existe pas');
+                $this->addFlash('error', $translator->trans('demande.error.notFound', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_demandesBenevolat');
             }
             $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival])->setStatut(-1);
@@ -1271,43 +1367,43 @@ class FestivalController extends AbstractController {
             $em->flush();
 
 
-            $this->addFlash('success', 'La demande a bien été rejetée');
+            $this->addFlash('success', $translator->trans('demande.error.rejected', [], 'msgflash', $translator->getLocale()));
             $historiquePostulation = $historiquePostulationRepository->findOneBy(['utilisateur' => $utilisateur, 'festival' => $festival]);
             if ($historiquePostulation == null) {
-                $this->addFlash('error', 'L\'utilisateur n\'a pas postulé à ce festival');
+                $this->addFlash('error', $translator->trans('user.error.noRequest', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_demandesBenevolat');
             } else {
                 $motif = $request->request->get('motif');
                 $historiquePostulation->setMotif($motif);
                 $em->persist($historiquePostulation);
                 $em->flush();
-                $this->addFlash('success', 'Le motif a bien été envoyé');
+                $this->addFlash('success', $translator->trans('motif.success.sent', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_demandesBenevolat');
             }
         }
     }
 
     #[Route('/festival/{id}/open/page', name: 'app_festival_open_page')]
-    public function openFestival(#[MapEntity] Festival $festival, ): Response {
+    public function openFestival(#[MapEntity] Festival $festival, TranslatorInterface $translator): Response {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         } else if ($festival->getOrganisateur() != $u) {
-            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
         if ($festival == null || $festival->getIsArchive()) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
+            $this->addFlash('error', $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->getValid() != 1) {
-            $this->addFlash('error', 'Le festival n\'est pas validé');
+            $this->addFlash('error', $translator->trans('festival.error.notValid', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         } else {
             if ($festival->isOpen()) {
-                $this->addFlash('error', 'Le festival est déjà ouvert');
+                $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
             }
 
@@ -1318,35 +1414,35 @@ class FestivalController extends AbstractController {
         }
 
     }
-    
+
 
 
     #[Route('/festival/{id}/open', name: 'app_festival_open')]
-    public function openFest(#[MapEntity] Festival $festival, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function openFest(#[MapEntity] Festival $festival, EntityManagerInterface $em, TranslatorInterface $translator): Response {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         } else if ($festival->getOrganisateur() != $u) {
-            $this->addFlash('error', 'Vous n\'êtes pas l\'organisateur de ce festival');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
         if ($festival == null || $festival->getIsArchive()) {
-            $this->addFlash('error', 'Le festival n\'existe pas');
+            $this->addFlash('error', $translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         } else if ($festival->getValid() != 1) {
-            $this->addFlash('error', 'Le festival n\'est pas validé');
+            $this->addFlash('error', $translator->trans('festival.error.notValid', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         } else {
             if ($festival->isOpen()) {
-                $this->addFlash('error', 'Le festival est déjà ouvert');
+                $this->addFlash('error', $translator->trans('festival.error.alreadyOpen', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
             } else {
                 $festival->setOpen(true);
                 $em->persist($festival);
                 $em->flush();
-                $this->addFlash('success', 'Le festival a bien été ouvert aux postulations');
+                $this->addFlash('success', $translator->trans('user.success.open', [], 'msgflash', $translator->getLocale()));
                 return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
             }
         }

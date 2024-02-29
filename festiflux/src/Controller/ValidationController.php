@@ -16,29 +16,35 @@ use App\Service\FlashMessageService;
 use App\Service\FlashMessageType;
 use App\Service\UtilisateurUtils;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class ValidationController extends AbstractController {
+
+    /**
+     * Ajoute une demande de validation pour le festival {id}
+     */
     #[Route('festival/{id}/validation', name: 'app_festival_validation')]
-    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository): Response {
+    public function addFestivalValidation(#[MapEntity] Festival $festival, Request $req, EntityManagerInterface $em, FlashMessageService $flashMessageService, UtilisateurUtils $utilisateurUtils, ValidationRepository $validationRepository, TranslatorInterface $translator): Response {
 
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
 
         if ($festival->getValid() == 1) {
-            $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+            $flashMessageService->add(FlashMessageType::ERROR, $translator->trans('festival.error.alreadyValid', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
 
@@ -54,7 +60,7 @@ class ValidationController extends AbstractController {
         $enAttente = $validationRepository->findBy(['festival' => $festival, 'status' => 0]);
 
         if ($enAttente != null) {
-            $flashMessageService->add(FlashMessageType::ERROR, "Une demande de validation est déjà en cours");
+            $flashMessageService->add(FlashMessageType::ERROR, $translator->trans('festival.error.pending', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
 
@@ -64,42 +70,46 @@ class ValidationController extends AbstractController {
         $em->persist($v);
         $em->flush();
 
-        $flashMessageService->add(FlashMessageType::SUCCESS, "Votre Demande de validation à bien été envoyé");
+        $flashMessageService->add(FlashMessageType::SUCCESS, $translator->trans('festival.error.validationSent', [], 'msgflash', $translator->getLocale()));
 
         return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
     }
 
+
+    //#[IsGranted("ROLE_ADMIN")]
     #[Route('festival/{id}/validation/page', name: 'app_festival_validation_page')]
-    public function getFestivalValidations(#[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, FlashMessageService $flashMessageService): Response {
+    public function getFestivalValidations(#[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
 
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
 
         if ($festival->getValid() == 1) {
-            $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+            $flashMessageService->add(FlashMessageType::ERROR, $translator->trans('festival.error.alreadyValid', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
-       
+
         return $this->render('validations/openValidation.html.twig', [
             'festival' => $festival
         ]);
     }
 
 
-
+    /**
+     * Affiche les demandes de validation en attente
+     */
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation', name: 'app_validation', methods: 'GET')]
     public function getPendingValidations(ValidationRepository $validationRepository): Response {
@@ -112,6 +122,9 @@ class ValidationController extends AbstractController {
         ]);
     }
 
+    /**
+     * Affiche l'historique des demandes de validation
+     */
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation/history', name: 'app_validation_history', methods: 'GET')]
     public function getValidationsHistory(ValidationRepository $validationRepository): Response {
@@ -126,16 +139,19 @@ class ValidationController extends AbstractController {
         ]);
     }
 
+    /**
+     * Accepte la demande de validation du festival
+     */
     //#[IsGranted("ROLE_ADMIN")]
     #[Route('/validation/{id}/accept', name: 'app_validation_accept', methods: 'POST')]
-    public function accept(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function accept(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
 
         if (!$validation) {
-            throw $this->createNotFoundException("La demande de validation n'existe pas");
+            throw $this->createNotFoundException($translator->trans('demande.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         if ($validation->getStatus() != 0) {
-            throw new BadRequestException("La demande de validation n'est pas en attente");
+            throw new BadRequestException($translator->trans('demande.error.notPending', [], 'msgflash', $translator->getLocale()));
         }
 
         $validation->accept();
@@ -143,26 +159,29 @@ class ValidationController extends AbstractController {
         $em->persist($validation);
         $em->flush();
 
-        $flashMessageService->add(FlashMessageType::SUCCESS, "La validation à bien été accepté");
+        $flashMessageService->add(FlashMessageType::SUCCESS, $translator->trans('festival.success.validationAccepted', [], 'msgflash', $translator->getLocale()));
 
         return $this->redirectToRoute('app_validation');
     }
 
+    /**
+     * Rejette la demande de validation du festival
+     */
     // #[IsGranted("ROLE_ADMIN")]
     #[Route('/validation/{id}/reject', name: 'app_validation_reject', methods: 'POST')]
-    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService, Request $req): Response {
+    public function reject(#[MapEntity] Validation $validation, EntityManagerInterface $em, FlashMessageService $flashMessageService, Request $req, TranslatorInterface $translator): Response {
 
         if (!$validation) {
-            throw $this->createNotFoundException("La demande de validation n'existe pas");
+            throw $this->createNotFoundException($translator->trans('demande.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         if ($validation->getStatus() != 0) {
-            throw new BadRequestException("La demande de validation n'est pas en attente");
+            throw new BadRequestException($translator->trans('demande.error.notPending', [], 'msgflash', $translator->getLocale()));
         }
 
         if (!$req->request->get('motif')) {
-            throw new BadRequestException("Le message est manquant");
-            $this->addFlash('error', 'Le motif ne peut pas être vide');
+            throw new BadRequestException($translator->trans('motif.error.void', [], 'msgflash', $translator->getLocale()));
+            $this->addFlash('error', $translator->trans('motif.error.void', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_validation');
         }
 
@@ -172,7 +191,7 @@ class ValidationController extends AbstractController {
         $em->persist($validation);
         $em->flush();
 
-        $flashMessageService->add(FlashMessageType::SUCCESS, "La validation à bien été rejeté");
+        $flashMessageService->add(FlashMessageType::SUCCESS, $translator->trans('festival.success.validationRefused', [], 'msgflash', $translator->getLocale()));
 
         return $this->redirectToRoute('app_validation');
     }

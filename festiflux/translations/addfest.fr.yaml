@@ -1,0 +1,7 @@
+title: 'Demande de création de festival'
+name : 'Nom du festival'
+description: 'Description du festival'
+localisation: 'Localisation'
+poster: 'Choisir une affiche'
+tags: 'ajouter des mots clés'
+button: 'Demander la création'

@@ -1,0 +1,147 @@
+festival:
+  success:
+    demande: 'Festival request accepted'
+    volunRequestSent: 'Volunteer request sent'
+    modified: 'Festival modified'
+    open: 'Festival open'
+    validationSent: 'Validation request sent'
+    validationAccepted: 'Festival validated'
+    validationRefused: 'Festival refused'
+
+  error:
+    notFound: 'Festival not found'
+    notValid: 'Festival not valid'
+    alreadyOpen: 'The festival is already open'
+    alreadyValid: 'The festival is already validated'
+    pending: 'The festival is awaiting validation'
+    upload: 'Error during the upload of the poster'
+    date: 'The dates of your festival are not match!'
+    demande: 'Error during the festival request'
+    suppression: 'Error during the festival deletion'
+    modification: 'Error during the festival modification'
+    validation: 'Error during the festival validation'
+    refus: 'Error during rejecting the festival '
+    annulation: "Error during the cancelling"
+    archived: 'This festival is archived'
+
+user:
+  success:
+    manager: 'This user is now Manager'
+    notManager: "This user is no longer Manager"
+    affect: 'User affected'
+    modified: 'User modified'
+  error:
+    noRequest: 'No volunteer request'
+    notFound: 'User not found'
+    notConnected: 'You must be connected to perform this action'
+    notVolunteer: "This user is not a volunteer"
+    alreadyMember: 'You are already a member of this festival'
+    permissionDenied: "You don't have the rights to perform this action"
+
+demande:
+  success:
+    demande: 'Volunteer request accepted'
+    demandeRefus: 'Volunteer request refused'
+  error:
+    notPending: 'No request pending'
+    notFound: 'Request not found'
+    demande: 'Error during the volunteer request'
+    suppression:  'Error during the delete request'
+    validation: 'Error during the validation of the request'
+    refus: 'Error during the rejection of the request'
+    rejected: 'You have already been refused for this festival'
+
+poste:
+  success:
+    created: 'Post created'
+    modified: 'Post modified'
+    deleted: 'Post deleted'
+  error:
+    notFound: 'Post not found'
+
+tache:
+  success:
+    created: 'Task created'
+    modified: 'Task modified'
+    deleted: 'Task deleted'
+  error:
+    notFound: 'Task not found'
+    notAllowed: "You don't have the rights to perform this action"
+
+date:
+  notValid: 'Date not valid'
+  begin: 'The start date must be before the end date'
+  end: 'The end date must be after the start date'
+
+data:
+  notValid: 'Data not valid'
+
+question:
+  success:
+    created: 'Question created'
+    modified: 'Question modified'
+    deleted: 'Question deleted'
+  error:
+    notFound: 'Question not found'
+    notAllowed: "You don't have the rights to perform this action"
+
+motif:
+  success:
+    sent: 'Motif sent'
+  error:
+    void: 'The motif is void'
+
+field:
+  success:
+    created: 'Field created'
+    modified: 'Field modified'
+    deleted: 'Field deleted'
+  error:
+    notComplete: 'Please fill all the fields'
+    notFound: 'Field not found'
+    notAllowed: "You don't have the rights to perform this action"
+
+contact:
+  success:
+    add: 'Contact added'
+    created: 'Contact created'
+    modified: 'Contact modified'
+    deleted: 'Contact deleted'
+  error:
+    notFound: 'Contact not found'
+    notAllowed: "You don't have the rights to perform this action"
+    notComplete: "Please fill all the fields"
+
+postulation:
+  success:
+    created: 'Volunteer Application created'
+    modified: 'Volunteer Application modified'
+    deleted: 'Volunteer Application deleted'
+    accepted: 'Volunteer Application accepted'
+    isVolunteer: 'is now a volunteer'
+    refused: 'Volunteer Application refused'
+  error:
+    alreadyTraited: 'Volunteer Application already traited'
+    alreadyApplied: 'You have already applied to this festival'
+    yours: 'You cannot apply to your own festival'
+    notFound: 'Volunteer Application not found'
+    notAllowed: "You don't have the rights to perform this action"
+
+email:
+  confirm: 'Please confirm your email address'
+  verified: 'Email address verified'
+
+rein:
+  req: 'Reinitialisation request'
+
+fav:
+    success:
+        add: 'Preference added'
+        deleted: 'Preference deleted'
+    error:
+        notFound: 'Preference not found'
+        already: 'Preference already created'
+        notAllowed: "You don't have the rights to perform this action"
+
+hours:
+  notValid: 'Hour not valid'

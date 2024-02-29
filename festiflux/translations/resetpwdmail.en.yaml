@@ -1,0 +1,5 @@
+title: 'Reset password email'
+p: "If an account matching your email address exists, an email has just been sent. It contains a link that you can use to reset your password.
+        This link will expire in"
+p2: "If you don't receive an email, please check your spam folder or "
+a: 'try again'

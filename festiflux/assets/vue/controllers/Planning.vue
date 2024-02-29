@@ -19,27 +19,78 @@ import { sortTachesByOverriding } from "../../scripts/tache";
 import PlageHoraireForm from "./PlageHoraireForm.vue";
 import PlageHoraire from "./PlageHoraire.vue";
 import IndispoForm from "./IndispoForm.vue";
+/////////////translate///////////////
 
-type FromArray<T extends any[]> = T extends (infer U)[] ? U : never;
+let lang = document.getElementById('app').getAttribute('data-locale');
+if (lang ==='null') {
+  lang = 'fr';
+}
+function translate(key: string) {
+  if (lang === 'fr') {
+    switch (key) {
+      case 'add-plage-btn':
+        return 'Ajouter les plages horaires';
+      case 'filter-btn':
+        return 'Filtrer par :';
+      case 'all-postes':
+        return 'Tous les postes';
+      case 'add-creneau-btn':
+        return 'Ajouter un créneau';
+      case 'add-creneau-btn2':
+        return "Cliquez à l'endroit de votre choix";
+      case 'add-ics-btn':
+        return 'Demander un fichier ics';
+      case 'affect-switch':
+        return 'Mode affectation';
+      case 'add-indispo-btn':
+        return "Prévenir d'une indisponibilité";
+      default:
+        return key;
+    }
+  } else {
+    switch (key) {
+      case 'add-plage-btn':
+        return 'add time slots for festival';
+      case 'filter-btn':
+          return 'Filter by :';
+      case 'all-postes':
+        return 'All jobs';
+      case 'add-creneau-btn':
+        return 'Add a time job';
+      case 'add-creneau-btn2':
+        return 'Click where you want to add the job';
+      case 'add-ics-btn':
+        return 'Ask for an ics file';
+      case 'affect-switch':
+        return 'Affectation mode';
+      case 'add-indispo-btn':
+        return 'Warn of unavailability';
+      default:
+        return key;
+    }
+  }
+}
+////////////////////////////
+  type FromArray<T extends any[]> = T extends (infer U)[] ? U : never;
 
-type Props = {
-  festID: number;
-  title: string;
-  dateDebut: string;
-  dateFin: string;
-  isOrgaOrResp: boolean;
-  userId: number;
-};
+  type Props = {
+    festID: number;
+    title: string;
+    dateDebut: string;
+    dateFin: string;
+    isOrgaOrResp: boolean;
+    userId: number;
+  };
 
-const props = defineProps<Props>();
+  const props = defineProps<Props>();
 
-const festival = ref<Festival>({
-  festID: props.festID,
-  title: props.title,
-  dateDebut: new Date(props.dateDebut),
-  dateFin: new Date(props.dateFin),
-  isOrgaOrResp: props.isOrgaOrResp,
-});
+  const festival = ref<Festival>({
+    festID: props.festID,
+    title: props.title,
+    dateDebut: new Date(props.dateDebut),
+    dateFin: new Date(props.dateFin),
+    isOrgaOrResp: props.isOrgaOrResp,
+  });
 
 const numberOfDays =
   dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
@@ -97,27 +148,27 @@ const creatingTache = ref(false);
 const creatingPlage = ref(false);
 const addIndispo = ref(false);
 
-const filterByPoste = ref("");
+  const filterByPoste = ref("");
 
-const displayTaches = computed(() => {
-  const filters: ((tache: TacheType) => unknown)[] = [];
-  if (vuePerso.value)
-    filters.push((tache) => tache.benevoles?.includes(props.userId));
-  if (filterByPoste.value)
-    filters.push((tache) => tache.poste.id == filterByPoste.value);
+  const displayTaches = computed(() => {
+    const filters: ((tache: TacheType) => unknown)[] = [];
+    if (vuePerso.value)
+      filters.push((tache) => tache.benevoles?.includes(props.userId));
+    if (filterByPoste.value)
+      filters.push((tache) => tache.poste.id == filterByPoste.value);
 
-  let tachesToDisplay = [...taches.value];
-  for (const filter of filters) {
-    tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache));
-  }
+    let tachesToDisplay = [...taches.value];
+    for (const filter of filters) {
+      tachesToDisplay = tachesToDisplay.filter((tache) => filter(tache));
+    }
 
-  return sortTachesByOverriding(tachesToDisplay);
-});
-const modeAffectation = ref(false);
+    return sortTachesByOverriding(tachesToDisplay);
+  });
+  const modeAffectation = ref(false);
 
-const toggleModeAffectation = () => {
-  modeAffectation.value = !modeAffectation.value;
-};
+  const toggleModeAffectation = () => {
+    modeAffectation.value = !modeAffectation.value;
+  };
 
 const newTacheName = ref("Aucun poste sélectionné");
 const newTacheStart = ref(new Date());
@@ -126,19 +177,20 @@ const newTacheEnd = ref(new Date());
 const getTaches = async () => {
   const res = await Backend.getTaches(festival.value.festID);
 
-  if (res) {
-    taches.value = res;
-  }
-};
+    if (res) {
+      taches.value = res;
+    }
+  };
 
-const getBenevoles = async () => {
-  const res = await Backend.getBenevoles(festival.value.festID);
-  console.log(1, res);
+  const getBenevoles = async () => {
+    const res = await Backend.getBenevoles(festival.value.festID);
+    console.log(1, res);
 
-  if (res) {
-    benevoles.value = res;
-  }
-};
+    if (res) {
+      benevoles.value = res;
+    }
+  };
+
 
 const getPostes = async () => {
   const res = await Backend.getPostes(festival.value.festID);
@@ -147,35 +199,35 @@ const getPostes = async () => {
   }
 };
 
-const scrollDaysLeft = () => {
-  let div = daysDiv.value;
-  if (!div) return;
-  let daysWidth = div.getBoundingClientRect().width;
-  let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
-  let scroll = div.scrollLeft - Math.floor(daysWidth / dayWidth) * dayWidth;
-  if (scroll < 0) {
-    scroll = 0;
-  }
-  div.scrollTo({
-    left: scroll,
-    behavior: "smooth",
-  });
-};
+  const scrollDaysLeft = () => {
+    let div = daysDiv.value;
+    if (!div) return;
+    let daysWidth = div.getBoundingClientRect().width;
+    let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
+    let scroll = div.scrollLeft - Math.floor(daysWidth / dayWidth) * dayWidth;
+    if (scroll < 0) {
+      scroll = 0;
+    }
+    div.scrollTo({
+      left: scroll,
+      behavior: "smooth",
+    });
+  };
 
-const scrollDaysRight = () => {
-  let div = daysDiv.value;
-  if (!div) return;
-  let daysWidth = div.getBoundingClientRect().width;
-  let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
-  let scroll = div.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
-  if (scroll > div.scrollWidth) {
-    scroll = div.scrollWidth;
-  }
-  div.scrollTo({
-    left: scroll,
-    behavior: "smooth",
-  });
-};
+  const scrollDaysRight = () => {
+    let div = daysDiv.value;
+    if (!div) return;
+    let daysWidth = div.getBoundingClientRect().width;
+    let dayWidth = div.querySelector(".day")?.getBoundingClientRect().width || 0;
+    let scroll = div.scrollLeft + Math.floor(daysWidth / dayWidth) * dayWidth;
+    if (scroll > div.scrollWidth) {
+      scroll = div.scrollWidth;
+    }
+    div.scrollTo({
+      left: scroll,
+      behavior: "smooth",
+    });
+  };
 
 const startWantingToCreateTache = () => {
   wantsToCreateTache.value = true;
@@ -183,7 +235,7 @@ const startWantingToCreateTache = () => {
 
 const stopWantingToCreateTache = () => {
   wantsToCreateTache.value = false;
-}; 
+};
 
 const startCreatingTache = (e: MouseEvent, d: Date) => {
   if (!wantsToCreateTache.value) return;
@@ -193,7 +245,7 @@ const startCreatingTache = (e: MouseEvent, d: Date) => {
   const divH = div?.getBoundingClientRect().height || 0;
 
   const mouseYWithOffset = e.clientY - divY;
-  
+
   const nbOfQuarters = Math.floor(mouseYWithOffset / divH * 96);
   const startDate = new Date(d);
   const endDate = new Date(startDate);
@@ -221,46 +273,46 @@ const updateCurrentPosteName = (posteName: string) => {
   newTacheName.value = posteName;
 };
 
-const stopCreatingTache = (tache?: TacheCreateData) => {
-  creatingTache.value = false;
-  if (!tache) return;
-  const poste = postes.value.find((p) => {
-    return p.id == tache.poste_id;
-  });
-  if (!poste) {
-    throw new Error("pas de poste trouvé");
-  }
+  const stopCreatingTache = (tache?: TacheCreateData) => {
+    creatingTache.value = false;
+    if (!tache) return;
+    const poste = postes.value.find((p) => {
+      return p.id == tache.poste_id;
+    });
+    if (!poste) {
+      throw new Error("pas de poste trouvé");
+    }
 
-  const t: TacheType = {
-    description: tache.description,
-    nbBenevole: tache.nombre_benevole,
-    poste: poste,
-    creneau: {
-      debut: tache.date_debut,
-      fin: tache.date_fin,
-    },
-    benevoleAffecte: 0,
-    lieu: tache.lieu,
+    const t: TacheType = {
+      description: tache.description,
+      nbBenevole: tache.nombre_benevole,
+      poste: poste,
+      creneau: {
+        debut: tache.date_debut,
+        fin: tache.date_fin,
+      },
+      benevoleAffecte: 0,
+      lieu: tache.lieu,
+    };
+
+    taches.value.push(t);
   };
 
-  taches.value.push(t);
-};
+  const stopCreatingPlage = async (tempCreneau?: Creneau) => {
+    creatingPlage.value = false;
+  };
 
-const stopCreatingPlage = async (tempCreneau?: Creneau) => {
-  creatingPlage.value = false;
-};
+  const startAddIndispo = () => {
+    addIndispo.value = true;
+  };
 
-const startAddIndispo = () => {
-  addIndispo.value = true;
-};
+  const stopAddIndispo = () => {
+    addIndispo.value = false;
+  };
 
-const stopAddIndispo = () => {
-  addIndispo.value = false;
-};
-
-const askForICS = () => {
-  Backend.getICS(festival.value.festID);
-};
+  const askForICS = () => {
+    Backend.getICS(festival.value.festID);
+  };
 
 const updateTaches = async () => {
   await getTaches();
@@ -293,7 +345,7 @@ const startResizingStart = (e: MouseEvent) => {
     startDate.setMinutes((nbOfQuarters % 4) * 15);
     newTacheStart.value = startDate;
   };
-  
+
   document.addEventListener('mousemove', listener);
   document.addEventListener('mouseup', () => {
     document.removeEventListener('mousemove', listener);
@@ -323,24 +375,25 @@ const startResizingEnd = (e: MouseEvent) => {
       newTacheEnd.value = endDate;
     }
   };
-  
+
   document.addEventListener('mousemove', listener);
   document.addEventListener('mouseup', () => {
     document.removeEventListener('mousemove', listener);
-  }); 
+  });
 };
 
 const vuePerso = ref(false);
 
-const toggleVuePerso = async () => {
-  vuePerso.value = !vuePerso.value;
-};
+  const toggleVuePerso = async () => {
+    vuePerso.value = !vuePerso.value;
+  };
 
-const startCreatingPlage = () => {
-  creatingPlage.value = true;
-};
+  const startCreatingPlage = () => {
+    creatingPlage.value = true;
+  };
 
-console.log(props.isOrgaOrResp);
+  console.log(props.isOrgaOrResp);
+
 </script>
 
 <template>
@@ -358,7 +411,7 @@ console.log(props.isOrgaOrResp);
       </div>
     </div>
     <div class="days" ref="daysDiv">
-      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => {console.log('coucou'); startCreatingTache(e, day)} } : {}">
+      <div class="day" v-for="day of days" ref="truc" v-on="!creatingTache ? { click: (e: MouseEvent) => {startCreatingTache(e, day)} } : {}">
         <div class="day">
           <div class="heading">
             {{
@@ -393,6 +446,7 @@ console.log(props.isOrgaOrResp);
                 await getBenevoles();
               }
             "
+            :lang="lang"
             @reloadBenevoles="
               async () => {
                 await getTaches();
@@ -400,40 +454,19 @@ console.log(props.isOrgaOrResp);
               }
             "
           />
-          <div
-            v-if="creatingTache && day.getDay() === newTacheStart.getDay()" 
-            class="task new-task"
-            :style="{
-              top: (newTacheStart.getHours() * 4 + newTacheStart.getMinutes() / 15) / (4 * 24) * 100 + '%',
-              height: ((newTacheEnd.getHours() - newTacheStart.getHours()) * 4 + (newTacheEnd.getMinutes() - newTacheStart.getMinutes()) / 15) / (4 * 24) * 100 + '%'
-            }"
-            style="overflow: visible;
-            z-index: 100;"
-          >
-            <div @mousedown="startResizingStart" id="change-date-btn-up" class="change-date-btn"></div>
-            <div @mousedown="startResizingEnd" id="change-date-btn-down" class="change-date-btn"></div>
-            <div
-              class="task-text"
-              style="width: 100%"
-            >
-              <div class="name">{{ newTacheName }}</div>
-              <div class="tache">{{ displayHoursMinutes(newTacheStart) + ' - ' + displayHoursMinutes(newTacheEnd) }}</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
     <div class="manage-interface">
-
       <div>
-        <label for="poste_filter">Filtrer par:</label>
+        <label for="poste_filter">{{ translate("filter-btn") }}</label>
         <select
           name="poste_filter"
           class="btn"
           id="poste_filter"
           v-model="filterByPoste"
         >
-          <option selected="true" value="">Tous les postes</option>
+          <option selected="true" value="">{{ translate("all-postes") }}</option>
           <option v-for="poste of postes" :value="poste.id">
             {{ poste.nom }}
           </option>
@@ -445,7 +478,7 @@ console.log(props.isOrgaOrResp);
           v-if="isOrgaOrResp"
           class="toggle-mode-affectation-wrapper btn flex-align-center"
         >
-          <div>Mode affectation</div>
+          <div>{{ translate("affect-switch") }}</div>
           <div
             class="toggle-mode-affectation"
             :class="{ on: modeAffectation }"
@@ -461,26 +494,25 @@ console.log(props.isOrgaOrResp);
         class="btn"
         @click="startWantingToCreateTache"
       >
-        Ajouter un créneau
+        {{ translate("add-creneau-btn") }}
       </div>
       <div
-        v-if="isOrgaOrResp && wantsToCreateTache"
-        id="add-creneau-btn"
-        class="disabled btn"
-        @click="startWantingToCreateTache"
+          v-if="isOrgaOrResp && wantsToCreateTache"
+          id="add-creneau-btn"
+          class="disabled btn"
+          @click="startWantingToCreateTache"
       >
-        Cliquez à l'endroit de votre choix
+        {{ translate("add-creneau-btn2") }}
       </div>
-
       <div id="add-ics-btn" class="btn" @click="askForICS">
-        Demander un fichier ics
+        {{ translate("add-ics-btn") }}
       </div>
 
       <div v-if="!isOrgaOrResp" @click="toggleVuePerso" class="switch-vue btn">
         {{ vuePerso ? "Planning général" : " Mon planning" }}
       </div>
 
-          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">Prévenir d'une indisponibilité</div>
+          <div v-if="!isOrgaOrResp" id="add-indispo-btn" class="btn" @click="startAddIndispo">{{ translate("add-indispo-btn") }}</div>
         </div>
     </div>
 
@@ -505,18 +537,19 @@ console.log(props.isOrgaOrResp);
     :update-taches="updateTaches"
     :close="stopCreatingTache"
     @posteChange="updateCurrentPosteName"
+    :lang="lang"
   />
 
   <!-- <Modal v-if="false" @close="stopCreatingTache">
-    
-  </Modal> -->
 
+  </Modal> -->
   <Modal v-if="addIndispo" @close="stopAddIndispo">
     <IndispoForm
       :festivalId="festID"
       :dateDebut="festival.dateDebut"
       :dateFin="festival.dateFin"
       @close="stopAddIndispo"
+      :lang="lang"
     />
   </Modal>
 </template>

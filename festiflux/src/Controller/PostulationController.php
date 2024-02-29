@@ -17,8 +17,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('{_locale<%app.supported_locales%>}')]
 class PostulationController extends AbstractController {
+
+    /**
+     * pour afficher les postulations des bénévoles au festival {id}
+     */
     #[Route('/festival/{id}/postulations', name: 'app_festival_postulations')]
     public function festivalPostulations(#[MapEntity] Festival $festival, PostulationsRepository $postulationRepository): Response {
         $postulations = $postulationRepository->findBy(['festival' => $festival, 'status' => Postulations::STATUS_PENDING]);
@@ -28,11 +34,14 @@ class PostulationController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher le suivi des demandes de postulations
+     */
     #[Route('/postulations', name: 'app_postulations')]
-    public function usersPostulations(): Response {
+    public function usersPostulations(TranslatorInterface $translator): Response {
         $user = $this->getUser();
         if (!$user || !$user instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
@@ -42,24 +51,27 @@ class PostulationController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour afficher la postulation {id} avec les réponses au questions
+     */
     #[Route('/postulations/{id}', name: 'app_postulations_postulation')]
-    public function postulation(#[MapEntity] Postulations $postulation, UtilisateurUtils $utilisateurUtils): Response {
+    public function postulation(#[MapEntity] Postulations $postulation, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!$postulation) {
-            $this->addFlash('error', 'Cette demande n\'existe pas');
+            $this->addFlash('error', $translator->trans('postulation.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
         $festival = $postulation->getFestival();
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'êtes pas organisateur de ce festival');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         };
 
@@ -71,29 +83,33 @@ class PostulationController extends AbstractController {
         ]);
     }
 
+
+    /**
+        * pour afficher le formulaire de postulation au festival {id}
+     */
     #[Route('festival/{id}/postulations/form', name: 'app_postulations_form')]
-    public function postulationForm(#[MapEntity] Festival $festival, Request $req, UtilisateurUtils $utilisateurUtils, QuestionBenevoleRepository $questionBenevoleRepository, EntityManagerInterface $em, PostulationsRepository $postulationRepository): Response {
+    public function postulationForm(#[MapEntity] Festival $festival, Request $req, UtilisateurUtils $utilisateurUtils, QuestionBenevoleRepository $questionBenevoleRepository, EntityManagerInterface $em, PostulationsRepository $postulationRepository, TranslatorInterface $translator): Response {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if ($utilisateurUtils->isOrganisateur($u, $festival)) {
-            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
+            $this->addFlash('error', $translator->trans('postulation.error.yours', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         };
 
         if ($utilisateurUtils->isBenevole($u, $festival)) {
-            $this->addFlash('error', 'Vous participez déjà à ce festival');
+            $this->addFlash('error', $translator->trans('user.error.alreadyMember', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
         $postulation =  $postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
 
         if ($postulation) {
-            $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
+            $this->addFlash('error', $translator->trans('postulation.error.alreadyApplied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
@@ -121,7 +137,7 @@ class PostulationController extends AbstractController {
             $em->persist($postulation);
             $em->flush();
 
-            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
+            $this->addFlash('success', $translator->trans('postulation.error.created', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
@@ -136,7 +152,7 @@ class PostulationController extends AbstractController {
 
             $em->persist($postulation);
 
-            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
+            $this->addFlash('success', $translator->trans('postulation.error.created', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
@@ -146,29 +162,32 @@ class PostulationController extends AbstractController {
         ]);
     }
 
+    /**
+     * pour accepter une postulation de bénévole
+     */
     #[Route('postulations/{id}/accept', name: 'app_postulations_accept', methods: ['POST'])]
-    public function postulationAccept(#[MapEntity] Postulations $postulation, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function postulationAccept(#[MapEntity] Postulations $postulation, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
         $u = $this->getUser();
 
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         $festival = $postulation->getFestival();
 
         if (!$utilisateurUtils->isOrganisateur($u, $festival)) {
-            $this->addFlash('error', 'Vous ne pouvez pas effectué cette action');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         };
 
         if (!$postulation) {
-            $this->addFlash('error', 'Cette demande n\'existe pas');
+            $this->addFlash('error', $translator->trans('postulation.error.notFound', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_postulations', ['id' => $festival->getId()]);
         }
 
         if ($postulation->getStatus() !== Postulations::STATUS_PENDING) {
-            $this->addFlash('error', 'Cette demande a déjà été traité');
+            $this->addFlash('error', $translator->trans('postulation.error.alreadyTraited', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_postulations', ['id' => $festival->getId()]);
         };
 
@@ -177,30 +196,33 @@ class PostulationController extends AbstractController {
         $festival->addBenevole($u);
         $em->persist($festival);
 
-        $flashMessageService->add(FlashMessageType::SUCCESS, "Demande accepté " . $postulation->getUtilisateur()->getNom() . ", est maintenant bénévole");
+        $flashMessageService->add(FlashMessageType::SUCCESS, $translator->trans('postulation.success.accepted', [], 'msgflash', $translator->getLocale()) . $postulation->getUtilisateur() . $translator->trans('postulation.success.isVolunteer', [], 'msgflash', $translator->getLocale()));
         $em->flush();
 
         return $this->redirectToRoute('app_festival_postulations', ['id' => $festival->getId()]);
     }
 
+    /**
+     * pour refuser une postulation de bénévole
+     */
     #[Route('postulations/{id}/refuse', name: 'app_postulations_refuse', methods: ['GET', 'POST'])]
-    public function postulationRefuse(#[MapEntity] Postulations $postulation, Request $req, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService): Response {
+    public function postulationRefuse(#[MapEntity] Postulations $postulation, Request $req, UtilisateurUtils $utilisateurUtils, EntityManagerInterface $em, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         $festival = $postulation->getFestival();
 
         if (!$utilisateurUtils->isOrganisateur($u, $festival)) {
-            $this->addFlash('error', 'Vous ne pouvez pas effectué cette action');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         };
 
         if ($postulation->getStatus() !== Postulations::STATUS_PENDING) {
-            $this->addFlash('error', 'Cette demande a déjà été traité');
+            $this->addFlash('error', $translator->trans('postulation.error.alreadyTraited', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_postulations', ['id' => $festival->getId()]);
         };
 
@@ -211,7 +233,7 @@ class PostulationController extends AbstractController {
 
             $postulation->setMotif($motif);
 
-            $flashMessageService->add(FlashMessageType::SUCCESS, "Demande refusé");
+            $flashMessageService->add(FlashMessageType::SUCCESS, $translator->trans('postulation.success.refused', [], 'msgflash', $translator->getLocale()));
             $em->flush();
             return $this->redirectToRoute('app_festival_postulations', ['id' => $festival->getId()]);
         }

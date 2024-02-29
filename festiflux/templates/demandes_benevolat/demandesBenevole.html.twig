@@ -1,0 +1,99 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ 'title'|trans({},'demandesBenevole') }}
+{% endblock %}
+{% block overhead %}
+    <script src="{{ asset('js/addResponsable.js') }}" defer></script>
+    <script src="{{ asset('js/modal.js') }}" defer></script>
+
+{% endblock %}
+{% block body %}
+    <input type="hidden" id="id_festival" value={{ idFest }}>
+
+    <!-- tochange -->
+    <h1 style="margin-top: 100px;"> {{ 'title'|trans({},'demandesBenevole') }}</h1>
+    <h2>{{ 'you'|trans({},'demandesBenevole') }} {% if  demandes|length() == 1 %}  {{ 'have'|trans({},'demandesBenevole') }} {{ demandes|length() }} {{ 'request'|trans({},'demandesBenevole') }}
+        {% elseif demandes|length() > 1 %} {{ 'have'|trans({},'demandesBenevole') }} {{ demandes|length() }} {{ 'requests'|trans({},'demandesBenevole') }}
+        {% else %} {{ 'void'|trans({},'demandesBenevole') }} {% endif %}
+        {{ 'this'|trans({},'demandesBenevole') }}</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>{{ 'surname'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'name'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'mail'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'response'|trans({},'demandesBenevole') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if demandes|length()>0 %}
+        {% for demande in demandes %}
+        <input type="hidden" id="id_utilisateur" value={{ demande.id }}>
+
+        <tr>
+            <td>{{ demande.nom }}</td>
+            <td>{{ demande.prenom }}</td>
+            <td>{{ demande.email }}</td>
+            <td>
+                <a href="{{ path('app_festival_accept_demande', {'id' : idFest, 'idUser': demande.id}) }}">{{ 'accept'|trans({},'demandesBenevole') }}</a>
+            </td>
+            
+            <td>
+                <button class="btn btn-open">{{ 'reject'|trans({},'demandesBenevole') }}</button>
+            </td>
+
+        </tbody>
+
+        <section class="modal hidden">
+                    <div>
+                        <button class="btn-close">⨉</button>
+                        <h3 style="color: #0a0a0a">{{ 'addmotif'|trans({},'demandesBenevole') }}</h3>
+                        <p>
+                            {{ 'motiftxt'|trans({},'demandesBenevole') }}
+                        </p>
+                    </div>
+
+                   <form action={{path("app_festival_rejectAndSendMotif", {"id": idFest, "idUser" : demande.id } )}} method="post">
+								<textarea name="motif" id="motif" cols="30" rows="10" placeholder="{{ 'writemotif'|trans({},'demandesBenevole') }}"> </textarea>
+								<button id='send-reject' class="">{{ 'send'|trans({},'demandesBenevole') }}</button>
+					</form>
+                </section>
+
+                <div class="overlay hidden"></div>
+        {% endfor %}
+        {% endif %}
+    </table>
+    
+    <h1>{{'titlevolunteer'|trans({},'demandesbenevole')}}</h1>
+    <h2>{{ 'you'|trans({},'demandesBenevole') }} {% if  benevoles|length() > 0 %}  {{ 'have'|trans({},'demandesBenevole') }} {{ benevoles|length() }} {{ 'volunteer'|trans({},'demandesBenevole') }}
+        {% else %} {{ 'voidvol'|trans({},'demandesBenevole') }}{% endif %}
+        {{ 'this'|trans({},'demandesBenevole') }}</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>{{ 'surname'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'name'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'mail'|trans({},'demandesBenevole') }}</th>
+            <th>{{ 'resp'|trans({},'demandesBenevole') }}</th>
+        </tr>
+        </thead>
+        {% if benevoles|length() > 0 %}
+        {% for benevole in benevoles %}
+        <tbody>
+        <tr>
+            <td>{{ benevole.nom }}</td>
+            <td>{{ benevole.prenom }}</td>
+            <td>{{ benevole.email }}</td>
+            <td>
+                <div class="switch__container">
+                    <input id="{{ benevole.id }}" class="switch switch--shadow" type="checkbox"{% if benevole in responsables %} checked {% endif %}>
+                    <label for="{{ benevole.id }}"></label>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
+

@@ -10,6 +10,7 @@ interface Props {
     chargesBenevole: Record<ID, number>,
     tache : Tache
     benevoles : BenevoleType[]
+    lang: string
 }
 
 const getBenevoleFromID = (id:ID) => {
@@ -135,6 +136,63 @@ const onDrop = (event: any, bool: any) => {
 
 }
 
+function translate(key: string) {
+  if (props.lang === 'fr') {
+    switch (key) {
+      case 'desc':
+        return 'Description :';
+      case 'note':
+        return 'Remarque :';
+      case 'location':
+        return 'Lieu :';
+      case 'nodesc':
+        return "Il n'y a pas de description";
+      case 'nonote':
+        return "Il n'y a pas de remarque";
+      case 'chargeplus':
+        return 'Trier par charge croissante';
+      case 'chargedown':
+        return 'Trier par charge décroissantes';
+      case 'prefplus':
+        return 'Trier par préférences croissante';
+      case 'prefdown':
+        return 'Trier par préférences décroissantes';
+      case 'affectedVol':
+        return 'Bénévoles affectés';
+      case 'unaffectedVol':
+        return 'Bénévoles non affectés';
+      case 'save':
+        return 'Enregister';
+    }
+  } else {
+    switch (key) {
+      case 'desc':
+        return 'Description :';
+      case 'note':
+        return 'Note :';
+      case 'location':
+        return 'Location :';
+      case 'nodesc':
+        return "There is no description";
+      case 'nonote':
+        return "There is no note";
+      case 'chargeplus':
+        return 'Sort by increasing workload';
+      case 'chargedown':
+        return 'Sort by decreasing workload';
+      case 'prefplus':
+        return 'Sort by increasing preference';
+      case 'prefdown':
+        return 'Sort by decreasing preference';
+      case 'affectedVol':
+        return 'Affected volunteers';
+      case 'unaffectedVol':
+        return 'Unaffected volunteers';
+      case 'save':
+        return 'Save';
+    }
+  }
+}
 
 </script>
 
@@ -147,25 +205,25 @@ const onDrop = (event: any, bool: any) => {
             <div>{{  `${displayHoursMinutes(tache.creneau.debut)} - ${displayHoursMinutes(tache.creneau.fin)}` }}</div>
             <div class="info-wrapper">
                 <div>
-                    <h5>Description :</h5>
-                    <div class="content">{{ (tache.poste.description.length === 0 ? 'Il n\'y a pas de description' : tache.poste.description) }}</div>
+                    <h5>{{ translate("desc") }}</h5>
+                    <div class="content">{{ (tache.poste.description.length === 0 ? translate("nodesc") : tache.poste.description) }}</div>
                 </div>
                 <div>
-                    <h5>Remarque :</h5>
-                    <div class="content">{{ (tache.description.length === 0 ? 'Il n\'y a pas de remarque' : tache.description) }}</div>
+                    <h5>{{ translate("note") }}</h5>
+                    <div class="content">{{ (tache.description.length === 0 ? translate("nonote") : tache.description) }}</div>
                 </div>
                 <div>
-                    <h5 v-if="tache.lieu">Lieu :</h5>
+                    <h5 v-if="tache.lieu">{{ translate("location") }}</h5>
                     <div class="content" v-if="tache.lieu">{{ tache.lieu }}</div>
                 </div>
                 <div>
                     <CustomSelect
                         class="select-sort"
                         :options="[
-                            {label: 'Trier par charge croissante', value: 'charge croissante'},
-                            {label: 'Trier par charge décroissantes', value: 'charge decroissante'},
-                            {label: 'Trier par préférences croissante', value: 'preference croissante'},
-                            {label: 'Trier par préférences décroissantes', value: 'preference decroissante'},
+                            {label: translate('chargeplus'), value: 'charge croissante'},
+                            {label:  translate('chargedown'), value: 'charge decroissante'},
+                            {label:  translate('prefplus'), value: 'preference croissante'},
+                            {label:  translate('prefdown'), value: 'preference decroissante'},
                         ]"
                         :selected="selectedSort"
                         @select="selectedSort = $event"
@@ -179,7 +237,7 @@ const onDrop = (event: any, bool: any) => {
                      @dragenter.prevent
                      @dragover.prevent
                 >
-                    <h4>Bénévoles affectés ({{ affectedBenevoles.length + ' / '  + tache.nbBenevole }})</h4>
+                    <h4> {{ translate('affectedVol') }}({{ affectedBenevoles.length + ' / '  + tache.nbBenevole }})</h4>
                     <div class="list">
                         <Benevole 
                             v-for="benevole of affectedDispo" 
@@ -189,6 +247,7 @@ const onDrop = (event: any, bool: any) => {
                             @removeBenevole="removeBenevole(benevole.id)"
                             :poste="tache.poste"
                             @dragstart="startDrag($event, benevole)"
+                            :lang="lang"
                         />
                     </div>
                 </div>
@@ -197,7 +256,7 @@ const onDrop = (event: any, bool: any) => {
                      @dragenter.prevent
                      @dragover.prevent
                 >
-                    <h4>Bénévoles non affectés</h4>
+                    <h4> {{ translate('unaffectedVol') }}</h4>
                     <div class="list">
                         <Benevole 
                             v-for="benevole of unaffectedDispo"
@@ -207,6 +266,7 @@ const onDrop = (event: any, bool: any) => {
                             @addBenevole="addBenevole(benevole.id)"
                             :poste="tache.poste"
                             @dragstart="startDrag($event, benevole)"
+                            :lang="lang"
                         />
                     </div>
                 </div>
@@ -216,7 +276,7 @@ const onDrop = (event: any, bool: any) => {
                     save();
                 }
             }">
-                Enregister
+              {{ translate('save') }}
             </div>
         </div>
     </Teleport>

@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Profil de
-	{{utilisateur.nom}}
+	{{ 'title'|trans({}, 'profil') }}	{{utilisateur.nom}}
 	{{utilisateur.prenom}}
 {% endblock %}
 
@@ -10,7 +9,7 @@
 
 	<div class="profil-box">
 		<h1>
-			Profil de
+            {{ 'title'|trans({}, 'profil') }}
 			{{ utilisateur.nom }}
 			{{ utilisateur.prenom }}
 		</h1>
@@ -25,67 +24,67 @@
 			<div class="info-box">
 				<div class="info-row">
 					<div class="info-border">
-						<strong>Email</strong>
+						<strong>{{ 'email'|trans({}, 'profil') }}</strong>
 						:
 						{{ utilisateur.email }}
 
-					</div>
-					<div class="info-name-surname">
-						<div class="info-border">
-							<strong>Nom</strong>
-							:
-							{{ utilisateur.nom }}
-						</div>
-
-						<div class="info-border">
-							<strong>Prénom</strong>
-							:
-							{{ utilisateur.prenom }}
-						</div>
-					</div>
+				</div>
+				<div class="info-name-surname">
 					<div class="info-border">
-						<strong>Adresse</strong>
+						<strong>{{ 'surname'|trans({}, 'profil') }}</strong>
 						:
-						{{ utilisateur.adresse }}
+						{{ utilisateur.nom }}
+					</div>
 
-					</div>
-					<div class="info-border biographie">
-						<strong>Biographie</strong>
+					<div class="info-border">
+						<strong>{{ 'name'|trans({}, 'profil') }}</strong>
 						:
-						{{ utilisateur.description }}
+						{{ utilisateur.prenom }}
 					</div>
+				</div>
+				<div class="info-border">
+					<strong>{{ 'address'|trans({}, 'profil') }}</strong>
+					:
+					{{ utilisateur.adresse }}
+
+				</div>
+				<div class="info-border biographie">
+					<strong>{{ 'bio'|trans({}, 'profil') }}</strong>
+					:
+					{{ utilisateur.description }}
 				</div>
 			</div>
-
-			<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
-				<div class="edit-button">
-					Modifier mon profil
-				</div>
-			</a>
 		</div>
-		<!-- Section des moyens de contact -->
-		<div class="contact-section">
-			{% set contacts = utilisateur.getContacts() %}
-			{% if contacts is not empty %}        
-				{% for contact in contacts %}
-					{% include 'contacts/contact.html.twig' with {
-						contact: {
-							value: contact.value ,
-							name: contact.type.name ,
-							link: contact.getLink() 
-						}
-					}%}
-				{% endfor %}
-			{% else %}
-				<p>Aucun moyen de contact n'a été ajouté.</p>
-			{% endif %}
-				<a class="manage-contact-button" href={{path("app_user_contacts")}}>
-					<span>
-						Gérer mes contacts
+
+		<a href="{{ path('app_profile_edit', {'id' : utilisateur.getId()}) }}">
+			<div class="edit-button">
+				{{ 'button'|trans({}, 'profil') }}
+			</div>
+		</a>
+	</div>
+	<!-- Section des moyens de contact -->
+	<div class="contact-section">
+		{% set contacts = utilisateur.getContacts() %}
+		{% if contacts is not empty %}
+			{% for contact in contacts %}
+				{% include 'contacts/contact.html.twig' with {
+					contact: {
+						value: contact.value ,
+						name: contact.type.name ,
+						link: contact.getLink()
+					}
+				}%}
+			{% endfor %}
+		{% else %}
+			<p>				{{ 'void'|trans({}, 'profil') }}
+			</p>
+		{% endif %}
+		<a class="manage-contact-button" href={{path("app_user_contacts")}}>
+					<span>{{ 'managecontact'|trans({}, 'profil') }}
 					</span>
 				</a>
 		</div>
-		
+
 		<div class="contact-section">
 			{% set skills = utilisateur.getSkills() %}
 			{% if skills is not empty %}        
@@ -99,14 +98,14 @@
 						}%}
 				{% endfor %}
 			{% else %}
-				<p>Aucune compétence n'a été ajoutée.</p>
+				<p>{{ 'competanceVoid'|trans({}, 'profil') }} </p>
 			{% endif %}
-				<a class="manage-contact-button" href={{path("app_user_skills")}}>
+			<a class="manage-contact-button" href={{path("app_user_skills")}}>
 					<span>
-						Gérer mes compétences
+						{{ 'managecompetance'|trans({}, 'profil') }}
 					</span>
-				</a>
+			</a>
 		</div>
 	</div>
-
-{% endblock %}
+</div>
+	{% endblock %}

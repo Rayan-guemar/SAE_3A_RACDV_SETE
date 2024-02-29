@@ -1,0 +1,12 @@
+title: 'Profile of'
+email: 'Email address'
+surname: 'Last name'
+name: 'First name'
+address: 'Address'
+bio: 'Biography'
+button: 'Edit your profile'
+pp: 'Profile picture'
+void: "No contact method has been added."
+managecontact: "Manage my contact methods"
+competanceVoid: "No skill has been added."
+managecompetance: "Manage my skills"

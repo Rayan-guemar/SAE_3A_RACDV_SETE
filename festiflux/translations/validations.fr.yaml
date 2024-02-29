@@ -1,0 +1,7 @@
+title: 'Gestion du '
+h1 : 'Liste des Validations'
+id: 'Identifiant'
+status: 'Statut'
+motif: 'Motif'
+date: 'Date'
+void: 'Aucune validation disponible.'

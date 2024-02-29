@@ -1,19 +1,21 @@
 {% extends 'base.html.twig' %}
 
 
-{% block title %}Archiver{{ utilisateur.getNom() }}
+{% block title %}{{ 'title'|trans({}, "userarchive") }}{{ utilisateur.getNom() }}
 {% endblock %}
 
 {% block body %}
 
-    <h1>Attention, cette action sera irreversible. Si vous archivez votre compte vous ne pourrez plus y accéder mais les données seront conservées</h1>
+    <h1>
+        {{ 'h1'|trans({}, "userarchive") }}
+    </h1>
 
     <div class="btn-container">
         <div class="button-benevole">
-            <a href={{ path("app_user_profile",{ 'id': utilisateur.getId() }) }} class="btn ">Annuler</a>
+            <a href={{ path("app_user_profile",{ 'id': utilisateur.getId() }) }} class="btn ">{{ 'cancel'|trans({}, "userarchive") }}</a>
         </div>
         <div class="button-archive">
-            <a href={{ path("app_festival_archiver_done", { 'id': utilisateur.getId() }) }} class="btn ">Archiver</a>
+            <a href={{ path("app_festival_archiver_done", { 'id': utilisateur.getId() }) }} class="btn ">{{ 'submit'|trans({}, "userarchive") }}</a>
         </div>
     </div>
 {% endblock %}

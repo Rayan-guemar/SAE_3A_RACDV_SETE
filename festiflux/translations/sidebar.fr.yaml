@@ -1,0 +1,12 @@
+sidebar:
+  menu:
+    header: "MENU"
+    home: "Accueil"
+    my_festivals: "Mes festivals"
+    add_festival: "Ajouter un festival"
+    tracking_postulations: "Suivi de vos postulations"
+    all_requests: "Toutes les demandes"
+  account:
+    header: "COMPTE"
+    login: "Se connecter"
+    logout: "Se déconnecter"

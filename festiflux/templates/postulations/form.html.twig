@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Postuler pour
+	{{ 'title'|trans({}, 'postulationform') }}
 	{{ festival.nom }}
 {% endblock %}
 
@@ -12,7 +12,7 @@
 {% block body %}
 	<div class="postulation-form">
 
-		<h1>Postuler pour
+		<h1> {{ 'h1'|trans({}, 'postulationform') }}
 			{{ festival.nom }}</h1>
 
 		<form method="post">
@@ -25,11 +25,13 @@
 						<div class="radio-group">
 							<div>
 								<input type="radio" id="response_{{ question.id }}_true" name="responses[{{ question.id }}]" value="true" required>
-								<label for="response_{{ question.id }}_true">Oui</label>
+								<label for="response_{{ question.id }}_true">	{{ 'yes'|trans({}, 'postulationform') }}
+								</label>
 							</div>
 							<div>
 								<input type="radio" id="response_{{ question.id }}_false" name="responses[{{ question.id }}]" value="false" required>
-								<label for="response_{{ question.id }}_false">Non</label>
+								<label for="response_{{ question.id }}_false">	{{ 'no'|trans({}, 'postulationform') }}
+								</label>
 							</div>
 						</div>
 					{% else %}
@@ -38,7 +40,8 @@
 				</div>
 			{% endfor %}
 
-			<button type="submit">Submit</button>
+			<button type="submit">	{{ 'submit'|trans({}, 'postulationform') }}
+			</button>
 		</form>
 	</div>
 {% endblock %}

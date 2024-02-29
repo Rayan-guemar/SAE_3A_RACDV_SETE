@@ -1,16 +1,16 @@
 {% extends "base.html.twig" %}
-{% block title %}modifier votre festival{% endblock %}
+{% block title %}{{ 'title'|trans({},'modifypost') }}{% endblock %}
 
 {% block body %}
 
     <div class="form-wrapper">
-        <h1>Modifier le poste</h1>
+        <h1>{{ 'title'|trans({},'modifypost') }}</h1>
 
         {{ form_start(form, {'attr': {'class': 'festival-form'}}) }}
 
-        {{ form_row(form.nom, {'label': 'Nom du poste', 'attr': {'class': 'festival-form__input'}}) }}
+        {{ form_row(form.nom, {'label': 'name'|trans({},'modifypost'), 'attr': {'class': 'festival-form__input'}}) }}
 
-        {{ form_widget(form.demanderModificationPoste, {'label': 'Modifier', 'attr': {'class': 'festival-form__checkbox'}}) }}
+        {{ form_widget(form.demanderModificationPoste, {'label': 'button'|trans({},'modifypost') , 'attr': {'class': 'festival-form__checkbox'}}) }}
 
         {{ form_end(form) }}
     </div>

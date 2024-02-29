@@ -1,0 +1,8 @@
+title: 'Your volunteering application'
+h1: 'Volunteering application for '
+surname: 'Last name'
+name: 'First name'
+date: 'Application date'
+status: 'Check'
+void: 'No application'
+link: 'link'

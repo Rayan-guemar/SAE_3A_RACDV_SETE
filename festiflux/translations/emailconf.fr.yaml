@@ -1,0 +1,5 @@
+h1: 'Salut! Merci de confirmer ton adresse email!'
+p1: 'Nous devons confirmer ton adresse email. Clique sur le lien ci-dessous pour confirmer ton adresse email.'
+a: 'Confirme ton adresse email'
+exp: 'Ce lien expirera dans '
+p2: "Si tu n'as pas fait cette demande, ignore ce mail et ton adresse email ne sera pas confirmée."

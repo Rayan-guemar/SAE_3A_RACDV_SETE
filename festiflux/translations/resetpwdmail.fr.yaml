@@ -1,0 +1,5 @@
+title: 'Email de réinitialisation de mot de passe envoyé'
+p: "Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d'être envoyé. Celui-ci contient un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+        Ce lien expirera dans"
+p2: "Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier de courrier indésirable ou "
+a: 'réessayer'

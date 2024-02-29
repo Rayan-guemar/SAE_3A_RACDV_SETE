@@ -1,0 +1,46 @@
+ici: 'here'
+titles:
+  pageTitle: 'Manage '
+  status: 'this festival is '
+  open: 'open to applications'
+subtitles:
+  planning:
+    title: 'schedule management'
+    p: 'To add time slots'
+    a: 'Manage the schedule'
+  post:
+    title: 'Manage jobs'
+    p: 'To add or modify jobs'
+    a: 'Manage jobs'
+  postulation:
+    title: 'Manage applications'
+    p: 'To view all festival volontary applications'
+    a: 'Display applications'
+  questionnaire:
+    title: 'Manage volunteer form'
+    p: 'To display, modify or delete all the questions on the form'
+    a: 'volunteer form'
+  open:
+    p: 'This action will allow the user to apply to become a volunteer for this festival'
+    pp: 'Warning! this action is definitive and irreversible, no modification of the festival application form or position will be authorised'
+actions:
+  valid: 'Request validation of the festival'
+  open: 'Open the festival to applicants'
+  archiver: 'Archive the festival'
+
+response:
+  valid: 'The festival has already been validated'
+  pending: 'Your validation request is being processed'
+  validations: 'consult your previous requests'
+  open: 'he festival is already open for applications'
+  not_valid: 'The festival is not validated'
+
+messages:
+  valid_not_open: 'Validated but not open for applications'
+  valid_pending: 'waiting for your validation request'
+  valid_analyse: 'currently being processed for validation'
+  valid_rejected: 'rejected'
+
+volun:
+  manage: 'Manage volunteers'
+  p: 'To view all festival volunteers'
