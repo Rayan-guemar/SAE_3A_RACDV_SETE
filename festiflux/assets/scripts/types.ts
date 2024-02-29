@@ -71,3 +71,7 @@ export interface Plage extends Creneau {
 export interface Indisponibilite extends Creneau {
 	id: ID;
 }
+
+export interface User {
+	name: string;
+}

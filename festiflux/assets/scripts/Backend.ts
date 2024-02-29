@@ -1,4 +1,4 @@
-import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference, Plage, Indisponibilite } from './types';
+import { Benevole, Creneau, Poste, Tache, TacheCreateData, ID, Preference, Plage, Indisponibilite, User } from './types';
 import { getDateFromLocale } from './utils';
 
 export class Backend {
@@ -109,6 +109,12 @@ export class Backend {
 		});
 		// @ts-ignore
 		await Backend.#post(URL, '');
+	}
+
+	static async getUser(id: ID): Promise<User> {
+		// @ts-ignore
+		const URL = Routing.generate('app_user_name', { id: id });
+		return await Backend.#get(URL);
 	}
 
 	static async removeBenevole(benevole: Benevole, tache: Tache) {
@@ -301,9 +307,9 @@ export class Backend {
 		} as RequestInit);
 	}
 
-	static async getPreferences(festivalId: ID): Promise<Preference[]> {
+	static async getPreferences(festivalId: ID, userId: ID): Promise<Preference[]> {
 		// @ts-ignore
-		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId });
+		const URL = Routing.generate('app_festival_get_preferences', { id: festivalId, userId: userId });
 		const data = await Backend.#get(URL);
 		console.log(data);
 
