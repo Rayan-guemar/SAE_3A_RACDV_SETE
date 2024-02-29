@@ -104,6 +104,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Skills::class)]
     private Collection $skills;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Indisponibilite::class, orphanRemoval: true)]
+    private Collection $indisponibilites;
+
     public function __construct() {
         $this->festivals = new ArrayCollection();
         $this->estBenevole = new ArrayCollection();
@@ -117,6 +120,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->preferences = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->skills = new ArrayCollection();
+        $this->indisponibilites = new ArrayCollection();
     }
 
     /**
@@ -561,6 +565,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
             // set the owning side to null (unless already changed)
             if ($skill->getUser() === $this) {
                 $skill->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Indisponibilite>
+     */
+    public function getIndisponibilites(): Collection
+    {
+        return $this->indisponibilites;
+    }
+
+    public function addIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if (!$this->indisponibilites->contains($indisponibilite)) {
+            $this->indisponibilites->add($indisponibilite);
+            $indisponibilite->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if ($this->indisponibilites->removeElement($indisponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($indisponibilite->getUtilisateur() === $this) {
+                $indisponibilite->setUtilisateur(null);
             }
         }
 

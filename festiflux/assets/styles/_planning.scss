@@ -201,6 +201,37 @@
                 flex-direction: column;
                 gap: 5px;
         }
+
+        .indispo{
+            position: absolute;
+            top: calc(15/24*100%);
+            left: 0%;
+            height: calc(2/24*100%);
+            width: 100%;
+            transform: translate(-50%, 0);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .indispo{
+            position: absolute;
+            top: calc(15/24*100%);
+            left: 0%;
+            height: calc(2/24*100%);
+            width: 100%;
+            transform: translate(-50%, 0);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            background-color: #ff4454;
+        }
     }
 
     .days {
@@ -273,6 +304,27 @@
                 border-color: $blue-primary;
                 //color: $blue-primary;
                 box-shadow: 0 0 5px 0px $grey-primary;
+            }
+        }
+
+        .legend {
+
+            .legend-item {
+                display: flex;
+                margin: 10px;
+
+                .legend-color {
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 3px;
+                    font-size: 10px;
+                    margin-right: 5px;
+
+                }
+                .legend-label {
+                    font-size: .7em;
+                    font-weight: 500;
+                }
             }
         }
 
