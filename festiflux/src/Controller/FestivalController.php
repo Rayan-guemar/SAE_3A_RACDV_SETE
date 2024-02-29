@@ -40,6 +40,7 @@ use App\Entity\Creneaux;
 use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Lieu;
+use App\Entity\Plage;
 use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PosteUtilisateurPreferencesRepository;
@@ -55,9 +56,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('{_locale<%app.supported_locales%>}')]
 class FestivalController extends AbstractController {
-    /**
-     * pour afficher les festivals
-     */
+    public function __construct(
+        public FlashMessageService $flashMessageService, 
+        public UtilisateurRepository $utilisateurRepository, 
+        public EntityManagerInterface $em
+    ) {}
+
     #[Route('/', name: 'home')]
     public function index(FestivalRepository $repository): Response {
         return $this->redirectToRoute('app_festival_all');
@@ -451,10 +455,11 @@ class FestivalController extends AbstractController {
         }
 
         return $this->render('festival/postes.html.twig', [
-            'status' => $festival->isOpen(),
             'controller_name' => 'FestivalController',
             'festival' => $festival,
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
+            'isFestivalOpen' => $festival->isOpen(),
+            'watchingOtherUserPreferences' => false,
         ]);
     }
 
@@ -550,6 +555,8 @@ class FestivalController extends AbstractController {
             'postes' => $tab
         ], 200);
     }
+
+    
 
     #[Route('/festival/{id}/poste/{idPoste}/edit', name: 'app_festival_edit_poste', methods: ['POST'], options: ['expose' => true])]
     public function editPoste(FestivalRepository $repository, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, int $id, int $idPoste, PosteRepository $poste, TranslatorInterface $translator): JsonResponse {
@@ -765,7 +772,6 @@ class FestivalController extends AbstractController {
             'benevolesAimePas' => $tab3,
         ], 200);
     }
-
 
     #[Route('/festival/{id}/DebutFinDay', name: 'app_festival_add_DebutFinDay', methods: ['POST'], options: ["expose" => true])]
     public function addDebutFinDay(#[MapEntity] Festival $f, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
@@ -1097,21 +1103,39 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_user_festivals');
     }
 
-    #[Route('/festival/{id}/postesPref', name: 'app_festival_display_postes')]
-    public function displayPostes(#[MapEntity] Festival $festival, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository): Response {
 
+    #[Route('/user/{id}/preferences/{idFest}', name: 'app_festival_preferences')]
+    public function displayPostes(int $idFest, int $id, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
+
+        $festival = $festivalRepository->find($idFest);
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
+        
+        $postes = $posteRepository->findBy(["festival" => $festival]);
 
         $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId" => $u]);
 
-        return $this->render('utilisateur/liked_postes.html.twig', [
-            'postes' => $postes,
+        $isOrgaOrResp = $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival);
+        $routeUserId = $id;
+
+        $watchingOtherUserPreferences = $routeUserId != $u->getId();
+
+        if ($watchingOtherUserPreferences && !$isOrgaOrResp) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('festival/postes.html.twig', [
             'utilisateur' => $u,
-            'preferences' => $pref
+            'festival' => $festival,
+            'isOrgaOrResp' => $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival),
+            'status' => true,
+            'watchingOtherUserPreferences' => $watchingOtherUserPreferences,
+            'otherUserId' => $routeUserId,
+            'isFestivalOpen' => $festival->isOpen(),
         ]);
     }
 

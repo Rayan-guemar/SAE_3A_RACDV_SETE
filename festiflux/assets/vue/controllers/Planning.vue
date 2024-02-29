@@ -9,6 +9,7 @@ import {
   Benevole,
   Creneau,
   ID,
+Plage,
 } from "../../scripts/types";
 import { Backend } from "../../scripts/Backend";
 import Tache from "./Tache.vue";
@@ -91,56 +92,65 @@ function translate(key: string) {
     isOrgaOrResp: props.isOrgaOrResp,
   });
 
-  const numberOfDays =
-      dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
-  const days = Array.from(
-      {length: numberOfDays},
-      (_, i) =>
-          new Date(
-              festival.value.dateDebut.getFullYear(),
-              festival.value.dateDebut.getMonth(),
-              festival.value.dateDebut.getDate() + i
-          )
-  );
-  const dayNames = [
-    "Dimanche",
-    "Lundi",
-    "Mardi",
-    "Mercredi",
-    "Jeudi",
-    "Vendredi",
-    "Samedi",
-  ];
-  const monthNames = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
-  const daysDiv = ref<HTMLDivElement>();
+const props = defineProps<Props>();
 
-  const taches = ref<TacheType[]>([]);
-  const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
-  const postes = ref<Poste[]>([]);
-  const crx = ref<Creneau[]>([]);
+const festival = ref<Festival>({
+  festID: props.festID,
+  title: props.title,
+  dateDebut: new Date(props.dateDebut),
+  dateFin: new Date(props.dateFin),
+  isOrgaOrResp: props.isOrgaOrResp,
+});
 
-  const benevoles = ref<Benevole[]>([]);
+const numberOfDays =
+  dateDiff(festival.value.dateDebut, festival.value.dateFin).day + 1;
+const days = Array.from(
+  { length: numberOfDays },
+  (_, i) =>
+    new Date(
+      festival.value.dateDebut.getFullYear(),
+      festival.value.dateDebut.getMonth(),
+      festival.value.dateDebut.getDate() + i
+    )
+);
+const dayNames = [
+  "Dimanche",
+  "Lundi",
+  "Mardi",
+  "Mercredi",
+  "Jeudi",
+  "Vendredi",
+  "Samedi",
+];
+const monthNames = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
+const daysDiv = ref<HTMLDivElement>();
 
-  const chargesBenevole = computed(() => {
-    const charges: Record<ID, number> = {};
-    for (const benevole of benevoles.value) {
-      charges[benevole.id] = calculCharge(benevole, taches.value);
-    }
-    return charges;
-  });
+const taches = ref<TacheType[]>([]);
+const sortedTaches = ref<ReturnType<typeof sortTachesByOverriding>>([]);
+const postes = ref<Poste[]>([]);
+
+const benevoles = ref<Benevole[]>([]);
+
+const chargesBenevole = computed(() => {
+  const charges: Record<ID, number> = {};
+  for (const benevole of benevoles.value) {
+    charges[benevole.id] = calculCharge(benevole, taches.value);
+  }
+  return charges;
+});
 
 const loading = ref(true);
 const wantsToCreateTache = ref(false);
@@ -191,19 +201,13 @@ const getTaches = async () => {
     }
   };
 
-  const getPlagesHoraires = async () => {
-    const res = await Backend.getPlagesHoraires(festival.value.festID);
-    if (res) {
-      crx.value = res;
-    }
-  };
 
-  const getPostes = async () => {
-    const res = await Backend.getPostes(festival.value.festID);
-    if (res) {
-      postes.value = res;
-    }
-  };
+const getPostes = async () => {
+  const res = await Backend.getPostes(festival.value.festID);
+  if (res) {
+    postes.value = res;
+  }
+};
 
   const scrollDaysLeft = () => {
     let div = daysDiv.value;
@@ -320,22 +324,18 @@ const updateCurrentPosteName = (posteName: string) => {
     Backend.getICS(festival.value.festID);
   };
 
-  const updateTaches = async () => {
-    await getTaches();
-  };
-  const updatePlages = async () => {
-    await getPlagesHoraires();
-  };
+const updateTaches = async () => {
+  await getTaches();
+};
 
-  onMounted(async () => {
-    const promises = [];
-    promises.push(getTaches());
-    promises.push(getPostes());
-    promises.push(getPlagesHoraires());
-    promises.push(getBenevoles());
-    await Promise.all(promises);
-    loading.value = false;
-  });
+onMounted(async () => {
+  const promises = [];
+  promises.push(getTaches());
+  promises.push(getPostes());
+  promises.push(getBenevoles());
+  await Promise.all(promises);
+  loading.value = false;
+});
 
 const startResizingStart = (e: MouseEvent) => {
   const div = daysDiv.value;
@@ -438,12 +438,6 @@ const vuePerso = ref(false);
             v-for="i in parseInt('11')"
             :id="`line-break-${i * 2}`"
           ></div>
-          <PlageHoraire
-            v-for="creneauWithPos of crx.filter(
-              (c) => new Date(c.debut).getDate() === day.getDate()
-            )"
-            :creneau="creneauWithPos"
-          />
           <!-- <Tache /> -->
           <Tache
             v-for="tacheWithPos of displayTaches.filter(
@@ -474,15 +468,6 @@ const vuePerso = ref(false);
       </div>
     </div>
     <div class="manage-interface">
-      <div
-        v-if="isOrgaOrResp"
-        id="add-plage-btn"
-        class="btn"
-        @click="startCreatingPlage"
-      >
-        {{ translate("add-plage-btn") }}
-      </div>
-
       <div>
         <label for="poste_filter">{{ translate("filter-btn") }}</label>
         <select
@@ -568,17 +553,6 @@ const vuePerso = ref(false);
   <!-- <Modal v-if="false" @close="stopCreatingTache">
 
   </Modal> -->
-  <Modal v-if="creatingPlage" @close="stopCreatingPlage">
-    <PlageHoraireForm
-      :festivalId="festID"
-      :dateDebut="festival.dateDebut"
-      :dateFin="festival.dateFin"
-      :close="stopCreatingPlage"
-      :updatePlages="updatePlages"
-      :lang="lang"
-    />
-  </Modal>
-
   <Modal v-if="addIndispo" @close="stopAddIndispo">
     <IndispoForm
       :festivalId="festID"

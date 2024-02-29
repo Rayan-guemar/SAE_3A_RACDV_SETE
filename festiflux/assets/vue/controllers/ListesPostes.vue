@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Backend } from "../../scripts/Backend";
 import PosteForm from "./PosteForm.vue";
-import { Poste, Preference } from "../../scripts/types";
+import { Poste, Preference, User } from "../../scripts/types";
 
 
 
@@ -11,6 +11,9 @@ interface Props {
   festivalName: string;
   isOrgaOrResp: boolean;
   status: boolean;
+  isFestivalOpen: boolean;
+  watchingOtherUserPreferences: boolean;
+	otherUserId: number;
 }
 
 const props = defineProps<Props>();
@@ -27,6 +30,8 @@ const currentPoste = ref<Poste>({...defaultPoste});
 const posteList = ref<Poste[]>([]);
 const preferences = ref<Preference[]>([]);
 const askingForDelete = ref(false);
+const otherUser = ref<User>();
+const showName = ref(false);
 
 const setAskingForDelete = (value: boolean) => {
   askingForDelete.value = value;
@@ -49,11 +54,16 @@ const setPosteList = (value: Poste[]) => {
 };
 
 const openPoste = (poste: Poste) => {
+  if (props.watchingOtherUserPreferences) return;
   if (askingForDelete.value) return;
 
   currentPoste.value = {...poste};
 
   posteOpened.value = true;
+};
+
+const getUserName = (id: number) => {
+  return Backend.getUser(id);
 };
 
 const newPoste = () => {
@@ -75,7 +85,7 @@ const getPostes = async () => {
 };
 
 const getPreferences = async () => {
-  const listeOfPreferences = await Backend.getPreferences(props.festivalId);
+  const listeOfPreferences = await Backend.getPreferences(props.festivalId, props.otherUserId);
   preferences.value = listeOfPreferences;
 };
 
@@ -112,8 +122,12 @@ function translate(key: string) {
 
 onMounted(async () => {
   await getPostes();
-  if (!props.isOrgaOrResp)  {
+  if (!props.isOrgaOrResp || props.watchingOtherUserPreferences)  {
     await getPreferences();
+  }
+  if (props.watchingOtherUserPreferences) {
+    otherUser.value = await getUserName(props.otherUserId);
+    showName.value = true;
   }
 });
 </script>
@@ -126,6 +140,7 @@ onMounted(async () => {
   <div class="poste-list-wrapper">
     <div class="poste-list" >
       <h3>        {{ translate("title") }} </h3>
+      <h4 v-if="watchingOtherUserPreferences && showName">( Préférence de {{  otherUser?.name }})</h4>
       <div v-if="posteList.length === 0">
         {{ translate("void") }}
       </div>
@@ -142,12 +157,18 @@ onMounted(async () => {
         >
           {{ poste.nom }}
           <div v-if="getPreference(poste) == 1 || getPreference(poste) == -1" class="pref-pastille" :class="{'pref-like': getPreference(poste) == 1, 'pref-dislike': getPreference(poste) == -1}">
-            {{  getPreference(poste) == 1 ? translate('love') : getPreference(poste) == -1 ? translate('hate') : '' }}
+            {{
+              watchingOtherUserPreferences ? (
+                getPreference(poste) == 1 ? translate('love') : getPreference(poste) == -1 ? translate('hate') : ''
+              ) : (
+                getPreference(poste) == 1 ? translate('love') : getPreference(poste) == -1 ? translate('hate') : ''
+              )
+            }}
           </div>
         </div>
       </div>
-      <div v-if="isOrgaOrResp && !posteOpened && !status" class="new-poste-btn pointer" @click="newPoste">
-        {{ translate("add") }}
+      <div v-if="isOrgaOrResp && !posteOpened && !isFestivalOpen && !watchingOtherUserPreferences" class="new-poste-btn pointer" @click="newPoste">
+        Ajouter un poste
       </div>
     </div>
 
