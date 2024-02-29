@@ -380,7 +380,7 @@ class FestivalController extends AbstractController {
     /**
      * pour afficher les demandes de bénévolat d'un festival {id}
      */
-    #[Route('/festival/{id}/demandes', name: 'app_festival_demandesBenevolat')]
+    #[Route('/festival/{id}/demandes', name: 'app_festival_benevoles')]
     public function showDemandes(FestivalRepository $repository, int $id, UtilisateurUtils $utilisateurUtils, TranslatorInterface $translator): Response {
         $festival = $repository->find($id);
         if (!$festival) {
