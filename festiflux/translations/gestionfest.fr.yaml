@@ -39,3 +39,7 @@ messages:
   valid_pending: "en attente de votre demande de validation"
   valid_analyse : 'en cours de traitement de validation'
   valid_rejected: 'Rejeté'
+
+volun:
+  manage: 'Gestion des bénévoles'
+  p: 'Pour voir toutes les bénévoles du festival'

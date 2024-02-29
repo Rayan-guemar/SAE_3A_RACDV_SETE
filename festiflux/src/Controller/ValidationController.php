@@ -78,26 +78,26 @@ class ValidationController extends AbstractController {
 
     //#[IsGranted("ROLE_ADMIN")]
     #[Route('festival/{id}/validation/page', name: 'app_festival_validation_page')]
-    public function getFestivalValidations(#[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, FlashMessageService $flashMessageService): Response {
+    public function getFestivalValidations(#[MapEntity] Festival $festival, UtilisateurUtils $utilisateurUtils, FlashMessageService $flashMessageService, TranslatorInterface $translator): Response {
 
         if (!$festival) {
-            throw $this->createNotFoundException("Le festival n'existe pas");
+            throw $this->createNotFoundException($translator->trans('festival.error.notFound', [], 'msgflash', $translator->getLocale()));
         }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            $this->addFlash('error', $translator->trans('user.error.notConnected', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_auth_login');
         }
 
         if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival) || $utilisateurUtils->isBenevole($u, $festival))) {
-            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+            $this->addFlash('error', $translator->trans('user.error.permissionDenied', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('home');
         }
 
 
         if ($festival->getValid() == 1) {
-            $flashMessageService->add(FlashMessageType::ERROR, 'Le festival est déjà validé');
+            $flashMessageService->add(FlashMessageType::ERROR, $translator->trans('festival.error.alreadyValid', [], 'msgflash', $translator->getLocale()));
             return $this->redirectToRoute('app_festival_gestion', ['id' => $festival->getId()]);
         }
 

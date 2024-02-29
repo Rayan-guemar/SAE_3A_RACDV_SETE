@@ -40,8 +40,8 @@
             </div>
             <div class="actions">
                 <a class="action-div" href="{{ path('app_festival_benevoles', {'id': festival.getId()}) }}">
-                    <div><h2>Gestion des bénévoles</h2>
-                        <p>Pour voir toutes les postulations du festival</p>
+                    <div><h2>{{ 'volun.manage'|trans({},'gestionfest')  }}</h2>
+                        <p>{{ 'volun.p'|trans({},'gestionfest')  }}</p>
                     </div>
                     <div class="background"><img class="img-size" src="{{ asset("icons/benevoles-manage.svg") }}"
                                                  alt="manage benevole icon"></div>
@@ -65,7 +65,7 @@
                             <span>{{ 'response.valid'|trans({}, 'gestionfest') }}</span>
                         {% elseif hasPendingValidation %}
                             <span>{{ 'response.pending'|trans({}, 'gestionfest') }}
-					            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">ici</a>
+					            <a style="text-decoration: none; color: #007bff; font-weight: semi-bold;" href="{{ path('app_festival_validation', {'id': festival.getId()}) }}">{{ 'ici'|trans({}, 'gestionfest') }}</a>
 				            </span>
                         {% else %}
                              <a href={{ path('app_festival_validation_page', { 'id' : festival.getId() } )}} class="gest_btn tooltip">{{ 'actions.valid'|trans({}, 'gestionfest') }}</a>

@@ -111,6 +111,9 @@ function translate(key: string) {
       case 'note' : return 'Remarque :';
       case 'location' : return 'Lieu :';
       case 'affectedVolun' : return 'Bénévoles affectés';
+      case 'delete' : return 'Voulez vous vraiment supprimer cette tache ?';
+      case 'yes' : return 'Oui';
+      case 'no' : return 'Non';
     }
   } else {
     switch (key) {
@@ -118,6 +121,9 @@ function translate(key: string) {
       case 'note' : return 'Note :';
       case 'location' : return 'Location :';
       case 'affectedVolun' : return 'Affected volunteers';
+      case 'delete' : return 'Do you really want to delete this task ?';
+      case 'yes' : return 'Yes';
+      case 'no' : return 'No';
     }
   }
 }
@@ -233,10 +239,10 @@ function translate(key: string) {
 
     <Modal v-if="deleting">
       <form class="planning-form">
-        <h5>Voulez vous vraiment supprimer cette tache ?</h5>
+        <h5>{{translate('delete')}}</h5>
         <div class="flex-row">
-          <div class="btn" @click="deleteTache">Oui</div>
-          <div class="btn" @click="() => deleting = false">Non</div>
+          <div class="btn" @click="deleteTache">{{translate('yes')}}</div>
+          <div class="btn" @click="() => deleting = false">{{translate('no')}}</div>
         </div>
       </form>
     </Modal>

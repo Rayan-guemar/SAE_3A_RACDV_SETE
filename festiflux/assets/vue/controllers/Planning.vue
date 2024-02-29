@@ -35,6 +35,8 @@ function translate(key: string) {
         return 'Tous les postes';
       case 'add-creneau-btn':
         return 'Ajouter un créneau';
+      case 'add-creneau-btn2':
+        return "Cliquez à l'endroit de votre choix";
       case 'add-ics-btn':
         return 'Demander un fichier ics';
       case 'affect-switch':
@@ -54,6 +56,8 @@ function translate(key: string) {
         return 'All jobs';
       case 'add-creneau-btn':
         return 'Add a time job';
+      case 'add-creneau-btn2':
+        return 'Click where you want to add the job';
       case 'add-ics-btn':
         return 'Ask for an ics file';
       case 'affect-switch':
@@ -517,7 +521,14 @@ const vuePerso = ref(false);
       >
         {{ translate("add-creneau-btn") }}
       </div>
-
+      <div
+          v-if="isOrgaOrResp && wantsToCreateTache"
+          id="add-creneau-btn"
+          class="disabled btn"
+          @click="startWantingToCreateTache"
+      >
+        {{ translate("add-creneau-btn2") }}
+      </div>
       <div id="add-ics-btn" class="btn" @click="askForICS">
         {{ translate("add-ics-btn") }}
       </div>

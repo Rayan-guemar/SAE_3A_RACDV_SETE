@@ -40,3 +40,7 @@ messages:
   valid_pending: 'waiting for your validation request'
   valid_analyse: 'currently being processed for validation'
   valid_rejected: 'rejected'
+
+volun:
+  manage: 'Manage volunteers'
+  p: 'To view all festival volunteers'
