@@ -31,6 +31,9 @@ class Creneaux {
     #[ORM\OneToOne(mappedBy: 'crenaux', cascade: ['persist', 'remove'])]
     private ?Tache $tache = null;
 
+    #[ORM\OneToOne(mappedBy: 'creneau', cascade: ['persist', 'remove'])]
+    private ?Indisponibilite $indisponibilite = null;
+
 
     public function __construct() {
         $this->disponibilites = new ArrayCollection();
@@ -99,5 +102,20 @@ class Creneaux {
         return $this;
     }
 
+    public function getIndisponibilite(): ?Indisponibilite
+    {
+        return $this->indisponibilite;
+    }
 
+    public function setIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        // set the owning side of the relation if necessary
+        if ($indisponibilite->getCreneau() !== $this) {
+            $indisponibilite->setCreneau($this);
+        }
+
+        $this->indisponibilite = $indisponibilite;
+
+        return $this;
+    }
 }
