@@ -75,9 +75,6 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: QuestionBenevole::class)]
     private Collection $questionBenevoles;
 
-    #[ORM\ManyToMany(targetEntity: Creneaux::class)]
-    private Collection $PlagesHoraires;
-
     #[ORM\Column]
     private ?bool $open = null;
 
@@ -96,6 +93,9 @@ class Festival {
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Indisponibilite::class, orphanRemoval: true)]
     private Collection $indisponibilites;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Plage::class, orphanRemoval: true)]
+    private Collection $plages;
+
 
     public function __construct() {
         $this->lieux = new ArrayCollection();
@@ -108,12 +108,12 @@ class Festival {
         $this->valid = 0;
         $this->tags = new ArrayCollection();
         $this->questionBenevoles = new ArrayCollection();
-        $this->PlagesHoraires = new ArrayCollection();
         $this->validations = new ArrayCollection();
         $this->historiquePostulations = new ArrayCollection();
         $this->open = false;
         $this->postulations = new ArrayCollection();
         $this->indisponibilites = new ArrayCollection();
+        $this->plages = new ArrayCollection();
 
     }
 
@@ -424,27 +424,6 @@ class Festival {
         return $this;
     }
 
-    /**
-     * @return Collection<int, Creneaux>
-     */
-    public function getPlagesHoraires(): Collection {
-        return $this->PlagesHoraires;
-    }
-
-    public function addPlagesHoraire(Creneaux $plagesHoraire): static {
-        if (!$this->PlagesHoraires->contains($plagesHoraire)) {
-            $this->PlagesHoraires->add($plagesHoraire);
-        }
-
-        return $this;
-    }
-
-    public function removePlagesHoraire(Creneaux $plagesHoraire): static {
-        $this->PlagesHoraires->removeElement($plagesHoraire);
-
-        return $this;
-    }
-
     public function isOpen(): ?bool {
         return $this->open;
     }
@@ -578,6 +557,36 @@ class Festival {
             // set the owning side to null (unless already changed)
             if ($indisponibilite->getFestival() === $this) {
                 $indisponibilite->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Plage>
+     */
+    public function getPlages(): Collection
+    {
+        return $this->plages;
+    }
+
+    public function addPlage(Plage $plage): static
+    {
+        if (!$this->plages->contains($plage)) {
+            $this->plages->add($plage);
+            $plage->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlage(Plage $plage): static
+    {
+        if ($this->plages->removeElement($plage)) {
+            // set the owning side to null (unless already changed)
+            if ($plage->getFestival() === $this) {
+                $plage->setFestival(null);
             }
         }
 

@@ -187,19 +187,48 @@
                 }
             }
         }
-        .plage{
+        .plage {
+            position: absolute;
+            top: calc(15/24*100%);
+            left: 0%;
+            height: calc(2/24*100%);
+            width: 99%;
+            transform: translate(-50%, 0);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+
+            .delete {
                 position: absolute;
-                top: calc(15/24*100%);
-                left: 0%;
-                height: calc(2/24*100%);
-                width: 100%;
-                transform: translate(-50%, 0);
-                border-radius: 3px;
-                display: flex;
-                align-items: center;
+                top: 0;
+                right: 0;
+                background-color: transparent;
+
+                display: none;
+
                 justify-content: center;
-                flex-direction: column;
-                gap: 5px;
+                align-items: center;
+
+                border-radius: 0 0 0 3px;
+
+                z-index: 10;
+
+                &:hover {
+                    background-color: #ff4454;
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                z-index: 99 !important;
+
+                .delete {
+                    display: flex;
+                }
+            }
         }
 
         .indispo{
