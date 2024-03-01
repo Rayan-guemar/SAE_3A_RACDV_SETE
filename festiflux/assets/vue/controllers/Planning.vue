@@ -119,6 +119,15 @@ const toggleModeAffectation = () => {
   modeAffectation.value = !modeAffectation.value;
 };
 
+const focusedTacheId = ref<ID | undefined>();
+
+const focusTache = (id: ID | undefined) => {
+  if (id === undefined) {
+    console.log("id undefined");
+  }
+  focusedTacheId.value = id;
+};
+
 const newTacheName = ref("Aucun poste sélectionné");
 const newTacheStart = ref(new Date());
 const newTacheEnd = ref(new Date());
@@ -273,6 +282,11 @@ onMounted(async () => {
   promises.push(getBenevoles());
   await Promise.all(promises);
   loading.value = false;
+
+  document.body.addEventListener('click', (e: MouseEvent) => {
+    e.target instanceof HTMLElement && e.target.closest('.task  ') === null &&
+    focusTache(undefined);
+  })
 });
 
 const startResizingStart = (e: MouseEvent) => {
@@ -387,6 +401,8 @@ console.log(props.isOrgaOrResp);
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            :focused="focusedTacheId === tacheWithPos.tache.id"
+            @click="() => focusTache(tacheWithPos.tache.id)"
             @reloadTaches="
               async () => {
                 await getTaches();

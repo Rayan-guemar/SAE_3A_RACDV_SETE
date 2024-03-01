@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Festival;
 use App\Entity\Preference;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +47,25 @@ class PreferenceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+// SELECT COUNT(p.id)
+// FROM preference p
+// JOIN Poste p ON p.poste_id = p.id
+// JOIN Festival f ON p.festival_id = f.id
+// WHERE p.utilisateur_id = :utilisateur_id
+// AND f.id = :festival_id;
+
+    public function arePreferencesDoneByUserAndFestival(Utilisateur $u, Festival $f): bool{
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.poste', 'p')
+            ->join('p.festival', 'f')
+            ->where('p.utilisateur_id = :userId')
+            ->andWhere('f.id = :festivalId')
+            ->setParameter('userId', $u->getId())
+            ->setParameter('festivalId', $f->getId())
+            ->getQuery()
+            ->getOneOrNullResult() == null;
+    }
+
 }

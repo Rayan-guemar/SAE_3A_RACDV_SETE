@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Festival;
 use App\Entity\Indisponibilite;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +47,17 @@ class IndisponibiliteRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function areIndisposDoneByUserAndFestival(Utilisateur $user, Festival $festival): bool {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.user = :user')
+            ->andWhere('i.festival = :festival')
+            ->andWhere('i.done = true')
+            ->setParameter('user', $user)
+            ->setParameter('festival', $festival)
+            ->getQuery()
+            ->getOneOrNullResult() !== null;
+            
+            
+    }
 }

@@ -41,6 +41,9 @@ class Postulations {
     #[ORM\OneToMany(mappedBy: 'postulation', targetEntity: Reponse::class, orphanRemoval: true)]
     private Collection $reponses;
 
+    #[ORM\Column]
+    private ?bool $faite = false;
+
     public function __construct() {
         $this->reponses = new ArrayCollection();
     }
@@ -142,6 +145,18 @@ class Postulations {
                 $reponse->setPostulation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isFaite(): ?bool
+    {
+        return $this->faite;
+    }
+
+    public function setFaite(bool $faite): static
+    {
+        $this->faite = $faite;
 
         return $this;
     }
