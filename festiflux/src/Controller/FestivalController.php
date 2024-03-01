@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\HistoriquePostulation;
 use App\Entity\Poste;
 
-use App\Entity\PosteUtilisateurPreferences;
+use App\Entity\Preference;
 use App\Entity\QuestionBenevole;
 use App\Entity\Tag;
 use App\Entity\Validation;
@@ -43,7 +43,7 @@ use App\Entity\Lieu;
 use App\Entity\Plage;
 use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
-use App\Repository\PosteUtilisateurPreferencesRepository;
+use App\Repository\PreferenceRepository;
 use App\Repository\TacheRepository;
 use DateTime;
 use Doctrine\DBAL\Query;
@@ -428,6 +428,7 @@ class FestivalController extends AbstractController {
             'isOrgaOrResp' => $utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival),
             'isFestivalOpen' => $festival->isOpen(),
             'watchingOtherUserPreferences' => false,
+            'otherUserId' => null
         ]);
     }
 
@@ -456,7 +457,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/poste', name: 'app_festival_create_poste', methods: ['POST'], options: ["expose" => true])]
-    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository): JsonResponse {
+    public function createPoste(#[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils, PreferenceRepository $preferenceRepository): JsonResponse {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -496,12 +497,6 @@ class FestivalController extends AbstractController {
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             return new JsonResponse(['error' => 'Vous devez être connecté pour accéder à cette page'], 403);
-        }
-
-        $isBenevole = $utilisateurUtils->isBenevole($u, $festival);
-
-        if (!($utilisateurUtils->isOrganisateur($u, $festival) || $utilisateurUtils->isResponsable($u, $festival)) && !$isBenevole) {
-            return new JsonResponse(['error' => 'Vous n\'avez pas accès à cette page'], 403);
         }
 
         $postes = $festival->getPostes();
@@ -639,7 +634,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/festival/{id}/benevole/all', name: 'app_festival_all_benevole',  methods: ['GET'], options: ['expose' => true])]
-    public function allBenevoles(FestivalRepository $festRepo, PosteUtilisateurPreferencesRepository $prefRepo, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
+    public function allBenevoles(FestivalRepository $festRepo, PreferenceRepository $prefRepo, #[MapEntity] Festival $festival, Request $request, EntityManagerInterface $em, UtilisateurUtils $utilisateurUtils): JsonResponse {
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
@@ -659,13 +654,13 @@ class FestivalController extends AbstractController {
                 'id' => $benevole->getId(),
                 'nom' => $benevole->getNom(),
                 'prenom' => $benevole->getPrenom(),
-                'preferences' => array(...array_map(function (PosteUtilisateurPreferences $pref) {
+                'preferences' => array(...array_map(function (Preference $pref) {
                     return [
-                        'poste' => $pref->getPosteId()->getId(),
-                        'degree' => $pref->getPreferencesDegree(),
+                        'poste' => $pref->getPoste()->getId(),
+                        'degree' => $pref->getDegree(),
                     ];
-                }, array_filter($preferences, function (PosteUtilisateurPreferences $pref) use ($benevole) {
-                    return $pref->getUtilisateurId()->getId() == $benevole->getId();
+                }, array_filter($preferences, function (Preference $pref) use ($benevole) {
+                    return $pref->getUtilisateur()->getId() == $benevole->getId();
                 }))),
                 'indisponibilites' => array_map(function (Disponibilite $dispo) {
                     return [
@@ -694,13 +689,13 @@ class FestivalController extends AbstractController {
         $benevolesAime = [];
         $benevolesAimePas = [];
 
-        foreach ($tache->getPoste()->getPosteUtilisateurPreferences() as $bp) {
-            if ($bp->getPreferencesDegree() == 1) {
-                $benevolesAdore[] = $bp->getUtilisateurId();
-            } else if ($bp->getPreferencesDegree() == 0) {
-                $benevolesAime[] = $bp->getUtilisateurId();
+        foreach ($tache->getPoste()->getPreferences() as $bp) {
+            if ($bp->getDegree() == 1) {
+                $benevolesAdore[] = $bp->getUtilisateur();
+            } else if ($bp->getDegree() == 0) {
+                $benevolesAime[] = $bp->getUtilisateur();
             } else {
-                $benevolesAimePas[] = $bp->getUtilisateurId();
+                $benevolesAimePas[] = $bp->getUtilisateur();
             }
         }
 
@@ -1010,7 +1005,7 @@ class FestivalController extends AbstractController {
     }
 
     #[Route('/user/{id}/preferences/{idFest}', name: 'app_festival_preferences')]
-    public function displayPostes(int $idFest, int $id, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
+    public function displayPostes(int $idFest, int $id, PreferenceRepository $preferenceRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
 
         $festival = $festivalRepository->find($idFest);
         if (!$festival) {
@@ -1018,10 +1013,15 @@ class FestivalController extends AbstractController {
         }
         $postes = $posteRepository->findBy(["festival" => $festival]);
         $u = $this->getUser();
+
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
         
         $postes = $posteRepository->findBy(["festival" => $festival]);
 
-        $pref = $posteUtilisateurPreferencesRepository->findBy(["UtilisateurId" => $u]);
+
 
         $isOrgaOrResp = $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival);
         $routeUserId = $id;

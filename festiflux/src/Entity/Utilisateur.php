@@ -76,8 +76,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: PosteUtilisateurPreferences::class, orphanRemoval: true)]
-    private Collection $posteUtilisateurPreferences;
+    #[ORM\OneToMany(mappedBy: 'UtilisateurId', targetEntity: Preference::class, orphanRemoval: true)]
+    private Collection $preference;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
@@ -114,7 +114,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->demandesBenevolat = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->taches = new ArrayCollection();
-        $this->posteUtilisateurPreferences = new ArrayCollection();
+        $this->preference = new ArrayCollection();
         $this->historiquePostulations = new ArrayCollection();
         $this->postulations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
@@ -404,30 +404,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface {
 
 
     /**
-     * @return Collection<int, PosteUtilisateurPreferences>
+     * @return Collection<int, Preference>
      */
-    public function getPosteUtilisateurPreferences(): Collection {
-        return $this->posteUtilisateurPreferences;
-    }
-
-    public function addPosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static {
-        if (!$this->posteUtilisateurPreferences->contains($posteUtilisateurPreference)) {
-            $this->posteUtilisateurPreferences->add($posteUtilisateurPreference);
-            $posteUtilisateurPreference->setUtilisateurId($this);
-        }
-
-        return $this;
-    }
-
-    public function removePosteUtilisateurPreference(PosteUtilisateurPreferences $posteUtilisateurPreference): static {
-        if ($this->posteUtilisateurPreferences->removeElement($posteUtilisateurPreference)) {
-            // set the owning side to null (unless already changed)
-            if ($posteUtilisateurPreference->getUtilisateurId() === $this) {
-                $posteUtilisateurPreference->setUtilisateurId(null);
-            }
-        }
-
-        return $this;
+    public function getPreference(): Collection {
+        return $this->preference;
     }
 
     /**
