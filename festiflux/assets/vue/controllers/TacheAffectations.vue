@@ -74,17 +74,11 @@ const unaffectedBenevoles = computed(() => {
 })
 
 const addBenevole = (benevoleID: ID) => {
-  if (typeof benevoleID === "string") {
-    console.log('add benevole', benevoleID);
-    props.tache.benevoles?.push(parseInt(benevoleID));
-  }
+    props.tache.benevoles?.push(benevoleID);
 }
 
 const removeBenevole = (benevoleID: ID) => {
-  if (typeof benevoleID === "string") {
-    console.log('remove benevole', benevoleID);
-    props.tache.benevoles = props.tache.benevoles?.filter(id => id != parseInt(benevoleID));
-  }
+    props.tache.benevoles = props.tache.benevoles?.filter(id => id != benevoleID);
 }
 
 const clickable = computed(() => {
@@ -125,12 +119,11 @@ const startDrag = (event: any, item: any) => {
 }
 
 const onDrop = (event: any, bool: any) => {
-  const itemID = event.dataTransfer.getData('itemID');
+  const itemID: ID = event.dataTransfer.getData('itemID');
   if(bool){
-    console.log(itemID);
-    addBenevole(itemID);
+    addBenevole(parseInt(itemID as string));
   } else {
-    removeBenevole(itemID);
+    removeBenevole(parseInt(itemID as string));
   }
 
 }
@@ -186,7 +179,10 @@ const onDrop = (event: any, bool: any) => {
                             :benevole="benevole"
                             :charge="chargesBenevole[benevole.id]"
                             :affected="true"
-                            @removeBenevole="removeBenevole(benevole.id)"
+                            @removeBenevole="() => {
+                                console.log('remove benevole', benevole.id);
+                                removeBenevole(benevole.id)
+                            }"
                             :poste="tache.poste"
                             @dragstart="startDrag($event, benevole)"
                         />

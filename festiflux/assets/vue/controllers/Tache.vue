@@ -16,15 +16,18 @@ interface Props {
   total: number,
   modeAffectation: boolean,
   benevoles: Benevole[],
+  focused: boolean
 }
 
 const props = defineProps<Props>();
+
 const emit = defineEmits<{
   (e: 'reloadTaches'): void
   (e: 'reloadBenevoles'): void
 }>();
 
 const deleteBtn = ref<HTMLDivElement>();
+const deleteImg = ref<HTMLImageElement>();
 
 const posteToColor = (poste: Poste) => {
   const colors = [
@@ -56,11 +59,13 @@ const showingAffectionMode = ref(false);
 const task = ref<HTMLDivElement>();
 
 const showInfo = () => {
-  showingInfo.value = true;
+  if (props.focused)
+    showingInfo.value = true;
 };
 
 const showAffectionMode = () => {
-  showingAffectionMode.value = true;
+  if (props.focused)
+    showingAffectionMode.value = true;
 };
 
 const taskHover = ref(false);
@@ -101,10 +106,11 @@ const nbLike = computed(() => {
 })
 
 const switchMode = (e: MouseEvent) => {
-  if (e.target === deleteBtn.value) {
+
+  if (e.target === deleteBtn.value || e.target === deleteImg.value) {
     return
   }
-  props.modeAffectation ;
+  props.modeAffectation ? showAffectionMode() : showInfo();
 }
 
 </script>
@@ -113,9 +119,15 @@ const switchMode = (e: MouseEvent) => {
   <div
     ref="task"
     class="task"
+    :class="{ focused: props.focused }"
     :id="'' + tache.id"
     :style="{
-      top: `${
+      top: props.focused && tache.creneau.debut.getHours() > 20 ? `calc(${
+        ((tache.creneau.debut.getHours() * 60 +
+          tache.creneau.debut.getMinutes()) /
+          (24 * 60)) *
+        100
+      }% - 100px)` : `${
         ((tache.creneau.debut.getHours() * 60 +
           tache.creneau.debut.getMinutes()) /
           (24 * 60)) *
@@ -146,14 +158,15 @@ const switchMode = (e: MouseEvent) => {
     @click="(switchMode)"
   >
     <div ref="deleteBtn" class="delete" @click.prevent="() => deleting = true">
-      <img src="../../../public/icons/delete.svg" alt="">
+      <img ref="deleteImg" src="../../../public/icons/delete.svg" alt="">
     </div>
     <div
       @mouseover="() => (taskHover = true)"
       @mouseleave="() => (taskHover = false)"
       class="task-text"
       :style="{
-        width: taskHover || showingInfo ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        // width: taskHover || showingInfo ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        width: `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
       }"
     >
       <div class="name">{{ tache.poste.nom }}</div>
@@ -226,8 +239,12 @@ const switchMode = (e: MouseEvent) => {
       <div class="pastille benevole__number">
         {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }}
       </div>
-      <div class="pastille benevole__dipo"> {{ nbDispo }} </div>
-      <div class="pastille benevole__like"> {{ nbLike }} </div>
+      <div class="pastille benevole__dipo">
+        {{ nbDispo }}
+      </div>
+      <div class="pastille benevole__like">
+        {{ nbLike }}
+      </div>
     </div>
 
   </div>
