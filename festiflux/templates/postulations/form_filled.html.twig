@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postulation de
+	{{ postulation.utilisateur.nom }}
+	{{ postulation.utilisateur.prenom }}
+{% endblock %}
+
+{% block body %}
+	<a id="back-button" style="position: absolute" href="{{path('app_postulations_postulation', { id: postulation.id })}}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+
+	<div class="postulation-page">
+		<h1>Postulation de
+			{{ postulation.utilisateur.nom }}
+			{{ postulation.utilisateur.prenom }}</h1>
+		<div>
+		
+			<div class="user-info-container">
+				<div class="user-image">
+					<img id="" {% if postulation.utilisateur.nomphotoprofil == true %} src="{{ asset("uploads/user/" ~ postulation.utilisateur.nomPhotoProfil ~ "") }}" {% else %} src="{{ asset("uploads/user/anonyme.png") }}" {% endif %}>
+				</div>
+				<div class="user-details">
+					<div>
+						<strong>Nom</strong>:
+						{{ postulation.utilisateur.nom }}
+					</div>
+					<div>
+						<strong>Prénom</strong>:
+						{{ postulation.utilisateur.prenom }}
+					</div>
+				</div>
+				<a class="profile-link" href="{{path("app_user_profile", { id: postulation.utilisateur.getId() })}}">
+					<img src="{{asset('/icons/external-link.png')}}" alt="">
+				</a>
+			</div>
+
+		</div>
+		<!-- Fin de l'intégration des informations utilisateur -->
+		<div class="postulation-container">
+			{% for reponse in postulation.reponses %}
+				{% set question = reponse.question %}
+				<div>
+					<label>{{ question.label }}</label>
+					{% if question.typeReponse == 'boolean' %}
+						<div class="radio-group">
+							<div>
+								{% if reponse.contenue == "true" %}
+									<input type="radio" checked disabled>
+								{% else %}
+									<input type="radio" disabled>
+								{% endif %}
+								<label>Oui</label>
+							</div>
+							<div>
+								{% if reponse.contenue == "false" %}
+									<input type="radio" checked disabled>
+								{% else %}
+									<input type="radio" disabled>
+								{% endif %}
+								<label>Non</label>
+							</div>
+						</div>
+					{% else %}
+						<input type="text" id="response_{{ question.id }}" name="responses[{{ question.id }}]" value="{{reponse.contenue}}" disabled>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

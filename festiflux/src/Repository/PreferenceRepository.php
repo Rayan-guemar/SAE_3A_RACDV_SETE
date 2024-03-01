@@ -58,14 +58,17 @@ class PreferenceRepository extends ServiceEntityRepository
     public function arePreferencesDoneByUserAndFestival(Utilisateur $u, Festival $f): bool{
         return $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
-            ->join('p.poste', 'p')
-            ->join('p.festival', 'f')
-            ->where('p.utilisateur_id = :userId')
+            ->join('p.poste', 'po')
+            ->join('po.festival', 'f')
+            ->where('p.utilisateur = :userId')
             ->andWhere('f.id = :festivalId')
+            ->andWhere('p.degree <> 0')
             ->setParameter('userId', $u->getId())
             ->setParameter('festivalId', $f->getId())
             ->getQuery()
-            ->getOneOrNullResult() == null;
+            ->getOneOrNullResult()[1] > 0;
+
+
     }
 
 }

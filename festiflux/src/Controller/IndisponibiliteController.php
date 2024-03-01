@@ -6,6 +6,7 @@ use App\Entity\Contact;
 use App\Entity\Creneaux;
 use App\Entity\Festival;
 use App\Entity\Indisponibilite;
+use App\Entity\Postulations;
 use App\Entity\Utilisateur;
 use App\Repository\ContactRepository;
 use App\Repository\IndisponibiliteRepository;
@@ -29,9 +30,12 @@ class IndisponibiliteController extends AbstractController
         public EntityManagerInterface $em
     ) {}
         
-    #[Route('/user/{userId}/indisponibilite/{festivalId}/manage', name: 'app_user_indispo_manage', methods: ['GET'])]
-    public function manageIndispo(Request $req, #[MapEntity(id: "userId")] Utilisateur $user, #[MapEntity(id: "festivalId")] Festival $festival): Response {
+    #[Route('postulations/{id}/indisponibilite/manage', name: 'app_user_indispo_manage', methods: ['GET'])]
+    public function manageIndispo(Request $req, #[MapEntity(id: "id")] Postulations $postulation): Response {
         $u = $this->getUser();
+
+        $user = $postulation->getUtilisateur();
+        $festival = $postulation->getFestival();
         
         if (!$u instanceof Utilisateur) {
             $this->flashMessageService->add(FlashMessageType::ERROR, "Vous n'êtes pas connecté");
@@ -45,9 +49,10 @@ class IndisponibiliteController extends AbstractController
     
         return $this->render('indisponibilite/index.html.twig', [
             'controller_name' => 'IndisponibiliteController',
+            'postulation' => $postulation,
             'utilisateur' => $user,
             'festival' => $festival,
-            'isOrga' => false,// $festival->getOrganisateur() === $u
+            'isOrga' => $festival->getOrganisateur() === $u
         ]);
     }
         
