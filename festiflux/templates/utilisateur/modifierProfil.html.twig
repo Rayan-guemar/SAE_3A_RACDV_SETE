@@ -24,7 +24,7 @@
                     {% endif %}>
         </div>
 
-        {{ form_start(form, {'attr': {'class': 'form-edit editing'}}) }}
+        {{ form_start(form, {'attr': {'class': 'form-edit editing', 'method': 'POST',  'action': path('app_profile_edit', {'id': utilisateur.id})}}) }}
 
         <div class="info-box editing">
             <div class="info-row editing">

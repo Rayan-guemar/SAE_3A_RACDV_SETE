@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     wget \
     npm \
-    nodejs
+    nodejs \
+    php7.1-pgsql
 
 RUN docker-php-ext-install pdo mysqli pdo_mysql
 

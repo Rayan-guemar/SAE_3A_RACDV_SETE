@@ -1,23 +1,27 @@
 version: '3.8'
 
 services:
-  web:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      ports:
-        - "8080:80"
-      volumes:
-        - ./festiflux:/app
+  # web:
+  #     build:
+  #       context: .
+  #       dockerfile: Dockerfile
+  #     ports:
+  #       - "8080:80"
+  #     volumes:
+  #       - ./festiflux:/app
+  #     networks:
+  #       - festiflux-network
   database:
     image: postgres:12.2
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=festiflux
       - PGDATA=/var/lib/postgresql/data/pgdata
+    # networks:
+    #   - festiflux-network
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -26,6 +30,12 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
       PGADMIN_DEFAULT_PASSWORD: strong-password
+    # networks:
+    #   - festiflux-network
+
+# networks:
+#   festiflux-network:
+#     driver: bridge
 
 # version: '3.8'
 

@@ -151,6 +151,19 @@
 
 }
 
+.registration-form__form {
+
+    div {
+        position: relative;
+    }
+    
+    ul {
+        position: absolute;
+        bottom: 100%;
+        color: red;
+    }
+}
+
 .create-questionnaire {
     height: 100%;
     width: 100%;
