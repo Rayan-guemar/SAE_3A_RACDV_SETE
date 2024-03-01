@@ -14,8 +14,8 @@ use App\Form\ModifierProfilType;
 use App\Repository\FestivalRepository;
 use App\Repository\HistoriquePostulationRepository;
 use App\Repository\PosteRepository;
-use App\Repository\PosteUtilisateurPreferencesRepository;
-use App\Entity\PosteUtilisateurPreferences;
+use App\Repository\PreferenceRepository;
+use App\Entity\Preference;
 use App\Repository\ContactRepository;
 use App\Repository\TacheRepository;
 use App\Repository\TypeContactRepository;
@@ -228,7 +228,7 @@ class UtilisateurController extends AbstractController {
 
 
     #[Route('/user/poste/{id}/pref', name: 'app_user_add_pref_poste', options: ["expose" => true], methods: ['POST'])]
-    public function user_AdorePoste_add(#[MapEntity] Poste $poste, Request $request, UtilisateurRepository $user, PosteUtilisateurPreferencesRepository $posteUtilisateurPreferencesRepository, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $uu): Response {
+    public function user_AdorePoste_add(#[MapEntity] Poste $poste, Request $request, UtilisateurRepository $user, PreferenceRepository $preferenceRepository, PosteRepository $posteRepository, EntityManagerInterface $em, UtilisateurUtils $uu): Response {
 
         $u = $this->getUser();
 
@@ -239,16 +239,16 @@ class UtilisateurController extends AbstractController {
         $festival = $poste->getFestival();
         $uu->isBenevole($u, $festival);
 
-        $prefs = ($posteUtilisateurPreferencesRepository->findBy(["posteId" => $poste, "UtilisateurId" => $u]));
+        $prefs = ($preferenceRepository->findBy(["poste" => $poste, "utilisateur" => $u]));
 
         $pref = null;
 
         if (count($prefs) > 0) {
             $pref = $prefs[0];
         } else {
-            $pref = new PosteUtilisateurPreferences();
-            $pref->setPosteId($poste);
-            $pref->setUtilisateurId($u);
+            $pref = new Preference();
+            $pref->setPoste($poste);
+            $pref->setUtilisateur($u);
         }
 
         $degree = $request->toArray()['degree'];
@@ -257,7 +257,7 @@ class UtilisateurController extends AbstractController {
             return new JsonResponse(['error' => 'degré de préférence non fourni'], Response::HTTP_BAD_REQUEST);
         }
 
-        $pref->setPreferencesDegree($degree);
+        $pref->setDegree($degree);
 
         $em->persist($pref);
         $em->flush();
@@ -363,14 +363,14 @@ class UtilisateurController extends AbstractController {
             return new JsonResponse(['error' => 'Le festival n\'existe pas'], 403);
         }
 
-        $prefs = $user->getPosteUtilisateurPreferences()->filter(function ($p) use ($festival) {
-            return $p->getPosteId()->getFestival() === $festival;
+        $prefs = $user->getPreferences()->filter(function (Preference $p) use ($festival) {
+            return $p->getPoste()->getFestival() === $festival;
         });
 
-        $prefs = array_map(function ($p) {
+        $prefs = array_map(function (Preference $p) {
             return [
-                'poste' => $p->getPosteId()->getId(),
-                'degree' => $p->getPreferencesDegree(),
+                'poste' => $p->getPoste()->getId(),
+                'degree' => $p->getDegree(),
             ];
         }, $prefs->toArray());
 
