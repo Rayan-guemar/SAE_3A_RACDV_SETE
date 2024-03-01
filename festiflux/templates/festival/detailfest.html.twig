@@ -70,7 +70,7 @@
 
 			{% if not(isBenevole or isOrganisateur or isResponsable)  %}
 				<div class="button-benevole">
-					<a href={{ path('app_postulations_form', {'id': festival.getId()} ) }} class="btn ">Postuler</a>
+					<a href={{ path('app_postulations_add', {'id': festival.getId()} ) }} class="btn ">Postuler</a>
 				</div>
 			{% endif %}
 		</div>

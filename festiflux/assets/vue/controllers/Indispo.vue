@@ -7,6 +7,7 @@ import Modal from './Modal.vue';
 
 interface Props {
 	indispo: Indisponibilite;
+	canDelete: boolean;
 }
 const props = defineProps<Props>();
 const deleting = ref(false);
@@ -43,7 +44,7 @@ let fin = new Date(props.indispo.fin);
 			zIndex: 2
 		}">
 		{{ `${getDateHours2Digits(debut)} - ${getDateHours2Digits(fin)}` }}
-		<div ref="deleteBtn" class="delete" @click.prevent="() => startDeleting()">
+		<div v-if="canDelete" ref="deleteBtn" class="delete" @click.prevent="() => startDeleting()">
 			<img src="../../../public/icons/delete.svg" alt="" />
 		</div>
 	</div>

@@ -50,13 +50,13 @@ class IndisponibiliteRepository extends ServiceEntityRepository
 
     public function areIndisposDoneByUserAndFestival(Utilisateur $user, Festival $festival): bool {
         return $this->createQueryBuilder('i')
-            ->andWhere('i.user = :user')
+            ->select('COUNT(i.id)')
+            ->andWhere('i.utilisateur = :utilisateur')
             ->andWhere('i.festival = :festival')
-            ->andWhere('i.done = true')
-            ->setParameter('user', $user)
+            ->setParameter('utilisateur', $user)
             ->setParameter('festival', $festival)
             ->getQuery()
-            ->getOneOrNullResult() !== null;
+            ->getOneOrNullResult()[1] > 0;
             
             
     }

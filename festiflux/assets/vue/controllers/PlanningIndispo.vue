@@ -206,6 +206,7 @@ onMounted(async () => {
 	await Promise.all(promises);
 	loading.value = false;
 });
+
 </script>
 
 <template>
@@ -246,7 +247,7 @@ onMounted(async () => {
 						{{ `${getDateHours2Digits(newIndispo.debut)} - ${getDateHours2Digits(newIndispo.fin)}` }}
 					</div>
 					<PlageHoraire v-for="p of plages.filter(c => new Date(c.debut).getDate() === day.getDate())" :plage="p" :can-delete="false" />
-					<Indispo v-for="i of indispos.filter(c => new Date(c.debut).getDate() === day.getDate())" :indispo="i" @delete="(_i) => handleDeleteIndispo(_i)" />
+					<Indispo v-for="i of indispos.filter(c => new Date(c.debut).getDate() === day.getDate())" :indispo="i" :can-delete="!props.isOrga" @delete="(_i) => handleDeleteIndispo(_i) " />
 					<!-- <Tache /> -->
 				</div>
 			</div>
@@ -287,7 +288,7 @@ onMounted(async () => {
 			</div>
 			
 
-			<div class="tooltip" v-if="!modeCreation">
+			<div class="tooltip" v-if="!modeCreation && !isOrga" >
 				<span class="tooltipText">Cliquer commencer l'ajout </span>
 				<div @click="modeCreation = true" class="btn">Ajouter</div>
 			</div>

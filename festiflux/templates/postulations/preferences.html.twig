@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Postes festival
+{% endblock %}
+
+{% block overhead %}{% endblock %}
+
+{% block body %}
+
+	<a id="back-button" style="position: absolute" href="{{path('app_postulations_postulation', { id: postulation.id })}}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+
+	{{ encore_entry_script_tags('app') }}
+
+	<main {{ vue_component('ListesPostes', {
+		'festivalId': festival.id,
+		'festivalName': festival.nom,
+		'isOrgaOrResp': isOrgaOrResp,
+		'isFestivalOpen': isFestivalOpen,
+		'watchingOtherUserPreferences': watchingOtherUserPreferences,
+		'otherUserId': otherUserId,
+	} ) }}></main>
+
+
+{% endblock %}

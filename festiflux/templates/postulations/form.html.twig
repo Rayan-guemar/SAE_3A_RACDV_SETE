@@ -10,8 +10,10 @@
 {% endblock %}
 
 {% block body %}
+	<a id="back-button" style="position: absolute" href="{{path('app_postulations_postulation', { id: postulation.id })}}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
 	<div class="postulation-form">
-
 		<h1>Postuler pour
 			{{ festival.nom }}</h1>
 

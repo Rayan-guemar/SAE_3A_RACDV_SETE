@@ -41,6 +41,7 @@ use App\Entity\Disponibilite;
 use App\Entity\Festival;
 use App\Entity\Lieu;
 use App\Entity\Plage;
+use App\Entity\Postulations;
 use App\Repository\LieuRepository;
 use App\Repository\PosteRepository;
 use App\Repository\PreferenceRepository;
@@ -1004,10 +1005,10 @@ class FestivalController extends AbstractController {
         return $this->redirectToRoute('app_user_festivals');
     }
 
-    #[Route('/user/{id}/preferences/{idFest}', name: 'app_festival_preferences')]
-    public function displayPostes(int $idFest, int $id, PreferenceRepository $preferenceRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
+    #[Route('/postulation/{id}/preferences', name: 'app_festival_preferences')]
+    public function displayPostes(#[MapEntity] Postulations $postulations, int $id, PreferenceRepository $preferenceRepository, FestivalRepository $festivalRepository, PosteRepository $posteRepository, Request $request, EntityManagerInterface $em, SluggerInterface $slugger, UtilisateurUtils $uu): Response {
 
-        $festival = $festivalRepository->find($idFest);
+        $festival = $postulations->getFestival();
         if (!$festival) {
             throw $this->createNotFoundException('Festival non trouvé.');
         }
@@ -1024,7 +1025,7 @@ class FestivalController extends AbstractController {
 
 
         $isOrgaOrResp = $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival);
-        $routeUserId = $id;
+        $routeUserId = $postulations->getUtilisateur()->getId();
 
         $watchingOtherUserPreferences = $routeUserId != $u->getId();
 
@@ -1033,7 +1034,8 @@ class FestivalController extends AbstractController {
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('festival/postes.html.twig', [
+        return $this->render('postulations/preferences.html.twig', [
+            'postulation' => $postulations,
             'utilisateur' => $u,
             'festival' => $festival,
             'isOrgaOrResp' => $uu->isOrganisateur($u, $festival) || $uu->isResponsable($u, $festival),

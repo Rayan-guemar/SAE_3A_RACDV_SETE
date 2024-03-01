@@ -37,7 +37,7 @@ class PostulationController extends AbstractController {
 
     #[Route('/festival/{id}/postulations', name: 'app_festival_postulations')]
     public function festivalPostulations(#[MapEntity] Festival $festival, ): Response {
-        $postulations = $this->postulationRepository->findBy(['festival' => $festival, 'status' => Postulations::STATUS_PENDING]);
+        $postulations = $this->postulationRepository->findBy(['festival' => $festival, 'status' => Postulations::STATUS_PENDING, 'faite' => true]);
         return $this->render('festival/postulations.html.twig', [
             'festival' => $festival,
             'postulations' => $postulations,
@@ -60,6 +60,11 @@ class PostulationController extends AbstractController {
 
     #[Route('/postulations/{id}', name: 'app_postulations_postulation')]
     public function postulation(#[MapEntity] Postulations $postulation): Response {
+        // a mettre un peu partout
+        if ($postulation->getStatus() != 0) {
+            $this->addFlash('error', 'Cette demande a déjà été traité');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $postulation->getFestival()->getId()]);
+        }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
@@ -74,27 +79,31 @@ class PostulationController extends AbstractController {
 
         $festival = $postulation->getFestival();
 
-        if (!($this->utilisateurUtils->isOrganisateur($u, $festival))) {
+        if ($u != $postulation->getUtilisateur() && !($this->utilisateurUtils->isOrganisateur($u, $festival))) {
             $this->addFlash('error', 'Vous n\'êtes pas organisateur de ce festival');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         };
 
-        $responses = $postulation->getReponses();
-        $isFormDone = count($postulation->getReponses()) == 0;
+        if ($postulation->isFaite()) {
+            return $this->render('postulations/postulation_faite.html.twig', [
+                'postulation' => $postulation,
+            ]);
+        }
+
+        $isFormDone = $festival->getQuestionBenevoles()->isEmpty() || !$postulation->getReponses()->isEmpty();
         $areIndisposDone = $this->indisponibiliteRepository->areIndisposDoneByUserAndFestival($postulation->getUtilisateur(), $festival);
         $arePreferencesDone = $this->preferenceRepository->arePreferencesDoneByUserAndFestival($u, $festival);
 
         return $this->render('postulations/postulation.html.twig', [
             'postulation' => $postulation,
-            'responses' => $responses,
             'isFormDone' => $isFormDone,
             'areIndisposDone' => $areIndisposDone,
             'arePreferencesDone' => $arePreferencesDone
         ]);
     }
-    #[Route('festival/{id}/postulation/add', name: 'app_postulations_form')]
-    public function pstulationForm(#[MapEntity] Festival $festival, Request $req): Response {
-
+    #[Route('festival/{id}/postulation/add', name: 'app_postulations_add')]
+    public function potulationAdd(#[MapEntity] Festival $festival, Request $req): Response {
+        
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
@@ -112,59 +121,102 @@ class PostulationController extends AbstractController {
         }
 
         $postulation =  $this->postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
-
+        $p = null;
         if ($postulation) {
-            $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
+
+            if ($postulation->isFaite()) {
+                $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
+                return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+            }else {
+                $p = $postulation;
+            }
+        } else {
+            $p = new Postulations();
+            $p->setFestival($festival);
+            $p->setUtilisateur($u);
+            $p->setStatus(0);
+    
+            $this->em->persist($p);
+            $this->em->flush();
+            return $this->redirectToRoute('app_postulations_postulation', ['id' => $p->getId()]);
+
+        }
+
+
+        return $this->redirectToRoute('app_festival_detail', ['id' => $p->getFestival()->getId()]);
+    }
+
+    #[Route('/postulations/{id}/send', name: 'app_postulations_send')]
+    public function postulationSend(#[MapEntity] Postulations $postulation, Request $req ): Response {
+
+        if ($postulation->getStatus() != 0) {
+            $this->addFlash('error', 'Cette demande a déjà été traité');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $postulation->getFestival()->getId()]);
+        }
+
+        $u = $this->getUser();
+        $festival = $postulation->getFestival();
+        if (!$u || !$u instanceof Utilisateur) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        if ($this->utilisateurUtils->isOrganisateur($u, $festival)) {
+            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        };
+
+        if ($this->utilisateurUtils->isBenevole($u, $festival)) {
+            $this->addFlash('error', 'Vous participez déjà à ce festival');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
 
-        $p = new Postulations();
-        $p->setFestival($festival);
-        $p->setUtilisateur($u);
+        if (!$postulation) {
+            $this->addFlash('error', '');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+        }
 
-        $this->em->persist($p);
+
+        $isFormDone = $festival->getQuestionBenevoles()->isEmpty() || !$postulation->getReponses()->isEmpty();
+
+        if (!$isFormDone) {
+            $this->addFlash('error', 'Vous devez remplir le formulaire, vos indisponibilités et vos préférences pour postuler');
+            return $this->redirectToRoute('app_postulations_add', ['id' => $festival->getId()]);
+        }
+
+        $postulation->setFaite(true);
+        $this->em->persist($postulation);
         $this->em->flush();
 
-        return $this->redirectToRoute('app_postulations_postulation', ['id' => $p->getId()]);
+        $this->flashMessageService->add(FlashMessageType::SUCCESS, 'Votre postulation a bien été prise en compte');
+        return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
     }
 
 
 
-    #[Route('festival/{id}/postulations/form', name: 'app_postulations_form')]
-    public function postulationForm(#[MapEntity] Festival $festival, Request $req ): Response {
+    #[Route('/postulations/{id}/form', name: 'app_postulations_form')]
+    public function postulationForm(#[MapEntity] Postulations $postulation, Request $req ): Response {
+
+        if ($postulation->getStatus() != 0) {
+            $this->addFlash('error', 'Cette demande a déjà été traité');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $postulation->getFestival()->getId()]);
+        }
 
         $u = $this->getUser();
+        $festival = $postulation->getFestival();
         if (!$u || !$u instanceof Utilisateur) {
             $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
             return $this->redirectToRoute('app_auth_login');
         }
-
-        if ($this->utilisateurUtils->isOrganisateur($u, $festival)) {
-            $this->addFlash('error', 'Vous ne pouvez pas postuler à votre propre festival');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        };
-
-        if ($this->utilisateurUtils->isBenevole($u, $festival)) {
-            $this->addFlash('error', 'Vous participez déjà à ce festival');
+        
+        if (!$postulation) {
+            $this->addFlash('error', '');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
-
-        $postulation =  $this->postulationRepository->findOneBy(['festival' => $festival, 'utilisateur' => $u]);
-
-        if ($postulation) {
-            $this->addFlash('error', 'Vous avez déjà postulé à ce festival');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
-        }
-
 
         if ($req->isMethod('POST')) {
 
-            $postulation = new Postulations();
-            $postulation->setFestival($festival);
-            $postulation->setUtilisateur($u);
-            $postulation->setDate(new \DateTime());
-            $postulation->setStatus(Postulations::STATUS_PENDING);
-
+            
             $formData = $req->request->all();
 
             foreach ($formData['responses'] as $questionId => $responseContent) {
@@ -181,32 +233,53 @@ class PostulationController extends AbstractController {
             $this->em->flush();
 
             $this->flashMessageService->add(FlashMessageType::SUCCESS, 'Votre postulation a bien été prise en compte');
-            return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+            return $this->redirectToRoute('app_postulations_postulation', ['id' => $postulation->getId()]);
         }
 
         $questions = $festival->getQuestionBenevoles();
+
+        
         if ($questions->isEmpty()) {
+            $this->addFlash('erreur', 'Le formulaire n\'existe pas pour ce festival');
+            return $this->redirectToRoute('app_postulations_postulation', ['id' => $postulation->getId()]);
+        }
+        
+        if ($postulation->isFaite()) {
+            if (!($u == $postulation->getUtilisateur() || $this->utilisateurUtils->isOrganisateur($u, $festival))) {
+                 $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
+                 return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
+             }
+             
+             return $this->render('postulations/form_filled.html.twig', [
+                 'festival' => $festival,
+                 'questions' => $questions,
+                 'postulation' => $postulation,
+             ]);
+        }
 
-            $postulation = new Postulations();
-            $postulation->setFestival($festival);
-            $postulation->setUtilisateur($u);
-            $postulation->setDate(new \DateTime());
-            $postulation->setStatus(Postulations::STATUS_PENDING);
 
-            $this->em->persist($postulation);
-
-            $this->addFlash('success', 'Votre postulation a bien été prise en compte');
+        if (!($u == $postulation->getUtilisateur())) {
+            $this->addFlash('error', 'Vous n\'avez pas accès à cette page');
             return $this->redirectToRoute('app_festival_detail', ['id' => $festival->getId()]);
         }
+        
+
 
         return $this->render('postulations/form.html.twig', [
             'festival' => $festival,
             'questions' => $questions,
+            'postulation' => $postulation,
         ]);
     }
 
     #[Route('postulations/{id}/accept', name: 'app_postulations_accept', methods: ['POST'])]
     public function postulationAccept(#[MapEntity] Postulations $postulation): Response {
+
+        if ($postulation->getStatus() != 0) {
+            $this->addFlash('error', 'Cette demande a déjà été traité');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $postulation->getFestival()->getId()]);
+        }
+
         $u = $this->getUser();
 
         if (!$u || !$u instanceof Utilisateur) {
@@ -244,6 +317,11 @@ class PostulationController extends AbstractController {
 
     #[Route('postulations/{id}/refuse', name: 'app_postulations_refuse', methods: ['GET', 'POST'])]
     public function postulationRefuse(#[MapEntity] Postulations $postulation, Request $req,): Response {
+
+        if ($postulation->getStatus() != 0) {
+            $this->addFlash('error', 'Cette demande a déjà été traité');
+            return $this->redirectToRoute('app_festival_detail', ['id' => $postulation->getFestival()->getId()]);
+        }
 
         $u = $this->getUser();
         if (!$u || !$u instanceof Utilisateur) {
