@@ -122,7 +122,12 @@ const switchMode = (e: MouseEvent) => {
     :class="{ focused: props.focused }"
     :id="'' + tache.id"
     :style="{
-      top: `${
+      top: props.focused && tache.creneau.debut.getHours() > 20 ? `calc(${
+        ((tache.creneau.debut.getHours() * 60 +
+          tache.creneau.debut.getMinutes()) /
+          (24 * 60)) *
+        100
+      }% - 100px)` : `${
         ((tache.creneau.debut.getHours() * 60 +
           tache.creneau.debut.getMinutes()) /
           (24 * 60)) *
@@ -160,7 +165,8 @@ const switchMode = (e: MouseEvent) => {
       @mouseleave="() => (taskHover = false)"
       class="task-text"
       :style="{
-        width: taskHover || showingInfo ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        // width: taskHover || showingInfo ? '100%' : `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
+        width: `${total == 1 ? 100 : (1 / (total - (position - 1))) * 100}%`,
       }"
     >
       <div class="name">{{ tache.poste.nom }}</div>
@@ -233,8 +239,12 @@ const switchMode = (e: MouseEvent) => {
       <div class="pastille benevole__number">
         {{ tache.benevoleAffecte }} / {{ tache.nbBenevole }}
       </div>
-      <div class="pastille benevole__dipo"> {{ nbDispo }} </div>
-      <div class="pastille benevole__like"> {{ nbLike }} </div>
+      <div class="pastille benevole__dipo">
+        {{ nbDispo }}
+      </div>
+      <div class="pastille benevole__like">
+        {{ nbLike }}
+      </div>
     </div>
 
   </div>
