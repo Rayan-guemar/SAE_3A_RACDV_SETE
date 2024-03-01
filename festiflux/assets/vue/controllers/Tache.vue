@@ -16,9 +16,11 @@ interface Props {
   total: number,
   modeAffectation: boolean,
   benevoles: Benevole[],
+  focused: boolean
 }
 
 const props = defineProps<Props>();
+
 const emit = defineEmits<{
   (e: 'reloadTaches'): void
   (e: 'reloadBenevoles'): void
@@ -57,11 +59,13 @@ const showingAffectionMode = ref(false);
 const task = ref<HTMLDivElement>();
 
 const showInfo = () => {
-  showingInfo.value = true;
+  if (props.focused)
+    showingInfo.value = true;
 };
 
 const showAffectionMode = () => {
-  showingAffectionMode.value = true;
+  if (props.focused)
+    showingAffectionMode.value = true;
 };
 
 const taskHover = ref(false);
@@ -115,6 +119,7 @@ const switchMode = (e: MouseEvent) => {
   <div
     ref="task"
     class="task"
+    :class="{ focused: props.focused }"
     :id="'' + tache.id"
     :style="{
       top: `${

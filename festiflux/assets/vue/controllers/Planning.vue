@@ -122,6 +122,9 @@ const toggleModeAffectation = () => {
 const focusedTacheId = ref<ID | undefined>();
 
 const focusTache = (id: ID | undefined) => {
+  if (id === undefined) {
+    console.log("id undefined");
+  }
   focusedTacheId.value = id;
 };
 
@@ -279,6 +282,11 @@ onMounted(async () => {
   promises.push(getBenevoles());
   await Promise.all(promises);
   loading.value = false;
+
+  document.body.addEventListener('click', (e: MouseEvent) => {
+    e.target instanceof HTMLElement && e.target.closest('.task  ') === null &&
+    focusTache(undefined);
+  })
 });
 
 const startResizingStart = (e: MouseEvent) => {
@@ -393,6 +401,7 @@ console.log(props.isOrgaOrResp);
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            :focused="focusedTacheId === tacheWithPos.tache.id"
             @click="() => focusTache(tacheWithPos.tache.id)"
             @reloadTaches="
               async () => {
