@@ -119,6 +119,12 @@ const toggleModeAffectation = () => {
   modeAffectation.value = !modeAffectation.value;
 };
 
+const focusedTacheId = ref<ID | undefined>();
+
+const focusTache = (id: ID | undefined) => {
+  focusedTacheId.value = id;
+};
+
 const newTacheName = ref("Aucun poste sélectionné");
 const newTacheStart = ref(new Date());
 const newTacheEnd = ref(new Date());
@@ -387,6 +393,7 @@ console.log(props.isOrgaOrResp);
             :modeAffectation="modeAffectation"
             :position="tacheWithPos.position"
             :total="tacheWithPos.total"
+            @click="() => focusTache(tacheWithPos.tache.id)"
             @reloadTaches="
               async () => {
                 await getTaches();

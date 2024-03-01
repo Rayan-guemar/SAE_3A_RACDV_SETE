@@ -176,7 +176,7 @@
             }
 
 
-            &:hover {
+            &.focused {
                 cursor: pointer;
                 z-index: 99 !important;
                 width: 98% !important;
@@ -829,4 +829,4 @@ h2 {
 
 .new-task:hover {
     left: 50% !important;
-}
+}   
