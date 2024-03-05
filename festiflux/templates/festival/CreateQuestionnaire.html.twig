@@ -3,8 +3,12 @@
 
 {% block body %}
 
+    <a id="back-button" href="{{ path('app_festival_gestion', { id: festival.id }) }}">
+        <img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+    </a>
+
     <div class="create-questionnaire">
-        <h1>Créer un questionnaire sur votre festival</h1>
+        <h1 class="margin-top">Créer un formulaire de postulation</h1>
         
         <div class="questions">
             <h3>Les questions :</h3>

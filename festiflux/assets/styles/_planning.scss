@@ -39,7 +39,7 @@
 }
 
 #back-button {
-    position: fixed;
+    position: absolute;
     top: 30px;
     left: 30px;
     height: 40px;
@@ -373,8 +373,7 @@
                     margin-right: 5px;
 
                 }
-                .legend-label {
-                    font-size: .7em;
+                .legend-label { 
                     font-weight: 500;
                 }
             }

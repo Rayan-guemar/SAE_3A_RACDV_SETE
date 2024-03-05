@@ -9,6 +9,10 @@
 {% endblock %}
 
 {% block body %}
+    <a id="back-button" style="position: absolute" href="{{ path('app_festival_all') }}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+
     <h1 class="map-title">Carte des festivals</h1>
     <div id="map"></div>
 {% endblock %}

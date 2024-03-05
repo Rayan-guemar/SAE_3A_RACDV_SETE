@@ -189,7 +189,7 @@ class UtilisateurController extends AbstractController {
             $utilisateurManager->processNewUtilisateur($utilisateur, $photoProfil);
             $em->flush();
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
-            return $this->redirectToRoute('app_profile_edit', ['id' => $utilisateur->getId()]);
+            return $this->redirectToRoute('app_user_info');
         }
 
         return $this->render('utilisateur/modifierProfil.html.twig', [

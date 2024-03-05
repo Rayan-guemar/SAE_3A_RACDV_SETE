@@ -50,7 +50,7 @@ let fin = new Date(props.indispo.fin);
 	</div>
 	<Modal v-if="deleting">
 		<form class="planning-form">
-			<h5>Voulez vous vraiment supprimer cette indisponibilité ?</h5>
+			<h4>Voulez vous vraiment supprimer cette indisponibilité ?</h4>
 			<div class="flex-row">
 				<div class="btn" @click="deleteIndispo">Oui</div>
 				<div class="btn" @click="() => (deleting = false)">Non</div>
