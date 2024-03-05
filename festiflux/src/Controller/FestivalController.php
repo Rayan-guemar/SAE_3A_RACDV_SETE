@@ -71,41 +71,64 @@ class FestivalController extends AbstractController {
         $searchData = new SearchData();
         $form = $this->createForm(SearchType::class, $searchData);
         $form->handleRequest($request);
+
+        $festivals = $repository->findBy(['isArchive' => 0, 'open' => 1]);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
-            $listeTags = $tagRepository->findBySearch($searchData);
-            $festivalsWithTag = [];
-            foreach ($listeTags as $tag) {
-                $festivals = (($tag)->getFestivals());
-                foreach ($festivals as $f) {
-                    $festivalsWithTag[] = $f;
+
+            $newFestivals  = [];
+
+            foreach ($festivals as $festival) {
+                // map all tags in lowercase but before map into getNom()
+                $tags = array_map('strtolower', array_map(fn($tag) => $tag->getNom(), $festival->getTags()->toArray()));
+                if (in_array(strtolower($searchData->q), $tags)) {
+                    $newFestivals[] = $festival;
+                }
+
+                if (strpos(strtolower($festival->getNom()), strtolower($searchData->q)) !== false) {
+                    $newFestivals[] = $festival;
+                }
+
+                if (strpos(strtolower($festival->getLieu()), strtolower($searchData->q)) !== false) {
+                    $newFestivals[] = $festival;
                 }
             }
 
-            $allfest = $festivalsWithNameOrAddress;
-            foreach ($festivalsWithTag as $fest) {
-                if (!in_array($fest, $allfest)) {
-                    $allfest[] = $fest;
-                }
-            }
-            if ($allfest != null) {
-                return $this->render('festival/index.html.twig', [
-                    'form' => $form->createView(),
-                    'searched' => true,
-                    'festivals' => ($allfest)
-                ]);
-            } else {
-                // $this->addFlash('error', 'Aucun festival ne correspond à votre recherche');
-                return $this->render('festival/index.html.twig', [
-                    'form' => $form->createView(),
-                    'searched' => true,
-                    'festivals' => []
-                ]);
-            }
+            $festivals = $newFestivals;
+
+            // $festivalsWithNameOrAddress = $repository->findBySearch($searchData);
+            // $listeTags = $tagRepository->findBySearch($searchData);
+            // $festivalsWithTag = [];
+            // foreach ($listeTags as $tag) {
+            //     $festivals = (($tag)->getFestivals());
+            //     foreach ($festivals as $f) {
+            //         $festivalsWithTag[] = $f;
+            //     }
+            // }
+
+            // $allfest = $festivalsWithNameOrAddress;
+            // foreach ($festivalsWithTag as $fest) {
+            //     if (!in_array($fest, $allfest)) {
+            //         $allfest[] = $fest;
+            //     }
+            // }
+            // if ($allfest != null) {
+            //     return $this->render('festival/index.html.twig', [
+            //         'form' => $form->createView(),
+            //         'searched' => true,
+            //         'festivals' => ($allfest)
+            //     ]);
+            // } else {
+            //     // $this->addFlash('error', 'Aucun festival ne correspond à votre recherche');
+            //     return $this->render('festival/index.html.twig', [
+            //         'form' => $form->createView(),
+            //         'searched' => true,
+            //         'festivals' => []
+            //     ]);
+            // }
         }
 
         //get les festivals qui ne sont pas archivés
-        $festivals = $repository->findBy(['isArchive' => 0, 'open' => 1]);
         $cards = $paginator->paginate(
             $festivals,
             $request->query->getInt('page', 1),
@@ -478,7 +501,7 @@ class FestivalController extends AbstractController {
         $poste->setFestival($festival);
         $poste->setNom($request->toArray()['nom']);
         $poste->setCouleur($request->toArray()['couleur']);
-        $poste->setDescription('');
+        $poste->setDescription($request->toArray()['description']);
 
         $em->persist($poste);
         $em->flush();

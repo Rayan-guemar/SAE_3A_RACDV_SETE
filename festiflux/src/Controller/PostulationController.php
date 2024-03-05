@@ -306,7 +306,7 @@ class PostulationController extends AbstractController {
 
 
         $postulation->setStatus(1);
-        $festival->addBenevole($u);
+        $festival->addBenevole($postulation->getUtilisateur());
         $this->em->persist($festival);
 
         $this->flashMessageService->add(FlashMessageType::SUCCESS, "Demande accepté " . $postulation->getUtilisateur()->getNom() . ", est maintenant bénévole");

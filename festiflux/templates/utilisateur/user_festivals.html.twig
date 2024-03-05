@@ -4,18 +4,18 @@
 {% endblock %}
 
 {% block body %}
-	<h1 class="my-fest__title">Mes Festivals</h1>
+	<h1 class="my-fest__title margin-top">Mes Festivals</h1>
 
 	<div class="my-fest__btns ">
 		<a href="{{ path('app_user_festivals', {'filter': 'volunteer'}) }}" class="{{filter == 'volunteer' ? 'active' : 'btn-primary'}} ">Festivals en tant que bénévole</a>
 		<a href="{{ path('app_user_festivals', {'filter': 'owned'}) }}" class="{{filter == 'owned' ? 'active' : 'btn-primary'}}">Festivals que j'organise</a>
 	</div>
 
-	{% if filter == 'volunteer' %}
+	{# {% if filter == 'volunteer' %}
 		<h2 class="my-fest__heading">Les festivals auxquels je participe :</h2>
 	{% else %}
 		<h2 class="my-fest__heading">Les festivals que j'organise :</h2>
-	{% endif %}
+	{% endif %} #}
 
 	<div class="fest-wrapper with-margin">
 

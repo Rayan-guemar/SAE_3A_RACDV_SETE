@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="postulation-page2">
-        <h1>Postulation pour {{ postulation.festival.nom }}</h1>
+        <h1 class="margin-top">Postulation pour {{ postulation.festival.nom }}</h1>
 
         <div class="user-info-container">
 				<div class="user-image">
@@ -46,7 +46,8 @@
             </div>
         </div>
     </div>
-    <form action="{{path('app_postulations_accept', {id: postulation.id})}}" method="POST">
+    <div class="flex-row margin-top">
+        <form action="{{path('app_postulations_accept', {id: postulation.id})}}" method="POST">
         <button type="submit" class="postuler-btn accept">
             Accepter
         </button>
@@ -55,5 +56,6 @@
     <a class="postuler-btn refuse" href="{{path('app_postulations_refuse', {id: postulation.id})}}">
 		Refuser
 	</a>
+    </div>
     
 {% endblock %}

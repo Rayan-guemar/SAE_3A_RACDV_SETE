@@ -7,12 +7,16 @@
 
 {% endblock %}
 {% block body %}
+    <a id="back-button" href="{{ path('app_festival_gestion', { id: idFest }) }}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+
     <input type="hidden" id="id_festival" value={{ idFest }}>
 
     
-    <h1>Liste des bénévoles</h1>
-    <h2>vous {% if  benevoles|length() > 0 %}  avez {{ benevoles|length() }} bénévoles
-        {% else %} n'avez pas encore de bénévoles {% endif %}
+    <h1 class="margin-top">Liste des bénévoles</h1>
+    <h2>Vous {% if  benevoles|length() > 0 %}  avez {{ benevoles|length() }} bénévoles
+        {% else %} n'avez pas encore de bénévole {% endif %}
         pour ce festival</h2>
 
     <table>

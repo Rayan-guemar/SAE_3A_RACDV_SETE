@@ -5,7 +5,11 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Postulations pour
+	<a id="back-button" href="{{ path('app_festival_gestion', { id: festival.id }) }}">
+		<img src="{{ asset('icons/right-arrow.png') }}" alt="Flèche retour">
+	</a>
+			
+	<h1 class="margin-top">Postulations pour
 		{{festival.nom}}</h1>
 
 	{% if postulations is not empty %}
@@ -36,8 +40,5 @@
 							</a>
 						</td>
 					</tr>
-				</tbody>
-			</tbody>
-		</tr>
 	{% endfor %}
-</tbody></table>{% else %}<p>Aucune postulations disponible.</p>{% endif %}{% endblock %}
+</tbody></table>{% else %}<p>Aucune postulation disponible.</p>{% endif %}{% endblock %}

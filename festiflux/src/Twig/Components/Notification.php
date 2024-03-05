@@ -37,6 +37,15 @@ class Notification
             $postulations = $this->postRepo->findBy(['status' => 0, 'utilisateur' => $this->userId]);
             return count($postulations);
             
+        } else if ($this->type == "allPostulations" && $this->userId != null){ 
+            
+            $postulations = $this->postRepo->findBy(['status' => 0]);
+            // filtre les postulations en laissant celles qui ne correspondent pas au même user
+            $postulations = array_filter($postulations, function(Postulations $post) {
+                return $post->getUtilisateur()->getId() != $this->userId;
+            });
+            return count($postulations);
+            
         } 
 
         if($this->festId != null) {
